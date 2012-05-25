@@ -5,7 +5,7 @@
 	<!-- Lights
 	<model>
 		<name>Left nav light</name>
-		<path>Aircraft/A330-200/Models/Lights/rednav.xml</path>
+		<path>Aircraft/A330-200/Models/Lights/rednav.xml</path> 
 		<offsets>
 			<x-m>23.474</x-m>
 			<y-m>-16.91</y-m>
@@ -1723,6 +1723,124 @@
   </center>
   <axis>
    <x>-1</x>
+   <y>0</y>
+   <z>0</z>
+  </axis>
+</animation>
+
+<!-- Wing Flex -->
+
+<animation>
+  <type>rotate</type>
+  <object-name>wing.in0</object-name>
+  <object-name>engine0</object-name>
+  <object-name>wing.mid0</object-name>
+  <object-name>wing.out0</object-name>
+  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <factor>0.00001</factor>
+  <offset-deg>0</offset-deg>
+  <center>
+   <x-m>0</x-m>
+   <y-m>-2.89</y-m>
+   <z-m>-0.3533</z-m>
+  </center>
+  <axis>
+   <x>-1</x>
+   <y>0</y>
+   <z>0</z>
+  </axis>
+</animation>
+
+<animation>
+  <type>rotate</type>
+  <object-name>wing.mid0</object-name>
+  <object-name>wing.out0</object-name>
+  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <factor>0.00001</factor>
+  <offset-deg>-1</offset-deg>
+  <center>
+   <x-m>0</x-m>
+   <y-m>-8.1177</y-m>
+   <z-m>-0.0539</z-m>
+  </center>
+  <axis>
+   <x>-1</x>
+   <y>0</y>
+   <z>0</z>
+  </axis>
+</animation>
+
+<animation>
+  <type>rotate</type>
+  <object-name>wing.out0</object-name>
+  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <factor>0.00001</factor>
+  <offset-deg>-1</offset-deg>
+  <center>
+   <x-m>0</x-m>
+   <y-m>-19.3799</y-m>
+   <z-m>0.5538</z-m>
+  </center>
+  <axis>
+   <x>-1</x>
+   <y>0</y>
+   <z>0</z>
+  </axis>
+</animation>
+
+<animation>
+  <type>rotate</type>
+  <object-name>wing.in1</object-name>
+  <object-name>engine1</object-name>
+  <object-name>wing.mid1</object-name>
+  <object-name>wing.out1</object-name>
+  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <factor>0.00001</factor>
+  <offset-deg>0</offset-deg>
+  <center>
+   <x-m>0</x-m>
+   <y-m>2.89</y-m>
+   <z-m>-0.3533</z-m>
+  </center>
+  <axis>
+   <x>1</x>
+   <y>0</y>
+   <z>0</z>
+  </axis>
+</animation>
+
+<animation>
+  <type>rotate</type>
+  <object-name>wing.mid1</object-name>
+  <object-name>wing.out1</object-name>
+  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <factor>0.00001</factor>
+  <offset-deg>-1</offset-deg>
+  <center>
+   <x-m>0</x-m>
+   <y-m>8.1177</y-m>
+   <z-m>-0.0539</z-m>
+  </center>
+  <axis>
+   <x>1</x>
+   <y>0</y>
+   <z>0</z>
+  </axis>
+</animation>
+
+<animation>
+  <type>rotate</type>
+  <object-name>wing.out1</object-name>
+  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <factor>0.00001</factor>
+  <offset-deg>-1</offset-deg>
+  <center>
+   <x-m>0</x-m>
+   <y-m>19.3799</y-m>
+   <z-m>0.5538</z-m>
+  </center>
+  <axis>
+   <x>1</x>
    <y>0</y>
    <z>0</z>
   </axis>
