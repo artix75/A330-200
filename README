@@ -1,0 +1,15 @@
+There are 2 models of the Airbus A330-200 included in this package- the A330-223 (Pratt and Whitney Engines) and the A330-243 (Rolls Royce Trent Engines). 
+
+In the future, we may also develop the CFM Engines version, the Airbus A330-203 and the Freighter version, the Airbus A330-200F.
+
+The Older A330-200 from theOmegaHangar is no longer supported, you're recommended to use this version.
+
+The FlightDeck and systems have been ported from the new Airbus A320neo which is also developed by theOmegaHangar.
+
+NOTE- This aircraft doesn't have a license defined yet but we can define it as required. A couple of textures for the fuselage body has been taken from the Project OpenSky Airbus A330 version2 for Microsoft Flight Simulator and permission to release it under GPL is still pending.
+
+Pilot's Operating Handbook (PoH) and Flight Manuals are available for the Airbus A330-200 (only for simulation purposes) at www.smartcockpit.com and FlightGear A330-200 specific tutorials and checklists will be available in the FlightGear wiki soon.
+
+The Hangar would like to thank Polly, Bicyus (Jon A. Ortundo), Hooray and Awexome for their help on the new Airbus Systems.
+
+For any queries, contact narendran95@ymail.com
