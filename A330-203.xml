@@ -9,7 +9,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<email>narendran95@ymail.com</email>
 	<filecreationdate>2012-05-18</filecreationdate>
 	<version>2.0</version>
-	<description>Airbus A330-223 (A330-200 with Pratt and Whitney PW4000 Engines)</description>
+	<description>Airbus A330-203 (A330-200 with General Electric CF-80E1 Engines)</description>
 </fileheader>
 
 <metrics>
@@ -294,7 +294,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 </ground_reactions>
 
 <propulsion>
-	<engine file="pw4000">
+	<engine file="cf6-80e1">
 	<location unit="IN">
 		<x>-45.31</x>	
 		<y>-370.36</y>
@@ -324,7 +324,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 		</orient>
 	</thruster>
 	</engine>
-	<engine file="pw4000">
+	<engine file="cf6-80e1">
 	<location unit="IN">
 		<x>-45.31</x>	
 		<y>370.36</y>

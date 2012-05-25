@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 
 
-<turbine_engine name="pw4000">
-	<milthrust> 68600 </milthrust>
-	<bypassratio>     5 </bypassratio>
-	<tsfc>            0.348 </tsfc>
+<turbine_engine name="cf6-80e1">
+	<milthrust> 61000 </milthrust>
+	<bypassratio>     4.24 </bypassratio>
+	<tsfc>            0.332 </tsfc>
 	<idlen1>         30.0 </idlen1>
 	<idlen2>         60.0 </idlen2>
 	<maxn1>         100.0 </maxn1>
