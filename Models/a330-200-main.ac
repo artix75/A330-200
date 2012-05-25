@@ -5069,7 +5069,7 @@ kids 0
 OBJECT poly
 name "vstab"
 loc 26.6406 -2.56628 -0.00014045
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 157
 6.91562 13.8445 0.155693
@@ -62076,7 +62076,7 @@ kids 2
 OBJECT poly
 name "cylinder"
 loc -13.8982 -0.172852 0.000647545
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 88
 0.315369 0.922104 0.00677523
@@ -62796,7 +62796,7 @@ kids 0
 OBJECT poly
 name "cylinder"
 loc 13.8982 0.172852 -0.000647545
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 212
 -28.4631 -0.306332 -0.00100056
@@ -64661,7 +64661,7 @@ kids 0
 OBJECT poly
 name "rudder"
 loc 31.541 5.3331 0.570449
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 80
 2.57675 6.25183 -0.546286
@@ -71080,7 +71080,7 @@ kids 0
 OBJECT poly
 name "winglet0"
 loc 6.52981 0.2874 16.3959
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 143
 7.9991 0.797394 12.6288
@@ -78169,7 +78169,7 @@ kids 0
 OBJECT poly
 name "winglet1"
 loc 6.52981 0.2874 16.3959
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 143
 9.2227 2.0195 -46.2999
@@ -123133,7 +123133,7 @@ kids 3
 OBJECT poly
 name "bellyfairing"
 loc 0.724033 -1.65472 1.33515e-05
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 439
 -12.5619 2.53629 1.80625
@@ -126834,7 +126834,7 @@ kids 0
 OBJECT poly
 name "LeftGearDoor"
 loc -0.362017 0.827414 2.00445
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 148
 0.282084 0.845263 1.30243
@@ -127962,7 +127962,7 @@ kids 0
 OBJECT poly
 name "RightGearDoor"
 loc -0.362017 0.827303 -2.00447
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 150
 1.60498 -0.858002 0.666665
@@ -129105,7 +129105,7 @@ kids 5
 OBJECT poly
 name "fuselage"
 loc 18.0097 2.12429 -0.00130807
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 798
 -21.384 -2.1616 -0.489372
@@ -135655,7 +135655,7 @@ kids 0
 OBJECT poly
 name "NoseGearDoor.lf"
 loc -5.18997 -0.43688 0.343653
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 47
 -0.0814915 -0.00280666 -0.0620507
@@ -135957,7 +135957,7 @@ kids 0
 OBJECT poly
 name "NoseGearDoor.rf"
 loc -5.18997 -0.4429 -0.342228
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 47
 -0.0814915 -0.00946093 0.0593573
@@ -136259,7 +136259,7 @@ kids 0
 OBJECT poly
 name "NoseGearDoor.lr"
 loc -3.81487 -0.62317 0.242667
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 42
 0.0821075 0.00320435 0.0402853
@@ -136533,7 +136533,7 @@ kids 0
 OBJECT poly
 name "NoseGearDoor.rr"
 loc -3.81487 -0.62134 -0.242782
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 42
 0.0917664 0.00366449 -0.0417317

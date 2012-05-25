@@ -10,7 +10,7 @@
 		<engine>cf6-80e1</engine>
 
 		<model>
-			<path>Aircraft/A330-200/Models/A330-223.xml</path>
+			<path>Aircraft/A330-200/Models/A330-203.xml</path>
 			<livery>
 				<file>blank</file>
 				<texture>Liverles/A330-203/livery-blank.png</texture>
@@ -104,7 +104,7 @@
 		<menubar>
 				<default>
 					<menu n="100">
-						<label>Airbus A330-223</label>
+						<label>Airbus A330-203</label>
 					</menu>
 				</default>
 		</menubar>

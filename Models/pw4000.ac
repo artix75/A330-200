@@ -14234,7 +14234,7 @@ kids 0
 OBJECT poly
 name "pw.reverser0"
 loc -1.17818 -2.65644 9.41343
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 166
 1.98354 -1.32194 0.378523
@@ -15472,7 +15472,7 @@ kids 0
 OBJECT poly
 name "pw.nacelle0"
 loc -1.17818 -2.65644 9.41343
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 96
 -2.02358 1.40487 -0.549517
@@ -16080,7 +16080,7 @@ kids 0
 OBJECT poly
 name "pw.reverser1"
 loc -1.17818 -2.65644 9.41343
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 166
 2.09112 -1.43878 -18.9781
@@ -17318,7 +17318,7 @@ kids 0
 OBJECT poly
 name "pw.rim0"
 loc -1.17818 -2.65644 9.41343
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 240
 -2.22688 1.32831 -0.523914
@@ -22320,7 +22320,7 @@ kids 0
 OBJECT poly
 name "pw.rim1"
 loc -1.17818 -2.65644 9.41343
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 240
 -2.27815 1.38738 -18.681
@@ -24080,7 +24080,7 @@ kids 0
 OBJECT poly
 name "pw.nacelle1"
 loc -1.17818 -2.65644 9.41343
-texture "livery_blank.png"
+texture "223_blank.png"
 crease 45.000000
 numvert 96
 0.0227509 1.58582 -19.078
