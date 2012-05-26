@@ -19,30 +19,25 @@ var hydraulics_loop = {
     	
     	# Engine Pump (GREEN)
     	
-    	if (getprop(hyd_ctrl~ "eng1-pump"))
+    	if (getprop(hyd_ctrl~ "eng1-pump") == 1)
     		hyd_green.eng1_pump(getprop("/engines/engine/epr"));
     	else
     		hydraulics.green_psi = 0;
     		
     	# Engine and Electric Pumps (YELLOW)
     		
-    	if (getprop(hyd_ctrl~ "eng2-pump"))
+    	if (getprop(hyd_ctrl~ "eng2-pump") == 1)
     		hyd_yellow.eng2_pump(getprop("/engines/engine[1]/epr"));
-    	elsif (getprop(hyd_ctrl~ "y-elec-pump"))
+    	elsif (getprop(hyd_ctrl~ "y-elec-pump") == 1)
     		hyd_yellow.elec_pump(getprop("/systems/electrical/right-bus"));
     	else
     		hydraulics.yellow_psi = 0;
     		
     	# Electric Pumps (BLUE)
 
-		if (getprop(hyd_ctrl~ "elec-pump"))
+		if (getprop(hyd_ctrl~ "elec-pump") == 1)
     		hyd_blue.elec_pump(getprop("/systems/electrical/left-bus"), getprop("/systems/electrical/right-bus"));
-    	else
-    		hydraulics.blue_psi = 0;    
-    		
-    	# Ram Air Turbine (BLUE)
-    	
-    	if (getprop(hyd_ctrl~ "rat-unlck"))
+    	elsif (getprop(hyd_ctrl~ "rat-unlck") == 1)
     		hyd_blue.rat_power(getprop("/velocities/airspeed-kt"));
     	else
     		hydraulics.blue_psi = 0;  

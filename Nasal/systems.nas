@@ -118,7 +118,7 @@ var apuLoop = func
   if (props.globals.getNode("controls/APU/starter").getBoolValue())
    {
    var rpm = getprop("engines/apu/rpm");
-   rpm += getprop("sim/time/delta-realtime-sec") * 25;
+   rpm += getprop("sim/time/delta-realtime-sec") * 7;
    if (rpm >= 100)
     {
     rpm = 100;
@@ -135,7 +135,7 @@ var apuLoop = func
   props.globals.getNode("engines/apu/running").setBoolValue(0);
 
   var rpm = getprop("engines/apu/rpm");
-  rpm -= getprop("sim/time/delta-realtime-sec") * 30;
+  rpm -= getprop("sim/time/delta-realtime-sec") * 5;
   if (rpm < 0)
    {
    rpm = 0;

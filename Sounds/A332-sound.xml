@@ -6,146 +6,9 @@
 
 	<fx>
 
-
-
- <!-- =============================================================== -->
- <!-- ENGINE OUTSIDE:                                                  -->
- <!-- =============================================================== -->
-<!-- #########################   ENGINE: JET (bass) ################################ -->
-		<engine>
-			<name>left engine</name>
-			<path>Aircraft/A320neo/Sounds/res/jet.wav</path>
-			<mode>looped</mode>
-			<condition>
-				<not>
-					<property>controls/engines/engine[0]/cutoff</property>
-				</not>
-				<not>
-					<property>sim/current-view/internal</property>
-				</not>
-			</condition>
-			<volume>
-				<property>engines/engine[0]/thrust_lb</property>
-				<factor>0.000028571</factor>
-				<min>0.0</min>
-				<max>1</max>
-			</volume>
-			<position>
-				<x>15</x>
-				<y>-5.7</y>
-				<z>-1.1</z>
-			</position>
-			<reference-dist>50.0</reference-dist>
-			<max-dist>500.0</max-dist>
-		</engine>
-
-		<engine>
-			<name>right engine</name>
-			<path>Aircraft/A320neo/Sounds/res/jet.wav</path>
-			<mode>looped</mode>
-			<condition>
-				<not>
-					<property>controls/engines/engine[0]/cutoff</property>
-				</not>
-				<not>
-					<property>sim/current-view/internal</property>
-				</not>
-			</condition>
-			<volume>
-				<property>engines/engine[0]/thrust_lb</property>
-				<factor>0.000028571</factor>
-				<min>0.0</min>
-				<max>1</max>
-			</volume>
-			<position>
-				<x>15</x>
-				<y>5.7</y>
-				<z>-1.1</z>
-			</position>
-			<reference-dist>50.0</reference-dist>
-			<max-dist>1000.0</max-dist>
-		</engine>
-
-
-
-
-<!-- #########################   ENGINE: Turbine  (Treble) ################################ -->
-
-		<engine>
-			<name>left n1_2</name>
-			<path>Aircraft/A320neo/Sounds/res/turbine.wav</path>
-			<mode>looped</mode>
-			<condition>
-				<greater-than>
-					<property>engines/engine[0]/n1</property>
-					<value>2</value>
-				</greater-than>
-				<not>
-					<property>sim/current-view/internal</property>
-				</not>
-			</condition>
-			<pitch>
-				<property>/engines/engine[0]/n1</property>
-				<offset>0</offset>
-				<factor>0.02</factor>
-				<min>0.0</min>
-				<max>2.0</max>
-			</pitch>
-			<volume>
-				<property>engines/engine[0]/n1</property>
-				<factor>0.01</factor>
-				<min>0</min>
-				<max>0.6</max>
-			</volume>
-			<position>
-				<x>15</x>
-				<y>-5.7</y>
-				<z>-1.1</z>
-			</position>
-			<reference-dist>50.0</reference-dist>
-			<max-dist>1000.0</max-dist>
-		</engine>
-		<engine>
-			<name>right n1_2</name>
-			<path>Aircraft/A320neo/Sounds/res/turbine.wav</path>
-			<mode>looped</mode>
-			<condition>
-				<greater-than>
-					<property>engines/engine[1]/n1</property>
-					<value>2</value>
-				</greater-than>
-				<not>
-					<property>sim/current-view/internal</property>
-				</not>
-			</condition>
-			<pitch>
-				<property>/engines/engine[1]/n1</property>
-				<offset>0</offset>
-				<factor>0.02</factor>
-				<min>0.0</min>
-				<max>2.0</max>
-			</pitch>
-			<volume>
-				<property>engines/engine[1]/n1</property>
-				<factor>0.01</factor>
-				<min>0</min>
-				<max>0.6</max>
-			</volume>
-			<position>
-				<x>15</x>
-				<y>5.7</y>
-				<z>-1.1</z>
-			</position>
-			<reference-dist>50.0</reference-dist>
-			<max-dist>1000.0</max-dist>
-		</engine>
-
-
-<!-- #########################   ENGINE: Rever Thrust  ################################ -->
-
 		<engine>
 			<name>left engine Revers</name>
-			<path>Aircraft/A320neo/Sounds/res/reverser2.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/reverser2.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<property>engines/engine[0]/reversed</property>
@@ -174,7 +37,7 @@
 
 		<engine>
 			<name>right engine Revers</name>
-			<path>Aircraft/A320neo/Sounds/res/reverser2.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/reverser2.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<property>engines/engine[1]/reversed</property>
@@ -201,141 +64,9 @@
 			<max-dist>1000.0</max-dist>
 		</engine>
 
-
-
-
-
- <!-- =============================================================== -->
- <!-- ENGINE INSIDE:                                                  -->
- <!-- =============================================================== -->
-
-		<engine>
-			<name>inside left engine</name>
-			<path>Aircraft/A320neo/Sounds/res/jet.wav</path>
-			<mode>looped</mode>
-			<condition>
-				<not>
-					<property>controls/engines/engine[0]/cutoff</property>
-				</not>
-				<property>sim/current-view/internal</property>
-			</condition>
-			<volume>
-				<property>engines/engine[0]/thrust_lb</property>
-				<factor>0.000021428</factor>
-				<min>0.0</min>
-				<max>1</max>
-			</volume>
-
-
-			<position>
-				<x>15</x>
-				<y>-5.7</y>
-				<z>-1.1</z>
-			</position>
-			<reference-dist>1.0</reference-dist>
-			<max-dist>50.0</max-dist>
-		</engine>
-
-		<engine>
-			<name>inside right engine</name>
-			<path>Aircraft/A320neo/Sounds/res/jet.wav</path>
-			<mode>looped</mode>
-			<condition>
-				<not>
-					<property>controls/engines/engine[0]/cutoff</property>
-				</not>
-				<property>sim/current-view/internal</property>
-			</condition>
-			<volume>
-				<property>engines/engine[0]/thrust_lb</property>
-				<factor>0.000021428</factor>
-				<min>0.0</min>
-				<max>1</max>
-			</volume>
-
-			<position>
-				<x>15</x>
-				<y>5.7</y>
-				<z>-1.1</z>
-			</position>
-			<reference-dist>1.0</reference-dist>
-			<max-dist>50.0</max-dist>
-		</engine>
-
-		<engine>
-			<name>inside left n1_2</name>
-			<path>Aircraft/A320neo/Sounds/res/turbine.wav</path>
-			<mode>looped</mode>
-			<condition>
-				<greater-than>
-					<property>engines/engine[0]/n1</property>
-					<value>2</value>
-				</greater-than>
-				<property>sim/current-view/internal</property>
-			</condition>
-			<pitch>
-				<property>/engines/engine[0]/n1</property>
-				<offset>0</offset>
-				<factor>0.02</factor>
-				<min>0.0</min>
-				<max>2.0</max>
-			</pitch>
-			<volume>
-				<property>engines/engine[0]/n1</property>
-				<factor>0.0025</factor>
-				<min>0</min>
-				<max>0.6</max>
-			</volume>
-
-			<position>
-				<x>15</x>
-				<y>-5.7</y>
-				<z>-1.1</z>
-			</position>
-			<reference-dist>25.0</reference-dist>
-			<max-dist>50.0</max-dist>
-		</engine>
-		<engine>
-			<name>inside right n1_2</name>
-			<path>Aircraft/A320neo/Sounds/res/turbine.wav</path>
-			<mode>looped</mode>
-			<condition>
-				<greater-than>
-					<property>engines/engine[1]/n1</property>
-					<value>2</value>
-				</greater-than>
-				<property>sim/current-view/internal</property>
-
-			</condition>
-			<pitch>
-				<property>/engines/engine[1]/n1</property>
-				<offset>0</offset>
-				<factor>0.02</factor>
-				<min>0.0</min>
-				<max>2.0</max>
-			</pitch>
-			<volume>
-				<property>engines/engine[1]/n1</property>
-				<factor>0.0025</factor>
-				<min>0</min>
-				<max>0.6</max>
-			</volume>
-
-			<position>
-				<x>15</x>
-				<y>5.7</y>
-				<z>-1.1</z>
-			</position>
-			<reference-dist>1.0</reference-dist>
-			<max-dist>50.0</max-dist>
-		</engine>
-
-
-<!-- #########################   ENGINE: Rever Thrust  ################################ -->
-
 		<engine>
 			<name>inside left engine Revers</name>
-			<path>Aircraft/A320neo/Sounds/res/reverser2.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/reverser2.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<property>engines/engine[0]/reversed</property>
@@ -360,7 +91,7 @@
 
 		<engine>
 			<name>inside right engine Revers</name>
-			<path>Aircraft/A320neo/Sounds/res/reverser2.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/reverser2.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<property>engines/engine[1]/reversed</property>
@@ -385,10 +116,6 @@
 			<max-dist>50.0</max-dist>
 		</engine>	
 
-
-
-
-
  <!-- =============================================================== -->
  <!-- FX:                                                             -->
  <!-- =============================================================== -->
@@ -396,7 +123,7 @@
 		<wind>
 			<name>wind</name>
 			<mode>looped</mode>
-			<path>Aircraft/A320neo/Sounds/res/wind.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/wind.wav</path>
 			<property>/velocities/airspeed-kt</property>
 			<volume>
 				<property>/position/altitude-ft</property>
@@ -427,7 +154,7 @@
 
 		<roll>
 			<name>Roll</name>
-			<path>Aircraft/A320neo/Sounds/res/roll.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/roll.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<property>sim/current-view/internal</property>
@@ -467,7 +194,7 @@
 		</roll>
 		<Wheels>
 			<name>nose Wheel Touchdown</name>
-			<path>Aircraft/A320neo/Sounds/res/touchdown.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/touchdown.wav</path>
 			<condition>
 				<property>/gear/gear[0]/wow</property>
 			</condition>
@@ -502,7 +229,7 @@
 		</Wheels>
 		<Wheels>
 			<name>left main Wheel Touchdown</name>
-			<path>Aircraft/A320neo/Sounds/res/touchdown.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/touchdown.wav</path>
 			<condition>
 				<property>/gear/gear[1]/wow</property>
 			</condition>
@@ -537,7 +264,7 @@
 		</Wheels>
 		<Wheels>
 			<name>right main Wheel Touchdown</name>
-			<path>Aircraft/A320neo/Sounds/res/touchdown.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/touchdown.wav</path>
 			<condition>
 				<property>/gear/gear[2]/wow</property>
 			</condition>
@@ -573,7 +300,7 @@
 
 		<fuselage>
 			<name>fuselage</name>
-			<path>Aircraft/A320neo/Sounds/res/scrach.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/scrach.wav</path>
 			<mode>loop</mode>
 			<condition>
 				<or>
@@ -619,7 +346,7 @@
 		<flap>
 			<name>flaps left</name>
 			<mode>in-transit</mode>
-			<path>Aircraft/A320neo/Sounds/res/flaps.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/flaps.wav</path>
 			<property>/surface-positions/flap-pos-norm</property>
 			<volume>
 				<property>sim/sound/effects/volume</property>
@@ -636,7 +363,7 @@
 		<flap>
 			<name>flaps right</name>
 			<mode>in-transit</mode>
-			<path>Aircraft/A320neo/Sounds/res/flaps.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/flaps.wav</path>
 			<property>/surface-positions/flap-pos-norm</property>
 			<volume>
 				<property>sim/sound/effects/volume</property>
@@ -654,7 +381,7 @@
 		<gear1>
 			<name>gear</name>
 			<mode>in-transit</mode>
-			<path>Aircraft/A320neo/Sounds/res/gear.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/gear.wav</path>
 			<property>/gear/gear[0]/position-norm</property>
 			<volume>
 				<property>sim/sound/effects/volume</property>
@@ -697,7 +424,7 @@
 		<speedbrake>
 			<name>left speedbrake</name>
 			<mode>in-transit</mode>
-			<path>Aircraft/A320neo/Sounds/res/flaps.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/flaps.wav</path>
 			<property>/surface-positions/speedbrake-pos-norm</property>
 			<volume>
 				<property>sim/sound/effects/volume</property>
@@ -714,7 +441,7 @@
 		<speedbrake>
 			<name>right speedbrake</name>
 			<mode>in-transit</mode>
-			<path>Aircraft/A320neo/Sounds/res/flaps.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/flaps.wav</path>
 			<property>/surface-positions/speedbrake-pos-norm</property>
 			<volume>
 				<property>sim/sound/effects/volume</property>
@@ -739,7 +466,7 @@
 
 		<retard>
 			<name>retard</name>
-			<path>Aircraft/A320neo/Sounds/res/retard.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/retard.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<and>
@@ -787,50 +514,11 @@
 			</position>
 		</retard>
 
-		<v1>
-			<name>V1</name>
-			<path>Aircraft/A320neo/Sounds/res/v1.wav</path>
-			<condition>
-				<and>
-					<property>sim/current-view/internal</property>
-					<!-- At v1 airspeed -->
-					<greater-than-equals>
-						<property>velocities/airspeed-kt</property>
-						<property>/instrumentation/fmc/vspeeds/V1</property>
-					</greater-than-equals>
-					<!-- While on ground -->
-				Now there is 3D Sound and that you can hear other aircraft. 	<property>/gear/gear[0]/wow</property>
-					<property>/gear/gear[1]/wow</property>
-					<property>/gear/gear[2]/wow</property>
-					<!-- With throttles in [flex]Take Off  -->
-					<greater-than>
-						<property>controls/engines/engine[0]/throttle</property>
-						<value>0.7</value>
-					</greater-than>
-					<greater-than>
-						<property>controls/engines/engine[1]/throttle</property>
-						<value>0.7</value>
-					</greater-than>
-				</and>
-			</condition>
-			<type>avionics</type>
-			<volume>
-				<property>/sim/sound/effects/volume</property>
-				<factor>0.8</factor>
-			</volume>
-			<position>
-				<x>22.5</x>
-				<y>0</y>
-				<z>0.78</z>
-			</position>
-		</v1>
-	
-
 
   <!-- Seatbelt/No smoking signs -->
 		<seatbelt>
 			<name>Seatbelt sign</name>
-			<path>Aircraft/A320neo/Sounds/res/cabinalert.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/cabinalert.wav</path>
 			<mode>once</mode>
 			<condition>
 				<or>
@@ -875,7 +563,7 @@
 		<stall>
 			<name>stall</name>
 			<mode>looped</mode>
-			<path>/Aircraft/A320neo/Sounds/res/stall.wav</path>
+			<path>/Aircraft/A330-200/Sounds/res/stall.wav</path>
 			<type>avionics</type>
 			<condition>
 				<property>sim/sound/stall-horn</property>
@@ -890,7 +578,7 @@
 		</stall>
 		<autopilotoff>
 			<name>Autopilot off</name>
-			<path>Aircraft/A320neo/Sounds/res/airbus-warning.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/airbus-warning.wav</path>
 			<mode>once</mode>
 			<type>avionics</type>
 			<condition>
@@ -909,7 +597,166 @@
 			<reference-dist>10</reference-dist>
 			<max-dist>100</max-dist>
 		</autopilotoff>
+		
+		<!-- APU Sounds -->
 
+    <apu-start>
+        <name>apu-strt</name>
+        <mode>once</mode>
+        <path>Aircraft/A330-200/Sounds/res/apu_strt.wav</path>
+        <condition>
+			<property>controls/APU/starter</property>
+			<less-than>
+				<property>engines/apu/rpm</property>
+				<value>100</value>
+			</less-than>
+		</condition>
+		<position>
+			<x>26</x>
+			<y>0</y>
+			<z>4</z>
+		</position>		
+		<reference-dist>10</reference-dist>	
+		<max-dist>30</max-dist>	
+		<volume>0.3</volume>		
+    </apu-start>
+
+	<apu-running2>
+        <name>apu-run2</name>
+        <mode>looped</mode>
+        <path>Aircraft/A330-200/Sounds/res/apu_run.wav</path>
+        <condition>
+			<property>controls/APU/master-switch</property>
+			<equals>
+				<property>engines/apu/rpm</property>
+				<value>100</value>
+			</equals>
+		</condition>
+		<position>
+			<x>26</x>
+			<y>0</y>
+			<z>4</z>
+		</position>	
+		<reference-dist>10</reference-dist>
+		<max-dist>30</max-dist>
+		<volume>0.3</volume>
+    </apu-running2>
+	
+	
+	<apu-running>
+        <name>apu-run</name>
+        <mode>looped</mode>
+        <path>Aircraft/A330-200/Sounds/res/apu_run.wav</path>
+        <condition>
+			<not>
+				<property>controls/APU/starter</property>
+			</not>
+			<greater-than-equals>
+				<property>engines/apu/rpm</property>
+				<value>80</value>
+			</greater-than-equals>
+		</condition>
+		<position>
+			<x>26</x>
+			<y>0</y>
+			<z>4</z>
+		</position>	
+		<reference-dist>10</reference-dist>
+		<max-dist>30</max-dist>
+		<volume>0.3</volume>
+    </apu-running>
+
+	<apu-shutdown>
+        <name>apu-stop</name>
+        <mode>once</mode>
+        <path>Aircraft/A330-200/Sounds/res/apu_stop.wav</path>
+        <condition>
+			<not>
+				<property>controls/APU/starter</property>
+			</not>
+			<less-than>
+				<property>engines/apu/rpm</property>
+				<value>100</value>
+			</less-than>		
+			<greater-than>
+				<property>engines/apu/rpm</property>
+				<value>0</value>
+			</greater-than>	
+		</condition>
+		<position>
+			<x>26</x>
+			<y>0</y>
+			<z>4</z>
+		</position>	
+		<reference-dist>10</reference-dist>
+		<max-dist>30</max-dist>
+		<volume>0.5</volume>
+    </apu-shutdown>	
+    
+    <!-- Copilot -->
+    
+    <copilot>
+	<name>v1</name>
+        <path>Aircraft/A330-200/Sounds/res/v1.wav</path>
+        <mode>once</mode>
+        <condition>
+            <property>sim/sound/v1</property>
+        </condition>
+        <volume>
+            <factor>10</factor>
+        </volume>
+        <position>
+            <x>0.00</x>
+            <y>0.00</y>
+            <z>0.00</z>
+        </position>
+        <reference-dist>10.0</reference-dist>
+        <max-dist>100.0</max-dist>
+    </copilot>
+
+    <copilot2>
+	<name>vr</name>
+        <path>Aircraft/A330-200/Sounds/res/vr.wav</path>
+        <mode>once</mode>
+        <condition>
+            <property>sim/sound/vr</property>
+        </condition>
+        <volume>
+            <factor>10</factor>
+        </volume>
+        <position>
+            <x>0.00</x>
+            <y>0.00</y>
+            <z>0.00</z>
+        </position>
+        <reference-dist>10.0</reference-dist>
+        <max-dist>100.0</max-dist>
+    </copilot2>
+
+    <copilot3>
+	<name>v2</name>
+        <path>Aircraft/A330-200/Sounds/res/v2.wav</path>
+        <mode>once</mode>
+        <condition>
+            <property>sim/sound/v2</property>
+        </condition>
+        <volume>
+            <factor>10</factor>
+        </volume>
+        <position>
+            <x>0.00</x>
+            <y>0.00</y>
+            <z>0.00</z>
+        </position>
+        <reference-dist>10.0</reference-dist>
+        <max-dist>100.0</max-dist>
+    </copilot3>
+    
+    <ge include="GE-sound.xml" omit-node="y" />
+    
+    <pw include="PW-sound.xml" omit-node="y" />
+    
+    <rr include="RR-sound.xml" omit-node="y" />
 
 	</fx>
 </PropertyList>

@@ -2579,5 +2579,102 @@
 			<z>0</z>
 		</axis>
 	</animation>
+	
+	<!-- Engine Cutoff Switches -->
+	
+	<animation>
+		<type>pick</type>
+		<object-name>Lcutoff</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>controls/engines/engine[0]/cutoff-switch</property>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
+		<type>rotate</type>
+		<object-name>Lcutoff</object-name>
+		<property>controls/engines/engine[0]/cutoff-switch</property>
+		<factor>20</factor>
+		<center>
+			<x-m>-0.1067</x-m>
+			<y-m>0</y-m>
+			<z-m>-0.3796</z-m>
+		</center>
+		<axis>
+			<x>0</x>
+			<y>1</y>
+			<z>0</z>
+		</axis>
+	</animation>
+	
+	<animation>
+		<type>pick</type>
+		<object-name>Rcutoff</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>controls/engines/engine[1]/cutoff-switch</property>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
+		<type>rotate</type>
+		<object-name>Rcutoff</object-name>
+		<property>controls/engines/engine[1]/cutoff-switch</property>
+		<factor>20</factor>
+		<center>
+			<x-m>-0.1067</x-m>
+			<y-m>0</y-m>
+			<z-m>-0.3796</z-m>
+		</center>
+		<axis>
+			<x>0</x>
+			<y>1</y>
+			<z>0</z>
+		</axis>
+	</animation>
+	
+	<animation>
+		<type>pick</type>
+		<object-name>EngMode</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-cycle</command>
+				<property>controls/engines/engine-start-switch</property>
+				<value>0</value>
+				<value>1</value>
+				<value>2</value>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
+		<type>rotate</type>
+		<object-name>EngMode</object-name>
+		<property>controls/engines/engine-start-switch</property>
+		<interpolation>
+			<entry><ind>1</ind><dep>0</dep></entry>
+			<entry><ind>0</ind><dep>40</dep></entry>
+			<entry><ind>2</ind><dep>-40</dep></entry>
+		</interpolation>
+		<axis>
+			<x1-m>-0.0787</x1-m>
+			<y1-m>-0.0048</y1-m>
+			<z1-m>-0.3844</z1-m>
+			<x2-m>-0.0771</x2-m>
+			<y2-m>-0.0048</y2-m>
+			<z2-m>-0.3767</z2-m>
+		</axis>
+	</animation>
 
 </PropertyList>
