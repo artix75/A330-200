@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<PropertyList>
+	<sim>
+		<model>
+			<livery>
+				<name>EVA AIR (Hello Kitty)</name>
+				<texture>Liveries/A330-203/EVA-HK.png</texture>
+			</livery>
+		</model>
+	</sim>
+</PropertyList>
