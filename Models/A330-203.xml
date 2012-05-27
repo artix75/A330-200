@@ -50,5 +50,133 @@
 		 livery_update.stop();
 		</unload>
 	</nasal>
+	
+	<!-- Fuel Truck -->
+
+<model>
+	<name>fuel-truck</name>
+	<path>Aircraft/A330-200/Models/Services/Fuel-Truck/Fuel_Truck_Short_VolvoFM.ac</path>
+	<condition>
+		<equals>
+			<property>/services/fuel-truck/enable</property>
+			<value>1</value>
+		</equals>
+	</condition>
+</model>
+
+<animation>
+	<type>select</type>
+	<object-name>fuel_pipe</object-name>
+	<condition>
+		<equals>
+			<property>/services/fuel-truck/connect</property>
+			<value>1</value>
+		</equals>
+	</condition>
+</animation>
+
+<animation>
+	<type>select</type>
+	<object-name>fuel_pipe_disconnected</object-name>
+	<condition>
+		<equals>
+			<property>/services/fuel-truck/connect</property>
+			<value>0</value>
+		</equals>
+	</condition>
+</animation>
+
+<!-- De-icing Truck -->
+
+<model>
+	<name>de-ice-truck</name>
+	<path>Aircraft/A330-200/Models/Services/De-Icing/volvo_deicing_truck.xml</path>
+	<condition>
+		<equals>
+			<property>/services/deicing_truck/enable</property>
+			<value>1</value>
+		</equals>
+	</condition>
+	<offsets>
+		<x-m>-15</x-m>
+		<y-m>9.5</y-m>
+		<z-m>-5</z-m>
+		<heading-deg>160</heading-deg>
+	</offsets>
+</model>
+
+<!-- Catering Truck -->
+
+<model>
+	<name>cater-truck</name>
+	<path>Aircraft/A330-200/Models/Services/Catering/Catering_Loader_Truck_VolvoFM.xml</path>
+	<condition>
+		<equals>
+			<property>/services/catering/enable</property>
+			<value>1</value>
+		</equals>
+	</condition>
+</model>
+
+<!-- Baggage Truck -->
+
+<model>
+	<name>baggage-truck</name>
+	<path>Aircraft/A330-200/Models/Services/Baggage/cargo_ramp.ac</path>
+	<condition>
+		<equals>
+			<property>/services/baggage/enable</property>
+			<value>1</value>
+		</equals>
+	</condition>
+</model>
+
+<!-- External Power -->
+
+<model>
+	<name>ext-pwr</name>
+	<path>Aircraft/A330-200/Models/Services/External-Power/ext-pwr-box.ac</path>
+	<condition>
+		<equals>
+			<property>/services/ext-pwr/enable</property>
+			<value>1</value>
+		</equals>
+	</condition>
+</model>
+
+<!-- Chokes -->
+
+<model>
+	<name>choke_nose</name>
+	<path>Aircraft/A330-200/Models/Services/Chokes/choke_nose.ac</path>
+	<condition>
+		<equals>
+			<property>/services/chokes/nose</property>
+			<value>1</value>
+		</equals>
+	</condition>
+</model>
+
+<model>
+	<name>choke_left</name>
+	<path>Aircraft/A330-200/Models/Services/Chokes/choke_left.ac</path>
+	<condition>
+		<equals>
+			<property>/services/chokes/left</property>
+			<value>1</value>
+		</equals>
+	</condition>
+</model>
+
+<model>
+	<name>choke_right</name>
+	<path>Aircraft/A330-200/Models/Services/Chokes/choke_right.ac</path>
+	<condition>
+		<equals>
+			<property>/services/chokes/right</property>
+			<value>1</value>
+		</equals>
+	</condition>
+</model>
 		
 </PropertyList>

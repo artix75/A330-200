@@ -2676,5 +2676,51 @@
 			<z2-m>-0.3767</z2-m>
 		</axis>
 	</animation>
+	
+	<animation>
+		<type>translate</type>
+		<object-name>SpdBrk</object-name>
+		<property>/controls/flight/speedbrake</property>
+		<factor>0.045</factor>
+		<axis>
+			<x>1</x>
+			<y>0</y>
+			<z>0</z>
+		</axis>
+	</animation>
+	
+	<animation>
+		<type>rotate</type>
+		<object-name>FlapsLever</object-name>
+		<property>controls/flight/flaps</property>
+		<factor>60</factor>
+		<center>
+			<x-m>-0.0020</x-m>
+			<y-m>0</y-m>
+			<z-m>-0.4056</z-m>
+		</center>
+		<axis>
+			<x>0</x>
+			<y>1</y>
+			<z>0</z>
+		</axis>
+	</animation>
+	
+	<animation>
+		<type>rotate</type>
+		<object-name>ParkBrk</object-name>
+		<property>controls/parking-brake</property>
+		<factor>-90</factor>
+		<center>
+			<x-m>0.1270</x-m>
+			<y-m>0.0078</y-m>
+			<z-m>0</z-m>
+		</center>
+		<axis>
+			<x>0</x>
+			<y>0</y>
+			<z>1</z>
+		</axis>
+	</animation>
 
 </PropertyList>

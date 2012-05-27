@@ -1378,6 +1378,7 @@
 		<type>translate</type>
 		<object-name>NoseWheel</object-name>
 		<object-name>NGearStrut</object-name>
+		<object-name>choke_nose</object-name>
 		<property>gear/gear[0]/compression-ft</property>
 		<factor>0.3125</factor> <!-- 3.2 ft = 1 m -->
 		<axis>
@@ -1391,6 +1392,7 @@
 		<object-name>LeftWheelBack</object-name>
 		<object-name>LeftGearCompressor</object-name>
 		<object-name>LeftGearBaseRod</object-name>
+		<object-name>choke_left</object-name>
 		<property>gear/compression/left/avg-ft</property>
 		<factor>0.3125</factor> <!-- 3.2 ft = 1 m -->
 		<axis>
@@ -1404,6 +1406,7 @@
 		<object-name>RightWheelBack</object-name>
 		<object-name>RightGearCompressor</object-name>
 		<object-name>RightGearBaseRod</object-name>
+		<object-name>choke_right</object-name>
 		<property>gear/compression/right/avg-ft</property>
 		<factor>0.3125</factor> <!-- 3.2 ft = 1 m -->
 		<axis>

@@ -3,7 +3,7 @@
 <PropertyList>
 
 	<sim>
-		<author>Narendran Muraleedharan (narendran95@ymail.com)</author>
+		<author>Narendran Muraleedharan (muraleen@my.erau.edu)</author>
 		<status>alpha</status>
 
 		<model>
@@ -142,13 +142,24 @@
 						</binding>
 					</item>
 					<item>
-						<name>failures</name>
-						<label>Failures</label>
+						<name>fuel</name>
+						<label>Fuel Truck Controls</label>
 						<binding>
 							<command>nasal</command>
 							<script>
-							 var failures = gui.Dialog.new("sim/gui/dialogs/failures/dialog", "Aircraft/A330-200/Systems/failures-dlg.xml");
-							 failures.open();
+							 var fuel = gui.Dialog.new("sim/gui/dialogs/fuel/dialog", "Aircraft/A330-200/Systems/fuel-truck.xml");
+							 fuel.open();
+							</script>
+						</binding>
+					</item>
+					<item>
+						<name>gs</name>
+						<label>Ground Services</label>
+						<binding>
+							<command>nasal</command>
+							<script>
+							 var gs = gui.Dialog.new("sim/gui/dialogs/gs/dialog", "Aircraft/A330-200/Systems/ground-services-dlg.xml");
+							 gs.open();
 							</script>
 						</binding>
 					</item>
@@ -225,6 +236,9 @@
 	</autopilot>
 
 	<controls>
+		<gear>
+			<brake-parking type="bool">true</brake-parking>
+		</gear>
 		<APU>
 			<fire-switch type="bool">false</fire-switch>
 			<master-switch type="bool">false</master-switch>
@@ -562,6 +576,66 @@
 
 	<input>
 		<keyboard>
+			<key n="357">
+				<name>Up</name>
+				<repeatable type="bool">true</repeatable>
+				  <mod-alt>
+				   <desc>Tilt View Up</desc>
+				   <binding>
+					<command>nasal</command>
+					<script>
+						setprop("/sim/current-view/pitch-offset-deg", getprop("/sim/current-view/pitch-offset-deg") + 1);
+					</script>
+				   </binding>
+				  </mod-alt>
+			</key>
+			<key n="359">
+				<name>Down</name>
+				<repeatable type="bool">true</repeatable>
+				  <mod-alt>
+				   <desc>Tilt View Down</desc>
+				   <binding>
+					<command>nasal</command>
+					<script>
+						setprop("/sim/current-view/pitch-offset-deg", getprop("/sim/current-view/pitch-offset-deg") - 1);
+					</script>
+				   </binding>
+				  </mod-alt>
+			</key>
+			<key n="356">
+				<name>Left</name>
+				<repeatable type="bool">true</repeatable>
+				  <mod-alt>
+				   <desc>Pan View Left</desc>
+				   <binding>
+					<command>nasal</command>
+					<script>
+						setprop("/sim/current-view/heading-offset-deg", getprop("/sim/current-view/heading-offset-deg") + 1);
+					</script>
+				   </binding>
+				  </mod-alt>
+			</key>
+			<key n="358">
+				<name>Right</name>
+				<repeatable type="bool">true</repeatable>
+				  <mod-alt>
+				   <desc>Pan View Right</desc>
+				   <binding>
+					<command>nasal</command>
+					<script>
+						setprop("/sim/current-view/heading-offset-deg", getprop("/sim/current-view/heading-offset-deg") - 1);
+					</script>
+				   </binding>
+				  </mod-alt>
+			</key>
+			<key n="66">
+				<name>B</name>
+				<desc>Toggle parking brake on or off</desc>
+				<binding>
+					<command>nasal</command>
+					<script>a332.toggle_parkingbrakes();</script>
+				</binding>
+			</key>
 			<key n="127">
 				<name>Delete</name>
 				<desc>Toggle thrust reversers</desc>
@@ -699,6 +773,8 @@
 		</fbw>
 
 		<a332>
+			<file>Aircraft/A330-200/Nasal/ground-services.nas</file>
+			<file>Aircraft/A330-200/Nasal/doors.nas</file>
 			<file>Aircraft/Generic/limits.nas</file>
 			<file>Aircraft/A330-200/Nasal/copilot.nas</file>
 			<file>Aircraft/A330-200/Nasal/general_loop.nas</file>
@@ -731,7 +807,6 @@
 		<dual_control>
 			<file>Aircraft/Generic/DualControl/pilot-dual-control.nas</file>
 		</dual_control>
-		<terrain-map><file>Aircraft/A330-200/Nasal/terrain-map.nas</file></terrain-map>
 	</nasal>
 
 	
