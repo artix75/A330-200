@@ -276,8 +276,102 @@
 		<offsets>
 			<x-m>-15.97</x-m>
 			<y-m>0</y-m>
-			<z-m>-4.81</z-m>
+			<z-m>-5.45</z-m>
 		</offsets>
 	</model>
+	
+	<model>
+ <path>Aircraft/A330-200/Models/Effects/contrail.xml</path>
+ <condition>
+  <equals>
+   <property>controls/switches/contrails</property>
+   <value type="bool">true</value>
+  </equals>
+ </condition>
+ <name>LContrail</name>
+ <offsets>
+  <x-m>3.7</x-m>
+  <y-m>-9.3</y-m>
+  <z-m>-3.5</z-m>
+  <heading-deg>0</heading-deg>
+ </offsets>
+</model>
+
+<model>
+ <path>Aircraft/A330-200/Models/Effects/contrail.xml</path>
+ <condition>
+  <equals>
+   <property>controls/switches/contrails</property>
+   <value type="bool">true</value>
+  </equals>
+ </condition>
+ <name>RContrail</name>
+ <offsets>
+  <x-m>3.7</x-m>
+  <y-m>9.3</y-m>
+  <z-m>-3.5</z-m>
+  <heading-deg>0</heading-deg>
+ </offsets>
+</model>
+
+<model>
+ <path>Aircraft/A330-200/Models/Effects/tire-smoke-nose.xml</path>
+ <name>tyre-smoke-n</name>
+ <offsets>  
+  <x-m>-15.96</x-m>
+  <y-m>0</y-m>
+  <z-m>-5.3</z-m>
+ </offsets>
+</model>
+
+<model>
+ <path>Aircraft/A330-200/Models/Effects/tire-smoke-left.xml</path>
+ <name>tyre-smoke-l</name>
+ <offsets>
+  <x-m>4.9</x-m>
+  <y-m>-5</y-m>
+  <z-m>-5.3</z-m>
+ </offsets>
+</model>
+
+<model>
+ <path>Aircraft/A330-200/Models/Effects/tire-smoke-right.xml</path>
+ <name>tyre-smoke-r</name>
+ <offsets>
+ <x-m>4.9</x-m>
+  <y-m>5</y-m>
+  <z-m>-5.3</z-m>
+ </offsets>
+</model>
+
+<model>
+ <path>Aircraft/A330-200/Models/Effects/wet-runway.xml</path>
+ <name>tyre-smoke-n</name>
+ <offsets>  
+  <x-m>-15.96</x-m>
+  <y-m>0</y-m>
+  <z-m>-5.3</z-m>
+ </offsets>
+</model>
+
+<model>
+ <path>Aircraft/A330-200/Models/Effects/wet-runway.xml</path>
+ <name>tyre-smoke-l</name>
+ <offsets>
+  <x-m>4.9</x-m>
+  <y-m>-5</y-m>
+  <z-m>-5.3</z-m>
+ </offsets>
+</model>
+
+<model>
+ <path>Aircraft/A330-200/Models/Effects/wet-runway.xml</path>
+ <name>tyre-smoke-r</name>
+ <offsets>
+  <x-m>4.9</x-m>
+  <y-m>5</y-m>
+  <z-m>-5.3</z-m>
+ </offsets>
+</model>
 		
 </PropertyList>

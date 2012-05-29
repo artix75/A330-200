@@ -711,17 +711,6 @@
 				</binding>
 			</key>
 
-			<key n="267">
-				<name>F11</name>
-				<desc>Open autopilot dialog</desc>
-				<binding>
-					<command>nasal</command>
-					<script>
-					 var autopilot = gui.Dialog.new("sim/gui/dialogs/autopilot/dialog", "Aircraft/A330-200/Systems/autopilot-dlg.xml");
-					 autopilot.open();
-					</script>
-				</binding>
-			</key>
 		</keyboard>
 	</input>
 
