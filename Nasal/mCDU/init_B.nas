@@ -13,8 +13,8 @@ setprop(fuel~ "rte-rsv", 0);
 setprop(fuel~ "rsv-100", 0);
 setprop(fuel~ "final-f", 4);
 setprop(fuel~ "final-t", 45);
-setprop(fuel~ "zfw", 125.5);
-setprop(fuel~ "zfw-cg", 25.5);
+setprop(fuel~ "zfw", 264.0);
+setprop(fuel~ "zfw-cg", 22.5);
 
 # Initialize Display Texts
 
@@ -46,7 +46,7 @@ var init_B = {
 		
 		# MILEAGE = (approx for trip time) 0.0523 Blocks per min
 		
-		var trip_fuel = trip_time * 0.0523;
+		var trip_fuel = trip_time * 0.28;
 		
 		setprop(fuel~ "trip-fuel", trip_fuel);
 		
