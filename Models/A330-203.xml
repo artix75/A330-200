@@ -274,14 +274,14 @@
 		<name>Pushback</name>
 		<path>Models/Airport/Pushback/Goldhofert.xml</path>
 		<offsets>
-			<x-m>-15.97</x-m>
+			<x-m>-17.97</x-m>
 			<y-m>0</y-m>
 			<z-m>-5.45</z-m>
 		</offsets>
 	</model>
 	
 	<model>
- <path>Aircraft/A330-200/Models/Effects/contrail.xml</path>
+ <path>Aircraft/A330-200/Models/Effects/contrail-eng1.xml</path>
  <condition>
   <equals>
    <property>controls/switches/contrails</property>
@@ -298,7 +298,7 @@
 </model>
 
 <model>
- <path>Aircraft/A330-200/Models/Effects/contrail.xml</path>
+ <path>Aircraft/A330-200/Models/Effects/contrail-eng2.xml</path>
  <condition>
   <equals>
    <property>controls/switches/contrails</property>
@@ -372,6 +372,49 @@
   <y-m>5</y-m>
   <z-m>-5.3</z-m>
  </offsets>
+</model>
+
+<!-- Stairways -->
+
+<model>
+ <path>Aircraft/A330-200/Models/Services/Stairs/stairs.xml</path>
+ <name>l1</name>
+ <offsets>
+  <x-m>-17.028</x-m>
+  <y-m>-2.69</y-m>
+  <z-m>0.0060</z-m>
+  <heading-deg>-8</heading-deg>
+ </offsets>
+ <condition>
+  <property>/services/stairs/l1</property>
+ </condition>
+</model>
+
+<model>
+ <name>l2</name>
+ <path>Aircraft/A330-200/Models/Services/Stairs/stairs.xml</path>
+ <offsets>
+  <x-m>-8.15</x-m>
+  <y-m>-2.99</y-m>
+  <z-m>0.0060</z-m>
+ </offsets>
+ <condition>
+  <property>/services/stairs/l2</property>
+ </condition>
+</model>
+
+<model>
+ <path>Aircraft/A330-200/Models/Services/Stairs/stairs.xml</path>
+ <name>l4</name>
+ <offsets>
+  <x-m>22.42</x-m>
+  <y-m>-2.56</y-m>
+  <z-m>0.0060</z-m>
+  <heading-deg>6</heading-deg>
+ </offsets>
+ <condition>
+  <property>/services/stairs/l4</property>
+ </condition>
 </model>
 		
 </PropertyList>

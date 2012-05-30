@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <PropertyList>
-
-	<model>
-		<name>Tutorial marker</name>
-		<path>Models/Aircraft/marker.xml</path>
-	</model> -->
 	
 	<!-- Surface Animations -->
 	

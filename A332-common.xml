@@ -153,6 +153,17 @@
 						</binding>
 					</item>
 					<item>
+						<name>stairs</name>
+						<label>Stairways Controls</label>
+						<binding>
+							<command>nasal</command>
+							<script>
+							 var stair = gui.Dialog.new("sim/gui/dialogs/stairs/dialog", "Aircraft/A330-200/Systems/stairs.xml");
+							 stair.open();
+							</script>
+						</binding>
+					</item>
+					<item>
 						<name>gs</name>
 						<label>Ground Services</label>
 						<binding>
@@ -178,6 +189,15 @@
 		</menubar>
 
 	</sim>
+
+	<services>
+		<stairs>
+			<cover type="bool">false</cover>
+			<l1 type="bool">false</l1>
+			<l2 type="bool">false</l2>
+			<l4 type="bool">false</l4>
+		</stairs>
+	</services>
 
 	<consumables>
 		<fuel>
