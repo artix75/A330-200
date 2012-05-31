@@ -30,7 +30,7 @@ var autoland = {
 			
 				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 25);
 
-			} elsif (agl <= 100) {
+			} elsif (agl <= 60) {
 
 				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 10);
 		
@@ -72,7 +72,7 @@ var autoland = {
 			
 			setprop("/autoland/phase", "flare");
 		
-		} elsif (agl <= 100) {
+		} elsif (agl <= 60) {
 		
 			# me.flare1();
 		
@@ -108,7 +108,7 @@ var autoland = {
 
 	flare2: func() {
 	
-		setprop("/servo-control/target-vs", -0.2);
+		setprop("/servo-control/target-vs", -0.5);
 	
 	},
 	
