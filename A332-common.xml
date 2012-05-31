@@ -57,6 +57,11 @@
 				<path>Aircraft/A330-200/Systems/FMGC/elevator-ctrl.xml</path>
 			</autopilot>
 			
+			<autopilot>
+				<name>Autoland Rudder</name>
+				<path>Aircraft/A330-200/Systems/FMGC/autoland-rudder.xml</path>
+			</autopilot>
+			
 			<!-- Fly-by-wire =============================================== -->
 			
 			<autopilot>
@@ -756,6 +761,7 @@
 		</procedures>
 		
 		<fmgc>
+			<file>Aircraft/A330-200/Nasal/FMGC/autoland.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/deflection.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/procedure.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/fmgc_loop.nas</file>

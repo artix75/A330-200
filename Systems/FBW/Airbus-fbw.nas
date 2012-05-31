@@ -132,8 +132,8 @@ var fbw_loop = {
 		if (me.agl > 50)
 			setprop("/fbw/flight-phase", "Flight Mode");
 			
-		if ((me.phase == "Flight Mode") and (me.agl <= 50))
-			setprop("/fbw/flight-phase", "Flare Mode");
+	#	if ((me.phase == "Flight Mode") and (me.agl <= 50))
+	#		setprop("/fbw/flight-phase", "Flare Mode");
 			
 		if (getprop("/gear/gear/wow"))
 			setprop("/fbw/flight-phase", "Ground Mode");

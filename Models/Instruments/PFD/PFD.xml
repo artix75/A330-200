@@ -753,5 +753,38 @@
 			<blue>0</blue>
 		</emission>
 	</animation>
+	
+	<animation>
+		<type>select</type>
+		<object-name>autoland.land</object-name>
+		<condition>
+			<equals>
+				<property>/autoland/phase</property>
+				<value>land</value>
+			</equals>
+		</condition>
+	</animation>
+	
+	<animation>
+		<type>select</type>
+		<object-name>autoland.flare</object-name>
+		<condition>
+			<equals>
+				<property>/autoland/phase</property>
+				<value>flare</value>
+			</equals>
+		</condition>
+	</animation>
+	
+	<animation>
+		<type>select</type>
+		<object-name>autoland.retard</object-name>
+		<condition>
+			<equals>
+				<property>/autoland/phase</property>
+				<value>retard</value>
+			</equals>
+		</condition>
+	</animation>
 
 </PropertyList>

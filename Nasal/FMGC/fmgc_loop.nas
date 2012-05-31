@@ -188,7 +188,17 @@ var fmgc_loop = {
     		
     			var nav1_error = getprop("/autopilot/internal/nav1-track-error-deg");
     			
+    			var agl = getprop("/position/altitude-agl-ft");
+    			
     			var bank = limit(nav1_error, 30);
+    			
+    			if (agl < 50) {
+    			
+    				bank = 0; # Level the wings for AUTOLAND
+    				
+    				setprop(servo~ "target-rudder", bank);	
+    				
+    			}
     			
     			setprop(servo~ "aileron", 0);
     			
@@ -244,11 +254,27 @@ var fmgc_loop = {
     		
     			# Main stuff are done on the PIDs
     			
-    			setprop(servo~ "elevator-gs", 1);
+    			autoland.phase_check();
+    			
+    			var agl = getprop("/position/altitude-agl-ft");
+    			
+    			if (agl > 100) {
+    			
+    				setprop(servo~ "elevator-gs", 1);
+    				
+    				setprop(servo~ "elevator-vs", 0);
+    			
+    			} else {
+    			
+    				setprop(servo~ "elevator-gs", 0);
+    				
+    				setprop(servo~ "elevator-vs", 1);
+    			
+    			}
     				
     			setprop(servo~ "elevator", 0);
     			
-    			setprop(servo~ "elevator-vs", 0);
+    			
     		    		
     		}
     	
@@ -264,31 +290,45 @@ var fmgc_loop = {
     	
     	## AUTO-THROTTLE -------------------------------------------------------
     	
-    	var spd = getprop("/autopilot/route-manager/route/wp[" ~ cur_wp ~ "]/ias-mach");
+    	var agl = getprop("/position/altitude-agl-ft");
     	
-    	if (spd == nil) {
-			
-			if (altitude <= 10000)
-				spd = 250;
-			else
-				spd = 0.78;
-    	
-    	}
-    	
-    	setprop(fmgc_val~ "target-spd", spd);
-    	
-    	setprop(fmgc~ "a-thr/ias", 0);
-        setprop(fmgc~ "a-thr/mach", 0);
-    	
-    	if (spd < 1) {
-    	
-    		setprop(fmgc~ "fmgc/ias", 0);
-            setprop(fmgc~ "fmgc/mach", 0);
+    	if ((me.ver_mode == "ils") and (agl < 3000)) {
+
+    		setprop(fmgc~ "fmgc/ias", 1);
+    		setprop(fmgc~ "fmgc/mach", 0);
+    		
+    		setprop(fmgc~ "a-thr/ias", 0);
+		    setprop(fmgc~ "a-thr/mach", 0);
     	
     	} else {
     	
-    		setprop(fmgc~ "fmgc/ias", 1);
-            setprop(fmgc~ "fmgc/mach", 0);
+			var spd = getprop("/autopilot/route-manager/route/wp[" ~ cur_wp ~ "]/ias-mach");
+			
+			if (spd == nil) {
+			
+				if (altitude <= 10000)
+					spd = 250;
+				else
+					spd = 0.78;
+			
+			}
+			
+			setprop(fmgc_val~ "target-spd", spd);
+			
+			setprop(fmgc~ "a-thr/ias", 0);
+		    setprop(fmgc~ "a-thr/mach", 0);
+			
+			if (spd < 1) {
+			
+				setprop(fmgc~ "fmgc/ias", 0);
+		        setprop(fmgc~ "fmgc/mach", 1);
+			
+			} else {
+			
+				setprop(fmgc~ "fmgc/ias", 1);
+		        setprop(fmgc~ "fmgc/mach", 0);
+			
+			}
     	
     	}
     	
