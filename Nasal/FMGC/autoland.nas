@@ -108,7 +108,7 @@ var autoland = {
 
 	flare2: func() {
 	
-		setprop("/servo-control/target-vs", -0.5);
+		setprop("/servo-control/target-vs", -0.1667);
 	
 	},
 	
