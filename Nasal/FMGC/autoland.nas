@@ -28,9 +28,9 @@ var autoland = {
 
 			} elsif (agl <= 20) {
 			
-				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 25);
+				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 30);
 
-			} elsif (agl <= 60) {
+			} elsif (agl <= 40) {
 
 				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 10);
 		
@@ -72,7 +72,7 @@ var autoland = {
 			
 			setprop("/autoland/phase", "flare");
 		
-		} elsif (agl <= 60) {
+		} elsif (agl <= 40) {
 		
 			# me.flare1();
 		

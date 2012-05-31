@@ -258,7 +258,7 @@ var fmgc_loop = {
     			
     			var agl = getprop("/position/altitude-agl-ft");
     			
-    			if (agl > 60) {
+    			if (agl > 40) {
     			
     				setprop(servo~ "elevator-gs", 1);
     				
