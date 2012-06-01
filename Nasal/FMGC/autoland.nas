@@ -26,11 +26,21 @@ var autoland = {
 		
 				me.slow(spd);
 
-			} elsif (agl <= 20) {
-			
-				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 30);
-
 			} elsif (agl <= 50) {
+			
+				# setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 30);
+				
+				setprop("/flight-management/control/a-thrust", "off");
+				
+				var throttle_l = getprop("/controls/engines/engine[0]/throttle");
+				
+				var throttle_r = getprop("/controls/engines/engine[1]/throttle");
+				
+				setprop("/controls/engines/engine[0]/throttle", throttle_l / 2);
+				
+				setprop("/controls/engines/engine[1]/throttle", throttle_r / 2);
+
+			} elsif (agl <= 100) {
 
 				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 10);
 		
@@ -64,7 +74,7 @@ var autoland = {
 			
 			setprop("/autoland/phase", "retard");
 		
-		} elsif (agl <= 20) {
+		} elsif (agl <= 50) {
 		
 			me.flare2();
 			
@@ -72,15 +82,13 @@ var autoland = {
 			
 			setprop("/autoland/phase", "flare");
 		
-		} elsif (agl <= 40) {
+		} elsif (agl <= 100) {
 		
-			# me.flare1();
-		
-			me.flare2();
+			me.flare1();
 
 			setprop("/autoland/phase", "flare");
 			
-			setprop("/autoland/rudder", 0);
+			setprop("/autoland/rudder", 1);
 		
 		} else {
 		
@@ -102,13 +110,13 @@ var autoland = {
 	
 	flare1: func() {
 	
-		setprop("/servo-control/target-vs", -2);
+		setprop("/servo-control/target-vs", -5);
 	
 	},
 
 	flare2: func() {
 	
-		setprop("/servo-control/target-vs", -0.1667);
+		setprop("/servo-control/target-vs", -0.5);
 	
 	},
 	
