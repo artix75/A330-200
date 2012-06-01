@@ -18,7 +18,7 @@ var autoland = {
 		
 		if ((getprop("/flight-management/control/a-thrust") != "off") and (getprop("/flight-management/control/spd-ctrl") == "fmgc")) {
 		
-			if (nose_wow) {
+			if (nose_wow) { 
 		
 				me.retard();
 		
@@ -42,7 +42,7 @@ var autoland = {
 
 			} elsif (agl <= 100) {
 
-				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 10);
+				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 15);
 		
 			} else {
 		
@@ -74,9 +74,9 @@ var autoland = {
 			
 			setprop("/autoland/phase", "retard");
 		
-		} elsif (agl <= 50) {
+		} elsif (agl <= 25) {
 		
-			me.flare2();
+			me.flare2(agl);
 			
 			setprop("/autoland/rudder", 1);
 			
@@ -84,7 +84,7 @@ var autoland = {
 		
 		} elsif (agl <= 100) {
 		
-			me.flare1();
+			me.flare1(agl);
 
 			setprop("/autoland/phase", "flare");
 			
@@ -108,15 +108,26 @@ var autoland = {
 	
 	},
 	
-	flare1: func() {
+	flare1: func(agl) {
 	
-		setprop("/servo-control/target-vs", -5);
+		if (agl <= 50)	
+			setprop("/servo-control/target-vs", -1.667); # -100 fpm
+		else
+			setprop("/servo-control/target-vs", -5); # -300 fpm
 	
 	},
 
-	flare2: func() {
+	flare2: func(agl) {
 	
-		setprop("/servo-control/target-vs", -0.5);
+		# setprop("/servo-control/target-vs", -0.5); Sometimes acts funny
+		
+		# Using a gradual increase (negative decrease) in target vertical speed, using about -100 fpm at 50 ft and -8 fpm on touchdown (result in feet per second)
+		
+		# var trgt_vs = -0.01667 * (8 + (agl - 11) * 2.307); (If f2_alt = 50)
+		
+		var trgt_vs = -0.01667 * (15 + ((agl - 11) * 3.103));
+		
+		setprop("/servo-control/target-vs", trgt_vs);
 	
 	},
 	
@@ -129,9 +140,9 @@ var autoland = {
 	
 	slow: func(spd) {
 		
-		var trgt_spd = spd - 5;
-		
-		setprop("/flight-management/fmgc-values/target-spd", trgt_spd);
+		setprop("/controls/engines/engine[0]/throttle", 0.1);
+				
+		setprop("/controls/engines/engine[1]/throttle", 0.1);
 	
 	}
 
