@@ -192,7 +192,7 @@ var fmgc_loop = {
     			
     			var bank = limit(nav1_error, 30);
     			
-    			if (agl < 50) {
+    			if (agl < 90) {
     			
     				bank = 0; # Level the wings for AUTOLAND
     				
@@ -258,7 +258,7 @@ var fmgc_loop = {
     			
     			var agl = getprop("/position/altitude-agl-ft");
     			
-    			if (agl > 40) {
+    			if (agl > 50) {
     			
     				setprop(servo~ "elevator-gs", 1);
     				
