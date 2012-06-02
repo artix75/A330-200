@@ -30,6 +30,54 @@
 				<float n="1" type="double">2</float>
 			</generic>
 		</multiplay>
+		
+		<flight-recorder>
+			<replay-config type="int">0</replay-config>
+			<config n="0" include="/Aircraft/Generic/flightrecorder/generic-jet.xml">
+				<name type="string">A330-200 Flight Recorder</name>
+				<!-- Custom properties -->
+				<signal>
+					<type>float</type>
+					<property type="string">/gear/compression/left/avg-ft</property>
+					<interpolation>linear</interpolation>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/gear/compression/right/avg-ft</property>
+					<interpolation>linear</interpolation>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/gear/tilt/left-tilt-deg</property>
+					<interpolation>linear</interpolation>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/gear/tilt/right-tilt-deg</property>
+					<interpolation>linear</interpolation>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/engines/engine[0]/reverser-pos-norm</property>
+					<interpolation>linear</interpolation>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/engines/engine[1]/reverser-pos-norm</property>
+					<interpolation>linear</interpolation>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/aircraft/wingflex</property>
+					<interpolation>linear</interpolation>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/aircraft/nose-compression</property>
+					<interpolation>linear</interpolation>
+				</signal>
+			</config>
+		</flight-recorder>
 
 		<systems>
 		
@@ -792,6 +840,7 @@
 			<file>Aircraft/A330-200/Nasal/doors.nas</file>
 			<file>Aircraft/Generic/limits.nas</file>
 			<file>Aircraft/A330-200/Nasal/copilot.nas</file>
+			<file>Aircraft/A330-200/Nasal/compression.nas</file>
 			<file>Aircraft/A330-200/Nasal/general_loop.nas</file>
 		</a332>
 		<systems>

@@ -1374,11 +1374,11 @@
 		<interpolation>
 			<entry>
 				<ind>0.0</ind>
-				<dep>-25</dep>
+				<dep>-32</dep>
 			</entry>
 			<entry>
 				<ind>0.4</ind>
-				<dep>-25</dep>
+				<dep>-32</dep>
 			</entry>
 			<entry>
 				<ind>1.0</ind>
@@ -1406,11 +1406,11 @@
 		<interpolation>
 			<entry>
 				<ind>0.0</ind>
-				<dep>-25</dep>
+				<dep>-32</dep>
 			</entry>
 			<entry>
 				<ind>0.4</ind>
-				<dep>-25</dep>
+				<dep>-32</dep>
 			</entry>
 			<entry>
 				<ind>1.0</ind>
@@ -1634,7 +1634,7 @@
   <object-name>wing.out0</object-name>
   <object-name>Left nav light</object-name>
   <object-name>Left strobe light</object-name>
-  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <property>aircraft/wingflex</property>
   <factor>0.00001</factor>
   <offset-deg>0</offset-deg>
   <center>
@@ -1655,7 +1655,7 @@
   <object-name>wing.out0</object-name>
   <object-name>Left nav light</object-name>
   <object-name>Left strobe light</object-name>
-  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <property>aircraft/wingflex</property>
   <factor>0.00001</factor>
   <offset-deg>-1</offset-deg>
   <center>
@@ -1675,7 +1675,7 @@
   <object-name>wing.out0</object-name>
   <object-name>Left nav light</object-name>
   <object-name>Left strobe light</object-name>
-  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <property>aircraft/wingflex</property>
   <factor>0.00001</factor>
   <offset-deg>-1</offset-deg>
   <center>
@@ -1698,7 +1698,7 @@
   <object-name>wing.out1</object-name>
   <object-name>Right nav light</object-name>
   <object-name>Right strobe light</object-name>
-  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <property>aircraft/wingflex</property>
   <factor>0.00001</factor>
   <offset-deg>0</offset-deg>
   <center>
@@ -1719,7 +1719,7 @@
   <object-name>wing.out1</object-name>
   <object-name>Right nav light</object-name>
   <object-name>Right strobe light</object-name>
-  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <property>aircraft/wingflex</property>
   <factor>0.00001</factor>
   <offset-deg>-1</offset-deg>
   <center>
@@ -1739,7 +1739,7 @@
   <object-name>wing.out1</object-name>
   <object-name>Right nav light</object-name>
   <object-name>Right strobe light</object-name>
-  <property>fdm/jsbsim/aero/force/Lift_alpha</property>
+  <property>aircraft/wingflex</property>
   <factor>0.00001</factor>
   <offset-deg>-1</offset-deg>
   <center>
