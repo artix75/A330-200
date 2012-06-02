@@ -74,7 +74,7 @@ var autoland = {
 			
 			setprop("/autoland/phase", "retard");
 		
-		} elsif (agl <= 25) {
+		} elsif (agl <= 20) {
 		
 			me.flare2(agl);
 			
@@ -110,8 +110,8 @@ var autoland = {
 	
 	flare1: func(agl) {
 	
-		if (agl <= 50)	
-			setprop("/servo-control/target-vs", -1.667); # -100 fpm
+		if (agl <= 40)	
+			setprop("/servo-control/target-vs", -2.5); # -150 fpm
 		else
 			setprop("/servo-control/target-vs", -5); # -300 fpm
 	
