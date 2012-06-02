@@ -4543,7 +4543,7 @@ name "wing.mid0"
 loc 5.19984 -0.596675 9.86593
 kids 16
 OBJECT poly
-name "flap.inner1"
+name "flap.inner0"
 loc 1.65029 -0.415625 -0.67822
 texture "wings_main.png"
 crease 45.000000
@@ -4560,13 +4560,13 @@ numvert 10
 0.119596 0.199533 -1.06928
 numsurf 3
 SURF 0x10
-mat 0
+mat 1
 refs 3
 0 0.631427 0.102394
 6 0.631427 0.102394
 3 0.648885 0.103315
 SURF 0x10
-mat 0
+mat 1
 refs 4
 1 0.646746 0.102974
 5 0.631427 0.101336
