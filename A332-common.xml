@@ -4,7 +4,7 @@
 
 	<sim>
 		<author>Narendran Muraleedharan (muraleen@my.erau.edu)</author>
-		<status>alpha</status>
+		<status>beta</status>
 
 		<model>
 			<A332>
@@ -74,6 +74,21 @@
 				<signal>
 					<type>float</type>
 					<property type="string">/aircraft/nose-compression</property>
+					<interpolation>linear</interpolation>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/aircraft/tyre-smoke/nose</property>
+					<interpolation>linear</interpolation>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/aircraft/tyre-smoke/left</property>
+					<interpolation>linear</interpolation>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/aircraft/tyre-smoke/right</property>
 					<interpolation>linear</interpolation>
 				</signal>
 			</config>
@@ -841,6 +856,7 @@
 			<file>Aircraft/Generic/limits.nas</file>
 			<file>Aircraft/A330-200/Nasal/copilot.nas</file>
 			<file>Aircraft/A330-200/Nasal/compression.nas</file>
+			<file>Aircraft/A330-200/Nasal/tyresmoke.nas</file>
 			<file>Aircraft/A330-200/Nasal/general_loop.nas</file>
 		</a332>
 		<systems>
@@ -855,9 +871,6 @@
 		<reversethrust>
 			<file>Aircraft/A330-200/Nasal/reversethrust.nas</file>
 		</reversethrust>
-		<tyresmoke>
-			<file>Aircraft/A330-200/Nasal/tyresmoke.nas</file>
-		</tyresmoke>
 		<walk>
 			<file>Aircraft/A330-200/Nasal/walk.nas</file>
 		</walk>

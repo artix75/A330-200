@@ -22,7 +22,7 @@ var target = func(prop, value, step, deadband) {
 
 };
 
-var general_loop = {
+var general_loop_1 = {
        init : func {
             me.UPDATE_INTERVAL = 0.02;
             me.loopid = 0;
@@ -38,6 +38,8 @@ var general_loop = {
     	
     	setprop("/engines/engine/fuel-flow-kgph", getprop("/engines/engine/fuel-flow_pph") * 0.45359237);
     	setprop("/engines/engine[1]/fuel-flow-kgph", getprop("/engines/engine[1]/fuel-flow_pph") * 0.45359237);
+    	
+    	tyresmoke();
     	
     	cpy_props();
     	
@@ -61,5 +63,5 @@ var general_loop = {
 
 setlistener("sim/signals/fdm-initialized", func
  {
- general_loop.init();
+ general_loop_1.init();
  });

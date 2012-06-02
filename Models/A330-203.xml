@@ -315,7 +315,7 @@
 </model>
 
 <model>
- <path>Aircraft/A330-200/Models/Effects/tire-smoke-nose.xml</path>
+ <path>Aircraft/A330-200/Models/Effects/tyresmoke-nose.xml</path>
  <name>tyre-smoke-n</name>
  <offsets>  
   <x-m>-15.96</x-m>
@@ -325,7 +325,7 @@
 </model>
 
 <model>
- <path>Aircraft/A330-200/Models/Effects/tire-smoke-left.xml</path>
+ <path>Aircraft/A330-200/Models/Effects/tyresmoke-left.xml</path>
  <name>tyre-smoke-l</name>
  <offsets>
   <x-m>4.9</x-m>
@@ -335,7 +335,7 @@
 </model>
 
 <model>
- <path>Aircraft/A330-200/Models/Effects/tire-smoke-right.xml</path>
+ <path>Aircraft/A330-200/Models/Effects/tyresmoke-right.xml</path>
  <name>tyre-smoke-r</name>
  <offsets>
  <x-m>4.9</x-m>
