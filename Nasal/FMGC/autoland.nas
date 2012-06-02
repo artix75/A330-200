@@ -89,6 +89,14 @@ var autoland = {
 			setprop("/autoland/phase", "flare");
 			
 			setprop("/autoland/rudder", 1);
+			
+		} 
+		
+		# Early Descent Approach Scenario as Proposed by Geir
+		
+		elsif (agl < 1000) {
+		
+			me.early_descent(spd);
 		
 		} else {
 		
@@ -105,6 +113,14 @@ var autoland = {
 		var spd = 125 + ((lbs - 287000) * 0.000235);
 		
 		return spd;
+	
+	},
+	
+	early_descent : func(spd) {
+	
+		var trgt_vs = 0.01667 * ((-5 * spd) - 150); # Approx (0,01667 = conv factor for fpm to fps)
+		
+		setprop("/servo-control/target-vs", trgt_vs);
 	
 	},
 	

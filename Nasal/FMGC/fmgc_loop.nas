@@ -258,7 +258,11 @@ var fmgc_loop = {
     			
     			var agl = getprop("/position/altitude-agl-ft");
     			
-    			if (agl > 100) {
+    			# if (agl > 100) {
+    			
+    			# Using 1000 ft for the early descent scenario
+    			
+    			if (agl > 1000) {
     			
     				setprop(servo~ "elevator-gs", 1);
     				
