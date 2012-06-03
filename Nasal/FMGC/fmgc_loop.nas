@@ -86,7 +86,7 @@ var fmgc_loop = {
             
             me.reset();
     },
-    	update : func {
+    	update : func {   	
     	
     	var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
     	
@@ -105,6 +105,12 @@ var fmgc_loop = {
     	setprop(fcu~ "alt-100", me.alt_100());
     	
     	# SET OFF IF NOT USED
+    	
+    	# Turn off rudder control when AP is off
+    	
+    	if ((me.ap1 == "off") and (me.ap2 == "off")) {
+    		setprop("/autoland/rudder", 0);
+    	}
     	
     	if ((me.spd_ctrl == "off") or (me.a_thr == "off")) {
     	
