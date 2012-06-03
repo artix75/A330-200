@@ -78,17 +78,17 @@
 				</signal>
 				<signal>
 					<type>float</type>
-					<property type="string">/aircraft/tyre-smoke/nose</property>
+					<property type="string">/aircraft/tyresmoke/nose</property>
 					<interpolation>linear</interpolation>
 				</signal>
 				<signal>
 					<type>float</type>
-					<property type="string">/aircraft/tyre-smoke/left</property>
+					<property type="string">/aircraft/tyresmoke/left</property>
 					<interpolation>linear</interpolation>
 				</signal>
 				<signal>
 					<type>float</type>
-					<property type="string">/aircraft/tyre-smoke/right</property>
+					<property type="string">/aircraft/tyresmoke/right</property>
 					<interpolation>linear</interpolation>
 				</signal>
 			</config>
