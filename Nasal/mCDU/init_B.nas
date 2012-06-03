@@ -46,7 +46,7 @@ var init_B = {
 		
 		# MILEAGE = (approx for trip time) 0.0523 Blocks per min
 		
-		var trip_fuel = trip_time * 0.28;
+		var trip_fuel = trip_time * 0.124;
 		
 		setprop(fuel~ "trip-fuel", trip_fuel);
 		
@@ -85,7 +85,7 @@ var init_B = {
 			
 			# Time is calculated considering racetrack pattern
 			
-			var extra_time = extra * 11.3; # Minutes avail with 1 block fuel
+			var extra_time = extra * 8.46; # Minutes avail with 1 block fuel
 			
 			var extra_dec = int((extra - int(extra))*10);
 			
