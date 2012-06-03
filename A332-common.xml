@@ -420,6 +420,14 @@
 
 	<instrumentation>
 	
+		<mcdu>
+			<prog>
+				<ident type="string">empty</ident>
+				<brg type="string">empty</brg>
+				<dist type="string">empty</dist>
+			</prog>
+		</mcdu>
+	
 		<efis n="0">
 
 			<ecam>

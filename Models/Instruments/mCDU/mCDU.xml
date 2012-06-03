@@ -14,6 +14,7 @@
 		<object-name>mCDU_f-pln</object-name>
 		<object-name>mCDU_tp</object-name>
 		<object-name>mCDU_perf</object-name>
+		<object-name>mCDU_prog</object-name>
 		<object-name>input</object-name>
 		<object-name>msg</object-name>
 		<object-name>start</object-name>
@@ -279,6 +280,17 @@
 		</condition>
 	</model>
 	
+	<model>
+		<name>mCDU_prog</name>
+		<path>prog/prog.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>prog</value>
+			</equals>
+		</condition>
+	</model>
+	
 	<animation>
 		<type>pick</type>
 		<object-name>brt</object-name>
@@ -338,6 +350,34 @@
 				<command>nasal</command>
 		 		<script>
 					setprop("/instrumentation/mcdu/page", "prog");
+					
+					# Reset BRG/DIST
+		 			
+		 			var ident = getprop("/instrumentation/mcdu/prog/ident");
+		 			
+		 			if (ident != "empty") {
+		 			
+			 			var gps = "/instrumentation/gps/";
+			 			
+			 			if (size(ident) == 4)
+			 				setprop(gps~ "scratch/type", "airport");
+			 			elsif (size(ident) == 5)
+			 				setprop(gps~ "scratch/type", "fix");
+			 			else
+			 				setprop(gps~ "scratch/type", "vor");
+			 				
+			 			setprop(gps~ "scratch/query", ident);
+			 			
+			 			setprop(gps~ "command", "search");
+			 			
+			 			var brg = getprop("/instrumentation/gps/scratch/mag-bearing-deg");
+			 			
+			 			var dist = getprop("/instrumentation/gps/scratch/distance-nm");
+			 			
+			 			setprop("/instrumentation/mcdu/prog/brg", brg);
+			 			setprop("/instrumentation/mcdu/prog/dist", dist);
+		 			
+		 			}
 				</script>
             </binding>
         </action>
