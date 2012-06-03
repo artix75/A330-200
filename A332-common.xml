@@ -865,9 +865,6 @@
 		<electrical>
 			<file>Aircraft/A330-200/Nasal/electrical.nas</file>
 		</electrical>
-		<v-speeds>
-			<file>Aircraft/A330-200/Nasal/v-speeds.nas</file>
-		</v-speeds>
 		<reversethrust>
 			<file>Aircraft/A330-200/Nasal/reversethrust.nas</file>
 		</reversethrust>

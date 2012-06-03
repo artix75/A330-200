@@ -1,3 +1,7 @@
+setprop("/instrumentation/fmc/vspeeds/V1", 0);
+setprop("/instrumentation/fmc/vspeeds/VR", 0);
+setprop("/instrumentation/fmc/vspeeds/V2", 0);
+
 var cpy_props = func() {
 
 	if ((getprop("/sim/replay/time") == 0) or (getprop("/sim/replay/time") == nil)) {

@@ -13,6 +13,7 @@
 		<object-name>mCDU_radio</object-name>
 		<object-name>mCDU_f-pln</object-name>
 		<object-name>mCDU_tp</object-name>
+		<object-name>mCDU_perf</object-name>
 		<object-name>input</object-name>
 		<object-name>msg</object-name>
 		<object-name>start</object-name>
@@ -263,6 +264,17 @@
 			<equals>
 				<property>/instrumentation/mcdu/page</property>
 				<value>STAR_CONFIRM</value>
+			</equals>
+		</condition>
+	</model>
+	
+	<model>
+		<name>mCDU_perf</name>
+		<path>perf/takeoff.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>perf</value>
 			</equals>
 		</condition>
 	</model>

@@ -700,7 +700,7 @@
         <path>Aircraft/A330-200/Sounds/res/v1.wav</path>
         <mode>once</mode>
         <condition>
-            <property>sim/sound/v1</property>
+            <property>sim/sound/copilot/v1</property>
         </condition>
         <volume>
             <factor>10</factor>
@@ -719,7 +719,7 @@
         <path>Aircraft/A330-200/Sounds/res/vr.wav</path>
         <mode>once</mode>
         <condition>
-            <property>sim/sound/vr</property>
+            <property>sim/sound/copilot/vr</property>
         </condition>
         <volume>
             <factor>10</factor>
@@ -738,7 +738,7 @@
         <path>Aircraft/A330-200/Sounds/res/v2.wav</path>
         <mode>once</mode>
         <condition>
-            <property>sim/sound/v2</property>
+            <property>sim/sound/copilot/v2</property>
         </condition>
         <volume>
             <factor>10</factor>
