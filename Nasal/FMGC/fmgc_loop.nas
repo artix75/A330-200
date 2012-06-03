@@ -90,6 +90,8 @@ var fmgc_loop = {
     	
     	var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
     	
+    	me.flight_phase();
+    	
     	me.get_settings();
     	
     	me.lvlch_check();
@@ -302,7 +304,7 @@ var fmgc_loop = {
     	
     	var agl = getprop("/position/altitude-agl-ft");
     	
-    	if ((me.ver_mode == "ils") and (agl < 3000)) {
+    	if ((me.ver_mode == "ils") and (agl < 3000) and (getprop("/flight-management/spd-manager/approach/mode") == "MANAGED (AUTO)")) {
 
     		setprop(fmgc~ "fmgc/ias", 1);
     		setprop(fmgc~ "fmgc/mach", 0);
@@ -312,7 +314,22 @@ var fmgc_loop = {
     	
     	} else {
     	
+    		if (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)"))) {
+    	
 			var spd = getprop("/autopilot/route-manager/route/wp[" ~ cur_wp ~ "]/ias-mach");
+			
+			setprop(fmgc_val~ "target-spd", spd);
+			
+			}
+			
+			# Performance and Automatic Calculated speeds from the PERF page on the mCDU are managed separately
+			
+			manage_speeds();
+			
+			setprop(fmgc~ "a-thr/ias", 0);
+		    setprop(fmgc~ "a-thr/mach", 0);
+			
+			var spd = getprop(fmgc_val~ "target-spd");
 			
 			if (spd == nil) {
 			
@@ -322,11 +339,6 @@ var fmgc_loop = {
 					spd = 0.78;
 			
 			}
-			
-			setprop(fmgc_val~ "target-spd", spd);
-			
-			setprop(fmgc~ "a-thr/ias", 0);
-		    setprop(fmgc~ "a-thr/mach", 0);
 			
 			if (spd < 1) {
 			
@@ -567,6 +579,58 @@ var fmgc_loop = {
 		var alt = getprop("/instrumentation/altimeter/indicated-altitude-ft");
 		
 		return int(alt/100);
+		
+	},
+	
+		flight_phase : func {
+		
+		var phase = getprop("/flight-management/phase");
+		
+		if ((phase == "T/O") and (!getprop("/gear/gear[3]/wow"))) {
+		
+			setprop("/flight-management/phase", "CLB");
+		
+		} elsif (phase == "CLB") {
+		
+			var crz_fl = getprop("/flight-management/crz_fl");
+			
+			if (crz_fl != 0) {
+			
+				if (getprop("/position/altitude-ft") > ((crz_fl * 100) - 1000))
+					setprop("/flight-management/phase", "CRZ");
+			
+			} else {
+			
+				if (getprop("/position/altitude-ft") > 30000)
+					setprop("/flight-management/phase", "CRZ");
+			
+			}
+		
+		} elsif (phase == "CRZ") {
+		
+			var crz_fl = getprop("/flight-management/crz_fl");
+			
+			if (crz_fl != 0) {
+			
+				if (getprop("/position/altitude-ft") < ((crz_fl * 100) - 1000))
+					setprop("/flight-management/phase", "DES");
+			
+			} else {
+			
+				if (getprop("/position/altitude-ft") < 30000)
+					setprop("/flight-management/phase", "DES");
+			
+			}
+		
+		} elsif ((phase == "DES") and (getprop("/flight-management/control/ver-mode") == "ils")) {
+		
+			setprop("/flight-management/phase", "APP");
+		
+		} elsif ((phase == "APP") and (getprop("/gear/gear/wow"))) {
+		
+			setprop("/flight-management/phase", "T/O");
+		
+		}
 		
 	},
 

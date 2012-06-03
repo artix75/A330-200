@@ -16,7 +16,7 @@ var autoland = {
 		
 		# LAND > FLARE1 > FLARE2 > MAIN_TOUCH (SLOWLY REDUCE PITCH) > NOSE TOUCH (RETARD)
 		
-		if ((getprop("/flight-management/control/a-thrust") != "off") and (getprop("/flight-management/control/spd-ctrl") == "fmgc")) {
+		if ((getprop("/flight-management/control/a-thrust") != "off") and (getprop("/flight-management/control/spd-ctrl") == "fmgc") and (getprop("/flight-management/spd-manager/approach/mode") == "MANAGED (AUTO)")) {
 		
 			if (nose_wow) { 
 		
