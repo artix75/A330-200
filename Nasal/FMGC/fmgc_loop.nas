@@ -315,9 +315,18 @@ var fmgc_loop = {
     	
     	} else {
     	
-    		if (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)"))) {
+    		if (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and (me.ver_mode != "ils")) {
     	
 			var spd = getprop("/autopilot/route-manager/route/wp[" ~ cur_wp ~ "]/ias-mach");
+			
+			if (spd == nil) {
+			
+				if (altitude <= 10000)
+					spd = 250;
+				else
+					spd = 0.78;
+			
+			}
 			
 			setprop(fmgc_val~ "target-spd", spd);
 			
@@ -597,12 +606,12 @@ var fmgc_loop = {
 			
 			if (crz_fl != 0) {
 			
-				if (getprop("/position/altitude-ft") > ((crz_fl * 100) - 1000))
+				if (getprop("/position/altitude-ft") >= ((crz_fl * 100) - 500))
 					setprop("/flight-management/phase", "CRZ");
 			
 			} else {
 			
-				if (getprop("/position/altitude-ft") > 30000)
+				if (getprop("/position/altitude-ft") > 26000)
 					setprop("/flight-management/phase", "CRZ");
 			
 			}
@@ -613,12 +622,12 @@ var fmgc_loop = {
 			
 			if (crz_fl != 0) {
 			
-				if (getprop("/position/altitude-ft") < ((crz_fl * 100) - 1000))
+				if (getprop("/position/altitude-ft") < ((crz_fl * 100) - 500))
 					setprop("/flight-management/phase", "DES");
 			
 			} else {
 			
-				if (getprop("/position/altitude-ft") < 30000)
+				if (getprop("/position/altitude-ft") < 26000)
 					setprop("/flight-management/phase", "DES");
 			
 			}

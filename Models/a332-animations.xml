@@ -1272,7 +1272,7 @@
 		<object-name>NoseWheel</object-name>
 		<object-name>NGearStrut</object-name>
 		<object-name>choke_nose</object-name>
-		<property>gear/gear[0]/compression-ft</property>
+		<property>/aircraft/nose-compression</property>
 		<factor>0.3125</factor> <!-- 3.2 ft = 1 m -->
 		<axis>
 			<z>1</z>

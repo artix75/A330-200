@@ -28,6 +28,32 @@
 			<generic>
 				<float n="0" type="double">2</float>
 				<float n="1" type="double">2</float>
+				
+				<!-- Integers -->
+				
+				<int n="0" alias="/aircraft/tyresmoke/nose"/>
+				<int n="1" alias="/aircraft/tyresmoke/left"/>
+				<int n="2" alias="/aircraft/tyresmoke/right"/>
+				
+				<int n="3" alias="controls/lighting/landing-lights[0]"/>
+				<int n="4" alias="controls/lighting/landing-lights[1]"/>
+				<int n="5" alias="controls/lighting/landing-lights[2]"/>
+				
+				<int n="6" alias="controls/lighting/nav-lights-switch"/>
+				<int n="7" alias="controls/lighting/strobe"/>
+				<int n="8" alias="controls/lighting/beacon"/>
+				<int n="9" alias="controls/lighting/cones"/>
+				
+				<!-- Float -->
+				
+				<float n="2" alias="/gear/compression/left/avg-ft"/>
+				<float n="3" alias="/gear/compression/right/avg-ft"/>
+				<float n="4" alias="/gear/tilt/left-tilt-deg"/>
+				<float n="5" alias="/gear/tilt/right-tilt-deg"/>
+				<float n="6" alias="/engines/engine[0]/reverser-pos-norm"/>
+				<float n="7" alias="/engines/engine[1]/reverser-pos-norm"/>
+				<float n="8" alias="/aircraft/wingflex"/>
+				<float n="9" alias="/aircraft/nose-compression"/>
 			</generic>
 		</multiplay>
 		

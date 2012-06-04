@@ -17,12 +17,12 @@ var tyresmoke = func() {
 			else
 				setprop("/aircraft/tyresmoke/nose", 0);
 		
-			if (left_wow_cur and !left_wow_sav and (getprop("/gear/gear[3]/rollspeed-ms") < 20))
+			if (left_wow_cur and !left_wow_sav)
 				setprop("/aircraft/tyresmoke/left", 1);
 			else
 				setprop("/aircraft/tyresmoke/left", 0);
 		
-			if (right_wow_cur and !right_wow_sav and (getprop("/gear/gear[4]/rollspeed-ms") < 20))
+			if (right_wow_cur and !right_wow_sav)
 				setprop("/aircraft/tyresmoke/right", 1);
 			else
 				setprop("/aircraft/tyresmoke/right", 0);

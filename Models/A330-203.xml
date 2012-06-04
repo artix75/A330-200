@@ -3,6 +3,49 @@
 <PropertyList include="a332-animations.xml">
 	<name>A330-203</name>
 	<path>a330-200-main.ac</path>
+	
+	<nasal>
+		<load>
+		var rplayer = cmdarg();
+
+		rplayer.getNode("/aircraft/tyresmoke/nose", 1).alias(rplayer.getNode("sim/multiplay/generic/int[0]"));
+		
+		rplayer.getNode("/aircraft/tyresmoke/left", 1).alias(rplayer.getNode("sim/multiplay/generic/int[1]"));
+		
+		rplayer.getNode("/aircraft/tyresmoke/right", 1).alias(rplayer.getNode("sim/multiplay/generic/int[2]"));
+		
+		rplayer.getNode("controls/lighting/landing-lights[0]", 1).alias(rplayer.getNode("sim/multiplay/generic/int[3]"));
+		
+		rplayer.getNode("controls/lighting/landing-lights[1]", 1).alias(rplayer.getNode("sim/multiplay/generic/int[4]"));
+		
+		rplayer.getNode("controls/lighting/landing-lights[2]", 1).alias(rplayer.getNode("sim/multiplay/generic/int[5]"));
+		
+		rplayer.getNode("controls/lighting/nav-lights-switch", 1).alias(rplayer.getNode("sim/multiplay/generic/int[6]"));
+		
+		rplayer.getNode("controls/lighting/strobe", 1).alias(rplayer.getNode("sim/multiplay/generic/int[7]"));
+		
+		rplayer.getNode("controls/lighting/beacon", 1).alias(rplayer.getNode("sim/multiplay/generic/int[8]"));
+		
+		rplayer.getNode("controls/lighting/cones", 1).alias(rplayer.getNode("sim/multiplay/generic/int[9]"));
+		
+		rplayer.getNode("/gear/compression/left/avg-ft", 1).alias(rplayer.getNode("sim/multiplay/generic/float[2]"));
+		
+		rplayer.getNode("/gear/compression/right/avg-ft", 1).alias(rplayer.getNode("sim/multiplay/generic/float[3]"));
+		
+		rplayer.getNode("/gear/tilt/left-tilt-deg", 1).alias(rplayer.getNode("sim/multiplay/generic/float[4]"));
+		
+		rplayer.getNode("/gear/tilt/right-tilt-deg, 1).alias(rplayer.getNode("sim/multiplay/generic/float[5]"));
+		
+		rplayer.getNode("/engines/engine[0]/reverser-pos-norm", 1).alias(rplayer.getNode("sim/multiplay/generic/float[6]"));
+		
+		rplayer.getNode("/engines/engine[1]/reverser-pos-norm", 1).alias(rplayer.getNode("sim/multiplay/generic/float[7]"));
+		
+		rplayer.getNode("/aircraft/wingflex", 1).alias(rplayer.getNode("sim/multiplay/generic/float[8]"));
+		
+		rplayer.getNode("/aircraft/nose-compression", 1).alias(rplayer.getNode("sim/multiplay/generic/float[9]"));
+
+		</load>
+	</nasal>
 
 	<model>
 		<name>General Electric Engines</name>
