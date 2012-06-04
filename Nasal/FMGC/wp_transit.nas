@@ -52,7 +52,7 @@ var wp_transit = {
 			
 			var last_wp = getprop("/autopilot/route-manager/route/num") - 1;
 		
-			if (getprop("/autopilot/route-manager/route/wp[" ~ me.current_wp ~ "]/id") != nil) {
+			if ((getprop("/autopilot/route-manager/route/wp[" ~ me.current_wp ~ "]/id") != nil) and (getprop("/flight-management/procedures/star/active-star/name") != "------")) {
 		
 				if (me.current_wp == last_wp) {
 				
