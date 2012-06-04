@@ -281,6 +281,50 @@
 	</model>
 	
 	<model>
+		<name>mCDU_perf</name>
+		<path>perf/clb.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>perf-clb</value>
+			</equals>
+		</condition>
+	</model>
+	
+	<model>
+		<name>mCDU_perf</name>
+		<path>perf/crz.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>perf-crz</value>
+			</equals>
+		</condition>
+	</model>
+	
+	<model>
+		<name>mCDU_perf</name>
+		<path>perf/des.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>perf-des</value>
+			</equals>
+		</condition>
+	</model>
+	
+	<model>
+		<name>mCDU_perf</name>
+		<path>perf/app.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>perf-app</value>
+			</equals>
+		</condition>
+	</model>
+	
+	<model>
 		<name>mCDU_prog</name>
 		<path>prog/prog.xml</path>
 		<condition>

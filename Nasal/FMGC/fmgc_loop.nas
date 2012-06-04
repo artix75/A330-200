@@ -112,6 +112,7 @@ var fmgc_loop = {
     	
     	if ((me.ap1 == "off") and (me.ap2 == "off")) {
     		setprop("/autoland/rudder", 0);
+    		setprop("/autoland/phase", "disengaged")
     	}
     	
     	if ((me.spd_ctrl == "off") or (me.a_thr == "off")) {
@@ -629,6 +630,10 @@ var fmgc_loop = {
 		} elsif ((phase == "APP") and (getprop("/gear/gear/wow"))) {
 		
 			setprop("/flight-management/phase", "T/O");
+			
+			new_flight();
+			
+			me.current_wp = 0;
 		
 		}
 		

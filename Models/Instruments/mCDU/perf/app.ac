@@ -4,8 +4,27 @@ OBJECT world
 kids 17
 OBJECT poly
 name "perf"
+loc -0.0366278 -0.0788433 0.0336479
+texture "des-app.png"
+crease 45.000000
+numvert 4
+-0.000621304 0.0782193 -0.0076531
+-0.000622742 0.0782178 0.00799589
+-0.00325237 0.0782178 -0.0076471
+-0.0032512 0.0782163 0.00799801
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+1 0.00918599 0.184482
+0 0.220765 0.184462
+2 0.220684 0.219848
+3 0.00915741 0.219832
+kids 0
+OBJECT poly
+name "perf"
 loc -0.0214163 -0.0788433 0.0346174
-texture "clb-crz.png"
+texture "des-app.png"
 crease 45.000000
 numvert 4
 -0.00887647 0.0782163 0.00753506
@@ -23,46 +42,27 @@ refs 4
 kids 0
 OBJECT poly
 name "perf"
-loc -0.0212302 -0.0788433 -0.0323941
-texture "clb-crz.png"
+loc -0.0462418 -0.0788433 0.0304011
+texture "des-app.png"
 crease 45.000000
 numvert 4
--0.00169629 0.0782193 -0.00721011
--0.00170022 0.0782178 0.00753306
--0.00887966 0.0782178 -0.00720446
--0.00887647 0.0782163 0.00753506
+-0.0032512 0.0782163 0.0114371
+-0.00325237 0.0782178 -0.0109353
+-0.000622742 0.0782178 0.011434
+-0.000621304 0.0782193 -0.0109438
 numsurf 1
 SURF 0x10
 mat 0
 refs 4
-1 0.830726 0.0109291
-0 0.997189 0.0108882
-2 0.997126 0.0855955
-3 0.830704 0.0855622
-kids 0
-OBJECT poly
-name "perf"
-loc -0.0362432 -0.0788433 0.034622
-texture "clb-crz.png"
-crease 45.000000
-numvert 4
--0.0032512 0.0782163 0.00740846
--0.00325237 0.0782178 -0.00708341
--0.000622742 0.0782178 0.0074065
--0.000621304 0.0782193 -0.00708897
-numsurf 1
-SURF 0x10
-mat 0
-refs 4
-2 0.00622347 0.0737504
-3 0.191273 0.073731
-1 0.191202 0.109117
-0 0.00619847 0.109101
+2 0.00919392 0.241226
+3 0.279449 0.241207
+1 0.279346 0.276593
+0 0.00915741 0.276577
 kids 0
 OBJECT poly
 name "perf"
 loc -0.0724505 -0.0788433 0.0340636
-texture "clb-crz.png"
+texture "des-app.png"
 crease 45.000000
 numvert 4
 -0.000621304 0.0782193 -0.00708897
@@ -81,7 +81,7 @@ kids 0
 OBJECT poly
 name "l1"
 loc -0.0724167 0.0022679 0.0585503
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000319004 0.00110412 -2.45571e-05
@@ -124,7 +124,7 @@ kids 0
 OBJECT poly
 name "r1"
 loc -0.0724409 0.0022679 -0.0508449
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000272155 0.00110364 0.000166699
@@ -167,7 +167,7 @@ kids 0
 OBJECT poly
 name "l2"
 loc -0.0632022 0.0022679 0.0585965
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000272155 0.00110364 0.000166714
@@ -210,7 +210,7 @@ kids 0
 OBJECT poly
 name "r2"
 loc -0.0632267 0.0022679 -0.0507984
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000319093 0.00110412 -2.4572e-05
@@ -253,7 +253,7 @@ kids 0
 OBJECT poly
 name "l3"
 loc -0.0544813 0.0022679 0.0585965
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000319064 0.00110412 -2.45571e-05
@@ -296,7 +296,7 @@ kids 0
 OBJECT poly
 name "r3"
 loc -0.0545055 0.0022679 -0.0507984
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000272155 0.00110364 0.000166707
@@ -339,7 +339,7 @@ kids 0
 OBJECT poly
 name "l4"
 loc -0.0451073 0.0022679 0.0585525
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000272125 0.00110364 0.000166744
@@ -382,7 +382,7 @@ kids 0
 OBJECT poly
 name "r4"
 loc -0.0451319 0.0022679 -0.0508423
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000319034 0.00110412 -2.45795e-05
@@ -425,7 +425,7 @@ kids 0
 OBJECT poly
 name "l5"
 loc -0.0357998 0.0022679 0.0585305
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000319004 0.00110412 -2.45422e-05
@@ -468,7 +468,7 @@ kids 0
 OBJECT poly
 name "r5"
 loc -0.035824 0.0022679 -0.0508643
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000272185 0.00110364 0.000166699
@@ -511,7 +511,7 @@ kids 0
 OBJECT poly
 name "l6"
 loc -0.0271082 0.0022679 0.0586185
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000272155 0.00110364 0.000166699
@@ -554,7 +554,7 @@ kids 0
 OBJECT poly
 name "r6"
 loc -0.0271325 0.0022679 -0.0507764
-texture "takeoff.png"
+texture "des-app.png"
 crease 45.000000
 numvert 16
 -0.000319123 0.00110412 -2.45422e-05
@@ -596,20 +596,20 @@ refs 16
 kids 0
 OBJECT poly
 name "perf"
-loc -0.0747618 -0.0788433 -0.0019856
-texture "clb-crz.png"
+loc -0.0747618 -0.0788433 -0.00191672
+texture "des-app.png"
 crease 45.000000
 numvert 4
--0.0052371 0.0782163 0.0116897
--0.00523899 0.0782178 -0.0111768
--0.00100311 0.0782178 0.0116866
--0.00100079 0.0782193 -0.0111856
+-0.0052371 0.0782163 0.0136033
+-0.00523899 0.0782178 -0.0130064
+-0.00100311 0.0782178 0.0135997
+-0.00100079 0.0782193 -0.0130167
 numsurf 1
 SURF 0x10
 mat 0
 refs 4
-2 0.210503 0.947513
-3 0.375442 0.947494
-1 0.375378 0.982424
-0 0.21048 0.982409
+2 0.206446 0.951577
+3 0.421418 0.951558
+1 0.421334 0.986488
+0 0.206416 0.986473
 kids 0

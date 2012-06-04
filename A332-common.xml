@@ -859,6 +859,7 @@
 		</procedures>
 		
 		<fmgc>
+			<file>Aircraft/A330-200/Nasal/FMGC/new_flight.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/autoland.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/manage-speeds.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/deflection.nas</file>

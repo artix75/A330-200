@@ -2,7 +2,7 @@
 
 <PropertyList>
 
-	<path>clb.ac</path>
+	<path>crz.ac</path>
 	
 	<!-- mCDU Display Brightness -->
 	
@@ -61,52 +61,10 @@
 				<command>nasal</command>
 		 		<script>
 		 		
-		 			if (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")
-		 				setprop("/flight-management/spd-manager/climb/mode", "MANAGED (PERF)");
+		 			if (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")
+		 				setprop("/flight-management/spd-manager/cruise/mode", "MANAGED (PERF)");
 		 			else
-		 				setprop("/flight-management/spd-manager/climb/mode", "MANAGED (F-PLN)");
-		 			
-				</script>
-            </binding>
-        </action>
-	</animation>
-	
-	<animation>
-		<type>pick</type>
-		<object-name>l3</object-name>
-		<action>
-            <button>0</button>
-	   		<repeatable type="bool">false</repeatable>
-            <binding>
-				<command>nasal</command>
-		 		<script>
-		 		
-		 			var input = getprop("/instrumentation/mcdu/input");
-		 			
-		 			setprop("/flight-management/spd-manager/climb/spd1", input);
-		 			
-		 			setprop("/instrumentation/mcdu/input", "");
-		 			
-				</script>
-            </binding>
-        </action>
-	</animation>
-	
-	<animation>
-		<type>pick</type>
-		<object-name>l4</object-name>
-		<action>
-            <button>0</button>
-	   		<repeatable type="bool">false</repeatable>
-            <binding>
-				<command>nasal</command>
-		 		<script>
-		 		
-		 			var input = getprop("/instrumentation/mcdu/input");
-		 			
-		 			setprop("/flight-management/spd-manager/climb/spd2", input);
-		 			
-		 			setprop("/instrumentation/mcdu/input", "");
+		 				setprop("/flight-management/spd-manager/cruise/mode", "MANAGED (F-PLN)");
 		 			
 				</script>
             </binding>
@@ -125,7 +83,7 @@
 		 		
 		 			var input = getprop("/instrumentation/mcdu/input");
 		 			
-		 			setprop("/flight-management/spd-manager/climb/mach", input);
+		 			setprop("/flight-management/spd-manager/cruise/mach", input);
 		 			
 		 			setprop("/instrumentation/mcdu/input", "");
 		 			
@@ -144,7 +102,7 @@
 				<command>nasal</command>
 		 		<script>
 		 		
-		 			setprop("/instrumentation/mcdu/page", "perf");
+		 			setprop("/instrumentation/mcdu/page", "perf-clb");
 		 			
 				</script>
             </binding>
@@ -161,63 +119,13 @@
 				<command>nasal</command>
 		 		<script>
 		 		
-		 			setprop("/instrumentation/mcdu/page", "perf-crz");
+		 			setprop("/instrumentation/mcdu/page", "perf-des");
 		 			
 				</script>
             </binding>
         </action>
 	</animation>
-	
-	<text>
-		<name>cyan</name>
-		<offsets>
-			<x-m>-0.0508</x-m>
-			<y-m>-0.0432</y-m>
-			<z-m>-0.0006</z-m>
-			<heading-deg>90</heading-deg>
-		</offsets>
-		<alignment>left-center</alignment>
-		<axis-alignment>xy-plane</axis-alignment>
-		<type type="string">number-value</type>
-		<format type="string">%3.0f</format>
-		<property>/flight-management/spd-manager/climb/spd1</property>
-		<truncate type="bool">false</truncate>
-		<font type="string">courier-bold.txf</font>
-		<draw-text type="bool">true</draw-text>
-		<draw-alignment type="bool">false</draw-alignment>
-		<draw-boundingbox type="bool">false</draw-boundingbox>
-		<character-size>0.003</character-size>
-		<font-resolution>
-			<width type="int">32</width>
-			<height type="int">32</height>
-		</font-resolution>
-	</text>
-	
-	<text>
-		<name>cyan</name>
-		<offsets>
-			<x-m>-0.0431</x-m>
-			<y-m>-0.0432</y-m>
-			<z-m>-0.0006</z-m>
-			<heading-deg>90</heading-deg>
-		</offsets>
-		<alignment>left-center</alignment>
-		<axis-alignment>xy-plane</axis-alignment>
-		<type type="string">number-value</type>
-		<format type="string">%3.0f</format>
-		<property>/flight-management/spd-manager/climb/spd2</property>
-		<truncate type="bool">false</truncate>
-		<font type="string">courier-bold.txf</font>
-		<draw-text type="bool">true</draw-text>
-		<draw-alignment type="bool">false</draw-alignment>
-		<draw-boundingbox type="bool">false</draw-boundingbox>
-		<character-size>0.003</character-size>
-		<font-resolution>
-			<width type="int">32</width>
-			<height type="int">32</height>
-		</font-resolution>
-	</text>
-	
+
 	<text>
 		<name>cyan</name>
 		<offsets>
@@ -230,7 +138,7 @@
 		<axis-alignment>xy-plane</axis-alignment>
 		<type type="string">number-value</type>
 		<format type="string">%0.2f</format>
-		<property>/flight-management/spd-manager/climb/mach</property>
+		<property>/flight-management/spd-manager/cruise/mach</property>
 		<truncate type="bool">false</truncate>
 		<font type="string">courier-bold.txf</font>
 		<draw-text type="bool">true</draw-text>
@@ -255,7 +163,7 @@
 		<axis-alignment>xy-plane</axis-alignment>
 		<type type="string">text-value</type>
 		<format type="string">%s</format>
-		<property>/flight-management/spd-manager/climb/mode</property>
+		<property>/flight-management/spd-manager/cruise/mode</property>
 		<truncate type="bool">false</truncate>
 		<font type="string">courier-bold.txf</font>
 		<draw-text type="bool">true</draw-text>
