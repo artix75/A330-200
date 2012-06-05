@@ -531,9 +531,9 @@
 		<object-name>elevator0</object-name>
 		<property>/fdm/jsbsim/fcs/elevator-fbw-output</property>
 		<interpolation>
-			<entry><ind>-1</ind><dep>-35</dep></entry>
+			<entry><ind>-1</ind><dep>-20</dep></entry>
 			<entry><ind>0</ind><dep>0</dep></entry>
-			<entry><ind>1</ind><dep>25</dep></entry>
+			<entry><ind>1</ind><dep>15</dep></entry>
 		</interpolation>
 		<axis>
 			<x1-m>33.9466</x1-m>
@@ -550,9 +550,9 @@
 		<object-name>elevator1</object-name>
 		<property>/fdm/jsbsim/fcs/elevator-fbw-output</property>
 		<interpolation>
-			<entry><ind>-1</ind><dep>35</dep></entry>
+			<entry><ind>-1</ind><dep>20</dep></entry>
 			<entry><ind>0</ind><dep>0</dep></entry>
-			<entry><ind>1</ind><dep>-25</dep></entry>
+			<entry><ind>1</ind><dep>-15</dep></entry>
 		</interpolation>
 		<axis>
 			<x1-m>33.9466</x1-m>

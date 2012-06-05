@@ -63,9 +63,9 @@
 					
 					} else {
 					
-						setprop("autopilot/route-manager/route/wp[" ~ first ~ "]/ias-mach", spd);
+						setprop("autopilot/route-manager/route/wp[" ~ (first - 1) ~ "]/ias-mach", spd);
 					
-						setprop("autopilot/route-manager/route/wp[" ~ first ~ "]/altitude-ft", alt);
+						setprop("autopilot/route-manager/route/wp[" ~ (first - 1) ~ "]/altitude-ft", alt);
 					
 					}
 					
@@ -102,9 +102,9 @@
 					
 					} else {
 					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/ias-mach", spd);
+						setprop("autopilot/route-manager/route/wp[" ~ first ~ "]/ias-mach", spd);
 					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/altitude-ft", alt);
+						setprop("autopilot/route-manager/route/wp[" ~ first ~ "]/altitude-ft", alt);
 					
 					}
 					
@@ -143,9 +143,9 @@
 					
 					} else {
 					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/ias-mach", spd);
+						setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/ias-mach", spd);
 					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/altitude-ft", alt);
+						setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/altitude-ft", alt);
 					
 					}
 					
@@ -186,9 +186,9 @@
 					
 					} else {
 					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/ias-mach", spd);
+						setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/ias-mach", spd);
 					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/altitude-ft", alt);
+						setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/altitude-ft", alt);
 					
 					}
 					
@@ -229,9 +229,9 @@
 					
 					} else {
 					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 4) ~ "]/ias-mach", spd);
+						setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/ias-mach", spd);
 					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 4) ~ "]/altitude-ft", alt);
+						setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/altitude-ft", alt);
 					
 					}
 					
