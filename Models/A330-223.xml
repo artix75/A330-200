@@ -44,6 +44,11 @@
 		
 		rplayer.getNode("/aircraft/nose-compression", 1).alias(rplayer.getNode("sim/multiplay/generic/float[9]"));
 
+		rplayer.getNode("/fdm/jsbsim/fcs/elevator-fbw-output", 1).alias(rplayer.getNode("sim/multiplay/generic/float[10]"));
+		
+		rplayer.getNode("/fdm/jsbsim/fcs/aileron-fbw-output", 1).alias(rplayer.getNode("sim/multiplay/generic/float[11]"));
+
+
 		</load>
 	</nasal>
 

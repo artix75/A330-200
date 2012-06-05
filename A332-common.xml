@@ -54,6 +54,9 @@
 				<float n="7" alias="/engines/engine[1]/reverser-pos-norm"/>
 				<float n="8" alias="/aircraft/wingflex"/>
 				<float n="9" alias="/aircraft/nose-compression"/>
+				
+				<float n="10" alias="/fdm/jsbsim/fcs/elevator-fbw-output"/>
+				<float n="11" alias="/fdm/jsbsim/fcs/aileron-fbw-output"/>
 			</generic>
 		</multiplay>
 		
