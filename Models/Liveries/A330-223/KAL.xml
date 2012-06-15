@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Korean Air</name>
-				<texture>Liveries/A330-223/KAL.png</texture>
+				<a332-texture>Liveries/A330-223/KAL.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

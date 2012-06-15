@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Blank Livery</name>
-				<texture>Liveries/A330-203/livery_blank.png</texture>
+				<a332-texture>Liveries/A330-203/livery_blank.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

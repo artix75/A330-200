@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Swiss International Airlines</name>
-				<texture>Liveries/A330-223/SWR.png</texture>
+				<a332-texture>Liveries/A330-223/SWR.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

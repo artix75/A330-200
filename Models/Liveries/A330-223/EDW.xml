@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Edelweiss Air</name>
-				<texture>Liveries/A330-223/EDW.png</texture>
+				<a332-texture>Liveries/A330-223/EDW.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

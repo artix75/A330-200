@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Air Transat</name>
-				<texture>Liveries/A330-243/TSC.png</texture>
+				<a332-texture>Liveries/A330-243/TSC.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

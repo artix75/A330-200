@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Cyprus Airways</name>
-				<texture>Liveries/A330-243/CYP.png</texture>
+				<a332-texture>Liveries/A330-243/CYP.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

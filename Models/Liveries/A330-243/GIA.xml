@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Garuda Indonesia</name>
-				<texture>Liveries/A330-243/GIA.png</texture>
+				<a332-texture>Liveries/A330-243/GIA.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

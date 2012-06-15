@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>QATAR Airways</name>
-				<texture>Liveries/A330-203/QTR.png</texture>
+				<a332-texture>Liveries/A330-203/QTR.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>QANTAS The Spirit Of Australia</name>
-				<texture>Liveries/A330-203/QFA.png</texture>
+				<a332-texture>Liveries/A330-203/QFA.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

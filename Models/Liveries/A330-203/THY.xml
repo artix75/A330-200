@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Turkish Airlines</name>
-				<texture>Liveries/A330-203/THY.png</texture>
+				<a332-texture>Liveries/A330-203/THY.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

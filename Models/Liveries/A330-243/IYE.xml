@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Yemenia Airlines</name>
-				<texture>Liveries/A330-243/IYE.png</texture>
+				<a332-texture>Liveries/A330-243/IYE.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

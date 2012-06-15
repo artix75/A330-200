@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Brussels Airlines</name>
-				<texture>Liveries/A330-223/BEL.png</texture>
+				<a332-texture>Liveries/A330-223/BEL.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

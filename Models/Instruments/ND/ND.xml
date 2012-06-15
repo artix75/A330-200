@@ -2,7 +2,7 @@
 <PropertyList>
 
  <path>res/nd-empty.ac</path>
-	<!-- model>
+	<model>
 		<path>Aircraft/A330-200/Models/Instruments/ND/terrain-map-pixel.xml</path>
 		<condition>
 			<and>
@@ -11,7 +11,7 @@
 					<value>15</value>
 				</greater-than>
 
-				<property>/instrumentation/efis/input/TERR</property>
+				<property>/instrumentation/efis/nd/terrain-on-nd</property>
 
 			</and>
 		</condition>
@@ -19,7 +19,7 @@
 		<offsets>
 			<x-m>0.001</x-m>
 		</offsets>
-	</model -->
+	</model>
     <panel>
         <path>Aircraft/A330-200/Models/Instruments/ND/Display.xml</path>
 	<condition>

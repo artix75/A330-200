@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Air China</name>
-				<texture>Liveries/A330-243/CCA.png</texture>
+				<a332-texture>Liveries/A330-243/CCA.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

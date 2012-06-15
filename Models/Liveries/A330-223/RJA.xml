@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Royal Jordanian Airlines</name>
-				<texture>Liveries/A330-223/RJA.png</texture>
+				<a332-texture>Liveries/A330-223/RJA.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

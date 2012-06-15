@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Jet Airways</name>
-				<texture>Liveries/A330-243/JAI.png</texture>
+				<a332-texture>Liveries/A330-243/JAI.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

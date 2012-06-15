@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Sichuan Airlines</name>
-				<texture>Liveries/A330-243/CSC.png</texture>
+				<a332-texture>Liveries/A330-243/CSC.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

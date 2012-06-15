@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Merlion Virtual Airlines</name>
-				<texture>Liveries/A330-243/MIA.png</texture>
+				<a332-texture>Liveries/A330-243/MIA.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

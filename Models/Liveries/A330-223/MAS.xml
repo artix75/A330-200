@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Malaysian Airlines</name>
-				<texture>Liveries/A330-223/MAS.png</texture>
+				<a332-texture>Liveries/A330-223/MAS.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

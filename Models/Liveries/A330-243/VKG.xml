@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Thomas Cook Scandinavia</name>
-				<texture>Liveries/A330-243/VKG.png</texture>
+				<a332-texture>Liveries/A330-243/VKG.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

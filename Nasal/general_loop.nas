@@ -65,7 +65,34 @@ var general_loop_1 = {
 
 };
 
+var terrain_loop = {
+       init : func {
+            me.UPDATE_INTERVAL = 0.03;
+            me.loopid = 0;
+            
+            me.reset();
+    },
+    	update : func {
+    	
+    	if (getprop("/instrumentation/efis/nd/terrain-on-nd"))
+    		terrain_map();
+    	
+	},
+
+        reset : func {
+            me.loopid += 1;
+            me._loop_(me.loopid);
+    },
+        _loop_ : func(id) {
+            id == me.loopid or return;
+            me.update();
+            settimer(func { me._loop_(id); }, me.UPDATE_INTERVAL);
+    }
+
+};
+
 setlistener("sim/signals/fdm-initialized", func
  {
  general_loop_1.init();
+ terrain_loop.init();
  });

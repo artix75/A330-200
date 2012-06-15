@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>KLM Royal Dutch Airline</name>
-				<texture>Liveries/A330-203/KLM.png</texture>
+				<a332-texture>Liveries/A330-203/KLM.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

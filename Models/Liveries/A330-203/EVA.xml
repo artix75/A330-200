@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>EVA AIR (Normal)</name>
-				<texture>Liveries/A330-203/EVA.png</texture>
+				<a332-texture>Liveries/A330-203/EVA.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

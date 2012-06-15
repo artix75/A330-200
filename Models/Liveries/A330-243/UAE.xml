@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Emirates</name>
-				<texture>Liveries/A330-243/UAE.png</texture>
+				<a332-texture>Liveries/A330-243/UAE.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Avianca</name>
-				<texture>Liveries/A330-243/AVA.png</texture>
+				<a332-texture>Liveries/A330-243/AVA.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

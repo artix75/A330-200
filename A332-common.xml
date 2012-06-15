@@ -493,6 +493,7 @@
 					<display-mode type="string">VOR</display-mode>
 					<display-mode-knob type="int">2</display-mode-knob>
 					<display-range type="int">40</display-range>
+					<terrain-on-nd type="int">0</terrain-on-nd>
 				
 			</nd>
 			<input>
@@ -749,7 +750,7 @@
 				   <binding>
 					<command>nasal</command>
 					<script>
-						setprop("/sim/current-view/pitch-offset-deg", getprop("/sim/current-view/pitch-offset-deg") - 1);
+						setprop("/sim/current-view/pitch-offset-deg", getprop("/sim/current-view/pitch-offset-deg") - 0.2);
 					</script>
 				   </binding>
 				  </mod-alt>
@@ -762,7 +763,7 @@
 				   <binding>
 					<command>nasal</command>
 					<script>
-						setprop("/sim/current-view/heading-offset-deg", getprop("/sim/current-view/heading-offset-deg") + 1);
+						setprop("/sim/current-view/heading-offset-deg", getprop("/sim/current-view/heading-offset-deg") + 0.2);
 					</script>
 				   </binding>
 				  </mod-alt>
@@ -917,6 +918,7 @@
 		</fbw>
 
 		<a332>
+			<file>Aircraft/A330-200/Nasal/terrainmap.nas</file>
 			<file>Aircraft/A330-200/Nasal/ground-services.nas</file>
 			<file>Aircraft/A330-200/Nasal/doors.nas</file>
 			<file>Aircraft/Generic/limits.nas</file>

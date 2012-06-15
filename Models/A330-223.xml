@@ -76,7 +76,7 @@
 		<object-name>pw.nacelle1</object-name>
 		<object-name>pw.reverser1</object-name>
 		<property-base>sim/model/livery</property-base>
-		<texture-prop>texture</texture-prop>
+		<texture-prop>a332-texture</texture-prop>
 	</animation>
 
 	<!-- Nasal code -->

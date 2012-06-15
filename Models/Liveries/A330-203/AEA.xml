@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>Air Europa</name>
-				<texture>Liveries/A330-203/AEA.png</texture>
+				<a332-texture>Liveries/A330-203/AEA.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

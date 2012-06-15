@@ -5,7 +5,7 @@
 		<model>
 			<livery>
 				<name>China Eastern</name>
-				<texture>Liveries/A330-243/CES.png</texture>
+				<a332-texture>Liveries/A330-243/CES.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

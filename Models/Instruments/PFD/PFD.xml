@@ -786,5 +786,31 @@
 			</equals>
 		</condition>
 	</animation>
+	
+	<!-- Sidestick Deflection -->
+	
+	<animation>
+        <type>translate</type>
+        <object-name>sidestick-pos</object-name>
+        <property>controls/flight/elevator</property>
+        <factor>0.0258</factor>
+        <axis>
+            <x>0</x>
+            <y>0</y>
+            <z>-1</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>translate</type>
+        <object-name>sidestick-pos</object-name>
+        <property>controls/flight/aileron</property>
+        <factor>0.0260</factor>
+        <axis>
+            <x>0</x>
+            <y>1</y>
+            <z>0</z>
+        </axis>
+    </animation>
 
 </PropertyList>
