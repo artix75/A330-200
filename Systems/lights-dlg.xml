@@ -118,6 +118,26 @@
 			</binding>
 			<live>true</live>
 		</checkbox>
+		
+		<hrule />
+		
+		<checkbox>
+			<label>Cockpit Lights</label>
+			<property>controls/lighting/cockpit</property>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+			<live>true</live>
+		</checkbox>
+		
+		<checkbox>
+			<label>Wing Lights</label>
+			<property>controls/lighting/wing</property>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+			<live>true</live>
+		</checkbox>
 
 <!--		<checkbox>
 			<label>Logo lights</label>

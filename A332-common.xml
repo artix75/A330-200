@@ -763,7 +763,7 @@
 				   <binding>
 					<command>nasal</command>
 					<script>
-						setprop("/sim/current-view/heading-offset-deg", getprop("/sim/current-view/heading-offset-deg") + 0.2);
+						setprop("/sim/current-view/heading-offset-deg", getprop("/sim/current-view/heading-offset-deg") + 0.05);
 					</script>
 				   </binding>
 				  </mod-alt>

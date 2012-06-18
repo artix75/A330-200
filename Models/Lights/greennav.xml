@@ -2,27 +2,64 @@
 
 <PropertyList>
 
-	<path>res/greennav.ac</path>
+	<path>greennav.ac</path>
 
-	<!-- ANIMATIONS -->
-	<!-- On/off -->
 	<animation>
-		<name>On/off</name>
 		<type>select</type>
-		<object-name>Light</object-name>
 		<condition>
 			<greater-than>
-				<property>controls/lighting/nav-lights-switch</property>
-				<value>0</value>
+				<property>systems/electrical/outputs/nav-lights</property>
+				<value>5</value>
 			</greater-than>
 		</condition>
 	</animation>
 
-	<!-- Billboard animation -->
 	<animation>
-		<name>Billboard</name>
 		<type>billboard</type>
-		<object-name>Light</object-name>
 	</animation>
+	
+	<animation>
+		<type>light</type>
+		<light-type>point</light-type>
+		<object-name>Sphere</object-name>
+		<position>
+			<x>0</x>
+			<y>0</y>
+			<z>0</z>
+		</position>
+		<ambient>
+			<r>0.03</r>
+			<g>0.03</g>
+			<b>0.03</b>
+			<a>1.0</a>
+		</ambient>
+		<diffuse>
+			<r>0.2</r>
+			<g>1.0</g>
+			<b>0.2</b>
+			<a>1.0</a>
+		</diffuse>
+		<specular>
+			<r>0.7</r>
+			<g>0.7</g>
+			<b>0.7</b>
+			<a>1.0</a>
+		</specular>
+		<attenuation>
+			<c>10.0</c>
+			<l>0.002</l>
+			<q>0.005</q>
+		</attenuation>
+		<exponent>2.0</exponent>
+		<near-m>0.0001</near-m>
+		<far-m>79</far-m>
+		<cutoff>110</cutoff>
+	</animation>
+	
+	<effect>
+		<name>REMBRANDT transparency</name>
+		<inherits-from>Effects/model-transparent</inherits-from>
+		<object-name>Light</object-name>
+	</effect>
 
 </PropertyList>
