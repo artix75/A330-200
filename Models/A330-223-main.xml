@@ -191,7 +191,7 @@
 		<name>Top beacon light</name>
 		<path>Aircraft/A330-200/Models/Lights/beacon.xml</path>
 		<offsets>
-			<x-m>7,34</x-m>
+			<x-m>7.34</x-m>
 			<y-m>0</y-m>
 			<z-m>3.16</z-m>
 		</offsets>
