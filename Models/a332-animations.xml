@@ -13,10 +13,7 @@
 				<image>Aircraft/A330-200/Models/Effects/res/logo-lightmap.png</image>
 			</texture>
 			<condition>
-				<equals>
-					<property>controls/lighting/nav-lights-switch</property>
-					<value>2</value>
-				</equals>
+				<use>controls/lighting/logo</use>
 			</condition>
 		</parameters>
 		<object-name>rudder</object-name>
@@ -35,6 +32,47 @@
 		</parameters>
 		<object-name>fuselage</object-name>
 	</effect>
+	
+	<!-- Landing Lights -->
+	
+	<animation>
+    	<type>material</type>
+		<object-name>landing-l</object-name>
+    	<condition>
+        	<property>controls/lighting/landing-lights[0]</property>
+  		</condition>
+    	<emission>
+      		<red>   1 </red>
+      		<green> 1 </green>
+      		<blue>  1 </blue>
+    	</emission>
+  	</animation>
+  	
+  	<animation>
+    	<type>material</type>
+		<object-name>landing-r</object-name>
+    	<condition>
+        	<property>controls/lighting/landing-lights[2]</property>
+  		</condition>
+    	<emission>
+      		<red>   1 </red>
+      		<green> 1 </green>
+      		<blue>  1 </blue>
+    	</emission>
+  	</animation>
+  	
+  	<animation>
+    	<type>material</type>
+		<object-name>taxi-light</object-name>
+    	<condition>
+        	<property>controls/lighting/landing-lights[1]</property>
+  		</condition>
+    	<emission>
+      		<red>   1 </red>
+      		<green> 1 </green>
+      		<blue>  1 </blue>
+    	</emission>
+  	</animation>
 	
 	<!-- ################################################################### -->
 	

@@ -6,7 +6,7 @@
 	<layout>vbox</layout>
 
 	<text>
-		<label>A320 Light Controller</label>
+		<label>A330 Light Controller</label>
 	</text>
 
 	<hrule />
@@ -22,7 +22,7 @@
 			<layout>hbox</layout>
 
 			<checkbox>
-				<label>Left Landing</label>
+				<label>Left</label>
 				<property>controls/lighting/landing-lights[0]</property>
 				<binding>
 					<command>dialog-apply</command>
@@ -31,7 +31,7 @@
 			</checkbox>
 
 			<checkbox>
-				<label>Taxi Lights</label>
+				<label>Taxi</label>
 				<property>controls/lighting/landing-lights[1]</property>
 				<binding>
 					<command>dialog-apply</command>
@@ -40,7 +40,7 @@
 			</checkbox>
 			
 			<checkbox>
-				<label>Right Landing</label>
+				<label>Right</label>
 				<property>controls/lighting/landing-lights[2]</property>
 				<binding>
 					<command>dialog-apply</command>
