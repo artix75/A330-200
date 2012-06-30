@@ -1,14 +1,10 @@
 AC3Db
 MATERIAL "ac3dmat1" rgb 1 1 1  amb 1 1 1  emis 0 0 0  spec 0 0 0  shi 128  trans 0
 OBJECT world
-kids 1
-OBJECT group
-name "hold"
-loc -0.0469992 -0.0215586 0.00326157
-kids 17
+kids 4
 OBJECT poly
 name "v1-empty"
-loc 0.0246788 -0.0571584 -0.034578
+loc -0.0223204 -0.078717 -0.0313164
 texture "hold.png"
 crease 45.000000
 numvert 4
@@ -27,12 +23,12 @@ refs 4
 kids 0
 OBJECT poly
 name "v1-empty"
-loc 0.0158823 -0.0571584 -0.034578
+loc -0.0311169 -0.078717 -0.0313164
 texture "hold.png"
 crease 45.000000
 numvert 4
--0.000951756 0.0782193 -0.0126955
--0.000953972 0.0782178 0.0132641
+-0.000951754 0.0782193 -0.0126955
+-0.000953974 0.0782178 0.0132641
 -0.00498228 0.0782178 -0.0126855
 -0.00498046 0.0782163 0.0132677
 numsurf 1
@@ -46,7 +42,7 @@ refs 4
 kids 0
 OBJECT poly
 name "v1-empty"
-loc 0.0244275 -0.0571584 0.0269979
+loc -0.0225717 -0.078717 0.0302595
 texture "hold.png"
 crease 45.000000
 numvert 4
@@ -63,9 +59,13 @@ refs 4
 1 0.972747 0.756112
 0 0.785656 0.756085
 kids 0
+OBJECT group
+name "hold"
+loc -0.049807 -0.0215586 0.00692824
+kids 14
 OBJECT poly
 name "v1-empty"
-loc -0.0301111 -0.0571584 0.00719023
+loc -0.0273033 -0.0571584 0.00352356
 texture "hold.png"
 crease 45.000000
 numvert 4
@@ -84,7 +84,7 @@ refs 4
 kids 0
 OBJECT poly
 name "l1"
-loc -0.0254175 0.0238265 0.0552888
+loc -0.0226097 0.0238265 0.0516221
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -127,7 +127,7 @@ refs 16
 kids 0
 OBJECT poly
 name "r1"
-loc -0.0254417 0.0238265 -0.0541064
+loc -0.0226339 0.0238265 -0.0577731
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -170,7 +170,7 @@ refs 16
 kids 0
 OBJECT poly
 name "l2"
-loc -0.016203 0.0238265 0.055335
+loc -0.0133952 0.0238265 0.0516683
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -213,7 +213,7 @@ refs 16
 kids 0
 OBJECT poly
 name "r2"
-loc -0.0162275 0.0238265 -0.0540599
+loc -0.0134197 0.0238265 -0.0577266
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -256,7 +256,7 @@ refs 16
 kids 0
 OBJECT poly
 name "l3"
-loc -0.0074821 0.0238265 0.055335
+loc -0.00467432 0.0238265 0.0516683
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -299,7 +299,7 @@ refs 16
 kids 0
 OBJECT poly
 name "r3"
-loc -0.0075063 0.0238265 -0.0540599
+loc -0.00469852 0.0238265 -0.0577266
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -342,7 +342,7 @@ refs 16
 kids 0
 OBJECT poly
 name "l4"
-loc 0.0018919 0.0238265 0.055291
+loc 0.00469968 0.0238265 0.0516243
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -385,7 +385,7 @@ refs 16
 kids 0
 OBJECT poly
 name "r4"
-loc 0.0018673 0.0238265 -0.0541038
+loc 0.00467508 0.0238265 -0.0577705
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -428,7 +428,7 @@ refs 16
 kids 0
 OBJECT poly
 name "l5"
-loc 0.0111994 0.0238265 0.055269
+loc 0.0140072 0.0238265 0.0516023
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -471,7 +471,7 @@ refs 16
 kids 0
 OBJECT poly
 name "r5"
-loc 0.0111752 0.0238265 -0.0541258
+loc 0.013983 0.0238265 -0.0577925
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -514,7 +514,7 @@ refs 16
 kids 0
 OBJECT poly
 name "l6"
-loc 0.019891 0.0238265 0.055357
+loc 0.0226988 0.0238265 0.0516903
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -557,7 +557,7 @@ refs 16
 kids 0
 OBJECT poly
 name "r6"
-loc 0.0198667 0.0238265 -0.0540379
+loc 0.0226745 0.0238265 -0.0577046
 texture "hold.png"
 crease 45.000000
 numvert 16
@@ -600,7 +600,7 @@ refs 16
 kids 0
 OBJECT poly
 name "fuel-white"
-loc -0.00249118 -0.0572847 0.027586
+loc 0.000316594 -0.0572847 0.0239193
 texture "hold.png"
 crease 45.000000
 numvert 4

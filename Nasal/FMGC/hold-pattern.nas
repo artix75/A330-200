@@ -47,10 +47,21 @@ var hold_pattern = {
 		
 		var rad_perp1 = 0;
 		
-		if (radial + 90 > 360)
-			rad_perp1 = radial - 270;
-		else
-			rad_perp1 = radial + 90;
+		if (turn == "R") {
+		
+			if (radial + 90 > 360)
+				rad_perp1 = radial - 270;
+			else
+				rad_perp1 = radial + 90;
+				
+		} else {
+		
+			if (radial + 270 > 360)
+				rad_perp1 = radial - 90;
+			else
+				rad_perp1 = radial + 270;
+		
+		}
 		
 		wp_pos.apply_course_distance(rad_perp1, (dist * 2 * NM2M) / math.pi);
 		
@@ -71,10 +82,21 @@ var hold_pattern = {
 		
 		var rad_perp2 = 0;
 		
-		if (radial + 270 > 360)
-			rad_perp2 = radial - 90;
-		else
-			rad_perp2 = radial + 270;
+		if (turn == "R") {
+		
+			if (radial + 270 > 360)
+				rad_perp2 = radial - 90;
+			else
+				rad_perp2 = radial + 270;
+				
+		} else {
+		
+			if (radial + 90 > 360)
+				rad_perp2 = radial - 270;
+			else
+				rad_perp2 = radial + 90;
+		
+		}
 			
 		wp_pos.apply_course_distance(rad_perp2, (dist * 2 * NM2M) / math.pi);
 		
@@ -95,15 +117,15 @@ var hold_pattern = {
 		if (diff2 <= 0)
 			diff2 = 360 - math.abs(diff2);
 		
-		if ((diff1 > 110) and (diff2 <= 180)) {
+		if ((diff1 <= 110) or (diff2 <= 70)) {
+		
+			setprop("/flight-management/hold/entry", "direct");
+		
+		} elsif ((diff1 > 110) and (diff2 <= 180)) {
 			
 			setprop("/flight-management/hold/entry", "tear-drop");
 			
 			setprop("/flight-management/hold/entry-phase", 0);
-		
-		} elsif ((diff1 <= 110) or (diff2 <= 70)) {
-		
-			setprop("/flight-management/hold/entry", "direct");
 		
 		} else {
 		
