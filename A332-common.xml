@@ -9,7 +9,7 @@
 		<model>
 			<A332>
 				<heading-bug-pfd-deg type="double">0</heading-bug-pfd-deg>
-				<heading-bug-deg type="double">0</heading-bug-deg>
+				<heading-bug-deg type="double">0</heading-bug-deg>f
 				<nav1-bug-deg type="double">0</nav1-bug-deg>
 				<nav2-bug-deg type="double">0</nav2-bug-deg>
 				<wp-bug-deg type="double">0</wp-bug-deg>
@@ -288,6 +288,16 @@
 	</sim>
 
 	<flight-management>
+		<hold>
+			<crs type="int">0</crs>
+			<turn type="string">R</turn>
+			<time type="int">1</time>
+			<dist type="float">5</dist>
+			<phase type="int">0</phase> <!-- 0: OFF | 1: FIX | 2: MIN_END_TURN | 3: PAR_START | 4: PAR_END | 5: ENTRY-->
+			<entry type="string">direct</entry>
+			<wp type="string">---</wp>
+			<wp_id type="int">0</wp_id>
+		</hold>
 		<phase type="string">T/O</phase>
 		<spd-manager>
 			<climb>
@@ -482,6 +492,10 @@
 				<brg type="string">empty</brg>
 				<dist type="string">empty</dist>
 			</prog>
+			<hold>
+				<wp type="string">---</wp>
+				<wp_id type="int">0</wp_id>
+			</hold>
 		</mcdu>
 	
 		<efis n="0">
@@ -889,6 +903,7 @@
 		</procedures>
 		
 		<fmgc>
+			<file>Aircraft/A330-200/Nasal/FMGC/hold-pattern.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/new_flight.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/autoland.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/manage-speeds.nas</file>
