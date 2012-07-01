@@ -1,0 +1,11 @@
+Includes routes from the following sources for ALL of merlion's Airbus A330-243 flights:
+> VATAWARE
+> RouteFinder.com
+> Custom Routes
+> Kelpie Flight Planner
+
+NOTE: To use this routes database, copy the routes.xml file to your $FG_ROOT/Aircraft/A330-200/Database/Company/ folder. If you are asked to replace the old routes.xml, please do so.
+
+If you have any problems, please send an e-mail to either:
+
+support@merlionvirtual.clubos.net OR webmaster@virtualstaralliance.cer33.com
