@@ -14,7 +14,7 @@
 			<w>256</w>
 			<h>256</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel.png</path>
 				<x1>0.0</x1>
 				<y1>0.0</y1>
 				<x2>1</x2>
@@ -275,7 +275,7 @@
 			<w>16</w>
 			<h>16</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
 				<x1>0</x1>
 				<y1>0</y1>
 				<x2>0.5</x2>
@@ -307,7 +307,7 @@
 			<w>16</w>
 			<h>16</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
 				<x1>0</x1>
 				<y1>0</y1>
 				<x2>0.5</x2>
@@ -343,7 +343,7 @@
 			<w>16</w>
 			<h>16</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
 				<x1>0</x1>
 				<y1>0</y1>
 				<x2>0.5</x2>
@@ -380,7 +380,7 @@
 			<w>12</w>
 			<h>3</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
 				<x1>0.532</x1>
 				<y1>0.562</y1>
 				<x2>0.937</x2>
@@ -416,7 +416,7 @@
 			<w>12</w>
 			<h>3</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
 				<x1>0.532</x1>
 				<y1>0.562</y1>
 				<x2>0.937</x2>
@@ -453,7 +453,7 @@
 			<w>12</w>
 			<h>3</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
 				<x1>0.532</x1>
 				<y1>0.562</y1>
 				<x2>0.937</x2>
@@ -489,7 +489,7 @@
 			<w>12</w>
 			<h>3</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
 				<x1>0.532</x1>
 				<y1>0.562</y1>
 				<x2>0.937</x2>
@@ -525,7 +525,7 @@
 			<w>12</w>
 			<h>3</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
 				<x1>0.532</x1>
 				<y1>0.562</y1>
 				<x2>0.937</x2>
@@ -561,7 +561,7 @@
 			<w>12</w>
 			<h>3</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
 				<x1>0.532</x1>
 				<y1>0.562</y1>
 				<x2>0.937</x2>
@@ -595,7 +595,7 @@
 			<w>12</w>
 			<h>3</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fuel-pump.png</path>
 								<x1>0.532</x1>
 				<y1>0.562</y1>
 				<x2>0.937</x2>

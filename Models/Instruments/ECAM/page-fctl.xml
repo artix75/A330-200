@@ -14,7 +14,7 @@
 			<w>256</w>
 			<h>256</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fctl.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fctl.png</path>
 				<x1>0.0</x1>
 				<y1>0.0</y1>
 				<x2>1</x2>
@@ -33,7 +33,7 @@
 			<w>8</w>
 			<h>8</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fctl-arrow.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fctl-arrow.png</path>
 				<x1>0</x1>
 				<y1>0</y1>
 				<x2>0.5</x2>
@@ -62,7 +62,7 @@
 			<w>8</w>
 			<h>8</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fctl-arrow.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fctl-arrow.png</path>
 				<x1>0.5</x1>
 				<y1>0</y1>
 				<x2>1</x2>
@@ -106,7 +106,7 @@
 			<w>8</w>
 			<h>8</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fctl-arrow.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fctl-arrow.png</path>
 				<x1>0</x1>
 				<y1>0</y1>
 				<x2>0.5</x2>
@@ -135,7 +135,7 @@
 			<w>8</w>
 			<h>8</h>
 			<texture>
-				<path>Aircraft/A320neo/Models/Instruments/ECAM/res/page-fctl-arrow.png</path>
+				<path>Aircraft/A330-200/Models/Instruments/ECAM/res/page-fctl-arrow.png</path>
 				<x1>0.5</x1>
 				<y1>0</y1>
 				<x2>1</x2>

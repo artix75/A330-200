@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <PropertyList>
 
- <path>Aircraft/A320neo/Models/Instruments/ECAM/res/EFIS3.ac</path>
+ <path>Aircraft/A330-200/Models/Instruments/ECAM/res/EFIS3.ac</path>
      
     <panel>
-        <path>Aircraft/A320neo/Models/Instruments/ECAM/Display.xml</path>
+        <path>Aircraft/A330-200/Models/Instruments/ECAM/Display.xml</path>
         <bottom-left>
             <x-m>0.001</x-m>
             <y-m>-0.0813</y-m>
