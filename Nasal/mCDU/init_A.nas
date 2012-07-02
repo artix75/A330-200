@@ -97,10 +97,10 @@ var mCDU_init = {
 			
 						# Use 250 kts if under FL100 and 0.78 mach if over FL100
 				
-						if (alt <= 10000)
-							spd = 250;
-						else
-							spd = 0.78;
+						# if (alt <= 10000)
+						#	spd = 250;
+						# else
+						#	spd = 0.78;
 							
 						setprop(active_rte~ "route/wp[" ~ wp ~ "]/ias-mach", spd);
 			
@@ -306,10 +306,10 @@ var mCDU_init = {
 			
 						# Use 250 kts if under FL100 and 0.78 mach if over FL100
 				
-						if (alt <= 10000)
-							spd = 250;
-						else
-							spd = 0.78;
+						# if (alt <= 10000)
+						#	spd = 250;
+						# else
+						#	spd = 0.78;
 							
 						setprop(active_rte~ "route/wp[" ~ wp ~ "]/ias-mach", spd);
 			
