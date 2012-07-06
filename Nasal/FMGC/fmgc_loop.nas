@@ -238,8 +238,18 @@ var fmgc_loop = {
     			if (me.ver_sub == "vs") {
     		
     				var target = getprop(fcu~ "alt");
+    				
+    				var trgt_vs = 0;
+    				
+    				if (((altitude - target) * vs_setting) > 0) {
+    				
+    					trgt_vs = limit((target - altitude) * 2, 200);
+    				
+    				} else {
     			
-    				var trgt_vs = limit2((target - altitude) * 2, vs_setting);
+    					trgt_vs = limit2((target - altitude) * 2, vs_setting);
+    				
+    				}
     				
     				setprop(servo~ "target-vs", trgt_vs / 60);
     				
