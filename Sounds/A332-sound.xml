@@ -752,6 +752,308 @@
         <max-dist>100.0</max-dist>
     </copilot3>
     
+    <!-- Announcements -->
+
+<announcement>
+<name>welcome</name>
+ <path>Aircraft/A330-200/Sounds/announce/welcome.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/welcome</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>safety</name>
+ <path>Aircraft/A330-200/Sounds/announce/safety.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/safety</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>cruise</name>
+ <path>Aircraft/A330-200/Sounds/announce/cruise.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/cruise</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>climb</name>
+ <path>Aircraft/A330-200/Sounds/announce/climb.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/climb</property>
+ </condition>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>cruise-seatbelt</name>
+ <path>Aircraft/A330-200/Sounds/announce/cruise-seatbelt.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/cruise-seatbelt</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>turbulence</name>
+ <path>Aircraft/A330-200/Sounds/announce/turbulence.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/turbulence</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>descent</name>
+ <path>Aircraft/A330-200/Sounds/announce/descent.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/descent</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>land</name>
+ <path>Aircraft/A330-200/Sounds/announce/land.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/land</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>gate</name>
+ <path>Aircraft/A330-200/Sounds/announce/gate.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/gate</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>emergency</name>
+ <path>Aircraft/A330-200/Sounds/announce/emergency.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/emergency</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>pretakeoff</name>
+ <path>Aircraft/A330-200/Sounds/announce/pretakeoff.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/pretakeoff</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>boarding1</name>
+ <path>Aircraft/A330-200/Sounds/announce/music.wav</path>
+ <mode>looped</mode>
+ <condition>
+  <property>sim/sound/music1</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>boarding2</name>
+ <path>Aircraft/A330-200/Sounds/announce/music2.wav</path>
+ <mode>looped</mode>
+ <condition>
+  <property>sim/sound/music2</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>boarding3</name>
+ <path>Aircraft/A330-200/Sounds/announce/etihad-board.wav</path>
+ <mode>looped</mode>
+ <condition>
+  <property>sim/sound/music3</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>boarding4</name>
+ <path>Aircraft/A330-200/Sounds/announce/qatar-board.wav</path>
+ <mode>looped</mode>
+ <condition>
+  <property>sim/sound/music4</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+
+<announcement>
+<name>brace</name>
+ <path>Aircraft/A330-200/Sounds/announce/brace.wav</path>
+ <mode>once</mode>
+ <condition>
+  <property>sim/sound/brace</property>
+ </condition>
+        <volume>
+            <factor>8</factor>
+        </volume>
+  <position>
+      <x>0.00</x>
+      <y>0.00</y>
+      <z>0.00</z>
+ </position>
+ <reference-dist>10.0</reference-dist>
+ <max-dist>100.0</max-dist>
+</announcement>
+    
     <ge include="GE-sound.xml" omit-node="y" />
     
     <pw include="PW-sound.xml" omit-node="y" />

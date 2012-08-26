@@ -281,6 +281,50 @@
 							</script>
 						</binding>
 					</item>
+					<item>
+      					<label>Announcements</label>
+      					<binding>
+       					<command>nasal</command>
+       					<script>
+	  				var mal = gui.Dialog.new("/sim/gui/dialogs/announce/dialog", 
+                                                              "Aircraft/A330-200/Systems/announcements-dlg.xml");
+        				mal.open();
+       					</script>
+      					</binding>
+     					</item>
+				</menu>
+				<menu n="101">
+					<label>Reset Systems</label>
+					<item>
+						<name>fmgcreset</name>
+						<label>Reset FMGC Loop</label>
+						<binding>
+							<command>nasal</command>
+							<script>
+								fmgc.fmgc_loop.init();
+							</script>
+						</binding>
+					</item>
+					<item>
+						<name>wpreset</name>
+						<label>Reset WP Transition</label>
+						<binding>
+							<command>nasal</command>
+							<script>
+								fmgc.wp_transit.init();
+							</script>
+						</binding>
+					</item>
+					<item>
+						<name>hydreset</name>
+						<label>Reset Hydraulics</label>
+						<binding>
+							<command>nasal</command>
+							<script>
+								hydraulics.hydraulics_loop.init();
+							</script>
+						</binding>
+					</item>
 				</menu>
 			</default>
 		</menubar>
