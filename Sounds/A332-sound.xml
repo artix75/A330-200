@@ -818,6 +818,7 @@
  <condition>
   <property>sim/sound/climb</property>
  </condition>
+ <position>
       <x>0.00</x>
       <y>0.00</y>
       <z>0.00</z>
