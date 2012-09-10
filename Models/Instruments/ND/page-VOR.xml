@@ -279,12 +279,6 @@
 					<type>y-shift</type>
 					<offset>-12</offset>
 				</transformation>
-				<!-- Correct our heading deviation -->
-				<transformation>
-					<type>rotation</type>
-					<property>orientation/heading-deg</property>
-					<scale>-1</scale>
-				</transformation>
 				<!-- Correct VOR Source heading -->
 				<transformation>
 					<type>rotation</type>
@@ -323,12 +317,6 @@
 				<transformation>
 					<type>y-shift</type>
 					<offset>-12</offset>
-				</transformation>
-				<!-- Correct our heading deviation -->
-				<transformation>
-					<type>rotation</type>
-					<property>orientation/heading-deg</property>
-					<scale>-1</scale>
 				</transformation>
 				<!-- Correct VOR Source heading -->
 				<transformation>
