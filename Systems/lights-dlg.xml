@@ -121,6 +121,15 @@
 		</checkbox>
 		
 		<hrule />
+
+		<checkbox>
+			<label>Cabin Lights</label>
+			<property>controls/lighting/cabin-lights</property>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+			<live>true</live>
+		</checkbox>
 		
 		<checkbox>
 			<label>Cockpit Lights</label>
@@ -133,7 +142,7 @@
 		
 		<checkbox>
 			<label>Wing Lights</label>
-			<property>controls/lighting/wing</property>
+			<property>controls/lighting/wing-lights</property>
 			<binding>
 				<command>dialog-apply</command>
 			</binding>

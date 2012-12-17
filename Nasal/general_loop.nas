@@ -63,7 +63,7 @@ var general_loop_1 = {
     		setprop("/controls/lighting/logo", 1);
     	else
     		setprop("/controls/lighting/logo", 0);
-
+    		
 	},
 
         reset : func {

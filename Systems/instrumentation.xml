@@ -171,12 +171,11 @@ file, these values will be used (they are hardcoded).
 		<!--range-source>instrumentation/radar/range</range-source-->
 	</groundradar>
 
-    <!--navigation-display>
-        <name>nd</name>
-        <number>0</number>        
-        <symbols include="nav-display-c.xml"/>
-    </navigation-display-->
-    
+	<navigation-display>
+		<name>nd</name>
+		<number>0</number>        
+		<symbols include="nav-display.xml"/>
+	</navigation-display>
 
 <!-- Does an airliner have TACAN?	<tacan>
 		<name>tacan</name>
@@ -187,18 +186,5 @@ file, these values will be used (they are hardcoded).
 		<name>mk-viii</name>
 		<number>0</number>
 	</mk-viii>
-
-	<navigation-display>
-		<name>nd</name>
-		<number>0</number>        
-		<symbols include="nav-display-c.xml"/>
-	</navigation-display>
-
-	<navigation-display>
-		<name>nd</name>
-		<number>1</number>        
-		<symbols include="nav-display-fo.xml"/>
-	</navigation-display>
-
 
 </PropertyList>

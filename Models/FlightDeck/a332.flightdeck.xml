@@ -2062,7 +2062,7 @@
 			<repeatable type="bool">false</repeatable>
 			<binding>
 				<command>property-toggle</command>
-				<property>/instrumentation/efis[1]/inputs/CSTR</property>
+				<property>/instrumentation/efis/inputs/CSTR</property>
 			</binding>
 		</action>
 	</animation>
@@ -2075,7 +2075,7 @@
 			<repeatable type="bool">false</repeatable>
 			<binding>
 				<command>property-toggle</command>
-				<property>/instrumentation/efis[1]/inputs/WPT</property>
+				<property>/instrumentation/efis/inputs/WPT</property>
 			</binding>
 		</action>
 	</animation>
@@ -2088,7 +2088,7 @@
 			<repeatable type="bool">false</repeatable>
 			<binding>
 				<command>property-toggle</command>
-				<property>/instrumentation/efis[1]/inputs/VORD</property>
+				<property>/instrumentation/efis/inputs/VORD</property>
 			</binding>
 		</action>
 	</animation>
@@ -2101,7 +2101,7 @@
 			<repeatable type="bool">false</repeatable>
 			<binding>
 				<command>property-toggle</command>
-				<property>/instrumentation/efis[1]/inputs/NDB</property>
+				<property>/instrumentation/efis/inputs/NDB</property>
 			</binding>
 		</action>
 	</animation>
@@ -2114,7 +2114,7 @@
 			<repeatable type="bool">false</repeatable>
 			<binding>
 				<command>property-toggle</command>
-				<property>/instrumentation/efis[1]/inputs/ARPT</property>
+				<property>/instrumentation/efis/inputs/ARPT</property>
 			</binding>
 		</action>
 	</animation>
@@ -2122,7 +2122,7 @@
 	<animation>
 		<type>textranslate</type>
 		<object-name>cstr</object-name>
-		<property>/instrumentation/efis[1]/inputs/CSTR</property>
+		<property>/instrumentation/efis/inputs/CSTR</property>
 		<factor>0.0625</factor>
 		<axis>
 			<x>0</x>
@@ -2134,7 +2134,7 @@
 	<animation>
 		<type>textranslate</type>
 		<object-name>wpt</object-name>
-		<property>/instrumentation/efis[1]/inputs/WPT</property>
+		<property>/instrumentation/efis/inputs/WPT</property>
 		<factor>0.0625</factor>
 		<axis>
 			<x>0</x>
@@ -2146,7 +2146,7 @@
 	<animation>
 		<type>textranslate</type>
 		<object-name>vord</object-name>
-		<property>/instrumentation/efis[1]/inputs/VORD</property>
+		<property>/instrumentation/efis/inputs/VORD</property>
 		<factor>0.0625</factor>
 		<axis>
 			<x>0</x>
@@ -2158,7 +2158,7 @@
 	<animation>
 		<type>textranslate</type>
 		<object-name>ndb</object-name>
-		<property>/instrumentation/efis[1]/inputs/NDB</property>
+		<property>/instrumentation/efis/inputs/NDB</property>
 		<factor>0.0625</factor>
 		<axis>
 			<x>0</x>
@@ -2170,7 +2170,7 @@
 	<animation>
 		<type>textranslate</type>
 		<object-name>arpt</object-name>
-		<property>/instrumentation/efis[1]/inputs/ARPT</property>
+		<property>/instrumentation/efis/inputs/ARPT</property>
 		<factor>0.0625</factor>
 		<axis>
 			<x>0</x>
@@ -2200,17 +2200,37 @@
 				<script>
 					var nd_disp = getprop("/instrumentation/efis/nd/display-mode");
 					
-					if (nd_disp == "ILS")
+					if (nd_disp == "ILS") {
 						setprop("/instrumentation/efis/nd/display-mode-num", 0);
-					elsif (nd_disp == "VOR")
+					
+						setprop("/instrumentation/nd/y-center", 0.5);
+						setprop("/instrumentation/nd/aircraft-heading-up", 1);
+					
+					} elsif (nd_disp == "VOR") {
 						setprop("/instrumentation/efis/nd/display-mode-num", 1);
-					elsif (nd_disp == "NAV")
+						
+						setprop("/instrumentation/nd/y-center", 0.5);
+						setprop("/instrumentation/nd/aircraft-heading-up", 1);
+						
+					} elsif (nd_disp == "NAV") {
 						setprop("/instrumentation/efis/nd/display-mode-num", 2);
-					elsif (nd_disp == "ARC")
+						
+						setprop("/instrumentation/nd/y-center", 0.5);
+						setprop("/instrumentation/nd/aircraft-heading-up", 1);
+						
+					} elsif (nd_disp == "ARC") {
 						setprop("/instrumentation/efis/nd/display-mode-num", 3);
-					else
+						
+						setprop("/instrumentation/nd/y-center", 0.182);
+						setprop("/instrumentation/nd/aircraft-heading-up", 1);
+						
+					} else {
 						setprop("/instrumentation/efis/nd/display-mode-num", 4);
 						
+						setprop("/instrumentation/nd/y-center", 0.5);
+						setprop("/instrumentation/nd/aircraft-heading-up", 0);
+						
+					}
 				</script>
 			</binding>
 		</action>
@@ -2223,6 +2243,16 @@
 		<action>
 			<button>0</button>
 			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-cycle</command>
+				<property>/instrumentation/nd/range</property>
+				<value>10</value>
+				<value>20</value>
+				<value>40</value>
+				<value>80</value>
+				<value>160</value>
+				<value>320</value>
+			</binding>
 			<binding>
 				<command>property-cycle</command>
 				<property>/instrumentation/nd[1]/range</property>
@@ -2305,7 +2335,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>nd-range</object-name>
-		<property>/instrumentation/nd[1]/range</property>
+		<property>/instrumentation/nd[0]/range</property>
 		<interpolation>
 			<entry><ind>10</ind><dep>0</dep></entry>
 			<entry><ind>20</ind><dep>45</dep></entry>
@@ -2327,7 +2357,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>nd-range-right</object-name>
-		<property>/instrumentation/nd[1]/range</property>
+		<property>/instrumentation/nd[0]/range</property>
 		<interpolation>
 			<entry><ind>10</ind><dep>0</dep></entry>
 			<entry><ind>20</ind><dep>45</dep></entry>

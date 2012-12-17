@@ -19,21 +19,52 @@
 		<object-name>rudder</object-name>
 		<object-name>vstab</object-name>
 	</effect>
+
+	<effect>
+		<inherits-from>Effects/lightmap</inherits-from>
+		<parameters>
+			<texture n="1">
+				<image>Aircraft/A330-200/Models/Effects/res/windshield-lightmap.png</image>
+			</texture>
+			<condition>
+				<use>controls/lighting/cockpit</use>
+			</condition>
+		</parameters>
+		<object-name>windshield</object-name>
+	</effect>
 	
 	<effect>
 		<inherits-from>Effects/lightmap</inherits-from>
 		<parameters>
 			<texture n="1">
-				<image>Aircraft/A330-200/Models/Effects/res/land-lightmap.png</image>
+				<image>Aircraft/A330-200/Models/Effects/res/windows-lightmap.png</image>
 			</texture>
 			<condition>
-				<use>controls/lighting/landing-lights[0]</use>
+				<use>controls/lighting/cabin-lights</use>
 			</condition>
 		</parameters>
 		<object-name>fuselage</object-name>
 	</effect>
+
+	<effect>
+		<inherits-from>Effects/lightmap</inherits-from>
+		<parameters>
+			<texture n="1">
+				<image>Aircraft/A330-200/Models/Effects/res/wings-lightmap.png</image>
+			</texture>
+			<condition>
+				<use>controls/lighting/wing-lights</use>
+			</condition>
+		</parameters>
+		<object-name>wing.in0</object-name>
+		<object-name>wing.mid0</object-name>
+		<object-name>wing.out0</object-name>
+		<object-name>wing.in1</object-name>
+		<object-name>wing.mid1</object-name>
+		<object-name>wing.out1</object-name>
+	</effect>
 	
-	<!-- Landing Lights -->
+	<!-- Landing Lights
 	
 	<animation>
     	<type>material</type>
@@ -59,7 +90,7 @@
       		<green> 1 </green>
       		<blue>  1 </blue>
     	</emission>
-  	</animation>
+  	</animation> -->
   	
   	<animation>
     	<type>material</type>
@@ -72,6 +103,16 @@
       		<green> 1 </green>
       		<blue>  1 </blue>
     	</emission>
+  	</animation>
+
+  	<!-- Wing Lights -->
+
+  	<animation>
+		<type>select</type>
+		<object-name>wingLights</object-name>
+		<condition>
+			<property>/controls/lighting/wing-lights</property>
+		</condition>
   	</animation>
 	
 	<!-- ################################################################### -->

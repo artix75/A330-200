@@ -699,7 +699,7 @@
 			<!--limit-deg type="int">180</limit-deg-->
 			<font>
 				<name type="string">helvetica_bold.txf</name>
-				<size type="float">18</size>
+				<size type="float">14</size>
 				<line-spacing type="float">0.5</line-spacing>
 				<color>
 					<red type="float">0</red>
@@ -757,32 +757,10 @@
 			<range type="int">10</range>
 			<aircraft-heading-up type="bool">true</aircraft-heading-up>
 			<heading-up-deg type="float">0.01</heading-up-deg>
-			<x-center type="float">0.499</x-center>
-			<y-center type="float">0.182</y-center>
+			<x-center type="float">0.5</x-center>
+			<y-center type="float">0.5</y-center>
 		</nd>
 
-		<nd n="1">
-			<number>1</number>
-			<radar-texture-path type="string">Aircraft/A330-200/Models/Instruments/ND/res/od_ndradar_2.png</radar-texture-path>
-			<symbol-texture-path type="string">Aircraft/A330-200/Models/Instruments/ND/res/airbus_symbols.png</symbol-texture-path>
-			<font>
-				<color>
-					<red type="float">0.7</red>
-					<green type="float">0.7</green>
-					<blue type="float">0.7</blue>
-					<alpha type="float">1</alpha>
-				</color>
-				<name type="string">helvetica_bold.txf</name>
-				<size type="float">14</size>
-				<line-spacing type="float">0.01</line-spacing>
-			</font>
-			<serviceable type="bool">true</serviceable>
-			<range type="int">10</range>
-			<aircraft-heading-up type="bool">true</aircraft-heading-up>
-			<heading-up-deg type="float">0.01</heading-up-deg>
-			<x-center type="float">0.499</x-center>
-			<y-center type="float">0.182</y-center>
-		</nd>
 	</instrumentation>
 
 	<input>
