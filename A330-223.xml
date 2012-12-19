@@ -118,7 +118,88 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 </mass_balance>
 
 <ground_reactions>
+	
 	<contact type="BOGEY" name="NOSE_LG">
+      <location unit="IN">
+         <x> -628.82 </x>
+         <y> 0 </y>
+         <z> -215.91 </z> 
+      </location>
+      <static_friction> 0.8 </static_friction>
+      <dynamic_friction> 0.5 </dynamic_friction>
+      <rolling_friction> 0.02 </rolling_friction>
+      <spring_coeff unit="LBS/FT"> 48124 </spring_coeff>
+      <damping_coeff unit="LBS/FT/SEC"> 8000 </damping_coeff>
+      <max_steer unit="DEG"> 50 </max_steer>
+      <brake_group> NONE </brake_group>
+      <retractable>1</retractable>
+   </contact>
+   
+   <!-- I put 2 gear configs for each main gear to help with the gear base angle animation, so I dividded spring and damping coeffs into 2 for each (hope this works well) -->
+   
+   <contact type="BOGEY" name="LEFT_MLG1">
+      <location unit="IN">
+         <x> 192.92 </x>
+         <y> -216.932 </y>
+         <z> -222.61 </z>
+      </location>
+      <static_friction> 0.8 </static_friction>
+      <dynamic_friction> 0.5 </dynamic_friction>
+      <rolling_friction> 0.02 </rolling_friction>
+      <spring_coeff unit="LBS/FT"> 35785 </spring_coeff>
+      <damping_coeff unit="LBS/FT/SEC"> 7000 </damping_coeff>
+      <max_steer unit="DEG"> 0.0 </max_steer>
+      <brake_group> LEFT </brake_group>
+      <retractable>1</retractable>
+   </contact>
+   <contact type="BOGEY" name="RIGHT_MLG1">
+      <location unit="IN">
+         <x> 192.92 </x>
+         <y> 216.932 </y>
+         <z> -222.61 </z>
+      </location>
+      <static_friction> 0.8 </static_friction>
+      <dynamic_friction> 0.5 </dynamic_friction>
+      <rolling_friction> 0.02 </rolling_friction>
+      <spring_coeff unit="LBS/FT"> 35785 </spring_coeff>
+      <damping_coeff unit="LBS/FT/SEC"> 7000 </damping_coeff>
+      <max_steer unit="DEG"> 0.0 </max_steer>
+      <brake_group> RIGHT </brake_group>
+      <retractable>1</retractable>
+   </contact>
+   
+   <contact type="BOGEY" name="LEFT_MLG2">
+      <location unit="IN">
+         <x> 266.74 </x>
+         <y> -216.932 </y>
+         <z> -210.79 </z>
+      </location>
+      <static_friction> 0.8 </static_friction>
+      <dynamic_friction> 0.5 </dynamic_friction>
+      <rolling_friction> 0.02 </rolling_friction>
+      <spring_coeff unit="LBS/FT"> 35785 </spring_coeff>
+      <damping_coeff unit="LBS/FT/SEC"> 7000 </damping_coeff>
+      <max_steer unit="DEG"> 0.0 </max_steer>
+      <brake_group> LEFT </brake_group>
+      <retractable>1</retractable>
+   </contact>
+   <contact type="BOGEY" name="RIGHT_MLG2">
+      <location unit="IN">
+         <x> 266.74 </x>
+         <y> 216.932 </y>
+         <z> -210.79 </z>
+      </location>
+      <static_friction> 0.8 </static_friction>
+      <dynamic_friction> 0.5 </dynamic_friction>
+      <rolling_friction> 0.02 </rolling_friction>
+      <spring_coeff unit="LBS/FT"> 35785 </spring_coeff>
+      <damping_coeff unit="LBS/FT/SEC"> 7000 </damping_coeff>
+      <max_steer unit="DEG"> 0.0 </max_steer>
+      <brake_group> RIGHT </brake_group>
+      <retractable>1</retractable>
+   </contact>
+	
+	<!-- contact type="BOGEY" name="NOSE_LG">
 		<location unit="IN">
 			<x> -628.82 </x>
 			<y> 0 </y>
@@ -133,8 +214,6 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 		<brake_group> NONE </brake_group>
 		<retractable>1</retractable>
 	</contact>
-	
-	<!-- I put 2 gear configs for each main gear to help with the gear base angle animation, so I dividded spring and damping coeffs into 2 for each (hope this works well) -->
 	
 	<contact type="BOGEY" name="LEFT_MLG1">
 		<location unit="IN">
@@ -214,7 +293,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 		<retractable>0</retractable>
 	</contact>
 
-	<!-- contact type="STRUCTURE" name="ENG_1">
+	<contact type="STRUCTURE" name="ENG_1">
 		<location unit="IN">
 			<x>-71.71</x>	
 			<y>-377.45</y>

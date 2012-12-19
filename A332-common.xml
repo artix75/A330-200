@@ -66,6 +66,14 @@
 				<name type="string">A330-200 Flight Recorder</name>
 				<!-- Custom properties -->
 				<signal>
+				   <type>float</type>
+				   <property type="string">/gear/gear[3]/rollspeed-ms</property>
+				</signal>
+				<signal>
+				   <type>float</type>
+				   <property type="string">/gear/gear[4]/rollspeed-ms</property>
+				</signal>
+				<signal>
 					<type>float</type>
 					<property type="string">/gear/compression/left/avg-ft</property>
 					<interpolation>linear</interpolation>
@@ -525,6 +533,18 @@
 			<sprayspeed-ms type="double">0</sprayspeed-ms>
 			<spray-density type="double">0</spray-density>
 			<caster-angle-deg-damped type="double">0</caster-angle-deg-damped>
+		</gear>
+		<gear n="3">
+		   <tyre-smoke type="int">0</tyre-smoke>
+		   <sprayspeed-ms type="double">0</sprayspeed-ms>
+		   <spray-density type="double">0</spray-density>
+		   <caster-angle-deg-damped type="double">0</caster-angle-deg-damped>
+		</gear>
+		<gear n="4">
+		   <tyre-smoke type="int">0</tyre-smoke>
+		   <sprayspeed-ms type="double">0</sprayspeed-ms>
+		   <spray-density type="double">0</spray-density>
+		   <caster-angle-deg-damped type="double">0</caster-angle-deg-damped>
 		</gear>
 	</gear>
 
