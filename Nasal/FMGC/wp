@@ -43,16 +43,12 @@ var wp_transit = {
 			setprop("/autopilot/route-manager/input", "@ACTIVATE");
 			
 			setprop("/autopilot/route-manager/input", "@JUMP" ~ me.current_wp);
-			
-			setprop("/autopilot/route-manager/active", 1);
 
 		}
 		
 		if ((math.abs(pos_lat - target_lat) <= accuracy) and (math.abs(pos_lon - target_lon) <= accuracy)) {
 		
 			me.current_wp += 1;
-			
-			setprop("/flight-management/current-wp", me.current_wp);
 			
 			var last_wp = getprop("/autopilot/route-manager/route/num") - 1;
 

@@ -2221,7 +2221,7 @@
 					} elsif (nd_disp == "ARC") {
 						setprop("/instrumentation/efis/nd/display-mode-num", 3);
 						
-						setprop("/instrumentation/nd/y-center", 0.182);
+						setprop("/instrumentation/nd/y-center", 0.25);
 						setprop("/instrumentation/nd/aircraft-heading-up", 1);
 						
 					} else {
