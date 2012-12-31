@@ -320,6 +320,8 @@ var mCDU_init = {
 			} # End of Route ID Check
 	
 		} # End of Route-ID For Loop
+		
+		f_pln.init_f_pln();
 	
 	}
 
