@@ -259,6 +259,8 @@ var mCDU_init = {
 		}
 		
 		setprop("flight-management/alternate/icao", icao);
+		
+		f_pln.init_f_pln();
 	
 	},
 	

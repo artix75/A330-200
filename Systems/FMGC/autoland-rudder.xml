@@ -11,13 +11,13 @@
 			<prop>/autoland/rudder</prop>
 		</enable>
 		<input>
-			<prop>/servo-control/target-rudder</prop>
+			<property>/autopilot/internal/nav1-heading-error-deg</property>
 		</input>
 		<reference>
 			<value>0.0</value>
 		</reference>
 		<output>
-			<prop>/controls/flight/rudder</prop>
+			<property>/controls/flight/rudder</property>
 		</output>
 		<config>
 			<Kp>-0.10</Kp>
