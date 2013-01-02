@@ -4,31 +4,27 @@
 
 <PropertyList>
 	
-	<pid-controller>
+	<pi-simple-controller>
 		<name>Autoland Rudder Control</name>
 		<debug type="bool">false</debug>
 		<enable>
 			<prop>/autoland/rudder</prop>
 		</enable>
 		<input>
-			<prop>/controls/flight/rudder</prop>
+			<prop>/servo-control/target-rudder</prop>
 		</input>
 		<reference>
-			<prop>/servo-control/target-rudder</prop>
+			<value>0.0</value>
 		</reference>
 		<output>
 			<prop>/controls/flight/rudder</prop>
 		</output>
 		<config>
-			<Kp>0.1</Kp>
-			<beta>1</beta>
-			<alpha>0.1</alpha>
-			<gamma>0</gamma>
-			<Ti>10</Ti>
-			<Td>0.00001</Td>
-			<u_min>-0.5</u_min>
-			<u_max>0.5</u_max>
+			<Kp>-0.10</Kp>
+			<Ki>0.0</Ki>
+			<u_min>-5.0</u_min>
+			<u_max>5.0</u_max>
 		</config>
-	</pid-controller>
+	</pi-simple-controller>
 
 </PropertyList>

@@ -247,6 +247,16 @@
 						</binding>
 					</item>
 					<item>
+						<label>Tiller Steering</label>
+						<binding>
+							<command>nasal</command>
+							<script>
+								var tiller = gui.Dialog.new("/sim/gui/dialogs/tiller/dialog","Aircraft/A330-200/Systems/tiller-dlg.xml");
+								tiller.open();
+							</script>
+						</binding>
+					</item>
+					<item>
 						<name>fuel</name>
 						<label>Fuel Truck Controls</label>
 						<binding>
@@ -444,6 +454,8 @@
 	<controls>
 		<gear>
 			<brake-parking type="bool">true</brake-parking>
+			<tiller-cmd-norm type="double">0</tiller-cmd-norm>
+			<tiller-enabled type="bool">false</tiller-enabled>
 		</gear>
 		<APU>
 			<fire-switch type="bool">false</fire-switch>

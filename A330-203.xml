@@ -47,7 +47,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<iyz unit="SLUG*FT2">         0 </iyz>
 	<emptywt unit="LBS">     264000 </emptywt>
 	<location name="CG" unit="IN">
-	<x> -90 </x>
+	<x> 55 </x>
 	<y> 0 </y>
 	<z> -60 </z>
 	</location>
@@ -438,7 +438,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 
 	<tank type="FUEL">    <!-- Left Tank (Vent) -->
 		<location unit="IN">
-			<x> 479.50 </x>
+			<x> 100 </x>
 			<y> -1022.04 </y>
 			<z> 32.72 </z>
 		</location>
@@ -450,7 +450,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	</tank>
 	<tank type="FUEL">    <!-- Left Tank (Outer) -->
 		<location unit="IN">
-			<x> 364.45 </x>
+			<x> 50 </x>
 			<y> -761.21 </y>
 			<z> 11.82 </z>
 		</location>
@@ -463,7 +463,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	</tank>
 	<tank type="FUEL">    <!-- Left Tank (Inner) -->
 		<location unit="IN">
-			<x> 167.06 </x>
+			<x> 0 </x>
 			<y> -316.38 </y>
 			<z> -19.70 </z>
 		</location>
@@ -477,7 +477,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 
 	<tank type="FUEL">    <!-- Center Tank -->
 		<location unit="IN">
-			<x> 167.06 </x>
+			<x> -80 </x>
 			<y> 0 </y>
 			<z> -53.58 </z>
 		</location>
@@ -490,7 +490,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	</tank>
 	<tank type="FUEL">    <!-- Right Tank (Inner) -->
 		<location unit="IN">
-			<x> 167.06 </x>
+			<x> 0</x>
 			<y> 316.38 </y>
 			<z> -19.70 </z>
 		</location>
@@ -503,7 +503,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	</tank>
 	<tank type="FUEL">    <!-- Right Tank (Outer) -->
 		<location unit="IN">
-			<x> 364.45 </x>
+			<x> 50 </x>
 			<y> 761.21 </y>
 			<z> 11.82 </z>
 		</location>
@@ -516,7 +516,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	</tank>
 	<tank type="FUEL">    <!-- Right Tank (Vent) -->
 		<location unit="IN">
-			<x> 479.50 </x>
+			<x> 100 </x>
 			<y> 1022.04 </y>
 			<z> 32.72 </z>
 		</location>
@@ -840,6 +840,53 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 		<output>fcs/speedbrake-pos-norm</output>
 	</kinematic>
 	</channel>
+	
+	 <channel name="Tiller">
+		
+		<switch name="/controls/gear/tiller-disabled">
+            <default value="0"/>
+            <test logic="AND" value="1">
+                /controls/gear/tiller-enabled == 0
+            </test>
+        </switch>
+        
+        <fcs_function name="Nose Wheel Steering 0">
+          <function name="fcs/steer-nose-deg[0]">
+            <description>Steering command for nose gear</description>
+            <sum>
+              <product>
+                <table>
+                   <independentVar lookup="row">/controls/gear/tiller-cmd-norm</independentVar>
+                   <independentVar lookup="column">/controls/flight/rudder</independentVar>
+                   <tableData>
+                      -1   0   1
+                  -1 -70 -70 -70
+                   0  -7   0   7
+                   1  70  70  70
+                   </tableData>
+                </table>
+                <property>/controls/gear/tiller-enabled</property>
+              </product>
+              <product>
+                <product>
+                   <property>/controls/flight/rudder</property>
+                   <value>70</value>
+                </product>
+                <property>/controls/gear/tiller-disabled</property>
+              </product>
+            </sum>
+          </function>
+        </fcs_function>
+        
+        <!-- simulate rotational friction -->
+        <actuator name="Gear Nose Actuator">
+          <input>fcs/steer-nose-deg[0]</input>
+          <rate_limit>70</rate_limit>
+          <output>fcs/steer-pos-deg[0]</output>
+        </actuator>
+        
+  </channel>
+	
 </flight_control>
 
 

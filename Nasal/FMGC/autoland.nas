@@ -52,27 +52,29 @@ var autoland = {
 		
 		}
 		
-		if (nose_wow) {
-			
-			# Exit Autoland
-			
+		if (getprop("/velocities/airspeed-kt") < 80) {
+		
 			setprop("/autoland/active", 0);
+			
+			setprop("/autopilot/phase", "disengaged");
 			
 			setprop("/flight-management/control/ap1-master", "off");
 			
 			setprop("/flight-management/control/ap2-master", "off");
+		
+		} elsif (nose_wow) {
 			
 			setprop("/flight-management/control/a-thrust", "off");
 			
-			setprop("/autoland/phase", "disengaged");
+			setprop("/autoland/phase", "rollout");
 			
-			setprop("/autoland/rudder", 0);
+			setprop("/autoland/rudder", 1);
 		
 		} elsif (main_wow) {
 			
 			setprop("/autoland/rudder", 1);
 			
-			setprop("/autoland/phase", "retard");
+			setprop("/autoland/phase", "rollout");
 		
 		} elsif (agl <= 20) {
 		
