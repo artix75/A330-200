@@ -1,25 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!-- Airbus A320 speedbrake/ground spoiler configuration -->
+<!-- Airbus A330 speedbrake/ground spoiler configuration -->
 
 <PropertyList>
-
-	<logic>
-		<name>Ground spoilers disarm</name>
-		<enable>
-			<condition>
-				<!-- Ground spoilers can only be armed when the speedbrake lever is up -->
-				<greater-than>
-					<property>/controls/flight/speedbrake-lever</property>
-					<value>0</value>
-				</greater-than>
-			</condition>
-		</enable>
-		<input>
-			<false />
-		</input>
-		<output>/controls/flight/ground-spoilers-armed</output>
-	</logic>
 
 	<logic>
 		<name>Ground spoilers engage</name>
@@ -47,11 +30,15 @@
 						<property>/controls/engines/engine[1]/reverser</property>
 					</and>
 				</or>
-				<property>/gear/gear[1]/wow</property>
-				<property>/gear/gear[2]/wow</property>
+				<or>
+					<property>/gear/gear[1]/wow</property>
+					<property>/gear/gear[2]/wow</property>
+					<property>/gear/gear[3]/wow</property>
+					<property>/gear/gear[4]/wow</property>
+				</or>
 				<greater-than>
 					<property>/instrumentation/airspeed-indicator/indicated-speed-kt</property>
-					<value>72</value>
+					<value>50</value>
 				</greater-than>
 			</and>
 		</input>

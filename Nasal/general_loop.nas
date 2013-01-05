@@ -28,7 +28,7 @@ var target = func(prop, value, step, deadband) {
 
 var general_loop_1 = {
        init : func {
-            me.UPDATE_INTERVAL = 0.02;
+            me.UPDATE_INTERVAL = 0.1;
             me.loopid = 0;
             
             setprop("/gear/tilt/left-tilt-deg", 0);
@@ -37,6 +37,10 @@ var general_loop_1 = {
             me.reset();
     },
     	update : func {
+    	
+    	# Rudder Trim Control
+
+    	setprop("/controls/flight/rudder-trim-deg", getprop("/controls/flight/rudder-trim") * 10);
     	
     	# Engine Fuel Flow Conversion
     	

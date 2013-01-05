@@ -47,7 +47,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<iyz unit="SLUG*FT2">         0 </iyz>
 	<emptywt unit="LBS">     264000 </emptywt>
 	<location name="CG" unit="IN">
-	<x> 55 </x>
+	<x> 35 </x>
 	<y> 0 </y>
 	<z> -60 </z>
 	</location>
@@ -101,7 +101,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 		<weight unit="LBS">9820</weight>
 		<location name="POINTMASS" unit="IN">
 			<x>-45.31</x>	
-			<y>-370.36</y>
+			<y>-300</y>
 			<z>-97.71</z>
 		</location>
 	</pointmass>
@@ -109,7 +109,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 		<weight unit="LBS">9280</weight>
 		<location name="POINTMASS" unit="IN">
 			<x>-45.31</x>	
-			<y>370.36</y>
+			<y>300</y>
 			<z>-97.71</z>
 		</location>
 	</pointmass>
@@ -376,7 +376,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<engine file="cf6-80e1">
 	<location unit="IN">
 		<x>-45.31</x>	
-		<y>-370.36</y>
+		<y>-300</y>
 		<z>-97.71</z>
 	</location>
 	<orient unit="DEG">
@@ -393,7 +393,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<thruster file="direct">
 		<location unit="IN">
 		<x>-45.31</x>	
-		<y>-370.36</y>
+		<y>-300</y>
 		<z>-97.71</z>
 		</location>
 		<orient unit="DEG">
@@ -406,7 +406,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<engine file="cf6-80e1">
 	<location unit="IN">
 		<x>-45.31</x>	
-		<y>370.36</y>
+		<y>300</y>
 		<z>-97.71</z>
 	</location>
 	<orient unit="DEG">
@@ -423,7 +423,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<thruster file="direct">
 		<location unit="IN">
 		<x>-45.31</x>	
-		<y>370.36</y>
+		<y>300</y>
 		<z>-97.71</z>
 		</location>
 		<orient unit="DEG">

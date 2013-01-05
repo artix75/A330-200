@@ -56,7 +56,7 @@ var autoland = {
 		
 			setprop("/autoland/active", 0);
 			
-			setprop("/autopilot/phase", "disengaged");
+			setprop("/autoland/phase", "disengaged");
 			
 			setprop("/flight-management/control/ap1-master", "off");
 			

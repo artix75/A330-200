@@ -47,7 +47,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<iyz unit="SLUG*FT2">         0 </iyz>
 	<emptywt unit="LBS">     264000 </emptywt>
 	<location name="CG" unit="IN">
-	<x> 45 </x>
+	<x> 35 </x>
 	<y> 0 </y>
 	<z> -60 </z>
 	</location>
@@ -394,7 +394,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<engine file="trent772b-60">
 	<location unit="IN">
 		<x>-45.31</x>	
-		<y>-370.36</y>
+		<y>-200.36</y>
 		<z>-97.71</z>
 	</location>
 	<orient unit="DEG">
@@ -411,7 +411,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<thruster file="direct">
 		<location unit="IN">
 		<x>-45.31</x>	
-		<y>-370.36</y>
+		<y>-200.36</y>
 		<z>-97.71</z>
 		</location>
 		<orient unit="DEG">
@@ -424,7 +424,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<engine file="trent772b-60">
 	<location unit="IN">
 		<x>-45.31</x>	
-		<y>370.36</y>
+		<y>200.36</y>
 		<z>-97.71</z>
 	</location>
 	<orient unit="DEG">
@@ -441,7 +441,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<thruster file="direct">
 		<location unit="IN">
 		<x>-45.31</x>	
-		<y>370.36</y>
+		<y>200.36</y>
 		<z>-97.71</z>
 		</location>
 		<orient unit="DEG">
