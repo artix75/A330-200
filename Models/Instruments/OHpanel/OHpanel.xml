@@ -553,6 +553,60 @@
 			<y>0</y>
 		</axis>
 	</animation>
+	
+	<!-- Fuel Jettison -->
+	
+	<animation>
+		<name>Fuel Jettison Arm</name>
+		<type>pick</type>
+		<object-name>fueldumpARM1</object-name>
+		<object-name>fueldumpARM2</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>controls/fuel-dump/arm</property>
+			</binding>
+		</action>
+	</animation>
+	<animation>
+		<name>Fuel Jettison Arm animation</name>
+		<type>textranslate</type>
+		<object-name>fueldumpARM2</object-name>
+		<property>controls/fuel-dump/arm</property>
+		<factor>0.5</factor>
+		<axis>
+			<x>1</x>
+			<y>0</y>
+		</axis>
+	</animation>
+	
+	<animation>
+		<name>Fuel Jettison Active</name>
+		<type>pick</type>
+		<object-name>fueldumpACT1</object-name>
+		<object-name>fueldumpACT2</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>controls/fuel-dump/active</property>
+			</binding>
+		</action>
+	</animation>
+	<animation>
+		<name>Fuel Jettison Arm animation</name>
+		<type>textranslate</type>
+		<object-name>fueldumpACT2</object-name>
+		<property>controls/fuel-dump/active</property>
+		<factor>0.5</factor>
+		<axis>
+			<x>1</x>
+			<y>0</y>
+		</axis>
+	</animation>
 
 	<!-- Electrical -->
 	<animation>

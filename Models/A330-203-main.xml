@@ -9,6 +9,52 @@
 		<path>Aircraft/A330-200/Models/cf6-80e1.xml</path>
 	</model>
 	
+	<!-- Ram Air Turbine -->
+
+	<model>
+		<name>RAT</name>
+		<path>Aircraft/A330-200/Models/RAT.xml</path>
+		<offsets>
+			<x-m>0</x-m>
+			<y-m>0</y-m>
+			<z-m>-3.52</z-m>
+		</offsets>
+	</model>
+	
+	<!-- Fuel Dump -->
+
+	<model>
+		<path>Aircraft/A330-200/Models/Effects/fuel-dump.xml</path>
+		<name>fueldump.l</name>  
+		<condition>
+			<equals>
+				<property>controls/fuel-dump/active</property>
+				<value>1</value>
+			</equals>
+		</condition>   
+		<offsets>
+			<x-m>10.95</x-m>
+			<y-m>-14.5</y-m>
+			<z-m>-0.65</z-m>  
+		</offsets>
+	</model>
+
+	<model>
+		<path>Aircraft/A330-200/Models/Effects/fuel-dump.xml</path>
+		<name>fueldump.r</name>  
+		<condition>
+			<equals>
+				<property>controls/fuel-dump/active</property>
+				<value>1</value>
+			</equals>
+		</condition> 
+		<offsets>
+			<x-m>10.95</x-m>
+			<y-m>14.5</y-m>
+			<z-m>-0.65</z-m>  
+		</offsets>
+	</model>
+	
 	<!-- Separate Flightdeck to fit the modified nose -->
 	<model>
 		<name>Flightdeck</name>

@@ -719,6 +719,25 @@
 		</axis>
 	</animation>
 	
+	<animation>
+		<type>rotate</type>
+		<object-name>rudder</object-name>
+		<property>/controls/flight/rudder-trim</property>
+		<interpolation>
+			<entry><ind>-0.5</ind><dep>-10</dep></entry>
+			<entry><ind>0</ind><dep>0</dep></entry>
+			<entry><ind>0.5</ind><dep>10</dep></entry>
+		</interpolation>
+		<axis>
+			<x1-m>29.8261</x1-m>
+			<y1-m>0</y1-m>
+			<z1-m>3.6651</z1-m>
+			<x2-m>34.3883</x2-m>
+			<y2-m>0</y2-m>
+			<z2-m>11.8422</z2-m>
+		</axis>
+	</animation>
+	
 	<!-- Slats and Flaps Animations -->
 	
 	<!-- Outer Flaps and Fairings -->
@@ -1748,6 +1767,7 @@
   <object-name>wing.mid0</object-name>
   <object-name>wing.out0</object-name>
   <object-name>Left nav light</object-name>
+  <object-name>fueldump.l</object-name>
   <object-name>Left strobe light</object-name>
   <property>aircraft/wingflex</property>
   <factor>0.00001</factor>
@@ -1770,6 +1790,7 @@
   <object-name>wing.out0</object-name>
   <object-name>Left nav light</object-name>
   <object-name>Left strobe light</object-name>
+  <object-name>fueldump.l</object-name>
   <property>aircraft/wingflex</property>
   <factor>0.00001</factor>
   <offset-deg>-1</offset-deg>
@@ -1811,6 +1832,7 @@
   <object-name>engine1</object-name>
   <object-name>wing.mid1</object-name>
   <object-name>wing.out1</object-name>
+  <object-name>fueldump.r</object-name>
   <object-name>Right nav light</object-name>
   <object-name>Right strobe light</object-name>
   <property>aircraft/wingflex</property>
@@ -1832,6 +1854,7 @@
   <type>rotate</type>
   <object-name>wing.mid1</object-name>
   <object-name>wing.out1</object-name>
+  <object-name>fueldump.r</object-name>
   <object-name>Right nav light</object-name>
   <object-name>Right strobe light</object-name>
   <property>aircraft/wingflex</property>

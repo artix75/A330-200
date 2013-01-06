@@ -255,37 +255,37 @@ var warning_system = {
 			
 			var hydall = warning.new("HYD SYS LO PR", "crc", "warning", "hydall");
 			hydall.condition = func() {
-				return ((getprop("/hydraulics/blue/pressure-psi") < 1400) and (getprop("/hydraulics/yellow/pressure-psi") < 1400) and (getprop("/hydraulics/green/pressure-psi") < 1400))
+				return ((getprop("/hydraulics/blue/pressure-psi") < 1000) and (getprop("/hydraulics/yellow/pressure-psi") < 1000) and (getprop("/hydraulics/green/pressure-psi") < 1000))
 			};
 			
 			var hydby = warning.new("B+Y SYS LO PR", "crc", "warning", "hydby");
 			hydby.condition = func() {
-				return ((getprop("/hydraulics/blue/pressure-psi") < 1400) and (getprop("/hydraulics/yellow/pressure-psi") < 1400) and (getprop("/hydraulics/green/pressure-psi") >= 1400))
+				return ((getprop("/hydraulics/blue/pressure-psi") < 1000) and (getprop("/hydraulics/yellow/pressure-psi") < 1000) and (getprop("/hydraulics/green/pressure-psi") >= 1400))
 			};
 			
 			var hydbg = warning.new("B+G SYS LO PR", "crc", "warning", "hydbg");
 			hydbg.condition = func() {
-				return ((getprop("/hydraulics/blue/pressure-psi") < 1400) and (getprop("/hydraulics/yellow/pressure-psi") >= 1400) and (getprop("/hydraulics/green/pressure-psi") < 1400))
+				return ((getprop("/hydraulics/blue/pressure-psi") < 1000) and (getprop("/hydraulics/yellow/pressure-psi") >= 1400) and (getprop("/hydraulics/green/pressure-psi") < 1000))
 			};
 			
 			var hydgy = warning.new("Y+G SYS LO PR", "crc", "warning", "hydgy");
 			hydgy.condition = func() {
-				return ((getprop("/hydraulics/blue/pressure-psi") > 1400) and (getprop("/hydraulics/yellow/pressure-psi") < 1400) and (getprop("/hydraulics/green/pressure-psi") < 1400))
+				return ((getprop("/hydraulics/blue/pressure-psi") > 1400) and (getprop("/hydraulics/yellow/pressure-psi") < 1000) and (getprop("/hydraulics/green/pressure-psi") < 1000))
 			};
 			
 			var hydb_lopr = warning.new("B SYS LO PR", "chime", "caution", "hydb-lopr");
 			hydb_lopr.condition = func() {
-				return ((getprop("/hydraulics/blue/pressure-psi") < 1400) and (getprop("/hydraulics/yellow/pressure-psi") >= 1400) and (getprop("/hydraulics/green/pressure-psi") >= 1400))
+				return ((getprop("/hydraulics/blue/pressure-psi") < 1000) and (getprop("/hydraulics/yellow/pressure-psi") >= 1400) and (getprop("/hydraulics/green/pressure-psi") >= 1400))
 			};
 			
 			var hydy_lopr = warning.new("Y SYS LO PR", "chime", "caution", "hydy-lopr");
 			hydy_lopr.condition = func() {
-				return ((getprop("/hydraulics/blue/pressure-psi") >= 1400) and (getprop("/hydraulics/yellow/pressure-psi") < 1400) and (getprop("/hydraulics/green/pressure-psi") >= 1400))
+				return ((getprop("/hydraulics/blue/pressure-psi") >= 1400) and (getprop("/hydraulics/yellow/pressure-psi") < 1000) and (getprop("/hydraulics/green/pressure-psi") >= 1400))
 			};
 			
 			var hydg_lopr = warning.new("G SYS LO PR", "chime", "caution", "hydg-lopr");
 			hydg_lopr.condition = func() {
-				return ((getprop("/hydraulics/blue/pressure-psi") >= 1400) and (getprop("/hydraulics/yellow/pressure-psi") >= 1400) and (getprop("/hydraulics/green/pressure-psi") < 1400))
+				return ((getprop("/hydraulics/blue/pressure-psi") >= 1400) and (getprop("/hydraulics/yellow/pressure-psi") >= 1400) and (getprop("/hydraulics/green/pressure-psi") < 1000))
 			};
 			
 			var ptu_fault = warning.new("PTU FAULT", "chime", "caution", "ptu-fault");
@@ -413,9 +413,14 @@ var warning_system = {
 				return (getprop("/controls/flight/ground-spoilers-armed") == 1);
             };
             
+            var fuel_jett = memo.new("FUEL JETTISON", "green");
+            fuel_jett.condition = func() {
+				return (getprop("/controls/fuel-dump/active"));
+            };
+            
             # All MEMO items into a hash for easier use (in order of display priority)
             
-            me.memos = [apu_avail, spdbrk_a, rat_a, fob_low, spdbrk_g, rat_g, gnd_splrs, xfeed, hyd_ptu, refuel];           
+            me.memos = [fuel_jett, apu_avail, spdbrk_a, rat_a, fob_low, spdbrk_g, rat_g, gnd_splrs, xfeed, hyd_ptu, refuel];           
             
             ############################################
             

@@ -175,6 +175,14 @@
 				<name>Spoilers</name>
 				<path>Aircraft/A330-200/Systems/a332-spoilers.xml</path>
 			</autopilot>
+			
+			<!-- Speed Trend on PFD ======================================== -->
+			
+			<autopilot>
+				<name>Speed Trend</name>
+				<path>Aircraft/A330-200/Systems/a332-speedtrend.xml</path>
+			</autopilot>
+			
 		</systems>
 
 		<chase-distance-m>-120</chase-distance-m>
@@ -1094,6 +1102,7 @@
 		</fbw>
 
 		<a332>
+			<file>Aircraft/A330-200/Nasal/fueljett.nas</file>
 			<file>Aircraft/A330-200/Nasal/terrainmap.nas</file>
 			<file>Aircraft/A330-200/Nasal/ground-services.nas</file>
 			<file>Aircraft/A330-200/Nasal/doors.nas</file>

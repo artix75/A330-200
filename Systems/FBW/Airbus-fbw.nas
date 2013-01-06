@@ -129,7 +129,7 @@ var fbw_loop = {
 		# Find out the current flight phase (Ground/Flight/Flare)
 		
 				
-		if (me.agl > 50)
+		if (me.agl > 35)
 			setprop("/fbw/flight-phase", "Flight Mode");
 			
 	#	if ((me.phase == "Flight Mode") and (me.agl <= 50))

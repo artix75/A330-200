@@ -6,6 +6,35 @@
 
 	<path>res/pfd-3d.ac</path>
 	
+	<!-- Speed Trend Indicator -->
+	
+	<animation>
+        <object-name>spdtrnd-up</object-name>
+        <property>instrumentation/pfd/speed-trend-up</property>
+        <type>textranslate</type>
+        <axis>
+            <x>0</x>
+            <y>-1</y>
+        </axis>
+        <interpolation>
+			<entry><ind>0.24</ind><dep>0</dep></entry>
+			<entry><ind>0</ind><dep>0.5</dep></entry>
+        </interpolation>
+    </animation>
+    <animation>
+        <object-name>spdtrnd-down</object-name>
+        <property>instrumentation/pfd/speed-trend-down</property>
+        <type>textranslate</type>
+        <axis>
+            <x>0</x>
+            <y>-1</y>
+        </axis>
+        <interpolation>
+			<entry><ind>-0.24</ind><dep>0</dep></entry>
+			<entry><ind>0</ind><dep>0.5</dep></entry>
+        </interpolation>
+    </animation>
+	
 	<!-- AP Indicators Select -->
 	
 	<!-- AUTO-THROTTLE SECTION -->
@@ -194,7 +223,41 @@
 		</condition>
 	</animation>
 	
-	<!-- FLIGHT DIRECTOR (COME BACK LATER) -->
+	<!-- FLIGHT DIRECTOR -->
+	
+	<animation>
+		<type>select</type>
+		<object-name>fd</object-name>
+		<object-name>fd_pitch</object-name>
+		<object-name>fd_roll</object-name>
+		<condition>
+			<property>/flight-management/control/fd</property>
+		</condition>
+	</animation>
+	
+	<animation>
+        <type>translate</type>
+        <object-name>fd_pitch</object-name>
+        <property>/servo-control/target-pitch</property>
+        <factor>0.0322</factor>
+        <axis>
+            <x>0</x>
+            <y>0</y>
+            <z>1</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>translate</type>
+        <object-name>fd_roll</object-name>
+        <property>/servo-control/target-roll</property>
+        <factor>0.0322</factor>
+        <axis>
+            <x>0</x>
+            <y>1</y>
+            <z>0</z>
+        </axis>
+    </animation>
 	
 	<!-- AUTO-THROTTLE -->
 	

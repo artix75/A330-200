@@ -47,7 +47,7 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 	<iyz unit="SLUG*FT2">         0 </iyz>
 	<emptywt unit="LBS">     264000 </emptywt>
 	<location name="CG" unit="IN">
-	<x> 35 </x>
+	<x> 25 </x>
 	<y> 0 </y>
 	<z> -60 </z>
 	</location>

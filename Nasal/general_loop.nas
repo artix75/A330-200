@@ -53,6 +53,8 @@ var general_loop_1 = {
     	
     	}
     	
+    	fuel_jett();
+    	
     	tyresmoke();
     	
     	cpy_props();
