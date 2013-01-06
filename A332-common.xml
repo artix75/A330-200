@@ -698,7 +698,6 @@
 		</dme>
 		<nav-compass>
 			<nav-display n="0" type="int">0</nav-display>
-			<nav-display n="1" type="int">0</nav-display>
 		</nav-compass>
 
 		<!-- See http://wiki.flightgear.org/index.php/GPWS -->
@@ -807,7 +806,7 @@
 			<range type="double">1.0</range>
 		</groundradar>
 
-		<nd n="0">
+		<nd>
 			<number>0</number>
 			<radar-texture-path type="string">Aircraft/A330-200/Models/Instruments/ND/res/od_ndradar_1.png</radar-texture-path>
 			<symbol-texture-path type="string">Aircraft/A330-200/Models/Instruments/ND/res/airbus_symbols.png</symbol-texture-path>

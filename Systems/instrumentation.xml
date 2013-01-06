@@ -174,7 +174,7 @@ file, these values will be used (they are hardcoded).
 	<navigation-display>
 		<name>nd</name>
 		<number>0</number>        
-		<symbols include="nav-display.xml"/>
+		<symbols include="nav-display-c.xml"/>
 	</navigation-display>
 
 <!-- Does an airliner have TACAN?	<tacan>
