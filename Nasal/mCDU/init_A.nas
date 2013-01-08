@@ -29,6 +29,22 @@ setprop("/flight-management/crz_fl", 0);
 
 var mCDU_init = {
 
+	clear_active : func() {
+	
+		for(var i = 0; i < 100; i += 1) {
+		
+			if (getprop(active_rte~ "route/wp[" ~ i ~ "]/wp-id") != nil) {
+		
+				setprop(active_rte~ "route/wp[" ~ i ~ "]/wp-id", "");
+				setprop(active_rte~ "route/wp[" ~ i ~ "]/altitude-ft", 0);
+				setprop(active_rte~ "route/wp[" ~ i ~ "]/ias-mach", 0);
+				
+			}
+		
+		}
+	
+	},
+
 	co_rte : func (mcdu, id) {
 	
 		for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/rte_id") != nil; index += 1) {
@@ -66,6 +82,8 @@ var mCDU_init = {
 	},
 	
 	set_active_rte : func (id) {
+	
+		me.clear_active();
 	
 		for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/rte_id") != nil; index += 1) {
 	

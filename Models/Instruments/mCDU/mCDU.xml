@@ -346,6 +346,17 @@
 		</condition>
 	</model>
 	
+	<model>
+		<name>mCDU_load</name>
+		<path>f-pln/load.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>load_rtes</value>
+			</equals>
+		</condition>
+	</model>
+	
 	<animation>
 		<type>pick</type>
 		<object-name>brt</object-name>

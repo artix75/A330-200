@@ -301,7 +301,7 @@
     	<type>textranslate</type>
     	<object-name>spd-tape</object-name>
     	<object-name>stall-tape</object-name>
-    	<property>/velocities/airspeed-kt</property>
+    	<property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
     	<factor>0.002001953</factor>
     	<axis>
     		<y>1</y>
@@ -328,7 +328,7 @@
 		<object-name>vfe-tape</object-name>
 		<transform>
 			<subtype>textranslate</subtype>
-			<property>/velocities/airspeed-kt</property>
+			<property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
     		<factor>0.002001953</factor>
 			<axis>
 				<x>0</x>

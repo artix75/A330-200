@@ -7,7 +7,7 @@
   <predict-simple>
     <name>speed predictor (smoothed)</name>
     <update-interval-secs type="double">0.1</update-interval-secs>
-    <input>velocities/airspeed-kt</input>
+    <input>instrumentation/airspeed-indicator/indicated-speed-kt</input>
     <output>instrumentation/pfd/speed-lookahead</output>
     <seconds>10.0</seconds>
     <filter-gain>0.05</filter-gain>
@@ -21,7 +21,7 @@
       <property>instrumentation/pfd/speed-lookahead</property>
     </input>
     <reference>
-      <property>velocities/airspeed-kt</property>
+      <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
       <offset>90</offset>
     </reference>
     <gain>-0.002667</gain>
@@ -39,7 +39,7 @@
       <min>0</min>
     </input>
     <reference>
-      <property>velocities/airspeed-kt</property>
+      <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
       <offset>-90</offset>
     </reference>
     <gain>-0.002667</gain>
