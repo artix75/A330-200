@@ -67,6 +67,8 @@ var user = {
 	
 		# Copy Flightplan to active route
 		
+		me.load_rte_list();
+		
 		mCDU_init.clear_active();
 		
 		f_pln.cpy_to_active();
