@@ -2,7 +2,7 @@
 
 <PropertyList>
 
-	
+
  <!-- =============================================================== -->
  <!-- ENGINE OUTSIDE:                                                 -->
  <!-- =============================================================== -->
@@ -71,7 +71,7 @@
 
 		<engine>
 			<name>RR left n1_2</name>
-			<path>Aircraft/A330-200/Sounds/res/RR/turbine.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/RR/turbine_NL1.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<greater-than>
@@ -91,13 +91,13 @@
 				<offset>0</offset>
 				<factor>0.02</factor>
 				<min>0.0</min>
-				<max>2.0</max>
+				<max>2.1</max> <!-- War auf 2.0 -->
 			</pitch>
 			<volume>
 				<property>engines/engine[0]/n1</property>
 				<factor>0.01</factor>
 				<min>0</min>
-				<max>0.6</max>
+				<max>0.9</max> <!-- War auf 0.6 -->
 			</volume>
 			<position>
 				<x>15</x>
@@ -109,7 +109,7 @@
 		</engine>
 		<engine>
 			<name>RR right n1_2</name>
-			<path>Aircraft/A330-200/Sounds/res/RR/turbine.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/RR/turbine_NL1.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<greater-than>
@@ -129,13 +129,13 @@
 				<offset>0</offset>
 				<factor>0.02</factor>
 				<min>0.0</min>
-				<max>2.0</max>
+				<max>2.1</max>
 			</pitch>
 			<volume>
 				<property>engines/engine[1]/n1</property>
 				<factor>0.01</factor>
 				<min>0</min>
-				<max>0.6</max>
+				<max>0.9</max>
 			</volume>
 			<position>
 				<x>15</x>
@@ -145,7 +145,82 @@
 			<reference-dist>50.0</reference-dist>
 			<max-dist>1000.0</max-dist>
 		</engine>
-
+		<engine>
+			<name>RR left whine</name>
+			<path>Aircraft/A330-200/Sounds/res/RR/whine_NL1.wav</path>
+			<mode>looped</mode>
+			<condition>
+				<greater-than>
+					<property>engines/engine[0]/n1</property>
+					<value>42</value>
+				</greater-than>
+				<not>
+					<property>sim/current-view/internal</property>
+				</not>
+				<equals>
+					<property>sim/aero</property>
+					<value>A330-243</value>
+				</equals>
+			</condition>
+			<pitch>
+				<property>/engines/engine[0]/n1</property>
+				<offset>-0.5</offset>
+				<factor>0.02</factor>
+				<min>0.0</min>
+				<max>3.2</max> <!-- War auf 2.0 -->
+			</pitch>
+			<volume>
+				<property>engines/engine[0]/n1</property>
+				<factor>0.01</factor>
+				<min>0</min>
+				<max>0.8</max> <!-- War auf 0.6 -->
+			</volume>
+			<position>
+				<x>15</x>
+				<y>-5.7</y>
+				<z>-1.1</z>
+			</position>
+			<reference-dist>50.0</reference-dist>
+			<max-dist>1000.0</max-dist>
+		</engine>
+		<engine>
+			<name>RR right whine</name>
+			<path>Aircraft/A330-200/Sounds/res/RR/whine_NL1.wav</path>
+			<mode>looped</mode>
+			<condition>
+				<greater-than>
+					<property>engines/engine[1]/n1</property>
+					<value>42</value>
+				</greater-than>
+				<not>
+					<property>sim/current-view/internal</property>
+				</not>
+				<equals>
+					<property>sim/aero</property>
+					<value>A330-243</value>
+				</equals>
+			</condition>
+			<pitch>
+				<property>/engines/engine[1]/n1</property>
+				<offset>-0.5</offset>
+				<factor>0.02</factor>
+				<min>0.0</min>
+				<max>3.2</max>
+			</pitch>
+			<volume>
+				<property>engines/engine[1]/n1</property>
+				<factor>0.01</factor>
+				<min>0</min>
+				<max>0.8</max>
+			</volume>
+			<position>
+				<x>15</x>
+				<y>5.7</y>
+				<z>-1.1</z>
+			</position>
+			<reference-dist>50.0</reference-dist>
+			<max-dist>1000.0</max-dist>
+		</engine>
 
  <!-- =============================================================== -->
  <!-- ENGINE INSIDE:                                                  -->
@@ -214,7 +289,7 @@
 
 		<engine>
 			<name>RR inside left n1_2</name>
-			<path>Aircraft/A330-200/Sounds/res/RR/turbine.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/RR/turbine_NL1.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<greater-than>
@@ -232,13 +307,13 @@
 				<offset>0</offset>
 				<factor>0.02</factor>
 				<min>0.0</min>
-				<max>2.0</max>
+				<max>2.1</max>
 			</pitch>
 			<volume>
 				<property>engines/engine[0]/n1</property>
 				<factor>0.0025</factor>
 				<min>0</min>
-				<max>0.6</max>
+				<max>0.9</max>
 			</volume>
 
 			<position>
@@ -251,7 +326,7 @@
 		</engine>
 		<engine>
 			<name>RR inside right n1_2</name>
-			<path>Aircraft/A330-200/Sounds/res/RR/turbine.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/RR/turbine_NL1.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<greater-than>
@@ -275,7 +350,81 @@
 				<property>engines/engine[1]/n1</property>
 				<factor>0.0025</factor>
 				<min>0</min>
-				<max>0.6</max>
+				<max>0.9</max>
+			</volume>
+
+			<position>
+				<x>15</x>
+				<y>5.7</y>
+				<z>-1.1</z>
+			</position>
+			<reference-dist>1.0</reference-dist>
+			<max-dist>50.0</max-dist>
+		</engine>
+		<engine>
+			<name>RR inside left whine</name>
+			<path>Aircraft/A330-200/Sounds/res/RR/whine_NL1.wav</path>
+			<mode>looped</mode>
+			<condition>
+				<greater-than>
+					<property>engines/engine[0]/n1</property>
+					<value>42</value>
+				</greater-than>
+				<property>sim/current-view/internal</property>
+				<equals>
+					<property>sim/aero</property>
+					<value>A330-243</value>
+				</equals>
+			</condition>
+			<pitch>
+				<property>/engines/engine[0]/n1</property>
+				<offset>-0.5</offset>
+				<factor>0.02</factor>
+				<min>0.0</min>
+				<max>3.2</max>
+			</pitch>
+			<volume>
+				<property>engines/engine[0]/n1</property>
+				<factor>0.0025</factor>
+				<min>0</min>
+				<max>0.8</max>
+			</volume>
+
+			<position>
+				<x>15</x>
+				<y>-5.7</y>
+				<z>-1.1</z>
+			</position>
+			<reference-dist>25.0</reference-dist>
+			<max-dist>50.0</max-dist>
+		</engine>
+		<engine>
+			<name>RR inside right whine</name>
+			<path>Aircraft/A330-200/Sounds/res/RR/whine_NL1.wav</path>
+			<mode>looped</mode>
+			<condition>
+				<greater-than>
+					<property>engines/engine[1]/n1</property>
+					<value>42</value>
+				</greater-than>
+				<property>sim/current-view/internal</property>
+				<equals>
+					<property>sim/aero</property>
+					<value>A330-243</value>
+				</equals>
+			</condition>
+			<pitch>
+				<property>/engines/engine[1]/n1</property>
+				<offset>-0.5</offset>
+				<factor>0.02</factor>
+				<min>0.0</min>
+				<max>3.2</max>
+			</pitch>
+			<volume>
+				<property>engines/engine[1]/n1</property>
+				<factor>0.0025</factor>
+				<min>0</min>
+				<max>0.8</max>
 			</volume>
 
 			<position>

@@ -4,7 +4,7 @@
 <turbine_engine name="trent772b-60">
 	<milthrust> 71100 </milthrust>
 	<bypassratio>     5 </bypassratio>
-	<tsfc>            0.312 </tsfc> <!-- Source says that the Trent 772B-60 reduces SFC by 2% compared to the CF6-80E1 -->
+	<tsfc>            0.322 </tsfc>
 	<idlen1>         30.0 </idlen1>
 	<idlen2>         60.0 </idlen2>
 	<maxn1>         100.0 </maxn1>

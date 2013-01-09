@@ -119,6 +119,30 @@
  <!-- =============================================================== -->
  <!-- FX:                                                             -->
  <!-- =============================================================== -->
+ 
+ <!-- Passengers
+
+    <passngrs>
+      <name>passenger cabin</name>
+      <mode>looped</mode>
+      <path>Aircraft/A330-200/Sounds/res/PassgCab5.wav</path>
+      <condition>
+	<property>sim/current-view/internal</property>
+      </condition>
+      <volume>
+	<property>sim/sound/effects/volume</property>
+	<factor>0.8</factor>
+	<min>0.3</min>
+	<max>0.5</max>
+      </volume>
+      <position>
+	<x>20</x>
+	<y>0</y>
+	<z>4</z>
+      </position>
+      <reference-dist>10</reference-dist>
+      <max-dist>25</max-dist>
+    </passngrs -->
 
 		<wind>
 			<name>wind</name>
@@ -173,7 +197,7 @@
 			<volume>
 				<property>/velocities/groundspeed-kt</property>
 				<type>log</type>
-				<factor>0.20</factor>
+				<factor>0.36</factor>
 				<!--max>0.9</max-->
 
 			</volume>
