@@ -219,28 +219,27 @@
 
 		<menubar>
 			<default>
-				<menu n="3">
+			<!--	<menu n="3">
 					<item n="0">
 		                <label>Autopilot Dialog</label>
 		                <enabled type="bool">false</enabled>
                         <binding>
 							<command>nasal</command>
 							<script>
-							<!-- Disabled -->
 							</script>
                         </binding>
                     </item>
                     <item n="1">
 		                <label>Route Manager</label>
-		                <enabled type="bool">false</enabled>
+		                <enabled type="bool">true</enabled>
                         <binding>
 							<command>nasal</command>
 							<script>
-								<!-- Disabled -->
 							</script>
                         </binding>
                     </item>
 				</menu>
+                                -->
 				<menu n="5">
                     <item n="1">
                     <label>Airbus Radio Stack</label>

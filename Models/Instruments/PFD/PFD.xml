@@ -91,7 +91,7 @@
 		</condition>
 	</animation>
 	
-	<animation>
+	<!--<animation>
 		<type>select</type>
 		<object-name>lvlch</object-name>
 		<condition>
@@ -117,10 +117,31 @@
 		<object-name>lvlch</object-name>
 		<condition>
 		<and>
-			<less-than-equals>
+			<less-than>
 				<property>/velocities/vertical-speed-fps</property>
-				<value>8</value>
-			</less-than-equals>
+				<value>-8</value>
+			</less-than>
+			<equals>
+				<property>/flight-management/control/ver-mode</property>
+				<value>alt</value>
+			</equals>
+			<equals>
+				<property>/flight-management/control/ver-ctrl</property>
+				<value>man-set</value>
+			</equals>
+		</and>
+		</condition>
+	</animation>-->
+
+	<animation>
+		<type>select</type>
+		<object-name>lvlch</object-name>
+		<condition>
+		<and>
+			<equals>
+				<property>/flight-management/flch_active</property>
+				<value>1</value>
+			</equals>
 			<equals>
 				<property>/flight-management/control/ver-mode</property>
 				<value>alt</value>

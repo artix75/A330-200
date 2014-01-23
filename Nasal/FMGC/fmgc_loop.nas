@@ -18,6 +18,7 @@ var fmgc_loop = {
             me.current_wp = 0;
             
             setprop("/flight-management/current-wp", me.current_wp);
+            setprop("/flight-management/control/qnh-mode", 'inhg');
             
             # ALT SELECT MODE
             
@@ -86,10 +87,17 @@ var fmgc_loop = {
             
             me.reset();
     },
-    	update : func {   	
+    update : func {   	
     	
     	var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
     	
+        var vmode_vs_fps = getprop('/velocities/vertical-speed-fps');
+        if(vmode_vs_fps > 8 or vmode_vs_fps < -8){
+            setprop('/flight-management/flch_active', 1);     
+        } else {
+            setprop('/flight-management/flch_active', 0);     
+        }
+
     	me.flight_phase();
     	
     	me.get_settings();
@@ -105,6 +113,8 @@ var fmgc_loop = {
     	setprop("flight-management/procedures/active", procedure.check());
     	
     	setprop(fcu~ "alt-100", me.alt_100());
+
+        me.calc_td();
     	
     	# SET OFF IF NOT USED
     	
@@ -704,7 +714,46 @@ var fmgc_loop = {
 		}
 		
 	},
-
+        calc_td: func {
+            var tdNode = "/instrumentation/nd/symbols/td";
+            if (getprop("/autopilot/route-manager/active")){
+                var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
+                var destination_elevation = getprop("/autopilot/route-manager/destination/field-elevation-ft");
+                var top_of_descent = 16;
+                if(cruise_alt > 10000) {
+                    top_of_descent += 21;
+                    if(cruise_alt > 29000)
+                    {
+                        top_of_descent += 41.8;
+                        if(cruise_alt > 36000)
+                        {
+                                top_of_descent += 28;
+                                top_of_descent += (cruise_alt - 36000) / 1000 * 3.8;
+                        }
+                        else
+                        {
+                                top_of_descent += (cruise_alt - 29000) / 1000 * 4;
+                        }
+                    }
+                    else
+                    {
+                        top_of_descent += (cruise_alt - 10000) / 1000 * 2.2;
+                    }
+                    top_of_descent += 6.7;
+                } else {
+                    top_of_descent += (cruise_alt - 3000) / 1000 * 3;
+                }
+                top_of_descent -= (destination_elevation / 1000 * 3);
+                print("TD: " ~ top_of_descent);
+                var f= flightplan(); 
+                #                   var topClimb = f.pathGeod(0, 100);
+                var topDescent = f.pathGeod(-1, -top_of_descent);
+                setprop(tdNode ~ "/latitude-deg", topDescent.lat); 
+                setprop(tdNode ~ "/longitude-deg", topDescent.lon); 
+            } else {
+                setprop(tdNode, ''); 
+            }
+        },
         reset : func {
             me.loopid += 1;
             me._loop_(me.loopid);
