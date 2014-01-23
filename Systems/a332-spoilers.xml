@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Airbus A330 speedbrake/ground spoiler configuration -->
+
+<PropertyList>
+
+	<logic>
+		<name>Ground spoilers engage</name>
+		<input>
+			<and>
+				<or>
+					<!-- Spoilers armed -->
+					<property>/controls/flight/ground-spoilers-armed</property>
+					<!-- Spoilers not armed -->
+					<and>
+						<not>
+							<property>/controls/flight/ground-spoilers-armed</property>
+						</not>
+						<property>/controls/engines/engine[0]/reverser</property>
+						<property>/controls/engines/engine[1]/reverser</property>
+					</and>
+				</or>
+				<or>
+					<property>/gear/gear[1]/wow</property>
+					<property>/gear/gear[2]/wow</property>
+					<property>/gear/gear[3]/wow</property>
+					<property>/gear/gear[4]/wow</property>
+				</or>
+				<greater-than>
+					<property>/instrumentation/airspeed-indicator/indicated-speed-kt</property>
+					<value>30</value>
+				</greater-than>
+			</and>
+		</input>
+		<output>/controls/flight/ground-spoilers</output>
+	</logic>
+
+	<filter>
+		<name>Main speedbrake controller</name>
+		<type>gain</type>
+		<gain>1.0</gain>
+		<input>
+			<expression>
+				<max>
+					<property>/controls/flight/ground-spoilers</property>
+					<property>/controls/flight/speedbrake-lever</property>
+				</max>
+			</expression>
+		</input>
+		<output>/controls/flight/speedbrake</output>
+	</filter>
+
+</PropertyList>

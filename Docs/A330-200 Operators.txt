@@ -1,0 +1,81 @@
+This list includes all A330-200 operators for the 203, 223 and 243 variants. 
+Thanks to Chris Mueffelmann (Muffinman) for compiling this list.
+
+A330-243:
+Aeroflot
+Air China
+Air Europa
+Air Nigeria
+Air Transat
+Avianca
+Berkut Air
+China Eastern
+Corsairfly
+Cyprus  Airways
+Egyptair
+Emirates
+Etihad
+Garuda Indonesia
+Gulf Air
+Hainan Airlines
+Hawaiian Air
+Hifly
+Hong Kong Airlines
+Jet Airways
+Middle East Airlines
+Monarch
+Oman Air
+Sichuan Airlines
+South African Airways
+SriLankan Airlines
+Thomas Cook
+Thomas Cook Scandinavia
+US Airways
+Virgin Australia
+XL Airways
+Yemenia
+
+A330-223:
+Air Berlin
+Air Caraibes
+Air Greenland - Done
+Air India
+Atlasjet
+Brussels Airlines - Done
+China Southern
+Delta
+Edelweiss Air
+Hong Kong Airlines
+Korean Air - Done
+Malaysia
+Meridiana Fly
+Royal Jordanian
+Strategic Airlines
+TAM
+TAP - Done
+Vietnam
+
+A330-203:
+Afriqiyah Airways
+Air Europa
+Air France
+EVA
+KLM
+Qantas
+Qatar
+TAM
+Turkish
+
+A330-202:
+Aer Lingus
+Aircalin
+Air Europa
+Air Mauritius
+Alitalia
+Batavia Air
+Hifly
+Jetstar
+Jet Airways
+Qantas
+Qatar
+TAP

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<PropertyList include="A332-common.xml">
+
+	<sim>
+		<description>Airbus A330-203 (A330-200 with General Electric CF6-80E1 Engines)</description>
+		<flight-model>jsb</flight-model>
+		<aero>A330-203</aero>
+		<variant>203</variant>
+		<engine>cf6-80e1</engine>
+
+		<model>
+			<path>Aircraft/A330-200/Models/A330-203.xml</path>
+			<livery>
+				<file>blank</file>
+				<a332-texture>Liveries/A330-203/livery-blank.png</a332-texture>
+			</livery>
+	            	<!-- door n="0">
+		                <position-x-m>-11.3399</position-x-m>
+		                <position-y-m>-1.96</position-y-m>
+		                <position-z-m>0.98</position-z-m>
+		                <jetway-hood-deg>5</jetway-hood-deg>
+					</door -->
+		</model>
+		<startup>
+			<splash-texture>Aircraft/A330-200/A332-splash.png</splash-texture>
+		</startup>
+		<flaps>
+			<setting>0.00</setting>
+			<setting>0.29</setting>
+			<setting>0.596</setting>
+			<setting>0.745</setting>
+			<setting>1</setting>
+	
+		</flaps>
+
+		<airport>
+			<runways>
+				<start-offset-m>25</start-offset-m>
+			</runways>
+		</airport>
+
+
+		<view>
+			<name>Pilot View</name>
+			<internal archive="y">true</internal>
+			<config>
+				<x-offset-m archive="y">-0.525</x-offset-m>
+				<y-offset-m archive="y">1.4469</y-offset-m>
+				<z-offset-m archive="y">-19.9573</z-offset-m>
+				<pitch-offset-deg archive="y">-10.0</pitch-offset-deg>
+			</config>
+		</view>
+		<view n="100">
+			<name>Overhead Panel View</name>
+			<type>lookfrom</type>
+			<internal archive="y">true</internal>
+			<config>
+				<from-model type="bool">true</from-model>
+				<x-offset-m archive="y">0</x-offset-m>
+				<y-offset-m archive="y">1.47</y-offset-m>
+				<z-offset-m archive="y">-19.96</z-offset-m>
+				<pitch-offset-deg archive="y">40</pitch-offset-deg>
+			</config>
+		</view>
+		<view n="101">
+			<name>FMGC/CDU View</name>
+			<type>lookfrom</type>
+			<internal archive="y">true</internal>
+			<config>
+				<from-model type="bool">true</from-model>
+				<x-offset-m archive="y">-0.10</x-offset-m>
+				<y-offset-m archive="y">1.2339</y-offset-m>
+				<z-offset-m archive="y">-20.5945</z-offset-m>
+				<pitch-offset-deg archive="y">-75</pitch-offset-deg>
+			</config>
+		</view>
+
+		<view n="102">
+			<name>Pedestral View</name>
+			<type>lookfrom</type>
+			<internal archive="y">true</internal>
+			<config>
+				<from-model type="bool">true</from-model>
+				<x-offset-m archive="y">0</x-offset-m>
+				<y-offset-m archive="y">1.5482</y-offset-m>
+				<z-offset-m archive="y">-20.36</z-offset-m>
+				<pitch-offset-deg archive="y">-75</pitch-offset-deg>
+			</config>
+		</view>
+		<view n="103">
+			<name>Copilot View</name>
+			<type>lookfrom</type>
+			<internal archive="y">true</internal>
+			<config>
+				<from-model type="bool">true</from-model>
+				<x-offset-m archive="y">0.525</x-offset-m>
+				<y-offset-m archive="y">1.4469</y-offset-m>
+				<z-offset-m archive="y">-19.9573</z-offset-m>
+				<pitch-offset-deg archive="y">-15.0</pitch-offset-deg>
+			</config>
+		</view>
+
+		<menubar>
+				<default>
+					<menu n="100">
+						<label>Airbus A330-203</label>
+					</menu>
+				</default>
+		</menubar>
+				
+	</sim>
+
+	<payload>
+		<weight n="0">
+			<name>Crew</name>
+			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[0]" />
+			<min-lb type="double">100</min-lb>
+			<max-lb type="double">1200</max-lb>
+		</weight>
+		<weight n="1">
+			<name>PAX</name>
+			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[1]" />
+			<min-lb type="double">0</min-lb>
+			<max-lb type="double">68400</max-lb>
+		</weight>
+		<weight n="2">
+			<name>Fwd Cargo</name>
+			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[2]" />
+			<min-lb type="double">0</min-lb>
+			<max-lb type="double">14500</max-lb>
+		</weight>
+		<weight n="3">
+			<name>Aft Cargo</name>
+			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[3]" />
+			<min-lb type="double">0</min-lb>
+			<max-lb type="double">4000</max-lb>
+		</weight>
+		<weight n="4">
+			<name>Rear Bulk Cargo</name>
+			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[4]" />
+			<min-lb type="double">0</min-lb>
+			<max-lb type="double">14500</max-lb>
+		</weight>
+	</payload>
+	
+	<limits>
+		<mass-and-balance>
+			<maximum-ramp-mass-lbs>600000</maximum-ramp-mass-lbs>
+			<maximum-takeoff-mass-lbs>520000</maximum-takeoff-mass-lbs>
+			<maximum-landing-mass-lbs>396000</maximum-landing-mass-lbs>
+			<maximum-zero-fuel-mass-lbs>264000</maximum-zero-fuel-mass-lbs>
+		</mass-and-balance>
+		<max-flap-extension-speed>
+			<flaps>0.29</flaps>
+			<speed>240</speed>
+		</max-flap-extension-speed>
+		<max-flap-extension-speed>
+			<flaps>0.596</flaps>
+			<speed>196</speed>
+		</max-flap-extension-speed>
+		<max-flap-extension-speed>
+			<flaps>0.645</flaps>
+			<speed>186</speed>
+		</max-flap-extension-speed>
+		<max-flap-extension-speed>
+			<flaps>1</flaps>
+			<speed>180</speed>
+		</max-flap-extension-speed>
+		
+		 
+		<vne>370</vne>
+		 
+		<max-gear-extension-speed>250</max-gear-extension-speed>
+		 
+		<max-positive-g>2.5</max-positive-g>
+		<max-negative-g>-1</max-negative-g>
+ 
+	</limits>
+
+</PropertyList>

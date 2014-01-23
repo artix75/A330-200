@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PropertyList>
+
+	<name>lights-dlg</name>
+	<layout>vbox</layout>
+
+	<text>
+		<label>A330 Light Controller</label>
+	</text>
+
+	<hrule />
+
+	<group>
+		<layout>vbox</layout>
+
+		<text>
+			<label>Landing/Taxi lights</label>
+		</text>
+
+		<group>
+			<layout>hbox</layout>
+
+			<checkbox>
+				<label>Left</label>
+				<property>controls/lighting/landing-lights[0]</property>
+				<binding>
+					<command>dialog-apply</command>
+				</binding>
+				<live>true</live>
+			</checkbox>
+
+			<checkbox>
+				<label>Taxi</label>
+				<property>controls/lighting/landing-lights[1]</property>
+				<binding>
+					<command>dialog-apply</command>
+				</binding>
+				<live>true</live>
+			</checkbox>
+			
+			<checkbox>
+				<label>Right</label>
+				<property>controls/lighting/landing-lights[2]</property>
+				<binding>
+					<command>dialog-apply</command>
+				</binding>
+				<live>true</live>
+			</checkbox>
+
+		</group>
+
+		<hrule/>
+
+		<text>
+			<label>Navigation/logo lights</label>
+		</text>
+
+		<group>
+			<layout>hbox</layout>
+
+			<button>
+				<legend>Off</legend>
+				<binding>
+					<command>dialog-apply</command>
+				</binding>
+				<binding>
+					<command>property-assign</command>
+					<property>controls/lighting/nav-lights-switch</property>
+					<value>0</value>
+				</binding>
+			</button>
+			<button>
+				<legend>1</legend>
+				<binding>
+					<command>dialog-apply</command>
+				</binding>
+				<binding>
+					<command>property-assign</command>
+					<property>controls/lighting/nav-lights-switch</property>
+					<value>1</value>
+				</binding>
+			</button>
+			<button>
+				<legend>2</legend>
+				<binding>
+					<command>dialog-apply</command>
+				</binding>
+				<binding>
+					<command>property-assign</command>
+					<property>controls/lighting/nav-lights-switch</property>
+					<value>2</value>
+				</binding>
+			</button>
+		</group>
+<!--		<checkbox>
+			<label>Navigation lights</label>
+			<property>controls/lighting/nav-lights</property>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+			<live>true</live>
+		</checkbox>-->
+
+		<checkbox>
+			<label>Strobe lights</label>
+			<property>controls/lighting/strobe</property>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+			<live>true</live>
+		</checkbox>
+
+		<checkbox>
+			<label>Beacon</label>
+			<property>controls/lighting/beacon</property>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+			<live>true</live>
+		</checkbox>
+		
+		<hrule />
+
+		<checkbox>
+			<label>Cabin Lights</label>
+			<property>controls/lighting/cabin-lights</property>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+			<live>true</live>
+		</checkbox>
+		
+		<checkbox>
+			<label>Cockpit Lights</label>
+			<property>controls/lighting/cockpit</property>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+			<live>true</live>
+		</checkbox>
+		
+		<checkbox>
+			<label>Wing Lights</label>
+			<property>controls/lighting/wing-lights</property>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+			<live>true</live>
+		</checkbox>
+
+	<hrule />
+
+	<group>
+		<layout>vbox</layout>
+
+		<button>
+			<legend>Close</legend>
+			<default>true</default>
+			<key>Esc</key>
+			<padding>10</padding>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+			<binding>
+				<command>dialog-close</command>
+			</binding>
+		</button>
+	</group>
+
+</PropertyList>
