@@ -51,10 +51,41 @@
 				<pitch-offset-deg archive="y">-10.0</pitch-offset-deg>
 			</config>
 		</view>
-		<view n="100">
+        <view n="100">
+			<name>Passenger View</name>
+			<type>lookfrom</type>
+			<internal archive="y">true</internal>
+            <fgcamera>camera100</fgcamera>
+			<config>
+				<from-model type="bool">true</from-model>
+                <x-offset-m archive="y">-0.525</x-offset-m>
+                <y-offset-m archive="y">1.4469</y-offset-m>
+                <z-offset-m archive="y">-8.19</z-offset-m>
+                
+				<pitch-offset-deg archive="y">-8.2</pitch-offset-deg>
+                <heading-offset-deg archive="y">115.15</heading-offset-deg>
+			</config>
+		</view>
+		<view n="101">
+			<name>Passenger View (rear)</name>
+			<type>lookfrom</type>
+			<internal archive="y">true</internal>
+            <fgcamera>camera101</fgcamera>
+			<config>
+				<from-model type="bool">true</from-model>
+                <x-offset-m archive="y">-0.525</x-offset-m>
+                <y-offset-m archive="y">1.4469</y-offset-m>
+                <z-offset-m archive="y">5.8998</z-offset-m>
+                
+				<pitch-offset-deg archive="y">-10.77</pitch-offset-deg>
+                <heading-offset-deg archive="y">112.68</heading-offset-deg>
+			</config>
+		</view>
+		<view n="102">
 			<name>Overhead Panel View</name>
 			<type>lookfrom</type>
 			<internal archive="y">true</internal>
+            <fgcamera>camera102</fgcamera>
 			<config>
 				<from-model type="bool">true</from-model>
 				<x-offset-m archive="y">0</x-offset-m>
@@ -63,10 +94,11 @@
 				<pitch-offset-deg archive="y">40</pitch-offset-deg>
 			</config>
 		</view>
-		<view n="101">
+		<view n="103">
 			<name>FMGC/CDU View</name>
 			<type>lookfrom</type>
 			<internal archive="y">true</internal>
+            <fgcamera>camera103</fgcamera>
 			<config>
 				<from-model type="bool">true</from-model>
 				<x-offset-m archive="y">-0.10</x-offset-m>
@@ -76,10 +108,11 @@
 			</config>
 		</view>
 
-		<view n="102">
+		<view n="104">
 			<name>Pedestral View</name>
 			<type>lookfrom</type>
 			<internal archive="y">true</internal>
+            <fgcamera>camera104</fgcamera>
 			<config>
 				<from-model type="bool">true</from-model>
 				<x-offset-m archive="y">0</x-offset-m>
@@ -88,10 +121,11 @@
 				<pitch-offset-deg archive="y">-75</pitch-offset-deg>
 			</config>
 		</view>
-		<view n="103">
+		<view n="105">
 			<name>Copilot View</name>
 			<type>lookfrom</type>
 			<internal archive="y">true</internal>
+            <fgcamera>camera105</fgcamera>
 			<config>
 				<from-model type="bool">true</from-model>
 				<x-offset-m archive="y">0.525</x-offset-m>

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<PropertyList>
+<PropertyList include="Aircraft/Generic/Human/Include/walker-include.xml">
 
 	<sim>
 		<author>Narendran Muraleedharan (muraleen@my.erau.edu)</author>
@@ -38,7 +38,29 @@
 				<x-m type="float">-16.4</x-m>
 				<class type="string">2</class>
 		   </ramp>
+           <map>
+               <default_exit>
+                   <x-offset-m type ="float">-16.7</x-offset-m>
+                   <y-offset-m type ="float">-1.67</y-offset-m>
+               </default_exit>
+           </map>
 		</model>
+        
+        <fgcamera>
+			<camera1 include="fgcamera/pilot.xml"/>
+            <camera2 include="fgcamera/view2.xml"/>
+            <camera3 include="fgcamera/view3.xml"/>
+            <camera4 include="fgcamera/view4.xml"/>
+            <camera5 include="fgcamera/view5.xml"/>
+            <camera6 include="fgcamera/view6.xml"/>
+            <camera7 include="fgcamera/view7.xml"/>
+            <camera100 include="fgcamera/view100.xml"/>
+            <camera101 include="fgcamera/view101.xml"/>
+            <camera102 include="fgcamera/view102.xml"/>
+            <camera103 include="fgcamera/view103.xml"/>
+            <camera104 include="fgcamera/view104.xml"/>
+            <camera105 include="fgcamera/view105.xml"/>
+		</fgcamera>
 		
 		<multiplay>
 			<generic>
@@ -918,7 +940,7 @@
 					</script>
 				</binding>
 			</key>
-			<key n="119">
+			<!--<key n="119">
 				<name>w</name>
 				<desc>Walk forward toward view</desc>
 				<repeatable type="bool">true</repeatable>
@@ -928,7 +950,7 @@
 					 walk.walk_about(0.1);
 					</script>
 				</binding>
-			</key>
+			</key>-->
 			<key n="2">
 				<name>Ctrl-b</name>
 				<desc>Cycle speedbrake setting</desc>
@@ -1035,7 +1057,7 @@
 					</binding>
 				</mod-up>
 			</key>
-			<key n="87">
+			<!--<key n="87">
 				<name>W</name>
 				<desc>Run forward toward view</desc>
 				<repeatable type="bool">true</repeatable>
@@ -1056,7 +1078,7 @@
 					 walk.walk_about(-0.1);
 					</script>
 				</binding>
-			</key>
+			</key>-->
 			<key n="19">
 				<name>CTRL+s</name>
 				<desc>Arm/Disarm ground spoilers</desc>
@@ -1141,9 +1163,9 @@
 		<reversethrust>
 			<file>Aircraft/A330-200/Nasal/reversethrust.nas</file>
 		</reversethrust>
-		<walk>
+		<!--<walk>
 			<file>Aircraft/A330-200/Nasal/walk.nas</file>
-		</walk>
+		</walk>-->
 		<!-- Dual control -->
 		<dual_control_tools>
 			<file>Aircraft/Generic/DualControl/dual-control-tools.nas</file>

@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PropertyList>
+	<config>
+		<internal type="bool">0</internal>
+		<x-offset-m type="double">-4.387</x-offset-m>
+		<y-offset-m type="double">0.1346</y-offset-m>
+		<z-offset-m type="double">-1.2833</z-offset-m>
+		<heading-offset-deg type="double">270</heading-offset-deg>
+		<pitch-offset-deg type="double">-5.0</pitch-offset-deg>
+		<roll-offset-deg type="double">0.0</roll-offset-deg>
+		<RND type="bool">1</RND>
+		<DHM type="bool">0</DHM>
+		<PTP type="bool">1</PTP>
+		<CR type="bool">0</CR>
+		<ML type="bool">0</ML>
+		<keyboard-filter type="double">1.0</keyboard-filter>
+		<mouse-filter type="double">0.2</mouse-filter>
+		<linear-velocity-m_s type="double">2.0</linear-velocity-m_s>
+		<angular-velocity-deg_s type="double">180.0</angular-velocity-deg_s>
+	</config>
+	<ground>
+		<generators>
+			<A>
+				<sine>
+					<frequency type="double">0.1</frequency>
+					<level type="double">0.005</level>
+					<enabled type="int">0</enabled>
+				</sine>
+				<noise>
+					<frequency type="double">0.5</frequency>
+					<level type="double">0.05</level>
+					<enabled type="int">0</enabled>
+				</noise>
+				<rectLFO>
+					<filter type="double">0.1</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">1.0</intensity>
+					<enabled type="int">0</enabled>
+				</rectLFO>
+				<sineLFO>
+					<filter type="double">0.5</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">1.0</intensity>
+					<enabled type="int">0</enabled>
+				</sineLFO>
+				<resonance>
+					<frequency type="double">10.0</frequency>
+					<intensity type="double">3.0</intensity>
+					<level type="double">0.005</level>
+					<attack type="double">0.5</attack>
+					<release type="double">1.0</release>
+					<enabled type="int">1</enabled>
+				</resonance>
+			</A>
+			<B>
+				<sine>
+					<frequency type="double">0.1</frequency>
+					<level type="double">0.005</level>
+					<enabled type="int">0</enabled>
+				</sine>
+				<noise>
+					<frequency type="double">0.1</frequency>
+					<level type="double">0.005</level>
+					<enabled type="int">0</enabled>
+				</noise>
+				<rectLFO>
+					<filter type="double">0.05</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">0.5</intensity>
+					<enabled type="int">0</enabled>
+				</rectLFO>
+				<sineLFO>
+					<filter type="double">0.5</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">1.0</intensity>
+					<enabled type="int">0</enabled>
+				</sineLFO>
+				<resonance>
+					<frequency type="double">10.0</frequency>
+					<intensity type="double">5.0</intensity>
+					<level type="double">0.005</level>
+					<attack type="double">0.50</attack>
+					<release type="double">1.0</release>
+					<enabled type="int">1</enabled>
+				</resonance>
+			</B>
+			<C>
+				<sine>
+					<frequency type="double">0.1</frequency>
+					<level type="double">0.005</level>
+					<enabled type="int">0</enabled>
+				</sine>
+				<noise>
+					<frequency type="double">0.1</frequency>
+					<level type="double">0.005</level>
+					<enabled type="int">0</enabled>
+				</noise>
+				<rectLFO>
+					<filter type="double">0.1</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">1.0</intensity>
+					<enabled type="int">0</enabled>
+				</rectLFO>
+				<sineLFO>
+					<filter type="double">0.5</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">1.0</intensity>
+					<enabled type="int">0</enabled>
+				</sineLFO>
+				<resonance>
+					<frequency type="double">500.0</frequency>
+					<intensity type="double">5.0</intensity>
+					<level type="double">0.005</level>
+					<attack type="double">1.0</attack>
+					<release type="double">2.0</release>
+					<enabled type="int">0</enabled>
+				</resonance>
+			</C>
+		</generators>
+		<mixer>
+			<x>
+				<A type="double">0.000</A>
+				<B type="double">0.000</B>
+				<C type="double">0.000</C>
+			</x>
+			<y>
+				<A type="double">0.000</A>
+				<B type="double">0.000</B>
+				<C type="double">0.000</C>
+			</y>
+			<z>
+				<A type="double">0.000</A>
+				<B type="double">0.000</B>
+				<C type="double">0.000</C>
+			</z>
+			<h>
+				<A type="double">0.000</A>
+				<B type="double">60.00</B>
+				<C type="double">0.000</C>
+			</h>
+			<p>
+				<A type="double">60.0</A>
+				<B type="double">0.000</B>
+				<C type="double">0.000</C>
+			</p>
+			<r>
+				<A type="double">0.000</A>
+				<B type="double">0.000</B>
+				<C type="double">0.000</C>
+			</r>
+		</mixer>
+		<curves>
+			<gain>
+				<x>
+					<v1 type="double">0.000</v1>
+					<v2 type="double">1.000</v2>
+					<v3 type="double">20.00</v3>
+					<v4 type="double">30.00</v4>
+					<v5 type="double">40.00</v5>
+					<v6 type="double">50.00</v6>
+					<v7 type="double">60.00</v7>
+					<v8 type="double">500.0</v8>
+				</x>
+				<y>
+					<v1 type="double">0.00</v1>
+					<v2 type="double">0.40</v2>
+					<v3 type="double">0.50</v3>
+					<v4 type="double">0.50</v4>
+					<v5 type="double">0.50</v5>
+					<v6 type="double">0.50</v6>
+					<v7 type="double">0.50</v7>
+					<v8 type="double">1.00</v8>
+				</y>
+			</gain>
+			<filter>
+				<x>
+					<v1 type="double">0.000</v1>
+					<v2 type="double">1.000</v2>
+					<v3 type="double">20.00</v3>
+					<v4 type="double">30.00</v4>
+					<v5 type="double">40.00</v5>
+					<v6 type="double">50.00</v6>
+					<v7 type="double">60.00</v7>
+					<v8 type="double">500.0</v8>
+				</x>
+				<y>
+					<v1 type="double">0.250</v1>
+					<v2 type="double">0.200</v2>
+					<v3 type="double">0.150</v3>
+					<v4 type="double">0.100</v4>
+					<v5 type="double">0.050</v5>
+					<v6 type="double">0.040</v6>
+					<v7 type="double">0.030</v7>
+					<v8 type="double">0.000</v8>
+				</y>
+			</filter>
+		</curves>
+	</ground>
+	<air>
+		<generators>
+			<A>
+				<sine>
+					<frequency type="double">0.1</frequency>
+					<level type="double">0.005</level>
+					<enabled type="int">0</enabled>
+				</sine>
+				<noise>
+					<frequency type="double">0.5</frequency>
+					<level type="double">0.05</level>
+					<enabled type="int">0</enabled>
+				</noise>
+				<rectLFO>
+					<filter type="double">0.1</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">1.0</intensity>
+					<enabled type="int">0</enabled>
+				</rectLFO>
+				<sineLFO>
+					<filter type="double">0.5</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">1.0</intensity>
+					<enabled type="int">0</enabled>
+				</sineLFO>
+				<resonance>
+					<frequency type="double">5.0</frequency>
+					<intensity type="double">3.0</intensity>
+					<level type="double">0.005</level>
+					<attack type="double">0.5</attack>
+					<release type="double">1.0</release>
+					<enabled type="int">1</enabled>
+				</resonance>
+			</A>
+			<B>
+				<sine>
+					<frequency type="double">0.1</frequency>
+					<level type="double">0.005</level>
+					<enabled type="int">0</enabled>
+				</sine>
+				<noise>
+					<frequency type="double">0.1</frequency>
+					<level type="double">0.005</level>
+					<enabled type="int">0</enabled>
+				</noise>
+				<rectLFO>
+					<filter type="double">0.05</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">0.5</intensity>
+					<enabled type="int">0</enabled>
+				</rectLFO>
+				<sineLFO>
+					<filter type="double">0.5</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">1.0</intensity>
+					<enabled type="int">0</enabled>
+				</sineLFO>
+				<resonance>
+					<frequency type="double">5.0</frequency>
+					<intensity type="double">5.0</intensity>
+					<level type="double">0.005</level>
+					<attack type="double">0.50</attack>
+					<release type="double">1.0</release>
+					<enabled type="int">1</enabled>
+				</resonance>
+			</B>
+			<C>
+				<sine>
+					<frequency type="double">0.1</frequency>
+					<level type="double">0.005</level>
+					<enabled type="int">0</enabled>
+				</sine>
+				<noise>
+					<frequency type="double">0.1</frequency>
+					<level type="double">0.005</level>
+					<enabled type="int">0</enabled>
+				</noise>
+				<rectLFO>
+					<filter type="double">0.1</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">1.0</intensity>
+					<enabled type="int">0</enabled>
+				</rectLFO>
+				<sineLFO>
+					<filter type="double">0.5</filter>
+					<level type="double">0.005</level>
+					<intensity type="double">1.0</intensity>
+					<enabled type="int">0</enabled>
+				</sineLFO>
+				<resonance>
+					<frequency type="double">500.0</frequency>
+					<intensity type="double">5.0</intensity>
+					<level type="double">0.005</level>
+					<attack type="double">1.0</attack>
+					<release type="double">2.0</release>
+					<enabled type="int">0</enabled>
+				</resonance>
+			</C>
+		</generators>
+		<mixer>
+			<x>
+				<A type="double">0.000</A>
+				<B type="double">0.000</B>
+				<C type="double">0.000</C>
+			</x>
+			<y>
+				<A type="double">0.000</A>
+				<B type="double">0.000</B>
+				<C type="double">0.000</C>
+			</y>
+			<z>
+				<A type="double">0.000</A>
+				<B type="double">0.000</B>
+				<C type="double">0.000</C>
+			</z>
+			<h>
+				<A type="double">0.000</A>
+				<B type="double">60.00</B>
+				<C type="double">0.000</C>
+			</h>
+			<p>
+				<A type="double">-50.0</A>
+				<B type="double">0.000</B>
+				<C type="double">0.000</C>
+			</p>
+			<r>
+				<A type="double">0.000</A>
+				<B type="double">0.000</B>
+				<C type="double">0.000</C>
+			</r>
+		</mixer>
+		<curves>
+			<gain>
+				<x>
+					<v1 type="double">0.000</v1>
+					<v2 type="double">50.00</v2>
+					<v3 type="double">100.0</v3>
+					<v4 type="double">150.0</v4>
+					<v5 type="double">200.0</v5>
+					<v6 type="double">250.0</v6>
+					<v7 type="double">300.0</v7>
+					<v8 type="double">500.0</v8>
+				</x>
+				<y>
+					<v1 type="double">0.10</v1>
+					<v2 type="double">0.150</v2>
+					<v3 type="double">0.20</v3>
+					<v4 type="double">0.250</v4>
+					<v5 type="double">0.260</v5>
+					<v6 type="double">0.270</v6>
+					<v7 type="double">0.280</v7>
+					<v8 type="double">0.10</v8>
+				</y>
+			</gain>
+			<filter>
+				<x>
+					<v1 type="double">0.000</v1>
+					<v2 type="double">50.00</v2>
+					<v3 type="double">100.0</v3>
+					<v4 type="double">150.0</v4>
+					<v5 type="double">200.0</v5>
+					<v6 type="double">250.0</v6>
+					<v7 type="double">300.0</v7>
+					<v8 type="double">500.0</v8>
+				</x>
+				<y>
+					<v1 type="double">0.000</v1>
+					<v2 type="double">0.000</v2>
+					<v3 type="double">0.000</v3>
+					<v4 type="double">0.000</v4>
+					<v5 type="double">0.000</v5>
+					<v6 type="double">0.000</v6>
+					<v7 type="double">0.000</v7>
+					<v8 type="double">0.000</v8>
+				</y>
+			</filter>
+		</curves>
+	</air>
+	<DHM>
+		<kx type="double">2000.0</kx>
+		<ky type="double">2000.0</ky>
+		<kz type="double">5000.0</kz>
+		<roll type="double">150.0</roll>
+		<mass type="double">10.0</mass>
+		<y-positive-limit-m type="double">0.040</y-positive-limit-m>
+		<y-negative-limit-m type="double">-0.040</y-negative-limit-m>
+	</DHM>
+</PropertyList>
