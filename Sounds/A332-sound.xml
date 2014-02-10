@@ -187,6 +187,7 @@
 					<property>/gear/gear[0]/wow</property>
 					<property>/gear/gear[1]/wow</property>
 					<property>/gear/gear[2]/wow</property>
+					<property>/gear/gear[3]/wow</property>
 					
 				</or>
 			</condition>

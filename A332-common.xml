@@ -166,6 +166,95 @@
 					<property type="string">/aircraft/tyresmoke/right</property>
 					<interpolation>linear</interpolation>
 				</signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">controls/electric/APU-generator</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">controls/electric/engine[0]/generator</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">controls/electric/engine[1]/generator</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">controls/APU/master-switch</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">controls/APU/starter</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">controls/electric/battery-switch</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">controls/electric/external-power</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">controls/engines/engine[0]/cutoff-switch</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">controls/engines/engine[1]/cutoff-switch</property>
+                                </signal>
+                                <signal>
+                                    <type>float</type>
+                                    <property type="string">controls/engines/engine-start-switch</property>
+                                </signal>
+                                <signal>
+                                    <type>float</type>
+                                    <property type="string">/velocities/groundspeed-kt</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/deicing_truck/enable</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/catering/enable</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/chokes/nose</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/chokes/left</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/chokes/right</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/ext-pwr/enable</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/baggage/enable</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/stairs/l1</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/stairs/l2</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/stairs/l4</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">services/stairs/cover</property>
+                                </signal>
+
 			</config>
 		</flight-recorder>
 
