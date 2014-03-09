@@ -86,10 +86,16 @@
 					<type>y-shift</type>
 					<offset>-12</offset>
 				</transformation>
+				<transformation>
+					<type>rotation</type>
+					<property>orientation/heading-magnetic-deg</property>
+					<scale>-1</scale>
+				</transformation>
 				<!-- first: Rotate fron layer center -->
 				<transformation>
 					<type>rotation</type>
-					<property>autopilot/internal/fdm-heading-bug-error-deg</property>
+					<!--<property>autopilot/internal/fdm-heading-bug-error-deg</property>-->
+					<property>flight-management/fcu-values/hdg</property>
 				</transformation>
 				<!-- second: shift from rotation origin -->
 				<transformation>

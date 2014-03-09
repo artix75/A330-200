@@ -86,9 +86,9 @@ Configure the nav-display symbology
     <u1 type="float">305.17</u1>
     <v1 type="float">492.24</v1>
     <color>
-        <red type="float">0</red>
+        <red type="float">1</red>
         <green type="float">1</green>
-        <blue type="float">0</blue>
+        <blue type="float">1</blue>
     </color>
     <line-color>
         <red type="float">0</red>

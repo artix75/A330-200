@@ -74,12 +74,18 @@
 					<type>y-shift</type>
 					<offset>-78</offset>
 				</transformation>
+				<transformation>
+					<type>rotation</type>
+					<property>orientation/heading-magnetic-deg</property>
+					<scale>-1</scale>
+				</transformation>
 				<!-- first: Rotate fron layer center -->
 				<transformation>
 					<type>rotation</type>
-					<property>autopilot/internal/fdm-heading-bug-error-deg</property>
-					<max>45</max>
-					<min>-45</min>
+					<!--<property>autopilot/internal/fdm-heading-bug-error-deg</property>-->
+                                        <property>flight-management/fcu-values/hdg</property>
+					<!--<max>45</max>
+					<min>-45</min>-->
 				</transformation>
 				<!-- second: shift from rotation origin -->
 				<transformation>
@@ -550,7 +556,7 @@
 
 <!-- ######################## TOP LEFT ############################## -->
 
-		<layer>
+		<!--<layer>
 			<name>VOR1</name>
 			<condition>
 				<equals>
@@ -722,7 +728,153 @@
 					<offset>98</offset>
 				</transformation>
 			</transformations>
-		</layer>
+		</layer> -->
+        
+        <!-- right top corner, line 1: display waypoint id and bearing  -->
+        <layer>
+            <name>Waypoint ID</name>
+            <type>text</type>
+            <font>arial_black</font>
+            <point-size>8</point-size>
+            <color>
+                <red>1.0</red>
+                <green>1.0</green>
+                <blue>1.0</blue>
+            </color>
+            <chunks>
+                <chunk>
+                    <type>text-value</type>
+                    <property>autopilot/route-manager/wp/id</property>
+                </chunk>
+            </chunks>
+            <transformations>
+                <transformation>
+                    <type>x-shift</type>
+                    <offset>40</offset>
+                </transformation>
+                <transformation>
+                    <type>y-shift</type>
+                    <offset>115</offset>
+                </transformation>
+            </transformations>
+        </layer>
+        <layer>
+            <name>Waypoint Bearing</name>
+            <type>text</type>
+            <font>arial_black</font>
+            <point-size>7</point-size>
+            <color>
+                <red>0.0</red>
+                <green>1.0</green>
+                <blue>0.0</blue>
+            </color>
+            <chunks>
+                <chunk>
+                    <type>number-value</type>
+                    <property>autopilot/route-manager/wp/bearing-deg</property>
+                    <format>%3.0f</format>
+                </chunk>
+            </chunks>
+            <transformations>
+                <transformation>
+                    <type>x-shift</type>
+                    <offset>100</offset>
+                </transformation>
+                <transformation>
+                    <type>y-shift</type>
+                    <offset>115</offset>
+                </transformation>
+            </transformations>
+        </layer>
+        
+        <!-- right top corner, line 2: display distance to waypoint and the unit (NM)  -->
+        <layer>
+            <name>Waypoint Distance</name>
+            <type>text</type>
+            <font>arial_black</font>
+            <point-size>7</point-size>
+            <color>
+                <red>0.0</red>
+                <green>1.0</green>
+                <blue>0.0</blue>
+            </color>
+            <chunks>
+                <chunk>
+                    <type>number-value</type>
+                    <property>autopilot/route-manager/wp/dist</property>
+                    <format>%4.0f</format>
+                </chunk>
+            </chunks>
+            <transformations>
+                <transformation>
+                    <type>x-shift</type>
+                    <offset>75</offset>
+                </transformation>
+                <transformation>
+                    <type>y-shift</type>
+                    <offset>100</offset>
+                </transformation>
+            </transformations>
+        </layer>
+        <layer>
+            <name>Waypoint Distance Unit (NM)</name>
+            <type>text</type>
+            <font>arial_black</font>
+            <point-size>7</point-size>
+            <color>
+                <red>0.5</red>
+                <green>1.0</green>
+                <blue>1.0</blue>
+            </color>
+            <chunks>
+                <chunk>
+                    <type>literal</type>
+                    <text> NM</text>
+                </chunk>
+            </chunks>
+            <transformations>
+                <transformation>
+                    <type>x-shift</type>
+                    <offset>100</offset>
+                </transformation>
+                <transformation>
+                    <type>y-shift</type>
+                    <offset>100</offset>
+                </transformation>
+            </transformations>
+        </layer>
+        
+        
+        <!-- right top corner, line 3: display ETA to waypoint  -->
+        <layer>
+            <name>ETA</name>
+            <type>text</type>
+            <font>arial_black</font>
+            <point-size>7</point-size>
+            <color>
+                <red>0.0</red>
+                <green>1.0</green>
+                <blue>0.0</blue>
+            </color>
+            <chunks>
+                <chunk>
+                    <type>text-value</type>
+                    <property>autopilot/route-manager/wp/eta</property>
+                    <format>%s</format>
+                </chunk>
+            </chunks>
+            <transformations>
+                <transformation>
+                    <type>x-shift</type>
+                    <offset>100</offset>
+                </transformation>
+                <transformation>
+                    <type>y-shift</type>
+                    <offset>85</offset>
+                </transformation>
+            </transformations>
+        </layer>
+
 
 
 <!-- ######### BOTTOM RIGHT ########## -->

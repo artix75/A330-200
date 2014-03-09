@@ -95,6 +95,11 @@ Configure the nav-display symbology
         <green type="float">1</green>
         <blue type="float">1</blue>
     </color>
+    <line-color>
+        <red type="float">0</red>
+        <green type="float">1</green>
+        <blue type="float">0</blue>
+    </line-color>
     <draw-leg type="bool">true</draw-leg>
     
     <text type="string">{id}</text>

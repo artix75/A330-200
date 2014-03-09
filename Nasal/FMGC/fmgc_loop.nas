@@ -84,10 +84,20 @@ var fmgc_loop = {
     setprop(servo~ "elevator-vs", 0);
     setprop(servo~ "elevator", 0);
     setprop(servo~ "target-pitch", 0);
+    
+    setprop(servo~ "fd-aileron", 0);
+    setprop(servo~ "fd-aileron-nav1", 0);
+    setprop(servo~ "fd-target-bank", 0);
+
+    #setprop(servo~ "fd-elevator-vs", 0);
+    #setprop(servo~ "fd-elevator-gs", 0);
+    #setprop(servo~ "fd-elevator", 0);
+    setprop(servo~ "fd-target-pitch", 0);
+
 
     me.reset();
 },
-    update : func {   	
+update : func {   	
 
         var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
 
