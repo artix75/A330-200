@@ -2,7 +2,7 @@
 
 var radio = "/flight-management/freq/";
 
-var nav1 = "/instrumentation/nav[0]/";
+var nav1 = "/instrumentation/nav/";
 
 var nav2 = "/instrumentation/nav[1]/";
 
