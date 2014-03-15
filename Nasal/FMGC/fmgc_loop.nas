@@ -125,6 +125,24 @@ update : func {
         setprop(fcu~ "alt-100", me.alt_100());
 
         me.calc_td();
+        if (getprop("/autopilot/route-manager/active") and  
+            !getprop("/flight-management/freq/ils")){
+            var dest_airport = getprop("/autopilot/route-manager/destination/airport");
+            var dest_rwy = getprop("/autopilot/route-manager/destination/runway");
+            if(dest_airport and dest_rwy){
+                var apt_info = airportinfo(dest_airport);
+                var rwy_ils = apt_info.runways[dest_rwy].ils;
+                if(rwy_ils != nil){
+                    var frq = rwy_ils.frequency / 100;
+                    var crs = rwy_ils.course;
+                    var dist = getprop("/autopilot/route-manager/wp-last/dist");
+                    if(dist <= 50){
+                        setprop("/flight-management/freq/ils", frq);
+                        setprop("/flight-management/freq/ils-crs", int(crs));
+                    }
+                }
+            }
+        }
 
         # SET OFF IF NOT USED
 
