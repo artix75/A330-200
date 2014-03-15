@@ -69,8 +69,8 @@ var f_pln = {
 		setprop(rm_route~ "destination/airport", arr);
 		
 		if(getprop("/flight-management/alternate/icao") == "empty") {
-		
-			setprop(rm_route~ "input", "@INSERT99:" ~ dep ~ "@0");
+			# artix: disabled this
+                        #setprop(rm_route~ "input", "@INSERT99:" ~ dep ~ "@0");
 		
 		} else {
 		

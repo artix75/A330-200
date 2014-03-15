@@ -78,6 +78,7 @@ var sid = {
 	},
 	
 	confirm_sid : func(n) {
+                
 	
 		me.WPmax = size(me.SIDList[n].wpts);
 		
@@ -98,6 +99,9 @@ var sid = {
 			#	setprop("/autopilot/route-manager/input", "@INSERT" ~ (wp + 1) ~ ":" ~ me.SIDList[n].wpts[wp].wp_lon ~ "," ~ me.SIDList[n].wpts[wp].wp_lat ~ "@" ~ me.SIDList[n].wpts[wp].alt_cstr);
 		
 		}
+                if(me.SIDList[n].wp_name == 'DEFAULT'){
+                    setprop('/autopilot/route-manager/departure/sid', 'DEFAULT'); 
+                }
 		
 		setprop(dep~ "active-sid/name", me.SIDList[n].wp_name);
 		

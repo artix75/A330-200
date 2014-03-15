@@ -107,6 +107,9 @@ var star = {
 		setprop("/flight-management/procedures/star-transit", me.WPmax);
 		
 		setprop("/instrumentation/mcdu/page", "f-pln");
+                if(me.STARList[n].wp_name == 'DEFAULT'){
+                    setprop('/autopilot/route-manager/destination/approach', 'DEFAULT');
+                }
 		
 		mcdu.f_pln.update_disp();
 	

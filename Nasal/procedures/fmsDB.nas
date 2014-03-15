@@ -299,7 +299,11 @@ var fmsDB = {
     # getSIDList
     #
     getSIDList : func(runway) {
-      var sidList = [];
+      var defaultTp = fmsTP.new();
+      defaultTp.tp_type = 'sid';
+      defaultTp.wp_name = 'DEFAULT';
+      defaultTp.runways = [runway];
+      var sidList = [defaultTp];
       foreach(var s; me.wptps) {
         if (s.tp_type == "sid") {
           foreach(var r; s.runways) {
@@ -316,7 +320,11 @@ var fmsDB = {
     # getSTARList
     #
     getSTARList : func(runway) {
-      var starList = [];
+      var defaultTp = fmsTP.new();
+      defaultTp.tp_type = 'star';
+      defaultTp.wp_name = 'DEFAULT';
+      defaultTp.runways = [runway];
+      var starList = [defaultTp];
       foreach(var s; me.wptps) {
         if (s.tp_type == "star") {
           foreach(var r; s.runways) {
