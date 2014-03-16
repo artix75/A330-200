@@ -124,4 +124,8 @@ var user = {
 
 };
 
-user.load_rte_list;
+user.load_rte_list();
+for(var i = 1; getprop('/database/user_rtes_list/name[' ~ i ~ ']') != nil; i += 1){
+    var name = getprop('/database/user_rtes_list/name[' ~ i ~ ']');
+    io.read_properties(home ~ "/Export/"~name~".xml", "/database/user_rtes/"~name~"/");    
+}
