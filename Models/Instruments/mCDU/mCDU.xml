@@ -1301,7 +1301,7 @@
 		<object-name>clr</object-name>
 		<action>
             <button>0</button>
-	   		<repeatable type="bool">false</repeatable>
+	   		<repeatable type="bool">true</repeatable>
             <binding>
 				<command>nasal</command>
 		 		<script>
