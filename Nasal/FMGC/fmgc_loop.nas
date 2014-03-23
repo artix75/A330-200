@@ -137,8 +137,14 @@ update : func {
                     var crs = rwy_ils.course;
                     var dist = getprop("/autopilot/route-manager/wp-last/dist");
                     if(dist <= 50){
+                        var radio = "/flight-management/freq/";
                         setprop("/flight-management/freq/ils", frq);
                         setprop("/flight-management/freq/ils-crs", int(crs));
+                        if (getprop(radio~ "ils-mode")) {
+
+                                mcdu.rad_nav.switch_nav1(1);
+
+                        }
                     }
                 }
             }

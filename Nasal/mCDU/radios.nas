@@ -77,6 +77,30 @@ var rad_nav = {
 		
 		return freq;
 	
-	}
+	},
+        search_ils: func(id) {
+		var gps = "/instrumentation/gps/";
+		
+		setprop(gps~ "scratch/query", id);
+		
+		setprop(gps~ "scratch/type", "ils");
+		
+		setprop(gps~ "command", "search");
+		var name = getprop(gps~ "scratch/name");
+                if(name){
+                    var comps = split(' ', name);
+                    if(size(comps)  < 2) return nil;
+                    var icao = comps[0];
+                    var rwy_id = comps[1];
+                    var apt = airportinfo(icao);
+                    if(apt == nil) return nil;
+                    var rwy = apt.runways[rwy_id];
+                    if(rwy == nil) return nil;
+                    var ils = rwy.ils;
+                    if(ils == nil) return nil;
+                    return ils;
+                }
+                return nil;
+        }
 
 };

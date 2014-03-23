@@ -264,11 +264,22 @@
 		 			# Check if a frequency was entered or text
 		 			
 		 			if (typeof(input) == "scalar") {
+		 				 if (substr(input, 0, 1) == "1") { # FREQ
 		 			
-						setprop(radio~ "ils", input);
-						
-                                                #setprop("/instrumentation/nav/frequencies/selected-mhz",input);
-						mcdu.clear_inp();
+                            setprop(radio~ "ils", input);
+                            
+                            #setprop("/instrumentation/nav/frequencies/selected-mhz",input);
+                            mcdu.clear_inp();
+                        } else {
+                            var ils = mcdu.rad_nav.search_ils(input);
+                            if(ils != nil){
+                                setprop(radio~ "ils", ils.frequency / 100);
+                                setprop(radio~ "ils-crs", ils.course);
+                                setprop(radio~ "ils-id", ils.id);
+                                mcdu.clear_inp();
+                            } else {
+                            }
+                        }
 		 			
 		 			} else {
 		 			

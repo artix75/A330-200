@@ -15,6 +15,7 @@
 		<object-name>mCDU_tp</object-name>
 		<object-name>mCDU_perf</object-name>
 		<object-name>mCDU_prog</object-name>
+        <object-name>mCDU_runways</object-name>
 		<object-name>input</object-name>
 		<object-name>msg</object-name>
 		<object-name>start</object-name>
@@ -356,6 +357,19 @@
 			</equals>
 		</condition>
 	</model>
+    
+    <model>
+		<name>mCDU_runways</name>
+		<path>data/runways.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>RUNWAYS</value>
+			</equals>
+		</condition>
+	</model>
+    
+    <!-- Animations -->
 	
 	<animation>
 		<type>pick</type>
