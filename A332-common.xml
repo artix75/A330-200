@@ -643,7 +643,7 @@
 			</engine>
 		</engines>
 		<flight>
-			<ground-spoilers-armed type="bool">false</ground-spoilers-armed>
+			<ground-spoilers-armed type="bool">true</ground-spoilers-armed>
 			<speedbrake-lever type="double">0</speedbrake-lever>
 		</flight>
 		<gear>
@@ -1051,9 +1051,18 @@
 					<value>1</value>
 				</binding>
 				<binding>
-					<command>property-cycle</command>
 					<property>/controls/flight/ground-spoilers-armed</property>
-					<value>0</value>
+                                        <command>nasal</command>
+                                        <script>
+                                            var spLever = 'controls/flight/speedbrake-lever';
+                                            var grnBrkArmed = '/controls/flight/ground-spoilers-armed';
+                                            if(getprop(spLever) == 0){
+                                                setprop(grnBrkArmed, 1);
+                                            } else {
+                                                setprop(grnBrkArmed, 0);
+                                            }
+
+                                        </script>
 				</binding>
 			</key>
 			<key n="106">
