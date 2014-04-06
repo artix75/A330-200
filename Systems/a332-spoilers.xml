@@ -26,16 +26,14 @@
 					<property>/gear/gear[3]/wow</property>
 					<property>/gear/gear[4]/wow</property>
 				</or>
+                                <equals>
+                                    <property>controls/engines/engine[0]/throttle</property>
+                                    <value>0</value>
+                                </equals>
 				<greater-than>
 					<property>/instrumentation/airspeed-indicator/indicated-speed-kt</property>
-					<value>30</value>
+					<value>60</value>
 				</greater-than>
-                                <not>
-                                    <equals>
-                                        <property>/flight-management/phase</property>
-                                        <value>T/O</value>
-                                    </equals>
-                                </not>
 			</and>
 		</input>
 		<output>/controls/flight/ground-spoilers</output>

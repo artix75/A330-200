@@ -27,6 +27,11 @@ var star = {
 			setprop(arr~ "runway[" ~ rwy_index ~ "]/length-m", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/length-ft") * 0.3048);
 			
 			setprop(arr~ "runway[" ~ rwy_index ~ "]/width-ft", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/width-ft"));
+                        
+                        var ils_frq = getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/ils-frequency-mhz");
+                        if(ils_frq == nil) ils_frq = 0;
+
+                        setprop(arr~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", ils_frq);
 		
 		}
 		
@@ -109,6 +114,8 @@ var star = {
 		setprop("/instrumentation/mcdu/page", "f-pln");
                 if(me.STARList[n].wp_name == 'DEFAULT'){
                     setprop('/autopilot/route-manager/destination/approach', 'DEFAULT');
+                    setprop(arr~ "active-star/name", 'DEFAULT');
+                    setprop(iap~ "active-iap/name", 'DEFAULT');
                 }
 		
 		mcdu.f_pln.update_disp();
@@ -161,6 +168,7 @@ var star = {
 				setprop(arr~ "rwy-disp/line[" ~ l ~ "]/length-m", getprop(arr~ "runway[" ~ (first + l) ~ "]/length-m"));
 			
 				setprop(arr~ "rwy-disp/line[" ~ l ~ "]/width-ft", getprop(arr~ "runway[" ~ (first + l) ~ "]/width-ft"));
+				setprop(arr~ "rwy-disp/line[" ~ l ~ "]/ils-frequency-mhz", getprop(arr~ "runway[" ~ (first + l) ~ "]/ils-frequency-mhz"));
 				
 			} else {
 			
@@ -171,6 +179,7 @@ var star = {
 				setprop(arr~ "rwy-disp/line[" ~ l ~ "]/length-m", "----");
 			
 				setprop(arr~ "rwy-disp/line[" ~ l ~ "]/width-ft", "");
+				setprop(arr~ "rwy-disp/line[" ~ l ~ "]/ils-frequency-mhz", "");
 			
 			}
 		

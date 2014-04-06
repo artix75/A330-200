@@ -329,7 +329,7 @@
 		</engine>
 		<engine>
 			<name>GE inside right n1_2</name>
-			<path>Aircraft/A330-200/Sounds/res/GE/1turbine_NL1.wav</path>
+			<path>Aircraft/A330-200/Sounds/res/GE/iturbine_NL1.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<greater-than>
@@ -364,6 +364,89 @@
 			<reference-dist>1.0</reference-dist>
 			<max-dist>50.0</max-dist>
 		</engine>
+        
+        
+        <engine>
+			<name>GE inside turb left n1_2</name>
+			<path>Aircraft/A330-200/Sounds/res/airbus_turbine.wav</path>
+			<mode>looped</mode>
+			<condition>
+				<greater-than>
+					<property>engines/engine[0]/n1</property>
+					<value>2</value>
+				</greater-than>
+				<property>sim/current-view/internal</property>
+				<equals>
+					<property>sim/aero</property>
+					<value>A330-203</value>
+				</equals>
+			</condition>
+			<pitch>
+				<property>/engines/engine[0]/n1</property>
+				<offset>0</offset>
+				<factor>0.033</factor>
+                <!--factor>0.02</factor-->
+				<min>0.2</min>
+				<max>3</max>
+			</pitch>
+			<!--volume>
+				<property>engines/engine[0]/n1</property>
+				<factor>0.0025</factor>
+				<min>0</min>
+				<max>0.7</max>
+			</volume-->
+            <volume>0.7</volume>
+            
+			<position>
+				<x>15</x>
+				<y>-5.7</y>
+				<z>-1.1</z>
+			</position>
+			<reference-dist>25.0</reference-dist>
+			<max-dist>50.0</max-dist>
+		</engine>
+        
+		<engine>
+			<name>GE inside turb right n1_2</name>
+			<path>Aircraft/A330-200/Sounds/res/airbus_turbine.wav</path>
+			<mode>looped</mode>
+			<condition>
+				<greater-than>
+					<property>engines/engine[1]/n1</property>
+					<value>2</value>
+				</greater-than>
+				<property>sim/current-view/internal</property>
+				<equals>
+					<property>sim/aero</property>
+					<value>A330-203</value>
+				</equals>
+			</condition>
+			<pitch>
+				<property>/engines/engine[1]/n1</property>
+				<offset>0</offset>
+				<factor>0.033</factor>
+                <!--factor>0.02</factor-->
+				<min>0.2</min>
+				<max>3</max>
+			</pitch>
+			<!--volume>
+             <property>engines/engine[0]/n1</property>
+             <factor>0.0025</factor>
+             <min>0</min>
+             <max>0.7</max>
+             </volume-->
+            <volume>0.7</volume>
+            
+			<position>
+				<x>15</x>
+				<y>5.7</y>
+				<z>-1.1</z>
+			</position>
+			<reference-dist>1.0</reference-dist>
+			<max-dist>50.0</max-dist>
+		</engine>
+
+        
 		<engine>
 			<name>GE inside left whine</name>
 			<path>Aircraft/A330-200/Sounds/res/GE/iwhinedrone_NL1.wav</path>

@@ -375,7 +375,8 @@
 			<property>/surface-positions/flap-pos-norm</property>
 			<volume>
 				<property>sim/sound/effects/volume</property>
-				<max>0.8</max>
+                <factor>3</factor>
+				<max>1.8</max>
 			</volume>
 			<position>
 				<x>15</x>
@@ -392,7 +393,8 @@
 			<property>/surface-positions/flap-pos-norm</property>
 			<volume>
 				<property>sim/sound/effects/volume</property>
-				<max>0.8</max>
+                <factor>3</factor>
+				<max>1.8</max>
 			</volume>
 			<position>
 				<x>15</x>
@@ -776,6 +778,25 @@
         <reference-dist>10.0</reference-dist>
         <max-dist>100.0</max-dist>
     </copilot3>
+    
+    <!-- PTU -->
+    
+    <ptu>
+        <name>ptu</name>
+        <mode>once</mode>
+        <path>Aircraft/A330-200/Sounds/res/airbus_ptu.wav</path>
+        <condition>
+			<property>/hydraulics/control/ptu-apply</property>
+		</condition>
+		<position>
+			<x>26</x>
+			<y>0</y>
+			<z>4</z>
+		</position>
+		<reference-dist>10</reference-dist>
+		<max-dist>30</max-dist>
+		<volume>0.8</volume>
+    </ptu>
     
     <!-- Announcements -->
 

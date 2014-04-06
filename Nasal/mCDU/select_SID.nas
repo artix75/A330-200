@@ -25,6 +25,11 @@ var sid = {
 			setprop(dep~ "runway[" ~ rwy_index ~ "]/length-m", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/length-ft") * 0.3048);
 			
 			setprop(dep~ "runway[" ~ rwy_index ~ "]/width-ft", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/width-ft"));
+
+                        var ils_frq = getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/ils-frequency-mhz");
+                        if(ils_frq == nil) ils_frq = 0;
+
+			setprop(dep~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", ils_frq);
 		
 		}
 		
@@ -101,9 +106,12 @@ var sid = {
 		}
                 if(me.SIDList[n].wp_name == 'DEFAULT'){
                     setprop('/autopilot/route-manager/departure/sid', 'DEFAULT'); 
+		    setprop(dep~ "active-sid/name", 'DEFAULT');
+                } else {
+                
+		    setprop(dep~ "active-sid/name", me.SIDList[n].wp_name);
                 }
 		
-		setprop(dep~ "active-sid/name", me.SIDList[n].wp_name);
 		
 		setprop("/flight-management/procedures/sid-current", 0);
 		setprop("/flight-management/procedures/sid-transit", me.WPmax);
@@ -131,6 +139,7 @@ var sid = {
 				setprop(dep~ "rwy-disp/line[" ~ l ~ "]/length-m", getprop(dep~ "runway[" ~ (first + l) ~ "]/length-m"));
 			
 				setprop(dep~ "rwy-disp/line[" ~ l ~ "]/width-ft", getprop(dep~ "runway[" ~ (first + l) ~ "]/width-ft"));
+				setprop(dep~ "rwy-disp/line[" ~ l ~ "]/ils-frequency-mhz", getprop(dep~ "runway[" ~ (first + l) ~ "]/ils-frequency-mhz"));
 				
 			} else {
 			
@@ -141,6 +150,7 @@ var sid = {
 				setprop(dep~ "rwy-disp/line[" ~ l ~ "]/length-m", "----");
 			
 				setprop(dep~ "rwy-disp/line[" ~ l ~ "]/width-ft", "");
+				setprop(dep~ "rwy-disp/line[" ~ l ~ "]/ils-frequency-mhz", "");
 			
 			}
 		

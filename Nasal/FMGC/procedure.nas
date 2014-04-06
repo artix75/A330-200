@@ -1,6 +1,10 @@
 var procedure = {
 
 	check : func() {
+                if(getprop("/flight-management/procedures/sid/active-sid/name") == 'DEFAULT')
+                    return 'off';
+                if(getprop("/flight-management/procedures/iap/active-iap/name") == 'DEFAULT')
+                    return 'off';
 	
 		var rte_len = getprop("/autopilot/route-manager/route/num");
 	
