@@ -103,48 +103,53 @@ setlistener("autopilot/settings/engaged", APWarning, 1, 0);
 ##########
 
 # APU loop function
+var ECAMPageSet = 0;
 var apuLoop = func
- {
- if (props.globals.getNode("engines/apu/on-fire").getBoolValue())
-  {
-  props.globals.getNode("engines/apu/serviceable").setBoolValue(0);
-  }
- if (props.globals.getNode("controls/APU/fire-switch").getBoolValue())
-  {
-  props.globals.getNode("engines/apu/on-fire").setBoolValue(0);
-  }
- if (props.globals.getNode("engines/apu/serviceable").getBoolValue() and (props.globals.getNode("controls/APU/master-switch").getBoolValue() or props.globals.getNode("controls/APU/starter").getBoolValue()))
-  {
-  if (props.globals.getNode("controls/APU/starter").getBoolValue())
-   {
-   var rpm = getprop("engines/apu/rpm");
-   rpm += getprop("sim/time/delta-realtime-sec") * 7;
-   if (rpm >= 100)
+{
+    if (props.globals.getNode("engines/apu/on-fire").getBoolValue())
     {
-    rpm = 100;
+        props.globals.getNode("engines/apu/serviceable").setBoolValue(0);
     }
-   setprop("engines/apu/rpm", rpm);
-   }
-  if (props.globals.getNode("controls/APU/master-switch").getBoolValue() and getprop("engines/apu/rpm") == 100)
-   {
-   props.globals.getNode("engines/apu/running").setBoolValue(1);
-   }
-  }
- else
-  {
-  props.globals.getNode("engines/apu/running").setBoolValue(0);
+    if (props.globals.getNode("controls/APU/fire-switch").getBoolValue())
+    {
+        props.globals.getNode("engines/apu/on-fire").setBoolValue(0);
+    }
+    if (props.globals.getNode("engines/apu/serviceable").getBoolValue() and (props.globals.getNode("controls/APU/master-switch").getBoolValue() or props.globals.getNode("controls/APU/starter").getBoolValue()))
+    {
+        if (props.globals.getNode("controls/APU/starter").getBoolValue())
+        {
+            if(!ECAMPageSet){
+                ECAMPageSet = 1;
+                setprop('instrumentation/efis/ecam/display-mode', 'APU');
+            }
+            var rpm = getprop("engines/apu/rpm");
+            rpm += getprop("sim/time/delta-realtime-sec") * 7;
+            if (rpm >= 100)
+            {
+                rpm = 100;
+            }
+            setprop("engines/apu/rpm", rpm);
+        }
+        if (props.globals.getNode("controls/APU/master-switch").getBoolValue() and getprop("engines/apu/rpm") == 100)
+        {
+            props.globals.getNode("engines/apu/running").setBoolValue(1);
+        }
+    }
+    else
+    {
+        props.globals.getNode("engines/apu/running").setBoolValue(0);
 
-  var rpm = getprop("engines/apu/rpm");
-  rpm -= getprop("sim/time/delta-realtime-sec") * 5;
-  if (rpm < 0)
-   {
-   rpm = 0;
-   }
-  setprop("engines/apu/rpm", rpm);
-  }
+        var rpm = getprop("engines/apu/rpm");
+        rpm -= getprop("sim/time/delta-realtime-sec") * 5;
+        if (rpm < 0)
+        {
+            rpm = 0;
+        }
+        setprop("engines/apu/rpm", rpm);
+    }
 
- settimer(apuLoop, 0);
- };
+    settimer(apuLoop, 0);
+};
 # engine loop function
 var engineLoop = func(engine_no)
  {

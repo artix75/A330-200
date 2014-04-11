@@ -368,7 +368,8 @@
         
         <engine>
 			<name>GE inside turb left n1_2</name>
-			<path>Aircraft/A330-200/Sounds/res/airbus_turbine.wav</path>
+			<!--path>Aircraft/A330-200/Sounds/res/airbus_turbine.wav</path-->
+			<path>Aircraft/A330-200/Sounds/res/airbus_turbine_long.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<greater-than>
@@ -408,7 +409,8 @@
         
 		<engine>
 			<name>GE inside turb right n1_2</name>
-			<path>Aircraft/A330-200/Sounds/res/airbus_turbine.wav</path>
+			<!--path>Aircraft/A330-200/Sounds/res/airbus_turbine.wav</path-->
+			<path>Aircraft/A330-200/Sounds/res/airbus_turbine_long.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<greater-than>
