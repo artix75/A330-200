@@ -23,6 +23,9 @@ var user = {
 		setprop(active_rte~ "arricao", getprop(rte~"arricao"));
 		
 		setprop(active_rte~ "id", "----------");
+                var flight_num = getprop(rte~"flight-num");
+                if(flight_num != nil and size(flight_num) > 0)
+                    setprop(active_rte~"flight-num", flight_num);
 		
 		for (var wp = 0; getprop(rte~ "route/wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
 		

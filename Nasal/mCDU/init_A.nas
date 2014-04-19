@@ -167,6 +167,9 @@ var mCDU_init = {
                 } else {
                 
                     var route = user_rte ~ 'route/';
+                    var fltnum = getprop(user_rte~"flight-num");
+                    if(fltnum != nil and size(fltnum) > 0)
+                        setprop(active_rte~"flight-num", fltnum);
                     
                     for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
                     
