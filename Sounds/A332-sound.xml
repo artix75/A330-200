@@ -371,37 +371,41 @@
 		<flap>
 			<name>flaps left</name>
 			<mode>in-transit</mode>
-			<path>Aircraft/A330-200/Sounds/res/flaps.wav</path>
+			<!--path>Aircraft/A330-200/Sounds/res/flaps.wav</path-->
+			<path>Aircraft/A330-200/Sounds/res/A330_flaps.wav</path>
 			<property>/surface-positions/flap-pos-norm</property>
-			<volume>
+			<!--volume>
 				<property>sim/sound/effects/volume</property>
                 <factor>3</factor>
-				<max>1.8</max>
-			</volume>
+				<max>3.8</max>
+			</volume-->
+                        <volume>13</volume>
 			<position>
 				<x>15</x>
 				<y>-5.7</y>
 				<z>-0.5</z>
 			</position>
-			<reference-dist>5.0</reference-dist>
+			<reference-dist>35.0</reference-dist>
 			<max-dist>50.0</max-dist>
 		</flap>
 		<flap>
 			<name>flaps right</name>
 			<mode>in-transit</mode>
-			<path>Aircraft/A330-200/Sounds/res/flaps.wav</path>
+			<!--path>Aircraft/A330-200/Sounds/res/flaps.wav</path-->
+			<path>Aircraft/A330-200/Sounds/res/A330_flaps.wav</path>
 			<property>/surface-positions/flap-pos-norm</property>
-			<volume>
+			<!--volume>
 				<property>sim/sound/effects/volume</property>
                 <factor>3</factor>
-				<max>1.8</max>
-			</volume>
+				<max>3.8</max>
+			</volume-->
+                        <volume>13</volume>
 			<position>
 				<x>15</x>
 				<y>5.7</y>
 				<z>-0.5</z>
 			</position>
-			<reference-dist>5.0</reference-dist>
+			<reference-dist>35.0</reference-dist>
 			<max-dist>50.0</max-dist>
 		</flap>
 		<!-- Multiple gear position to be added -->
@@ -1173,6 +1177,33 @@
 		<reference-dist>10</reference-dist>
 		<max-dist>100</max-dist>
 	</crc>
+    
+    <rumblemain>
+        <name>main gear rumble</name>
+        <mode>looped</mode>
+        <path>Sounds/rumble.wav</path>
+        <condition>
+            <and>
+                <or>
+                    <property>gear/gear[1]/wow</property>
+                    <property>gear/gear[2]/wow</property>
+                </or>
+                <property>sim/current-view/internal</property>
+            </and>
+        </condition>
+        <volume>
+            <property>velocities/groundspeed-kt</property>
+            <type>log</type>
+            <factor>0.25</factor>
+        </volume>
+        <position>
+            <x>-6.5</x>
+            <y>0</y>
+            <z>-5</z>
+        </position>
+        <reference-dist>60.0</reference-dist>
+        <max-dist>6000.0</max-dist>
+    </rumblemain>
     
     <ge include="GE-sound.xml" omit-node="y" />
     

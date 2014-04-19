@@ -455,7 +455,8 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 			<z> 11.82 </z>
 		</location>
 		<capacity unit="LBS"> 6317 </capacity>
-		<contents unit="LBS"> 3000 </contents>
+		<!--<contents unit="LBS"> 3000 </contents>-->
+		<contents unit="LBS"> 30 </contents>
 		<standpipe unit="LBS">21</standpipe><!-- minimun fuel on pipes -->
 		<priority>2</priority>
 		<type>JET-A1</type>
@@ -468,7 +469,8 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 			<z> -19.70 </z>
 		</location>
 		<capacity unit="LBS"> 72686 </capacity>
-		<contents unit="LBS"> 30000 </contents>
+		<!--<contents unit="LBS"> 30000 </contents>-->
+		<contents unit="LBS"> 300 </contents>
 		<standpipe unit="LBS">31</standpipe><!-- minimun fuel on pipes -->
 		<priority>3</priority>
 		<type>JET-A1</type>
@@ -482,7 +484,8 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 			<z> -53.58 </z>
 		</location>
 		<capacity unit="LBS"> 71925 </capacity>
-		<contents unit="LBS"> 35000 </contents>
+		<!--contents unit="LBS"> 35000 </contents-->
+		<contents unit="LBS"> 350</contents>
 		<standpipe unit="LBS">43</standpipe><!-- minimun fuel on pipes -->
 		<priority>1</priority>
 		<type>JET-A1</type>
@@ -495,7 +498,8 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 			<z> -19.70 </z>
 		</location>
 		<capacity unit="LBS"> 72686 </capacity>
-		<contents unit="LBS"> 30000 </contents>
+		<!--contents unit="LBS"> 30000 </contents-->
+		<contents unit="LBS"> 300 </contents>
 		<standpipe unit="LBS">31</standpipe><!-- minimun fuel on pipes -->
 		<priority>3</priority>
 		<type>JET-A1</type>
@@ -508,7 +512,8 @@ xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 			<z> 11.82 </z>
 		</location>
 		<capacity unit="LBS"> 6317 </capacity>
-		<contents unit="LBS"> 3000 </contents>
+		<!--contents unit="LBS"> 3000 </contents-->
+		<contents unit="LBS"> 30 </contents>
 		<standpipe unit="LBS">21</standpipe><!-- minimun fuel on pipes -->
 		<priority>2</priority>
 		<type>JET-A1</type>

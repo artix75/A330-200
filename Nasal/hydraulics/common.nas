@@ -16,6 +16,9 @@ var hydraulics = {
 		
 		if (math.abs(me.green_psi - me.yellow_psi) >= 500) {
                         setprop('/hydraulics/control/ptu-apply', 1);
+                        #settimer(func(){
+                        #    setprop('/hydraulics/control/ptu-apply', 0);
+                        #}, 9);
 		
 			me.green_psi = avg_psi;
 			

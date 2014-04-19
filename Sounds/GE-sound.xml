@@ -388,7 +388,7 @@
 				<factor>0.033</factor>
                 <!--factor>0.02</factor-->
 				<min>0.2</min>
-				<max>3</max>
+				<max>3.3</max>
 			</pitch>
 			<!--volume>
 				<property>engines/engine[0]/n1</property>
@@ -429,7 +429,7 @@
 				<factor>0.033</factor>
                 <!--factor>0.02</factor-->
 				<min>0.2</min>
-				<max>3</max>
+				<max>3.3</max>
 			</pitch>
 			<!--volume>
              <property>engines/engine[0]/n1</property>
