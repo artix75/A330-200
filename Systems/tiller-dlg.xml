@@ -73,10 +73,10 @@
 			</text>
 		</group>
 
-		<slider>
+		<dial>
 			<min>-70</min>
 			<max>70</max>
-			<pref-width>290</pref-width>
+			<!--pref-width>290</pref-width-->
 			<property>/sim/gui/dialogs/tiller_steering/value</property>
 			<binding>
 				<command>dialog-apply</command>
@@ -89,7 +89,7 @@
 					]]>
 				</script>
 			</binding>
-		</slider>
+		</dial>
 
 		<button>
 			<legend>Center</legend>
