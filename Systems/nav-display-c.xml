@@ -59,7 +59,27 @@ Configure the nav-display symbology
 <symbol>
     <type type="string">runway</type>
     <!-- type type="string">airport</type  -->
+    <!--state type="string">departure</state-->
     <state type="string">departure</state>
+    <width type="float">16</width>
+    <height type="float">34</height>
+    <rotate-to-heading type="bool">true</rotate-to-heading>
+    <texture-size type="int">512</texture-size>
+    <u0 type="float">228.45</u0>
+    <v0 type="float">187.07</v0>
+    <u1 type="float">269.83</u1>
+    <v1 type="float">307.76</v1>
+    <color>
+        <red type="float">1</red>
+        <green type="float">1</green>
+        <blue type="float">1</blue>
+    </color>
+</symbol>
+
+<symbol>
+    <type type="string">runway</type>
+    <!-- type type="string">airport</type  -->
+    <!--state type="string">departure</state-->
     <state type="string">destination</state>
     <width type="float">16</width>
     <height type="float">34</height>
