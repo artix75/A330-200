@@ -126,6 +126,7 @@ update : func {
 
         me.calc_td();
     	me.calc_tc();
+    	me.calc_decel_point();
         if (getprop("/autopilot/route-manager/active") and  
             !getprop("/flight-management/freq/ils")){
             var dest_airport = getprop("/autopilot/route-manager/destination/airport");
@@ -857,7 +858,7 @@ update : func {
                                                 top_of_descent += (cruise_alt - 3000) / 1000 * 3;
                                             }
                                             top_of_descent -= (destination_elevation / 1000 * 3);
-                                            print("TD: " ~ top_of_descent);
+                                            #print("TD: " ~ top_of_descent);
                                             var f= flightplan(); 
                                             #                   var topClimb = f.pathGeod(0, 100);
                                             var topDescent = f.pathGeod(-1, -top_of_descent);
@@ -873,8 +874,8 @@ update : func {
                                             var vs_fpm = int(0.6 * getprop("velocities/vertical-speed-fps")) * 100;
                                             var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
                                             var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
-                                            var d = abs(cruise_alt - altitude);
-                                            if(d != 0){
+                                            var d = cruise_alt - altitude;
+                                            if(d > 100){
                                                 var min = d / vs_fpm;
                                                 var ground_speed_kt = getprop("/velocities/groundspeed-kt");
                                                 var nm_min = ground_speed_kt / 60;
@@ -883,7 +884,7 @@ update : func {
                                                 var totdist = getprop("autopilot/route-manager/total-distance");
                                                 nm = nm + (totdist - remaining);
                                                 var f= flightplan(); 
-                                                print("TC: " ~ nm);
+                                                #print("TC: " ~ nm);
                                                 var topClimb = f.pathGeod(0, nm);
                                                 setprop(tcNode ~ "/latitude-deg", topClimb.lat); 
                                                 setprop(tcNode ~ "/longitude-deg", topClimb.lon); 
@@ -894,6 +895,39 @@ update : func {
                                             setprop(tcNode, '');
                                         }
 
+                                    },
+                                    calc_decel_point: func{
+                                        var decelNode = "/instrumentation/nd/symbols/decel";
+                                        if (getprop("/autopilot/route-manager/active")){
+                                            var actrte = "/autopilot/route-manager/route/";
+                                            var f= flightplan(); 
+                                            var numwp = getprop(actrte~"num");
+                                            var i = 0;
+                                            var first_approach_wp = nil;
+                                            for(i = 0; i < numwp; i = i + 1){
+                                                var wp = f.getWP(i);
+                                                if(wp != nil){
+                                                    var role = wp.wp_role;
+                                                    if(role == 'approach'){
+                                                        first_approach_wp = wp;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            if(first_approach_wp != nil){
+                                                var dist = wp.distance_along_route;
+                                                var totdist = getprop("autopilot/route-manager/total-distance");
+                                                dist = totdist - dist;
+                                                var nm = dist + 15;
+                                                var decelPoint = f.pathGeod(-1, -nm);
+                                                setprop(decelNode ~ "/latitude-deg", decelPoint.lat); 
+                                                setprop(decelNode ~ "/longitude-deg", decelPoint.lon); 
+                                            } else {
+                                                setprop(decelNode, '');
+                                            }
+                                        } else {
+                                            setprop(decelNode, '');
+                                        }
                                     },
                                         reset : func {
                                             me.loopid += 1;
