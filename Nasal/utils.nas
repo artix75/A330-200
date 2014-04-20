@@ -16,3 +16,11 @@ var printTowerPos = func (){
     print("Lat: " ~ lat);
     print("Lon: " ~ lon);
 }
+
+var clickSound = func(n){
+    if (getprop("sim/freeze/replay-state"))
+        return;
+    var propName = "sim/sound/click"~n;
+    setprop(propName,1);
+    settimer(func { setprop(propName,0) },0.4);
+}

@@ -1300,6 +1300,10 @@
                                 setprop('/flight-management/control/qnh-mode', 'inhg');
                             </script>
                     </binding>
+                    <binding>
+                        <command>nasal</command>
+                        <script>utils.clickSound(6)</script>
+                    </binding>
                 </action>
                 <action>
 		    <button>1</button>
@@ -1415,6 +1419,10 @@
 				</script>
 			</binding>
 		</action>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(4)</script>
+                        </binding>
 	</animation>
 	
 	<animation>
@@ -1635,6 +1643,10 @@
                 <command>property-toggle</command>
                 <property>controls/engines/engine[0]/cutoff-switch</property>
             </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound('')</script>
+            </binding>
         </action>
     </animation>
 
@@ -1646,6 +1658,10 @@
             <binding>
                 <command>property-toggle</command>
                 <property>controls/engines/engine[1]/cutoff-switch</property>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound('')</script>
             </binding>
         </action>
     </animation>
@@ -2360,6 +2376,10 @@
 				<value>ARC</value>
 				<value>PLAN</value>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(4)</script>
+                        </binding>
 			<binding>
 				<command>nasal</command>
 				<script>
@@ -2455,6 +2475,10 @@
 				<value>160</value>
 				<value>320</value>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(4)</script>
+                        </binding>
 		</action>
 		<action>
 			<button>1</button>
@@ -2480,6 +2504,10 @@
 				<value>20</value>
 				<value>10</value>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(4)</script>
+                        </binding>
 		</action>
 	</animation>
 	
@@ -2497,6 +2525,10 @@
 				<value>1</value> <!-- VOR -->
 				<value>2</value> <!-- ADF -->
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(7)</script>
+                        </binding>
 		</action>
 	</animation>
 	
@@ -2514,6 +2546,10 @@
 				<value>1</value> <!-- VOR -->
 				<value>2</value> <!-- ADF -->
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(7)</script>
+                        </binding>
 		</action>
 	</animation>
 	
@@ -2712,6 +2748,10 @@
 				<value>1</value>
 				<value>0</value>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(4)</script>
+                        </binding>
 		</action>
 	</animation>
 	
@@ -2731,6 +2771,10 @@
 				<value>2</value>
 				<value>0</value>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(4)</script>
+                        </binding>
 		</action>
 	</animation>
 	
@@ -2750,6 +2794,10 @@
 				<value>3</value>
 				<value>0</value>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(4)</script>
+                        </binding>
 		</action>
 	</animation>
 	
@@ -2839,6 +2887,10 @@
 				<command>property-toggle</command>
 				<property>controls/engines/engine[0]/cutoff-switch</property>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound('')</script>
+                        </binding>
 		</action>
 	</animation>
 	
@@ -2869,6 +2921,10 @@
 				<command>property-toggle</command>
 				<property>controls/engines/engine[1]/cutoff-switch</property>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound('')</script>
+                        </binding>
 		</action>
 	</animation>
 	
@@ -2902,6 +2958,10 @@
 				<value>1</value>
 				<value>2</value>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(4)</script>
+                        </binding>
 		</action>
 	</animation>
 	
@@ -3261,6 +3321,10 @@
 					setprop("/warnings/master-warning-state", 0);
 				</script>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(6)</script>
+                        </binding>
 		</action>
 	</animation>
 	
@@ -3276,6 +3340,10 @@
 					setprop("/warnings/master-caution-state", 0);
 				</script>
 			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(6)</script>
+                        </binding>
 		</action>
 	</animation>
 	
