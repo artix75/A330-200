@@ -127,6 +127,10 @@ update : func {
         me.calc_td();
     	me.calc_tc();
     	me.calc_decel_point();
+    	setprop("/instrumentation/nd/symbols/aircraft/latitude-deg", getprop('position/latitude-deg'));
+    	setprop("/instrumentation/nd/symbols/aircraft/longitude-deg", getprop('position/longitude-deg'));
+    	setprop("/instrumentation/nd/symbols/aircraft/true-heading-deg", getprop('orientation/heading-magnetic-deg'));
+    	
         if (getprop("/autopilot/route-manager/active") and  
             !getprop("/flight-management/freq/ils")){
             var dest_airport = getprop("/autopilot/route-manager/destination/airport");
@@ -776,8 +780,9 @@ update : func {
                                 flight_phase : func {
 
                                     var phase = getprop("/flight-management/phase");
+                                    var ias = getprop("/velocities/airspeed-kt");
 
-                                    if ((phase == "T/O") and (!getprop("/gear/gear[3]/wow"))) {
+                                    if ((phase == "T/O") and (!getprop("/gear/gear[3]/wow") and ias > 80)) {
 
                                         setprop("/flight-management/phase", "CLB");
 
@@ -870,7 +875,7 @@ update : func {
                                     },
                                     calc_tc: func {
                                         var tcNode = "/instrumentation/nd/symbols/tc";
-                                        if (getprop("/autopilot/route-manager/active")){
+                                        if (getprop("/autopilot/route-manager/active") and !getprop("/gear/gear[3]/wow")){
                                             var vs_fpm = int(0.6 * getprop("velocities/vertical-speed-fps")) * 100;
                                             var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
                                             var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");

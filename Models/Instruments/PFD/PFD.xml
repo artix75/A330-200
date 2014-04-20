@@ -137,20 +137,16 @@
 		<type>select</type>
 		<object-name>lvlch</object-name>
 		<condition>
-		<and>
-			<equals>
-				<property>/flight-management/flch_active</property>
-				<value>1</value>
-			</equals>
-			<equals>
-				<property>/flight-management/control/ver-mode</property>
-				<value>alt</value>
-			</equals>
-			<equals>
-				<property>/flight-management/control/ver-ctrl</property>
-				<value>man-set</value>
-			</equals>
-		</and>
+            <and>
+                <equals>
+                    <property>/flight-management/fcu/level_ch</property>
+                    <value>1</value>
+                </equals>
+                <equals>
+                    <property>/flight-management/control/ver-mode</property>
+                    <value>alt</value>
+                </equals>
+            </and>
 		</condition>
 	</animation>
 	

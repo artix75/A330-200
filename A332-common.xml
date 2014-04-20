@@ -1255,6 +1255,9 @@
 		<systems>
 			<file>Aircraft/A330-200/Nasal/systems.nas</file>
 		</systems>
+		<utils>
+			<file>Aircraft/A330-200/Nasal/utils.nas</file>
+		</utils>
 		<electrical>
 			<file>Aircraft/A330-200/Nasal/electrical.nas</file>
 		</electrical>

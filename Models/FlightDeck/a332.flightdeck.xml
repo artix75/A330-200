@@ -2370,31 +2370,57 @@
 					
 						setprop("/instrumentation/nd/y-center", 0.5);
 						setprop("/instrumentation/nd/aircraft-heading-up", 1);
+                        setprop("/instrumentation/nd/user-position", "");
+                        setprop("/instrumentation/nd/plan-mode", 0);
 					
 					} elsif (nd_disp == "VOR") {
 						setprop("/instrumentation/efis/nd/display-mode-num", 1);
 						
 						setprop("/instrumentation/nd/y-center", 0.5);
 						setprop("/instrumentation/nd/aircraft-heading-up", 1);
+                        setprop("/instrumentation/nd/user-position", "");
 						
 					} elsif (nd_disp == "NAV") {
 						setprop("/instrumentation/efis/nd/display-mode-num", 2);
 						
 						setprop("/instrumentation/nd/y-center", 0.5);
 						setprop("/instrumentation/nd/aircraft-heading-up", 1);
+                        setprop("/instrumentation/nd/user-position", "");
+                        setprop("/instrumentation/nd/plan-mode", 0);
 						
 					} elsif (nd_disp == "ARC") {
 						setprop("/instrumentation/efis/nd/display-mode-num", 3);
 						
 						setprop("/instrumentation/nd/y-center", 0.25);
 						setprop("/instrumentation/nd/aircraft-heading-up", 1);
+                        setprop("/instrumentation/nd/user-position", "");
+                        setprop("/instrumentation/nd/plan-mode", 0);
 						
 					} else {
 						setprop("/instrumentation/efis/nd/display-mode-num", 4);
 						
 						setprop("/instrumentation/nd/y-center", 0.5);
 						setprop("/instrumentation/nd/aircraft-heading-up", 0);
-						
+                                                setprop("/instrumentation/nd/plan-mode", 1);
+                        var wpNum = getprop("autopilot/route-manager/route/num");
+						if (wpNum > 0){
+                            setprop("/instrumentation/nd/user-position", "1");
+                            var fp = flightplan();
+                            if(getprop("/instrumentation/mcdu/page" == "f-plan")){
+                                var firstWp = getprop("/instrumentation/mcdu/f-pln/disp/first");
+                                if(firstWp >= wpNum) firstWp = wpNum;
+                                var wp = fp.getWP(firstWp);
+                                setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lat);
+                                setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lon);
+                                
+                            } else {
+                                var curWP = fp.currentWP();
+                                setprop("/instrumentation/nd/user-latitude-deg", curWP.wp_lat);
+                                setprop("/instrumentation/nd/user-longitude-deg", curWP.wp_lon);
+                            }
+                        } else {
+                            setprop("/instrumentation/nd/user-position", "");
+                        }
 					}
 				</script>
 			</binding>

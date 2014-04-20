@@ -299,6 +299,14 @@
 					setprop("/instrumentation/mcdu/f-pln/hold-id", hold_id);
 						
 					mcdu.f_pln.update_disp();
+                    var fp = flightplan();
+                    var firstWp = getprop("/instrumentation/mcdu/f-pln/disp/first");
+                    var wpNum = getprop("autopilot/route-manager/route/num");
+                    if(firstWp >= wpNum) firstWp = wpNum;
+                    var wp = fp.getWP(firstWp);
+                    setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lat);
+                    setprop("/instrumentation/nd/user-longitude-deg", wp.wp_lon);
+
 				</script>
             </binding>
         </action>
@@ -339,6 +347,13 @@
 					setprop("/instrumentation/mcdu/f-pln/hold-id", hold_id);
 						
 					mcdu.f_pln.update_disp();
+                    var fp = flightplan();
+                    var firstWp = getprop("/instrumentation/mcdu/f-pln/disp/first");
+                    var wpNum = getprop("autopilot/route-manager/route/num");
+                    if(firstWp >= wpNum) firstWp = wpNum;
+                    var wp = fp.getWP(firstWp);
+                    setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lat);
+                    setprop("/instrumentation/nd/user-longitude-deg", wp.wp_lon);
 				</script>
             </binding>
         </action>
