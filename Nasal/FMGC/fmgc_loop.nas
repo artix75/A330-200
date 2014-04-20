@@ -125,6 +125,7 @@ update : func {
         setprop(fcu~ "alt-100", me.alt_100());
 
         me.calc_td();
+    	me.calc_tc();
         if (getprop("/autopilot/route-manager/active") and  
             !getprop("/flight-management/freq/ils")){
             var dest_airport = getprop("/autopilot/route-manager/destination/airport");
@@ -865,6 +866,34 @@ update : func {
                                         } else {
                                             setprop(tdNode, ''); 
                                         }
+                                    },
+                                    calc_tc: func {
+                                        var tcNode = "/instrumentation/nd/symbols/tc";
+                                        if (getprop("/autopilot/route-manager/active")){
+                                            var vs_fpm = int(0.6 * getprop("velocities/vertical-speed-fps")) * 100;
+                                            var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
+                                            var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
+                                            var d = abs(cruise_alt - altitude);
+                                            if(d != 0){
+                                                var min = d / vs_fpm;
+                                                var ground_speed_kt = getprop("/velocities/groundspeed-kt");
+                                                var nm_min = ground_speed_kt / 60;
+                                                var nm = nm_min * min;
+                                                var remaining = getprop("autopilot/route-manager/distance-remaining-nm");
+                                                var totdist = getprop("autopilot/route-manager/total-distance");
+                                                nm = nm + (totdist - remaining);
+                                                var f= flightplan(); 
+                                                print("TC: " ~ nm);
+                                                var topClimb = f.pathGeod(0, nm);
+                                                setprop(tcNode ~ "/latitude-deg", topClimb.lat); 
+                                                setprop(tcNode ~ "/longitude-deg", topClimb.lon); 
+                                            } else {
+                                               setprop(tcNode, ''); 
+                                            }
+                                        } else {
+                                            setprop(tcNode, '');
+                                        }
+
                                     },
                                         reset : func {
                                             me.loopid += 1;
