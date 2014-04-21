@@ -2399,6 +2399,7 @@
 						setprop("/instrumentation/nd/y-center", 0.5);
 						setprop("/instrumentation/nd/aircraft-heading-up", 1);
                         setprop("/instrumentation/nd/user-position", "");
+                        setprop("/instrumentation/nd/plan-mode", 0);
 						
 					} elsif (nd_disp == "NAV") {
 						setprop("/instrumentation/efis/nd/display-mode-num", 2);

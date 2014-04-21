@@ -358,9 +358,9 @@ Configure the nav-display symbology
 
 <symbol>
     <type type="string">aircraft</type>
-    <enable>
+    <!--enable>
         <property>/instrumentation/nd/plan-mode</property>
-    </enable>
+    </enable-->
     <width type="float">36</width>
     <rotate-to-heading type="bool">true</rotate-to-heading>
     <texture-size  type="int">512</texture-size>

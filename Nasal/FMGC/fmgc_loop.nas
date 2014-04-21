@@ -127,9 +127,14 @@ update : func {
         me.calc_td();
     	me.calc_tc();
     	me.calc_decel_point();
-    	setprop("/instrumentation/nd/symbols/aircraft/latitude-deg", getprop('position/latitude-deg'));
-    	setprop("/instrumentation/nd/symbols/aircraft/longitude-deg", getprop('position/longitude-deg'));
-    	setprop("/instrumentation/nd/symbols/aircraft/true-heading-deg", getprop('orientation/heading-magnetic-deg'));
+    	var plan_mode = getprop("/instrumentation/nd/plan-mode");
+    	if(plan_mode != nil and plan_mode){
+        	setprop("/instrumentation/nd/symbols/aircraft/latitude-deg", getprop('position/latitude-deg'));
+        	setprop("/instrumentation/nd/symbols/aircraft/longitude-deg", getprop('position/longitude-deg'));
+        	setprop("/instrumentation/nd/symbols/aircraft/true-heading-deg", getprop('orientation/heading-magnetic-deg'));   
+    	} else {
+            setprop("/instrumentation/nd/symbols/aircraft", '');
+        }
     	
         if (getprop("/autopilot/route-manager/active") and  
             !getprop("/flight-management/freq/ils")){
