@@ -4,8 +4,8 @@
 	<sim>
 		<model>
 			<livery>
-				<name>Air Algerie</name>
-				<texture>Liveries/A330-203/DAH.png</texture>
+				<name>Alitalia</name>
+				<a332-texture>Liveries/A330-203/AZA.png</a332-texture>
 			</livery>
 		</model>
 	</sim>

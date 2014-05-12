@@ -928,7 +928,7 @@ update : func {
                                                 var dist = wp.distance_along_route;
                                                 var totdist = getprop("autopilot/route-manager/total-distance");
                                                 dist = totdist - dist;
-                                                var nm = dist + 15;
+                                                var nm = dist + 11;
                                                 var decelPoint = f.pathGeod(-1, -nm);
                                                 setprop(decelNode ~ "/latitude-deg", decelPoint.lat); 
                                                 setprop(decelNode ~ "/longitude-deg", decelPoint.lon); 

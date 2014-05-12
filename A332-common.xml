@@ -104,6 +104,14 @@
 				<name type="string">A330-200 Flight Recorder</name>
 				<!-- Custom properties -->
 				<signal>
+				   <type>bool</type>
+				   <property type="string">/gear/gear[3]/wow</property>
+				</signal>
+				<signal>
+				   <type>bool</type>
+				   <property type="string">/gear/gear[4]/wow</property>
+				</signal>
+				<signal>
 				   <type>float</type>
 				   <property type="string">/gear/gear[3]/rollspeed-ms</property>
 				</signal>
@@ -166,6 +174,14 @@
 					<property type="string">/aircraft/tyresmoke/right</property>
 					<interpolation>linear</interpolation>
 				</signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">controls/parking-brake</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">hydraulics/control/ptu</property>
+                                </signal>
                                 <signal>
                                     <type>bool</type>
                                     <property type="string">controls/electric/APU-generator</property>
@@ -253,6 +269,70 @@
                                 <signal>
                                     <type>bool</type>
                                     <property type="string">services/stairs/cover</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">hydraulics/control/ptu</property>
+                                </signal>
+                                <signal>
+                                    <type>float</type>
+                                    <property type="string">/consumables/fuel/tank[1]/level-kg</property>
+                                </signal>
+                                <signal>
+                                    <type>float</type>
+                                    <property type="string">/consumables/fuel/tank[2]/level-kg</property>
+                                </signal>
+                                <signal>
+                                    <type>float</type>
+                                    <property type="string">/consumables/fuel/tank[3]/level-kg</property>
+                                </signal>
+                                <signal>
+                                    <type>float</type>
+                                    <property type="string">/consumables/fuel/tank[4]/level-kg</property>
+                                </signal>
+                                <signal>
+                                    <type>float</type>
+                                    <property type="string">/consumables/fuel/tank[5]/level-kg</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">sim/sound/welcome</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">sim/sound/safety</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">sim/sound/pretakeoff</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">sim/sound/climb</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">sim/sound/cruise-seatbelt</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">sim/sound/descent</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">sim/sound/land</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">sim/sound/gate</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">sim/sound/emergency</property>
+                                </signal>
+                                <signal>
+                                    <type>bool</type>
+                                    <property type="string">sim/sound/turbulence</property>
                                 </signal>
 
 			</config>

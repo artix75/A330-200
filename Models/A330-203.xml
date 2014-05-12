@@ -77,11 +77,24 @@
 		<property-base>sim/model/livery</property-base>
 		<texture-prop>a332-texture</texture-prop>
 	</animation>
+    
+    <animation>
+		<type>material</type>
+        <object-name>wing.in0</object-name>
+		<object-name>wing.in1</object-name>
+        <object-name>wing.mid0</object-name>
+		<object-name>wing.mid1</object-name>
+        <object-name>wing.out0</object-name>
+		<object-name>wing.out1</object-name>
+		<property-base>sim/model/livery</property-base>
+		<texture-prop>wing-texture</texture-prop>
+	</animation>
 
 	<!-- Nasal code -->
 	<nasal>
 		<load>
 		 var livery_update = aircraft.livery_update.new("Aircraft/A330-200/Models/Liveries/" ~ getprop("sim/aero"));
+         
 		</load>
 		<unload>
 		 livery_update.stop();

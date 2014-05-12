@@ -385,10 +385,11 @@
 			<pitch>
 				<property>/engines/engine[0]/n1</property>
 				<offset>0</offset>
-				<factor>0.033</factor>
+                <factor>0.033</factor>
+				<!--factor>0.0166</factor--><!-- FOR N2 -->
                 <!--factor>0.02</factor-->
-				<min>0.2</min>
-				<max>3.3</max>
+				<min>0.0</min>
+				<max>4</max>
 			</pitch>
 			<!--volume>
 				<property>engines/engine[0]/n1</property>
@@ -428,8 +429,8 @@
 				<offset>0</offset>
 				<factor>0.033</factor>
                 <!--factor>0.02</factor-->
-				<min>0.2</min>
-				<max>3.3</max>
+				<min>0.0</min>
+				<max>4</max>
 			</pitch>
 			<!--volume>
              <property>engines/engine[0]/n1</property>
@@ -444,10 +445,9 @@
 				<y>5.7</y>
 				<z>-1.1</z>
 			</position>
-			<reference-dist>1.0</reference-dist>
+			<reference-dist>25.0</reference-dist>
 			<max-dist>50.0</max-dist>
 		</engine>
-
         
 		<engine>
 			<name>GE inside left whine</name>

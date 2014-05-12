@@ -27,6 +27,18 @@ aircraft.livery.init("Aircraft/A330-200/Models/Liveries/" ~ getprop("sim/aero"))
 # setprop("/ai/models/multiplayer/sim/model/livery/texture-path[1]", "../" ~ base);
 # }, 1, 1);
 
+setlistener("sim/model/livery/file", func(newLivery){
+    var aero = getprop('/sim/aero');
+    print('LIVERY LISTEN');
+    print(newLivery.getValue());
+    if(newLivery.getValue() == 'AZA'){
+    print('AZA');
+        setprop('sim/model/livery/wing-texture', 'Liveries/' ~ aero ~ '/wings_main_AZA.png');
+    } else {
+        setprop('sim/model/livery/wing-texture', '');
+    }
+},1,0);
+
 ## LIGHTS
 #########
 
