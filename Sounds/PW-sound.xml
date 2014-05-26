@@ -364,13 +364,13 @@
 		</engine>
         
         <engine>
-			<name>GE inside turb left n1_2</name>
+			<name>PW inside turb left n1_2</name>
 			<!--path>Aircraft/A330-200/Sounds/res/airbus_turbine.wav</path-->
 			<path>Aircraft/A330-200/Sounds/res/airbus_turbine_long.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<greater-than>
-					<property>engines/engine[0]/n1</property>
+					<property>engines/engine[0]/n2</property>
 					<value>2</value>
 				</greater-than>
 				<property>sim/current-view/internal</property>
@@ -380,9 +380,10 @@
 				</equals>
 			</condition>
 			<pitch>
-				<property>/engines/engine[0]/n1</property>
+				<property>/engines/engine[0]/n2</property>
 				<offset>0</offset>
-				<factor>0.033</factor>
+                <!--factor>0.033</factor-->
+				<factor>0.0166</factor><!-- FOR N2 -->
                 <!--factor>0.02</factor-->
 				<min>0.2</min>
 				<max>4</max>
@@ -405,13 +406,13 @@
 		</engine>
         
 		<engine>
-			<name>GE inside turb right n1_2</name>
+			<name>PW inside turb right n1_2</name>
 			<!--path>Aircraft/A330-200/Sounds/res/airbus_turbine.wav</path-->
 			<path>Aircraft/A330-200/Sounds/res/airbus_turbine_long.wav</path>
 			<mode>looped</mode>
 			<condition>
 				<greater-than>
-					<property>engines/engine[1]/n1</property>
+					<property>engines/engine[1]/n2</property>
 					<value>2</value>
 				</greater-than>
 				<property>sim/current-view/internal</property>
@@ -421,9 +422,10 @@
 				</equals>
 			</condition>
 			<pitch>
-				<property>/engines/engine[1]/n1</property>
+				<property>/engines/engine[1]/n2</property>
 				<offset>0</offset>
-				<factor>0.033</factor>
+                <!--factor>0.033</factor-->
+				<factor>0.0166</factor><!-- FOR N2 -->
                 <!--factor>0.02</factor-->
 				<min>0.2</min>
 				<max>4</max>
@@ -441,7 +443,7 @@
 				<y>5.7</y>
 				<z>-1.1</z>
 			</position>
-			<reference-dist>1.0</reference-dist>
+			<reference-dist>25.0</reference-dist>
 			<max-dist>50.0</max-dist>
 		</engine>
 
