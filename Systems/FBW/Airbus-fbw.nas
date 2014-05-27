@@ -23,6 +23,7 @@ var input = "/controls/flight/";
 var deg = "/orientation/";
 
 var fbw_loop = {
+        stall_protection: 0,
 	
 	init : func { 
 		me.UPDATE_INTERVAL = 0.001; 
@@ -93,6 +94,12 @@ var fbw_loop = {
 		me.stick_roll = getprop(input~ "aileron");
 
 	}, 
+        is_stalling: func{
+            var flaps = getprop("/controls/flight/flaps");
+            var ias = getprop("/velocities/airspeed-kt");
+            var airborn = ((getprop('/gear/gear/wow') == 0) and (getprop('/gear/gear[1]/wow') == 0) and (getprop('/gear/gear[2]/wow') == 0));
+            return airborn and ((((ias <= 155) and (flaps <=0.29 )) or ((ias <= 140) and (flaps == 0.596)) or ((ias <= 125) and (flaps >= 0.74))));
+        },
 	get_alpha_prot : func{
 		if (me.pitch <=  me.alpha_min) return 'alpha_min';
 		else if (me.pitch >= me.alpha_prot and me.pitch < me.alpha_floor) return 'alpha_prot';
@@ -141,6 +148,23 @@ var fbw_loop = {
 	},
 	law_normal : func {
 		# Protection
+
+        if(me.stall_protection != 0){
+            var stalling = me.is_stalling();
+            if(stalling){
+                print("FBW: IS STALLING");
+                setprop("/fbw/pitch-limit",10);
+                #setprop("/fbw/target-pitch",10);
+                #setprop("/fbw/protect-mode", 1);
+                #setprop("/fbw/pitch-hold", 1);
+            } else {
+                print("FBW: NOT STALLING");
+                setprop("/fbw/pitch-limit",30);
+                #setprop("/fbw/target-pitch",'');
+                #setprop("/fbw/protect-mode", 0);
+                #setprop("/fbw/pitch-hold", 0);
+            }
+        }
 		
 		if ((me.pitch > me.pitch_limit) or (me.pitch < -0.5 * me.pitch_limit) or (math.abs(me.bank) > me.bank_limit)) {
 		
@@ -151,8 +175,9 @@ var fbw_loop = {
 		
 		} else {
 		
-			setprop("/fbw/protect-mode", 0);
-	
+            #if(!stalling)
+                setprop("/fbw/protect-mode", 0);
+
 			# Ground Mode
 	
 			if (me.mode == "Ground Mode") {
@@ -181,7 +206,10 @@ var fbw_loop = {
 						# setprop("/fbw/control/elevator", 0);
 						setprop("/fbw/stable/elevator", 1);
 					
-					}
+					} 
+                    #elsif(stalling){
+                    #    setprop("/fbw/stable/elevator", 0);
+                    #}
 					
 				}
 				
@@ -309,6 +337,7 @@ var fbw_loop = {
 		me.flight_phase();
 
 		# Bring Stabilizers to 0 gradually when stabilizer mode is turned off
+                print("FBW UPD");
 		
 		if ((getprop("/fbw/stable/elevator") != 1) and (me.mode == "Flight Mode") and (me.law == "NORMAL LAW"))
 			me.neutralize_trim("elevator");

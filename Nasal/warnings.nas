@@ -137,7 +137,7 @@ var warning_system = {
                 var flaps = getprop("/controls/flight/flaps");
                 var ias = getprop("/velocities/airspeed-kt");
                 var airborn = ((getprop('/gear/gear/wow') == 0) and (getprop('/gear/gear[1]/wow') == 0) and (getprop('/gear/gear[2]/wow') == 0));
-                return airborn and ((getprop("/position/altitude-ft") > 400) and (((ias <= 150) and (flaps <=0.29 )) or ((ias <= 135) and (flaps == 0.529)) or ((ias <= 120) and (flaps >= 74))));
+                return airborn and ((((ias <= 150) and (flaps <=0.29 )) or ((ias <= 135) and (flaps == 0.596)) or ((ias <= 120) and (flaps >= 0.74))));
             };
             
             var spdbrk_stillout = warning.new("SPD BRK STILL OUT", "chime", "caution", "spdbrk-still");
