@@ -487,11 +487,14 @@ update : func {
 
                     setprop(fmgc~ "fmgc/ias", 1);
                     setprop(fmgc~ "fmgc/mach", 0);
-
+                    setprop("instrumentation/pfd/target-spd", spd);
                 }
 
             }
 
+        } else {
+            var fcu_ias = getprop(fcu ~ 'ias');
+            setprop("instrumentation/pfd/target-spd", fcu_ias);
         }
 
         if (apEngaged or fdEngaged) {
@@ -672,13 +675,13 @@ update : func {
                     ref_altitude = cruise_alt;
                     phase = 'clb';
                 }
-                setprop(settings ~ 'vnav-phase', phase);
+                setprop(fmgc_val ~ 'vnav-phase', phase);
 
                 if (target_alt == nil or target_alt < 0){
                     target_alt = ref_altitude;
                     no_constraint = 1;
                 }
-                setprop(settings ~ 'vnav-target-alt', target_alt);
+                setprop(fmgc_val ~ 'vnav-target-alt', target_alt);
 
                 var alt_diff = target_alt - altitude;
 
@@ -731,7 +734,7 @@ update : func {
                         } 
                         final_vs = final_vs / 60.0;
                 }
-                setprop(settings ~ 'vnav-final-vs', final_vs);
+                setprop(fmgc_val ~ 'vnav-final-vs', final_vs);
                 if(apEngaged){
                     setprop(servo~ "target-vs", final_vs);
 

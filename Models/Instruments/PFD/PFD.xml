@@ -318,12 +318,59 @@
     	<type>textranslate</type>
     	<object-name>spd-tape</object-name>
     	<object-name>stall-tape</object-name>
+    	<!--object-name>trgt-spd</object-name-->
     	<property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
     	<factor>0.002001953</factor>
     	<axis>
     		<y>1</y>
     	</axis>
     </animation>
+
+    <!-- Target Speed -->
+
+    <animation>
+    	<type>texmultiple</type>
+    	<object-name>trgt-spd</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/pfd/target-spd</property>
+            <factor>0.002001953</factor>
+            <axis>
+                    <y>-1</y>
+                    <x>0</x>
+                    <z>0</z>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+            <factor>0.002001953</factor>
+            <axis>
+                    <y>1</y>
+                    <x>0</x>
+                    <z>0</z>
+            </axis>
+        </transform>
+    </animation>
+
+    <animation>
+    	<type>select</type>
+    	<object-name>trgt-spd</object-name>
+    	<property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+        <condition>
+            <or>
+                <equals>
+                    <property>/flight-management/control/spd-mode</property>
+                    <value>ias</value>
+                </equals>
+                <equals>
+                    <property>/flight-management/control/fmgc/ias</property>
+                    <value>1</value>
+                </equals>
+            </or>
+        </condition>
+    </animation>
+
     
     <!-- Stall Speed Tape Select -->
     
@@ -696,7 +743,7 @@
 	<!-- Manually Set Altitude -->
 	
 	<text>
-		<name>osgtext-cyan</name>
+		<name>man-alt</name>
 		<offsets>
 			<x-m>0.0010</x-m>
 			<y-m>0.0553</y-m>
@@ -707,6 +754,32 @@
 		<type type="string">number-value</type>
 		<format type="string">%5.0f</format>
 		<property>flight-management/fcu-values/alt</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">helvetica_bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.006</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<!-- FMGC Target Altitude -->
+	
+	<text>
+		<name>fmgc-alt</name>
+		<offsets>
+			<x-m>0.0010</x-m>
+			<y-m>0.0553</y-m>
+			<z-m>0.0462</z-m>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>yz-plane</axis-alignment>
+		<type type="string">number-value</type>
+		<format type="string">%5.0f</format>
+		<property>/flight-management/fmgc-values/vnav-target-alt</property>
 		<truncate type="bool">false</truncate>
 		<font type="string">helvetica_bold.txf</font>
 		<draw-text type="bool">true</draw-text>
@@ -832,6 +905,79 @@
 			<green>0.745</green>
 			<blue>0</blue>
 		</emission>
+	</animation>
+
+	<animation>
+		<type>material</type>
+		<object-name>fmgc-alt</object-name>
+		<diffuse>
+			<red>1</red>
+			<green>0</green>
+			<blue>1</blue>
+		</diffuse>
+		<ambient>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</ambient>
+		<specular>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</specular>
+		<emission>
+			<red>1</red>
+			<green>0</green>
+			<blue>1</blue>
+		</emission>
+	</animation>
+	
+	<animation>
+		<type>material</type>
+		<object-name>man-alt</object-name>
+		<diffuse>
+			<red>0</red>
+			<green>0.886</green>
+			<blue>0.933</blue>
+		</diffuse>
+		<ambient>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</ambient>
+		<specular>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</specular>
+		<emission>
+			<red>0</red>
+			<green>0.886</green>
+			<blue>0.933</blue>
+		</emission>
+	</animation>
+
+	<animation>
+		<type>select</type>
+		<object-name>man-alt</object-name>
+		<condition>
+                    <not>
+			<equals>
+				<property>/flight-management/control/ver-ctrl</property>
+				<value>fmgc</value>
+			</equals>
+                    </not>
+		</condition>
+	</animation>
+	<animation>
+		<type>select</type>
+		<object-name>fmgc-alt</object-name>
+		<condition>
+                    <equals>
+                            <property>/flight-management/control/ver-ctrl</property>
+                            <value>fmgc</value>
+                    </equals>
+		</condition>
 	</animation>
 	
 	<animation>
