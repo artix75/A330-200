@@ -102,6 +102,7 @@ update : func {
         var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
 
         var vmode_vs_fps = getprop('/velocities/vertical-speed-fps');
+        setprop("/instrumentation/pfd/vs-100", vmode_vs_fps * 0.6);
         if(vmode_vs_fps > 8 or vmode_vs_fps < -8){
             setprop('/flight-management/flch_active', 1);     
         } else {
