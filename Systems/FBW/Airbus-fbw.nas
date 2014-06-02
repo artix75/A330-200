@@ -152,13 +152,13 @@ var fbw_loop = {
         if(me.stall_protection != 0){
             var stalling = me.is_stalling();
             if(stalling){
-                print("FBW: IS STALLING");
+                #print("FBW: IS STALLING");
                 setprop("/fbw/pitch-limit",10);
                 #setprop("/fbw/target-pitch",10);
                 #setprop("/fbw/protect-mode", 1);
                 #setprop("/fbw/pitch-hold", 1);
             } else {
-                print("FBW: NOT STALLING");
+                #print("FBW: NOT STALLING");
                 setprop("/fbw/pitch-limit",30);
                 #setprop("/fbw/target-pitch",'');
                 #setprop("/fbw/protect-mode", 0);
@@ -337,7 +337,7 @@ var fbw_loop = {
 		me.flight_phase();
 
 		# Bring Stabilizers to 0 gradually when stabilizer mode is turned off
-                print("FBW UPD");
+                #print("FBW UPD");
 		
 		if ((getprop("/fbw/stable/elevator") != 1) and (me.mode == "Flight Mode") and (me.law == "NORMAL LAW"))
 			me.neutralize_trim("elevator");

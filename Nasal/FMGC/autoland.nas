@@ -29,21 +29,22 @@ var autoland = {
 
 			} elsif (agl <= 50) {
 			
-				# setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 30);
+				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 30);
 				
-				setprop("/flight-management/control/a-thrust", "off");
+				##setprop("/flight-management/control/a-thrust", "off");
 				
-				var throttle_l = getprop("/controls/engines/engine[0]/throttle");
+				##var throttle_l = getprop("/controls/engines/engine[0]/throttle");
 				
-				var throttle_r = getprop("/controls/engines/engine[1]/throttle");
+				##var throttle_r = getprop("/controls/engines/engine[1]/throttle");
 				
-				setprop("/controls/engines/engine[0]/throttle", throttle_l / 2);
+				##setprop("/controls/engines/engine[0]/throttle", throttle_l / 2);
 				
-				setprop("/controls/engines/engine[1]/throttle", throttle_r / 2);
+				##setprop("/controls/engines/engine[1]/throttle", throttle_r / 2);
 
 			} elsif (agl <= 100) {
 
 				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 15);
+			        setprop("/autoland/active", 1);
 		
 			} else {
 		
@@ -152,6 +153,7 @@ var autoland = {
 	
 	retard: func() {
 	
+		setprop("/flight-management/control/a-thrust", "off");
 		setprop("/controls/engines/engine[0]/throttle", 0);
 		setprop("/controls/engines/engine[1]/throttle", 0);
 	
@@ -159,9 +161,11 @@ var autoland = {
 	
 	slow: func(spd) {
 		
-		setprop("/controls/engines/engine[0]/throttle", 0.1);
+		#setprop("/controls/engines/engine[0]/throttle", 0.1);
 				
-		setprop("/controls/engines/engine[1]/throttle", 0.1);
+		#setprop("/controls/engines/engine[1]/throttle", 0.1);
+                
+		setprop("/flight-management/fmgc-values/target-spd", 60);
 	
 	}
 

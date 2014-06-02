@@ -94,7 +94,7 @@ var fmgc_loop = {
     #setprop(servo~ "fd-elevator", 0);
     setprop(servo~ "fd-target-pitch", 0);
 
-
+    me.vne = getprop('limits/vne');
     me.reset();
 },
 update : func {   	
@@ -124,7 +124,7 @@ update : func {
 
         setprop(fcu~ "alt-100", me.alt_100());
 
-        me.calc_td();
+        var top_desc = me.calc_td();
     	me.calc_tc();
     	me.calc_decel_point();
     	var plan_mode = getprop("/instrumentation/nd/plan-mode");
@@ -135,9 +135,8 @@ update : func {
     	} else {
             setprop("/instrumentation/nd/symbols/aircraft", '');
         }
-    	
-        if (getprop("/autopilot/route-manager/active") and  
-            !getprop("/flight-management/freq/ils")){
+        var flplan_active = getprop("/autopilot/route-manager/active");	
+        if (flplan_active and  !getprop("/flight-management/freq/ils")){
             var dest_airport = getprop("/autopilot/route-manager/destination/airport");
             var dest_rwy = getprop("/autopilot/route-manager/destination/runway");
             if(dest_airport and dest_rwy){
@@ -173,6 +172,7 @@ update : func {
 
         if ((me.ap1 == "off") and (me.ap2 == "off")) {
             setprop("/autoland/rudder", 0);
+            setprop("/autoland/active", 0);
             setprop("/autoland/phase", "disengaged")
         }
 
@@ -410,6 +410,7 @@ update : func {
         if ((me.spd_ctrl == "fmgc") and (me.a_thr == "eng")) {
 
             var cur_wp = getprop("autopilot/route-manager/current-wp");
+            var ias = getprop("/velocities/airspeed-kt");
 
             ## AUTO-THROTTLE -------------------------------------------------------
 
@@ -425,18 +426,31 @@ update : func {
 
             } else {
 
-                if (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and (me.ver_mode != "ils")) {
+                if (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and (me.ver_mode != "ils") and flplan_active) {
 
-                    var spd = getprop("/autopilot/route-manager/route/wp[" ~ cur_wp ~ "]/ias-mach");
+                    var spd = nil;
+                    if(getprop("/autopilot/route-manager/route/num") > 0)
+                        spd = getprop("/autopilot/route-manager/route/wp[" ~ cur_wp ~ "]/ias-mach");
 
-                    if (spd == nil) {
+                    if (spd == nil or spd == 0) {
 
-                        if (altitude <= 10000)
+                        if (altitude <= 10000){
                             spd = 250;
-                        else
-                            spd = 0.78;
+                        }
+                        else{
+                            if(vmode_vs_fps <= -8){
+                                spd = 280;
+                            } else{
+                                if(altitude < 25000)
+                                    spd = 320;
+                                else
+                                    spd = 0.78;
+                            }
+                        }
 
                     }
+                    if(ias >= (me.vne - 20))
+                        spd = me.vne - 20;
 
                     setprop(fmgc_val~ "target-spd", spd);
 
@@ -455,10 +469,14 @@ update : func {
 
                     if (altitude <= 10000)
                         spd = 250;
+                    elsif(altitude < 25000)
+                        spd = 320;
                     else
                         spd = 0.78;
 
                 }
+                if(ias >= (me.vne - 20))
+                    spd = me.vne - 30;
 
                 if (spd < 1) {
 
@@ -641,31 +659,79 @@ update : func {
 
                 var target_alt = getprop("/autopilot/route-manager/route/wp[" ~ current_wp ~ "]/altitude-ft");
 
-                if (target_alt == nil)
-                    target_alt = altitude;
+                var ref_altitude = altitude;
+                var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
+                var destination_elevation = getprop("/autopilot/route-manager/destination/field-elevation-ft");
+                var remaining = getprop("autopilot/route-manager/distance-remaining-nm");
+                var phase = '';
+                var no_constraint = 0;
+                if(remaining <= top_desc){
+                    ref_altitude = destination_elevation; 
+                    phase = 'des';
+                } else {
+                    ref_altitude = cruise_alt;
+                    phase = 'clb';
+                }
+                setprop(settings ~ 'vnav-phase', phase);
 
-                if (target_alt < 0)
-                    target_alt = altitude;
+                if (target_alt == nil or target_alt < 0){
+                    target_alt = ref_altitude;
+                    no_constraint = 1;
+                }
+                setprop(settings ~ 'vnav-target-alt', target_alt);
 
                 var alt_diff = target_alt - altitude;
 
                 var final_vs = 0;
+                var abs_diff = math.abs(alt_diff);
 
-                if (math.abs(alt_diff) >= 100) {
+                if (abs_diff >= 100) {
+                    if(no_constraint == 0 or phase == 'des'){
+                        var ground_speed_kt = getprop("/velocities/groundspeed-kt");
 
-                    var ground_speed_kt = getprop("/velocities/groundspeed-kt");
+                        #var leg_dist_nm = getprop("/instrumentation/gps/wp/leg-distance-nm");
+                        var leg_dist_nm = getprop("/autopilot/route-manager/wp/dist");
+                        if(no_constraint == 1)
+                            leg_dist_nm = remaining;
+                        
+                        #var leg_time_hr = leg_dist_nm / ground_speed_kt;
 
-                    var leg_dist_nm = getprop("/instrumentation/gps/wp/leg-distance-nm");
+                        #var leg_time_sec = leg_time_hr * 3600;
 
-                    var leg_time_hr = leg_dist_nm / ground_speed_kt;
-
-                    var leg_time_sec = leg_time_hr * 3600;
-
-                    var target_fps = (alt_diff / leg_time_sec) + 5;
-
-                    final_vs = limit(target_fps, 50);
-
+                        #var target_fps = (alt_diff / leg_time_sec) + 5;
+                        var nm_min = ground_speed_kt / 60.0;
+                        var min = leg_dist_nm / nm_min;
+                        if(min == 0) {
+                            final_vs = 0;
+                        }
+                        else{
+                            final_vs = alt_diff / min;
+                            final_vs = final_vs / 60.0;
+                        }
+                        final_vs = limit(final_vs, 40);
+                    } else {
+                        var vs_fpm = 0;
+                        if(altitude < 10000)
+                            vs_fpm = 1800;
+                        else{
+                            if(abs_diff > 1000)
+                                vs_fpm = 1400;
+                            else
+                                vs_fpm = 500;
+                        }
+                        if(altitude > cruise_alt)
+                            vs_fpm = vs_fpm * -1.0;
+                        final_vs = limit(vs_fpm / 60.0, 40);
+                    }
+                } else {
+                        if (((altitude - target_alt) * vs_setting) > 0) {
+                            final_vs = limit((target_alt - altitude) * 2, 200);
+                        } else {
+                            final_vs = limit2((target_alt - altitude) * 2, vs_setting);
+                        } 
+                        final_vs = final_vs / 60.0;
                 }
+                setprop(settings ~ 'vnav-final-vs', final_vs);
                 if(apEngaged){
                     setprop(servo~ "target-vs", final_vs);
 
@@ -840,10 +906,11 @@ update : func {
                                 },
                                     calc_td: func {
                                         var tdNode = "/instrumentation/nd/symbols/td";
+                                        var top_of_descent = 36;
+
                                         if (getprop("/autopilot/route-manager/active")){
                                             var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
                                             var destination_elevation = getprop("/autopilot/route-manager/destination/field-elevation-ft");
-                                            var top_of_descent = 16;
                                             if(cruise_alt > 10000) {
                                                 top_of_descent += 21;
                                                 if(cruise_alt > 29000)
@@ -877,6 +944,7 @@ update : func {
                                         } else {
                                             setprop(tdNode, ''); 
                                         }
+                                        return top_of_descent;
                                     },
                                     calc_tc: func {
                                         var tcNode = "/instrumentation/nd/symbols/tc";
