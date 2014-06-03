@@ -3006,12 +3006,6 @@
 	<animation>
 		<type>translate</type>
 		<object-name>SpdBrk</object-name>
-                <!--condition>
-                    <equals>
-                       <property>/controls/flight/ground-spoilers-armed</property> 
-                       <value>1</value>
-                    </equals>
-                </condition-->
 		<property>/controls/flight/ground-spoilers-armed</property>
 		<factor>-0.005</factor>
 		<axis>
@@ -3020,6 +3014,89 @@
 			<z>0</z>
 		</axis>
 	</animation>
+
+    <animation>
+        <type>pick</type>
+        <object-name>SpdBrk</object-name>
+        <action>
+            <button>0</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var spdBrk = getprop('/controls/flight/speedbrake-lever');
+                    var grnSpoilersArmed = getprop('/controls/flight/ground-spoilers-armed');
+                    if(grnSpoilersArmed){
+                    	setprop('/controls/flight/ground-spoilers-armed', 0);
+                    	setprop('/controls/flight/speedbrake', 0);
+                    } else {
+                    	if(spdBrk == 0){
+                    		setprop('/controls/flight/speedbrake-lever', 0.5);
+                   		}
+                    	elsif(spdBrk == 0.5){
+                    		setprop('/controls/flight/speedbrake-lever', 1);
+                    	}
+                    	elsif(spdBrk == 1){
+                    		setprop('/controls/flight/speedbrake-lever', 0);
+                    		setprop('/controls/flight/ground-spoilers-armed', 1);
+                    	}
+                    }
+                    utils.clickSound(5);
+                </script>
+            </binding>
+        </action>
+        <action>
+            <button>3</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var spdBrk = getprop('/controls/flight/speedbrake-lever');
+                    var grnSpoilersArmed = getprop('/controls/flight/ground-spoilers-armed');
+                    if(grnSpoilersArmed){
+                    	setprop('/controls/flight/ground-spoilers-armed', 0);
+                    	setprop('/controls/flight/speedbrake', 0);
+                    } else {
+                    	if(spdBrk == 0){
+                    		setprop('/controls/flight/speedbrake-lever', 0.5);
+                    	}
+                    	elsif(spdBrk == 0.5){
+                    		setprop('/controls/flight/speedbrake-lever', 1);
+                    	}
+                    	elsif(spdBrk == 1){
+
+                    	}
+                    }
+                    utils.clickSound(5);
+                </script>
+            </binding>
+        </action>
+        <action>
+            <button>4</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var spdBrk = getprop('/controls/flight/speedbrake-lever');
+                    var grnSpoilersArmed = getprop('/controls/flight/ground-spoilers-armed');
+                    if(grnSpoilersArmed){
+						
+                    } else {
+                    	if(spdBrk == 0){
+                    		setprop('/controls/flight/ground-spoilers-armed', 1);
+                    	}
+                    	elsif(spdBrk == 0.5){
+                    		setprop('/controls/flight/speedbrake-lever', 0);
+                    	}
+                    	elsif(spdBrk == 1){
+                    		setprop('/controls/flight/speedbrake-lever', 0.5);
+                    	}
+                    }
+                    utils.clickSound(5);
+                </script>
+            </binding>
+        </action>
+    </animation>
 	
 	<animation>
 		<type>rotate</type>
