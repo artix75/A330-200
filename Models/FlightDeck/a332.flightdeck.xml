@@ -1539,6 +1539,14 @@
 		<name>Engine 1 throttle lever</name>
 		<type>rotate</type>
 		<object-name>thr_l</object-name>
+        <condition>
+        	<not>
+            	<equals>
+                    <property>/flight-management/control/a-thrust</property>
+                    <value>eng</value>
+                </equals>
+            </not>
+        </condition>
 		<property>controls/engines/engine[0]/throttle</property>
 		<factor>40</factor>
 		<axis>
@@ -1552,6 +1560,29 @@
 			<z-m>-0.3811</z-m>
 		</center>
 	</animation>
+    <animation>
+        <name>Engine 1 throttle lever athr</name>
+        <type>rotate</type>
+        <object-name>thr_l</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/control/a-thrust</property>
+                <value>eng</value>
+            </equals>
+        </condition>
+        <property>controls/engines/detent</property>
+        <factor>40</factor>
+        <axis>
+            <x>0</x>
+            <y>-1</y>
+            <z>0</z>
+        </axis>
+        <center>
+            <x-m>-0.2373</x-m>
+            <y-m>0</y-m>
+            <z-m>-0.3811</z-m>
+        </center>
+    </animation>
 	<animation>
 		<name>Engine 2 throttle lever pick</name>
 		<type>pick</type>
@@ -1583,6 +1614,14 @@
 		<name>Engine 2 throttle lever</name>
 		<type>rotate</type>
 		<object-name>thr_r</object-name>
+        <condition>
+            <not>
+                <equals>
+                    <property>/flight-management/control/a-thrust</property>
+                    <value>eng</value>
+                </equals>
+            </not>
+        </condition>
 		<property>controls/engines/engine[1]/throttle</property>
 		<factor>40</factor>
 		<axis>
@@ -1596,6 +1635,29 @@
 			<z-m>-0.3811</z-m>
 		</center>
 	</animation>
+    <animation>
+        <name>Engine 2 throttle lever athr</name>
+        <type>rotate</type>
+        <object-name>thr_r</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/control/a-thrust</property>
+                <value>eng</value>
+            </equals>
+        </condition>
+        <property>controls/engines/detent</property>
+        <factor>40</factor>
+        <axis>
+            <x>0</x>
+            <y>-1</y>
+            <z>0</z>
+        </axis>
+        <center>
+            <x-m>-0.2373</x-m>
+            <y-m>0</y-m>
+            <z-m>-0.3811</z-m>
+        </center>
+    </animation>
 
 	<!-- Engine Cut-off Switches -->
 

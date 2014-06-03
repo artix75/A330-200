@@ -721,6 +721,12 @@
 				<starter type="bool">false</starter>
 				<starter-switch type="bool">false</starter-switch>
 			</engine>
+                        <detent type="float">0</detent>
+                        <detents>
+                            <idle type="float">0</idle>
+                            <clb type="float">0.72</clb>
+                            <toga type="float">1</toga>
+                        </detents>
 		</engines>
 		<flight>
 			<ground-spoilers-armed type="bool">false</ground-spoilers-armed>

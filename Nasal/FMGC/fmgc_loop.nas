@@ -1043,3 +1043,15 @@ setlistener("sim/signals/fdm-initialized", func
             fmgc_loop.init();
 print("Flight Management and Guidance Computer Initialized");
 });
+
+setlistener('/flight-management/control/a-thrust', func{
+    var athr = getprop('/flight-management/control/a-thrust');
+    var clb_detent = getprop('controls/engines/detents/clb');
+    if(athr == 'eng'){
+        var throttle = getprop('controls/engines/engine[1]/throttle');
+        setprop('controls/engines/detent', clb_detent - throttle);
+    } else {
+        setprop('controls/engines/detent', 0);
+    }
+
+});
