@@ -127,7 +127,7 @@ update : func {
 
         var top_desc = me.calc_td();
     	me.calc_tc();
-    	me.calc_decel_point();
+    	var decel_point = me.calc_decel_point();
     	var plan_mode = getprop("/instrumentation/nd/plan-mode");
     	if(plan_mode != nil and plan_mode){
         	setprop("/instrumentation/nd/symbols/aircraft/latitude-deg", getprop('position/latitude-deg'));
@@ -424,6 +424,13 @@ update : func {
 
                 setprop(fmgc~ "a-thr/ias", 0);
                 setprop(fmgc~ "a-thr/mach", 0);
+                var spd = getprop(fmgc_val~ "target-spd");
+
+                if (spd != nil) {
+                    if (spd > 1) {
+                        setprop("instrumentation/pfd/target-spd", spd);
+                    }
+                }
 
             } else {
 
@@ -435,17 +442,23 @@ update : func {
 
                     if (spd == nil or spd == 0) {
 
-                        if (altitude <= 10000){
-                            spd = 250;
-                        }
-                        else{
-                            if(vmode_vs_fps <= -8){
-                                spd = 280;
-                            } else{
-                                if(altitude < 25000)
-                                    spd = 320;
-                                else
-                                    spd = 0.78;
+                    
+                        var remaining = getprop("autopilot/route-manager/distance-remaining-nm");
+                        if(remaining < decel_point){
+                            spd = 180;
+                        } else {
+                            if (altitude <= 10000){
+                                spd = 250;
+                            }
+                            else{
+                                if(vmode_vs_fps <= -8){
+                                    spd = 280;
+                                } else{
+                                    if(altitude < 25000)
+                                        spd = 320;
+                                    else
+                                        spd = 0.78;
+                                }
                             }
                         }
 
@@ -1004,12 +1017,14 @@ update : func {
                                                 var decelPoint = f.pathGeod(-1, -nm);
                                                 setprop(decelNode ~ "/latitude-deg", decelPoint.lat); 
                                                 setprop(decelNode ~ "/longitude-deg", decelPoint.lon); 
+                                                return nm;
                                             } else {
                                                 setprop(decelNode, '');
                                             }
                                         } else {
                                             setprop(decelNode, '');
                                         }
+                                        return 0;
                                     },
                                         reset : func {
                                             me.loopid += 1;

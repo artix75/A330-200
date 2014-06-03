@@ -29,7 +29,7 @@ var autoland = {
 
 			} elsif (agl <= 50) {
 			
-				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 30);
+				setprop("/flight-management/fmgc-values/target-spd", 60);
 				
 				##setprop("/flight-management/control/a-thrust", "off");
 				
