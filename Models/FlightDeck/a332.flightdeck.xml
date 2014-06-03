@@ -2988,8 +2988,32 @@
 	<animation>
 		<type>translate</type>
 		<object-name>SpdBrk</object-name>
+                <!--condition>
+                    <equals>
+                       <property>/controls/flight/ground-spoilers-armed</property> 
+                       <value>0</value>
+                    </equals>
+                </condition-->
 		<property>/controls/flight/speedbrake</property>
 		<factor>0.045</factor>
+		<axis>
+			<x>1</x>
+			<y>0</y>
+			<z>0</z>
+		</axis>
+	</animation>
+
+	<animation>
+		<type>translate</type>
+		<object-name>SpdBrk</object-name>
+                <!--condition>
+                    <equals>
+                       <property>/controls/flight/ground-spoilers-armed</property> 
+                       <value>1</value>
+                    </equals>
+                </condition-->
+		<property>/controls/flight/ground-spoilers-armed</property>
+		<factor>-0.005</factor>
 		<axis>
 			<x>1</x>
 			<y>0</y>

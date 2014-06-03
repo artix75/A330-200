@@ -723,7 +723,7 @@
 			</engine>
 		</engines>
 		<flight>
-			<ground-spoilers-armed type="bool">true</ground-spoilers-armed>
+			<ground-spoilers-armed type="bool">false</ground-spoilers-armed>
 			<speedbrake-lever type="double">0</speedbrake-lever>
 		</flight>
 		<gear>
@@ -1134,13 +1134,13 @@
 					<property>/controls/flight/ground-spoilers-armed</property>
                                         <command>nasal</command>
                                         <script>
-                                            var spLever = 'controls/flight/speedbrake-lever';
+                                            #var spLever = 'controls/flight/speedbrake-lever';
                                             var grnBrkArmed = '/controls/flight/ground-spoilers-armed';
-                                            if(getprop(spLever) == 0){
-                                                setprop(grnBrkArmed, 1);
-                                            } else {
-                                                setprop(grnBrkArmed, 0);
-                                            }
+                                            #if(getprop(spLever) == 0){
+                                            #    setprop(grnBrkArmed, 1);
+                                            #} else {
+                                            setprop(grnBrkArmed, 0);
+                                            #}
 
                                         </script>
 				</binding>
@@ -1261,6 +1261,12 @@
 				<name>CTRL+s</name>
 				<desc>Arm/Disarm ground spoilers</desc>
 				<repeatable type="bool">false</repeatable>
+				<binding>
+					<command>nasal</command>
+                                        <script>
+                                            setprop('controls/flight/speedbrake-lever', 0);
+                                        </script>
+				</binding>
 				<binding>
 					<command>property-toggle</command>
 					<property>/controls/flight/ground-spoilers-armed</property>
