@@ -3114,6 +3114,24 @@
 			<z>0</z>
 		</axis>
 	</animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>FlapsLever</object-name>
+        <action>
+        	<button>0</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-cycle</command>
+                <property>controls/flight/flaps</property>
+                <value>0.00</value>
+                <value>0.29</value>
+                <value>0.596</value>
+                <value>0.745</value>
+                <value>1</value>
+            </binding>
+        </action>
+    </animation>
 	
 	<animation>
 		<type>rotate</type>
@@ -3131,6 +3149,23 @@
 			<z>1</z>
 		</axis>
 	</animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>ParkBrk</object-name>
+        <action>
+            <button>0</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-toggle</command>
+                <property>controls/parking-brake</property>
+            </binding>
+            <binding>
+                <command>property-toggle</command>
+                <property>controls/brake-parking</property>
+            </binding>
+        </action>
+    </animation>
 	
 	<!-- Terrain on ND -->
 	
