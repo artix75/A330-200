@@ -1540,12 +1540,21 @@
 		<type>rotate</type>
 		<object-name>thr_l</object-name>
         <condition>
-        	<not>
-            	<equals>
-                    <property>/flight-management/control/a-thrust</property>
-                    <value>eng</value>
-                </equals>
-            </not>
+			<!--and>
+                <not>
+                    <equals>
+                        <property>/flight-management/control/a-thrust</property>
+                        <value>eng</value>
+                    </equals>
+                </not>
+                <not>
+                    <property>engines/engine/reversed</property>
+                </not>
+            </and-->
+            <equals>
+                <property>controls/engines/detents/current</property>
+                <value>none</value>
+            </equals>
         </condition>
 		<property>controls/engines/engine[0]/throttle</property>
 		<factor>40</factor>
@@ -1565,12 +1574,21 @@
         <type>rotate</type>
         <object-name>thr_l</object-name>
         <condition>
-            <equals>
-                <property>/flight-management/control/a-thrust</property>
-                <value>eng</value>
-            </equals>
+			<!--or>
+                <equals>
+                    <property>/flight-management/control/a-thrust</property>
+                    <value>eng</value>
+                </equals>
+                <property>engines/engine/reversed</property>
+            </or-->
+            <not>
+                <equals>
+                    <property>controls/engines/detents/current</property>
+                    <value>none</value>
+                </equals>
+            </not>
         </condition>
-        <property>controls/engines/detent</property>
+        <property>controls/engines/detents/throttle</property>
         <factor>40</factor>
         <axis>
             <x>0</x>
@@ -1615,12 +1633,21 @@
 		<type>rotate</type>
 		<object-name>thr_r</object-name>
         <condition>
-            <not>
-                <equals>
-                    <property>/flight-management/control/a-thrust</property>
-                    <value>eng</value>
-                </equals>
-            </not>
+            <!--and>
+                <not>
+                    <equals>
+                        <property>/flight-management/control/a-thrust</property>
+                        <value>eng</value>
+                    </equals>
+                </not>
+                <not>
+                    <property>engines/engine/reversed</property>
+                </not>
+            </and-->
+            <equals>
+                <property>controls/engines/detents/current</property>
+                <value>none</value>
+            </equals>
         </condition>
 		<property>controls/engines/engine[1]/throttle</property>
 		<factor>40</factor>
@@ -1640,12 +1667,21 @@
         <type>rotate</type>
         <object-name>thr_r</object-name>
         <condition>
-            <equals>
-                <property>/flight-management/control/a-thrust</property>
-                <value>eng</value>
-            </equals>
+            <!--or>
+                <equals>
+                    <property>/flight-management/control/a-thrust</property>
+                    <value>eng</value>
+                </equals>
+                <property>engines/engine/reversed</property>
+            </or-->
+			<not>
+                <equals>
+                    <property>controls/engines/detents/current</property>
+                    <value>none</value>
+                </equals>
+            </not>
         </condition>
-        <property>controls/engines/detent</property>
+        <property>controls/engines/detents/throttle</property>
         <factor>40</factor>
         <axis>
             <x>0</x>

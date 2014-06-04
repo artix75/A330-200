@@ -8,7 +8,7 @@ togglereverser = func {
   rv2 = "/engines/engine[1]/reverser-pos-norm"; 
  
   val = getprop(rv1);
-  if (getprop(r3 ~ "/throttle") == 0 and getprop(r3 ~ "/throttle") == 0 and props.globals.getNode("gear/gear[1]/wow").getBoolValue()) {
+  if (getprop(r3 ~ "/throttle") == 0 and getprop(r4 ~ "/throttle") == 0 and props.globals.getNode("gear/gear[1]/wow").getBoolValue()) {
     if (val == 0 or val == nil) {
       interpolate(rv1, 1.0, 1.4); 
       interpolate(rv2, 1.0, 1.4);  

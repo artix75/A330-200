@@ -721,8 +721,10 @@
 				<starter type="bool">false</starter>
 				<starter-switch type="bool">false</starter-switch>
 			</engine>
-                        <detent type="float">0</detent>
                         <detents>
+                            <current type="string">none</current>
+                            <throttle type="float">0</throttle>
+                            <rev type="float">-0.35</rev>
                             <idle type="float">0</idle>
                             <clb type="float">0.72</clb>
                             <toga type="float">1</toga>
@@ -1278,6 +1280,54 @@
 					<property>/controls/flight/ground-spoilers-armed</property>
 				</binding>
 			</key>
+            <key n="82">
+            	<name>R</name>
+                <desc>Throttle Detent: Reverse</desc>
+                <repeatable type="bool">false</repeatable>
+                <binding>
+                	<command>nasal</command>
+                    <script>
+                        throttle_detents.set_detent('rev');
+                        utils.clickSound('6');
+                    </script>
+                </binding>
+            </key>
+            <key n="73">
+                <name>I</name>
+                <desc>Throttle Detent: Idle</desc>
+                <repeatable type="bool">false</repeatable>
+                <binding>
+                    <command>nasal</command>
+                    <script>
+                        throttle_detents.set_detent('idle');
+                        utils.clickSound('6');
+                    </script>
+                </binding>
+            </key>
+            <key n="67">
+                <name>C</name>
+                <desc>Throttle Detent: CL</desc>
+                <repeatable type="bool">false</repeatable>
+                <binding>
+                    <command>nasal</command>
+                    <script>
+                        throttle_detents.set_detent('clb');
+                        utils.clickSound('6');
+                    </script>
+                </binding>
+            </key>
+            <key n="84">
+                <name>T</name>
+                <desc>Throttle Detent: TOGA</desc>
+                <repeatable type="bool">false</repeatable>
+                <binding>
+                    <command>nasal</command>
+                    <script>
+                        throttle_detents.set_detent('toga');
+                        utils.clickSound('6');
+                    </script>
+                </binding>
+            </key>
 		</keyboard>
 	</input>
 
@@ -1350,6 +1400,9 @@
 		<utils>
 			<file>Aircraft/A330-200/Nasal/utils.nas</file>
 		</utils>
+                <throttle_detents>
+			<file>Aircraft/A330-200/Nasal/throttle_detents.nas</file>
+                </throttle_detents>
 		<electrical>
 			<file>Aircraft/A330-200/Nasal/electrical.nas</file>
 		</electrical>

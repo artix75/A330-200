@@ -1044,14 +1044,32 @@ setlistener("sim/signals/fdm-initialized", func
 print("Flight Management and Guidance Computer Initialized");
 });
 
+setlistener('controls/engines/engine/reverser', func{
+    var rev = getprop('controls/engines/engine/reverser');
+    var rev_detent = getprop('controls/engines/detents/rev');
+    var throttle = getprop('controls/engines/engine[1]/throttle');
+    if(rev){
+        setprop('controls/engines/detents/throttle', rev_detent - throttle);
+        setprop('controls/engines/detents/current', 'rev');
+    } else {
+        var detent_thr = getprop('controls/engines/detents/throttle');
+        setprop('controls/engines/detents/throttle', 0);
+        settimer(func{setprop('controls/engines/detents/current', 'none')},0.25);
+    }
+
+});
+
 setlistener('/flight-management/control/a-thrust', func{
     var athr = getprop('/flight-management/control/a-thrust');
     var clb_detent = getprop('controls/engines/detents/clb');
+    var throttle = getprop('controls/engines/engine[1]/throttle');
     if(athr == 'eng'){
-        var throttle = getprop('controls/engines/engine[1]/throttle');
-        setprop('controls/engines/detent', clb_detent - throttle);
+        setprop('controls/engines/detents/throttle', clb_detent - throttle);
+        setprop('controls/engines/detents/current', 'clb');
     } else {
-        setprop('controls/engines/detent', 0);
+        var detent_thr = getprop('controls/engines/detents/throttle');
+        setprop('controls/engines/detents/throttle', 0);
+        settimer(func{setprop('controls/engines/detents/current', 'none')},0.25);
     }
 
 });
