@@ -432,9 +432,15 @@ var warning_system = {
                 return (getprop("/controls/parking-brake") != 0);
             }
             
+            var strobe_memo = memo.new("STROBE LT OFF", 'amber');
+            strobe_memo.condition = func(){
+                var airborn = ((getprop('/gear/gear/wow') == 0) and (getprop('/gear/gear[1]/wow') == 0) and (getprop('/gear/gear[2]/wow') == 0));
+                return airborn and !getprop('controls/lighting/strobe');
+            }
+            
             # All MEMO items into a hash for easier use (in order of display priority)
             
-            me.memos = [fuel_jett, apu_avail, spdbrk_a, rat_a, fob_low, spdbrk_g, rat_g, gnd_splrs, xfeed, hyd_ptu, refuel, park_memo];           
+            me.memos = [fuel_jett, apu_avail, spdbrk_a, rat_a, fob_low, spdbrk_g, rat_g, gnd_splrs, xfeed, hyd_ptu, refuel, park_memo, strobe_memo];           
             
             ############################################
             
