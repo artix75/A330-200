@@ -3059,7 +3059,10 @@
 			</binding>
                         <binding>
                             <command>nasal</command>
-                            <script>utils.clickSound(4)</script>
+                            <script>
+                                utils.clickSound(4);
+                                setprop("instrumentation/efis/ecam/display-mode", "ENG");
+                            </script>
                         </binding>
 		</action>
 	</animation>
