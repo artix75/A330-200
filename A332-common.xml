@@ -389,6 +389,10 @@
 				<name>Speed Trend</name>
 				<path>Aircraft/A330-200/Systems/a332-speedtrend.xml</path>
 			</autopilot>
+			<autopilot>
+				<name>PFD</name>
+				<path>Aircraft/A330-200/Systems/pfd.xml</path>
+			</autopilot>
 			
 		</systems>
 

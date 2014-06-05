@@ -429,6 +429,28 @@
     		<y>1</y>
     	</axis>
     </animation>
+
+	<animation>
+    	<type>texmultiple</type>
+    	<object-name>radar-alt</object-name>
+		<transform>
+        	<subtype>textranslate</subtype>
+            <property>instrumentation/altimeter/indicated-altitude-ft</property>
+            <factor>0.000019141</factor>
+            <axis>
+                <y>1</y>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/pfd/ground-level-diff</property>
+            <factor>0.000019141</factor>
+            <axis>
+                <y>1</y>
+            </axis>
+        </transform>
+    </animation>
+    
     
     <animation>
     	<type>textranslate</type>
@@ -851,6 +873,17 @@
         	<less-than>
             	<property>position/altitude-agl-ft</property>
             	<value>3000</value>
+            </less-than>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>radar-alt</object-name>
+        <condition>
+            <less-than>
+                <property>position/altitude-agl-ft</property>
+                <value>3000</value>
             </less-than>
         </condition>
     </animation>

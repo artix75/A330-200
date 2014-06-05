@@ -61,7 +61,7 @@ refs 4
 kids 0
 OBJECT poly
 name "radar-alt"
-loc -0.000639424 -0.000264099 -0.0474465
+loc 0.000360576 -0.000264099 -0.0474465
 texture "radar-alt.png"
 crease 45.000000
 numvert 4
