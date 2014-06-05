@@ -124,6 +124,17 @@ update : func {
         setprop("flight-management/procedures/active", procedure.check());
 
         setprop(fcu~ "alt-100", me.alt_100());
+        var flaps = getprop("/controls/flight/flaps");
+        var ias = getprop("/velocities/airspeed-kt");
+        var stall_spd = 0;
+        if(flaps <= 0.29)
+            stall_spd = 150;
+        elsif(flaps == 0.596)
+            stall_spd = 135;
+        elsif(flaps >= 0.74)
+            stall_spd = 120;
+        setprop(fmgc_val ~ 'stall-speed', stall_spd);
+        setprop(fmgc_val ~ 'ind-stall-speed', stall_spd - 125);
 
         var top_desc = me.calc_td();
     	me.calc_tc();
@@ -411,7 +422,7 @@ update : func {
         if ((me.spd_ctrl == "fmgc") and (me.a_thr == "eng")) {
 
             var cur_wp = getprop("autopilot/route-manager/current-wp");
-            var ias = getprop("/velocities/airspeed-kt");
+            #var ias = getprop("/velocities/airspeed-kt");
 
             ## AUTO-THROTTLE -------------------------------------------------------
 

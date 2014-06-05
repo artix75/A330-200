@@ -317,7 +317,7 @@
     <animation>
     	<type>textranslate</type>
     	<object-name>spd-tape</object-name>
-    	<object-name>stall-tape</object-name>
+    	<!--object-name>stall-tape</object-name-->
     	<!--object-name>trgt-spd</object-name-->
     	<property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
     	<factor>0.002001953</factor>
@@ -369,6 +369,31 @@
                 </equals>
             </or>
         </condition>
+    </animation>
+    
+    <animation>
+        <type>texmultiple</type>
+        <object-name>stall-tape</object-name>
+        <transform>
+            <property>/flight-management/fmgc-values/ind-stall-speed</property>
+            <subtype>textranslate</subtype>
+            <factor>0.002001953</factor>
+            <axis>
+                <x>0</x>
+                <y>-1</y>
+                <z>0</z>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+            <factor>0.002001953</factor>
+            <axis>
+                <x>0</x>
+                <y>1</y>
+                <z>0</z>
+            </axis>
+        </transform>
     </animation>
 
     
