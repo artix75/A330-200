@@ -134,10 +134,13 @@ var warning_system = {
             
             var stall = warning.new("STALL", "crc", "warning", "stall");
             stall.condition = func() {
-                var flaps = getprop("/controls/flight/flaps");
                 var ias = getprop("/velocities/airspeed-kt");
                 var airborn = ((getprop('/gear/gear/wow') == 0) and (getprop('/gear/gear[1]/wow') == 0) and (getprop('/gear/gear[2]/wow') == 0));
-                return airborn and ((((ias <= 150) and (flaps <=0.29 )) or ((ias <= 135) and (flaps == 0.596)) or ((ias <= 120) and (flaps >= 0.74))));
+                #return airborn and ((((ias <= 150) and (flaps <=0.29 )) or ((ias <= 135) and (flaps == 0.596)) or ((ias <= 120) and (flaps >= 0.74))));
+                var phase = getprop("/flight-management/phase");
+                var agl = getprop("/position/altitude-agl-ft");
+                var stall_spd = getprop("/flight-management/fmgc-values/stall-speed");
+                return airborn and !(phase == 'APP' and agl < 50) and (ias <= stall_spd);
             };
             
             var spdbrk_stillout = warning.new("SPD BRK STILL OUT", "chime", "caution", "spdbrk-still");

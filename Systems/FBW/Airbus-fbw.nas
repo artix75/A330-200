@@ -95,10 +95,10 @@ var fbw_loop = {
 
 	}, 
         is_stalling: func{
-            var flaps = getprop("/controls/flight/flaps");
             var ias = getprop("/velocities/airspeed-kt");
             var airborn = ((getprop('/gear/gear/wow') == 0) and (getprop('/gear/gear[1]/wow') == 0) and (getprop('/gear/gear[2]/wow') == 0));
-            return airborn and ((((ias <= 155) and (flaps <=0.29 )) or ((ias <= 140) and (flaps == 0.596)) or ((ias <= 125) and (flaps >= 0.74))));
+            var stall_spd = getprop("/flight-management/fmgc-values/stall-speed");
+            return airborn and (ias <= (stall_spd + 5));
         },
 	get_alpha_prot : func{
 		if (me.pitch <=  me.alpha_min) return 'alpha_min';
