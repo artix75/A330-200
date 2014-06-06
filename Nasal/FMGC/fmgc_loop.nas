@@ -713,7 +713,7 @@ update : func {
                 var final_vs = 0;
                 var abs_diff = math.abs(alt_diff);
 
-                if (abs_diff >= 100) {
+                if (abs_diff >= 500) {
                     if(no_constraint == 0 or phase == 'des'){
                         var ground_speed_kt = getprop("/velocities/groundspeed-kt");
 
@@ -742,10 +742,7 @@ update : func {
                         if(altitude < 10000)
                             vs_fpm = 1800;
                         else{
-                            if(abs_diff > 1000)
-                                vs_fpm = 1400;
-                            else
-                                vs_fpm = 500;
+                            vs_fpm = 1600;
                         }
                         if(altitude > cruise_alt)
                             vs_fpm = vs_fpm * -1.0;
