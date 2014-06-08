@@ -101,10 +101,10 @@ Configure the nav-display symbology
     <state type="string">current-wp</state>
     <width type="float">16</width>
     <texture-size  type="int">512</texture-size>
-    <u0 type="float">274.14</u0>
-    <v0 type="float">455.17</v0>
-    <u1 type="float">305.17</u1>
-    <v1 type="float">492.24</v1>
+    <u0 type="float">384.14</u0>
+    <v0 type="float">457.17</v0>
+    <u1 type="float">415.17</u1>
+    <v1 type="float">494.24</v1>
     <color>
         <red type="float">1</red>
         <green type="float">1</green>
