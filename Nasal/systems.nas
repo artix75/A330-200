@@ -518,3 +518,12 @@ var triggerDoor = func(door, doorName, doorDesc)
    }
   }
  };
+
+ setlistener("controls/engines/engine[1]/cutoff-switch", func{
+    var switch_on = getprop("controls/engines/engine[1]/cutoff-switch");
+    if(switch_on){
+        settimer(func{
+            setprop("warnings/to-cfg-available", 1);
+        }, 90);
+    }
+ });

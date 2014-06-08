@@ -146,8 +146,8 @@ var autoland = {
 		# var trgt_vs = -0.01667 * (8 + (agl - 11) * 2.307); (If f2_alt = 50)
 		
 		var trgt_vs = -0.01667 * (15 + ((agl - 11) * 3.103));
-                if(trgt_vs > -2.25)
-                    trgt_vs = -2.25;
+                if(trgt_vs > -2.3)
+                    trgt_vs = -2.3;
 		
 		setprop("/servo-control/target-vs", trgt_vs);
 	
