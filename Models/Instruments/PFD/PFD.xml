@@ -330,10 +330,10 @@
 
     <animation>
     	<type>texmultiple</type>
-    	<object-name>trgt-spd</object-name>
+    	<object-name>trgt-spd-man</object-name>
         <transform>
             <subtype>textranslate</subtype>
-            <property>instrumentation/pfd/target-spd</property>
+            <property>/flight-management/fcu-values/ias</property>
             <factor>0.002001953</factor>
             <axis>
                     <y>-1</y>
@@ -352,22 +352,90 @@
             </axis>
         </transform>
     </animation>
+    
+    <animation>
+    	<type>texmultiple</type>
+    	<object-name>trgt-spd-man</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>/flight-management/fcu-values/ias</property>
+            <factor>0.002001953</factor>
+            <axis>
+                <y>-1</y>
+                <x>0</x>
+                <z>0</z>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+            <factor>0.002001953</factor>
+            <axis>
+                <y>1</y>
+                <x>0</x>
+                <z>0</z>
+            </axis>
+        </transform>
+    </animation>
+    
+    <animation>
+    	<type>texmultiple</type>
+    	<object-name>trgt-spd-mng</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>/flight-management/fmgc-values/target-spd</property>
+            <factor>0.002001953</factor>
+            <axis>
+                <y>-1</y>
+                <x>0</x>
+                <z>0</z>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+            <factor>0.002001953</factor>
+            <axis>
+                <y>1</y>
+                <x>0</x>
+                <z>0</z>
+            </axis>
+        </transform>
+    </animation>
 
     <animation>
     	<type>select</type>
-    	<object-name>trgt-spd</object-name>
+    	<object-name>trgt-spd-man</object-name>
     	<property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
         <condition>
-            <or>
+            <and>
                 <equals>
                     <property>/flight-management/control/spd-mode</property>
                     <value>ias</value>
                 </equals>
                 <equals>
+                    <property>/flight-management/control/spd-ctrl</property>
+                    <value>man-set</value>
+                </equals>
+            </and>
+        </condition>
+    </animation>
+    
+    <animation>
+    	<type>select</type>
+    	<object-name>trgt-spd-mng</object-name>
+    	<property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+        <condition>
+            <and>
+                <equals>
+                    <property>/flight-management/control/spd-ctrl</property>
+                    <value>fmgc</value>
+                </equals>
+                <equals>
                     <property>/flight-management/control/fmgc/ias</property>
                     <value>1</value>
                 </equals>
-            </or>
+            </and>
         </condition>
     </animation>
     
