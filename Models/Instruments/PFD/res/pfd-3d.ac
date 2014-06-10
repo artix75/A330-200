@@ -520,7 +520,7 @@ refs 4
 kids 0
 OBJECT poly
 name "trgt-spd-mng"
-loc 0.00091828 -0.000281699 0.0476063
+loc 0.00091828 -0.000281699 0.0486063
 texture "trgt-spd-mng.png"
 crease 45.000000
 numvert 4
@@ -539,7 +539,7 @@ refs 4
 kids 0
 OBJECT poly
 name "trgt-spd-man"
-loc 0.00091828 -0.000281699 0.0476063
+loc 0.00091828 -0.000281699 0.0486063
 texture "trgt-spd-man.png"
 crease 45.000000
 numvert 4
