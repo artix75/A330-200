@@ -701,7 +701,7 @@
 		<gear>
 			<brake-parking type="bool">true</brake-parking>
 			<tiller-cmd-norm type="double">0</tiller-cmd-norm>
-			<tiller-enabled type="bool">false</tiller-enabled>
+			<tiller-enabled type="bool">true</tiller-enabled>
 		</gear>
 		<APU>
 			<fire-switch type="bool">false</fire-switch>
