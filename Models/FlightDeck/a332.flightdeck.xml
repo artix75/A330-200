@@ -1833,6 +1833,33 @@
             <z>0</z>
         </axis>
     </animation>
+
+    <!-- Tiller Animation -->
+
+        <animation>
+                <type>rotate</type>
+                <object-name>tiller</object-name>
+                <property>controls/gear/tiller-cmd-norm</property>
+                <factor>5</factor>
+                <!--axis>
+                        <x1-m>-23.1922</x1-m>
+                        <y1-m>-1.1832</y1-m>
+                        <z1-m>1.5636</z1-m>
+                        <x2-m>-23.1998</x2-m>
+                        <y2-m>-1.1905</y2-m>
+                        <z2-m>1.5525</z2-m>
+                </axis-->
+                <center>
+                    <x-m>-0.153115</x-m> 
+                    <y-m>-0.223</y-m> 
+                    <z-m>1.00217</z-m> 
+                </center>
+                <axis>
+                    <x>0</x>
+                    <y>1</y>
+                    <z>0</z>
+                </axis>
+        </animation>
     
     <!-- Flight Director -->
     
