@@ -1900,6 +1900,34 @@
                     </binding>
             </action>
     </animation>
+
+    <!-- Rudder pedals -->
+
+    <animation>
+        <type>translate</type>
+        <object-name>RRudderPedalL</object-name>
+        <object-name>RRudderPedalR</object-name>
+        <property>controls/flight/rudder</property>
+        <factor>0.05</factor>
+        <axis>
+            <x>-1</x>
+            <y>0</y>
+            <z>0</z>
+        </axis>
+    </animation>
+
+    <animation>
+        <type>translate</type>
+        <object-name>LRudderPedalL</object-name>
+        <object-name>LRudderPedalR</object-name>
+        <property>controls/flight/rudder</property>
+        <factor>-0.05</factor>
+        <axis>
+            <x>-1</x>
+            <y>0</y>
+            <z>0</z>
+        </axis>
+    </animation>
     
     <!-- Flight Director -->
     
