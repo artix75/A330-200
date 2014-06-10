@@ -1836,30 +1836,70 @@
 
     <!-- Tiller Animation -->
 
-        <animation>
-                <type>rotate</type>
-                <object-name>tiller</object-name>
-                <property>controls/gear/tiller-cmd-norm</property>
-                <factor>5</factor>
-                <!--axis>
-                        <x1-m>-23.1922</x1-m>
-                        <y1-m>-1.1832</y1-m>
-                        <z1-m>1.5636</z1-m>
-                        <x2-m>-23.1998</x2-m>
-                        <y2-m>-1.1905</y2-m>
-                        <z2-m>1.5525</z2-m>
-                </axis-->
-                <center>
-                    <x-m>-0.153115</x-m> 
-                    <y-m>-0.223</y-m> 
-                    <z-m>1.00217</z-m> 
-                </center>
-                <axis>
-                    <x>0</x>
-                    <y>1</y>
-                    <z>0</z>
-                </axis>
-        </animation>
+    <animation>
+            <type>rotate</type>
+            <object-name>tiller</object-name>
+            <property>controls/gear/tiller-cmd-norm</property>
+            <factor>70</factor>
+            <!--axis>
+                    <x1-m>-0.16</x1-m>
+                    <y1-m>-0.223</y1-m>
+                    <z1-m>0.995</z1-m>
+                    <x2-m>-0.16</x2-m>
+                    <y2-m>-0.223</y2-m>
+                    <z2-m>-0.995</z2-m>
+            </axis-->
+            <axis>
+                    <x1-m>-0.15</x1-m>
+                    <y1-m>-0.99</y1-m>
+                    <z1-m>0.506528</z1-m>
+                    <x2-m>-0.15</x2-m>
+                    <y2-m>-0.99</y2-m>
+                    <z2-m>-0.506528</z2-m>
+            </axis>
+    </animation>
+    <animation>
+            <type>pick</type>
+            <object-name>tiller</object-name>
+            <action>
+                    <button>3</button>
+                    <repeatable type="bool">true</repeatable>
+                    <binding>
+                            <command>nasal</command>
+                            <script>
+                                var a = getprop('controls/gear/tiller-cmd-norm');
+                                a += 0.1;
+                                if(a > 1)
+                                    a = 1;
+                                setprop('controls/gear/tiller-cmd-norm', a);
+                            </script>
+                    </binding>
+            </action>
+            <action>
+                    <button>4</button>
+                    <repeatable type="bool">true</repeatable>
+                    <binding>
+                            <command>nasal</command>
+                            <script>
+                                var a = getprop('controls/gear/tiller-cmd-norm');
+                                a -= 0.1;
+                                if(abs(a) > 1)
+                                    a = -1;
+                                setprop('controls/gear/tiller-cmd-norm', a);
+                            </script>
+                    </binding>
+            </action>
+            <action>
+                    <button>0</button>
+                    <repeatable type="bool">true</repeatable>
+                    <binding>
+                            <command>nasal</command>
+                            <script>
+                                setprop('controls/gear/tiller-cmd-norm', 0);
+                            </script>
+                    </binding>
+            </action>
+    </animation>
     
     <!-- Flight Director -->
     
