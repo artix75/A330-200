@@ -2983,6 +2983,22 @@
                         </binding>
 		</action>
 	</animation>
+        
+        <!-- Tiller enable switch -->
+
+        
+	<animation>
+		<type>pick</type>
+		<object-name>land1</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>controls/gear/tiller-enabled</property>
+                        </binding>
+                </action>
+        </animation>
 	
 	<!-- Landing Gear Unlock and down Indicators -->
 

@@ -1245,6 +1245,44 @@
 	</animation>
 
 	<animation>
+		<name>Wing lights pick</name>
+		<type>pick</type>
+		<object-name>WingLtSwtch</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>controls/lighting/wing-lights</property>
+			</binding>
+                        <binding>
+                            <command>nasal</command>
+                            <script>utils.clickSound(7)</script>
+                        </binding>
+		</action>
+	</animation>
+	<animation>
+		<name>Wing lights rotate</name>
+		<type>rotate</type>
+		<object-name>WingLtSwtch</object-name>
+		<property>controls/lighting/wing-lights</property>
+		<interpolation>
+			<entry><ind>0</ind><dep>35</dep></entry>
+			<entry><ind>1</ind><dep>-35</dep></entry>
+		</interpolation>
+		<axis>
+			<x>0</x>
+			<y>1</y>
+			<z>0</z>
+		</axis>
+		<center>
+			<x-m>-0.01</x-m>
+			<y-m>0</y-m>
+			<z-m>-0.265</z-m>
+		</center>
+	</animation>
+
+	<animation>
 		<name>Nav/logo lights pick</name>
 		<type>pick</type>
 		<object-name>NavLogoLtSwtch</object-name>
