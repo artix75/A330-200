@@ -2466,7 +2466,7 @@
 			<repeatable type="bool">false</repeatable>
 			<binding>
 				<command>property-toggle</command>
-				<property>/instrumentation/efis/inputs/WPT</property>
+				<property>/instrumentation/efis/inputs/wpt</property>
 			</binding>
 		</action>
 	</animation>
@@ -2505,7 +2505,7 @@
 			<repeatable type="bool">false</repeatable>
 			<binding>
 				<command>property-toggle</command>
-				<property>/instrumentation/efis/inputs/ARPT</property>
+				<property>/instrumentation/efis/inputs/arpt</property>
 			</binding>
 		</action>
 	</animation>
@@ -2525,7 +2525,7 @@
 	<animation>
 		<type>textranslate</type>
 		<object-name>wpt</object-name>
-		<property>/instrumentation/efis/inputs/WPT</property>
+		<property>/instrumentation/efis/inputs/wpt</property>
 		<factor>0.0625</factor>
 		<axis>
 			<x>0</x>
@@ -2561,7 +2561,7 @@
 	<animation>
 		<type>textranslate</type>
 		<object-name>arpt</object-name>
-		<property>/instrumentation/efis/inputs/ARPT</property>
+		<property>/instrumentation/efis/inputs/arpt</property>
 		<factor>0.0625</factor>
 		<axis>
 			<x>0</x>
@@ -2686,6 +2686,16 @@
 				<value>160</value>
 				<value>320</value>
 			</binding>
+			<binding>
+				<command>property-cycle</command>
+				<property>/instrumentation/efis/inputs/range-nm</property>
+				<value>10</value>
+				<value>20</value>
+				<value>40</value>
+				<value>80</value>
+				<value>160</value>
+				<value>320</value>
+			</binding>
                         <binding>
                             <command>nasal</command>
                             <script>utils.clickSound(4)</script>
@@ -2708,6 +2718,16 @@
 			<binding>
 				<command>property-cycle</command>
 				<property>/instrumentation/nd[1]/range</property>
+				<value>320</value>
+				<value>160</value>
+				<value>80</value>
+				<value>40</value>
+				<value>20</value>
+				<value>10</value>
+			</binding>
+			<binding>
+				<command>property-cycle</command>
+				<property>/instrumentation/efis/inputs/range-nm</property>
 				<value>320</value>
 				<value>160</value>
 				<value>80</value>

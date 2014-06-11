@@ -839,6 +839,7 @@
 					<display-mode-knob type="int">2</display-mode-knob>
 					<display-range type="int">40</display-range>
 					<terrain-on-nd type="int">0</terrain-on-nd>
+					<canvas-display-mode type="string">VOR</canvas-display-mode>
 				
 			</nd>
 			<input>
@@ -855,6 +856,8 @@
 				<TERR type="bool">true</TERR>
 				<TRAF type="bool">true</TRAF>
 				<taxi type="bool">true</taxi>
+				<range-nm type="int">10</range-nm>
+                                <nd-centered type="bool">true</nd-centered>
 			</inputs>
 
 		</efis>
@@ -1397,6 +1400,7 @@
 			<file>Aircraft/A330-200/Nasal/compression.nas</file>
 			<file>Aircraft/A330-200/Nasal/tyresmoke.nas</file>
 			<file>Aircraft/A330-200/Nasal/general_loop.nas</file>
+                        <file>Aircraft/A330-200/Models/Instruments/ND/ND.nas</file>
 		</a332>
 		<systems>
 			<file>Aircraft/A330-200/Nasal/systems.nas</file>
