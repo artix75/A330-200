@@ -27,7 +27,9 @@ setlistener("sim/signals/fdm-initialized", func() {
 	'toggle_range': 	{path: '/inputs/range-nm', value:40, type:'INT'},
 	'toggle_weather': 	{path: '/inputs/wxr', value:0, type:'BOOL'},
 	'toggle_airports': 	{path: '/inputs/arpt', value:0, type:'BOOL'},
-	'toggle_stations': 	{path: '/inputs/sta', value:0, type:'BOOL'},
+	'toggle_ndb': 	{path: '/inputs/NDB', value:0, type:'BOOL'},
+    'toggle_stations':     {path: '/inputs/sta', value:0, type:'BOOL'},
+    'toggle_vor': 	{path: '/inputs/VORD', value:0, type:'BOOL'},
 	'toggle_waypoints': 	{path: '/inputs/wpt', value:0, type:'BOOL'},
 	'toggle_position': 	{path: '/inputs/pos', value:0, type:'BOOL'},
 	'toggle_data': 		{path: '/inputs/data',value:0, type:'BOOL'},
@@ -40,9 +42,29 @@ setlistener("sim/signals/fdm-initialized", func() {
 	'toggle_display_type': 	{path: '/mfd/display-type', value:'LCD', type:'STRING'},
 	'toggle_true_north': 	{path: '/mfd/true-north', value:0, type:'BOOL'},
 	# add new switches here
-      };
-
-
+      };       
+    
+            
+    canvas.Symbol.get("NDB").icon_ndb = nil;
+    canvas.Symbol.get("NDB").draw = func{
+        if (me.icon_ndb != nil) return;
+        # the fix symbol
+        me.icon_ndb = me.element.createChild("path")
+        .moveTo(-15,15)
+        .lineTo(0,-15)
+        .lineTo(15,15)
+        .close()
+        .setStrokeLineWidth(3)
+        .setColor(0.69,0,0.39)
+        .setScale(0.5,0.5); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
+        # the fix label
+        me.text_ndb = me.element.createChild("text")
+        .setDrawMode( canvas.Text.TEXT )
+        .setText(me.model.id)
+        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+        .setFontSize(28)
+        .setTranslation(5,25);
+    } 
 	# get a handle to the NavDisplay in canvas namespace (for now), see $FG_ROOT/Nasal/canvas/map/navdisplay.mfd
 	var ND = canvas.NavDisplay;
 
@@ -54,7 +76,7 @@ setlistener("sim/signals/fdm-initialized", func() {
 	##
 	# set up a  new ND instance, under 'instrumentation/efis' and use the 
 	# myCockpit_switches hash to map control properties
-    var NDCpt = ND.new("instrumentation/efis", myCockpit_switches);
+    var NDCpt = ND.new("instrumentation/efis", myCockpit_switches, 'Airbus');
 	
 	nd_display.main = canvas.new({
 		"name": "ND",
@@ -66,6 +88,7 @@ setlistener("sim/signals/fdm-initialized", func() {
 	nd_display.main.addPlacement({"node": "ND.screen"});
 	var group = nd_display.main.createGroup();
 	NDCpt.newMFD(group);
+
 	NDCpt.update();
 
 		
