@@ -25,6 +25,8 @@ var trigger_update = func(layer)  layer._model.init();
 #
 # TODO: move this to an XML config file
 #
+var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+
 canvas.NDStyles["Airbus"] = {
 		font_mapper: func(family, weight) {
 			if( family == "Liberation Sans" and weight == "normal" )
@@ -35,7 +37,7 @@ canvas.NDStyles["Airbus"] = {
 		# TODO: SVG elements should be renamed to use boeing/airbus prefix
 		# aircraft developers should all be editing the same ND.svg image
 		# the code can deal with the differences now
-		svg_filename: "Nasal/canvas/map/boeingND.svg",
+        svg_filename: "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbusND.svg",
 		##
 		## this loads and configures existing layers (currently, *.layer files in Nasal/canvas/map)
 		##
@@ -353,7 +355,7 @@ canvas.NDStyles["Airbus"] = {
 				id:'hdgGroup',
 				impl: {
 					init: func(nd,symbol),
-					predicate: func(nd) nd.in_mode('toggle_display_mode', ['APP','MAP','VOR']),
+					predicate: func(nd) false,#nd.in_mode('toggle_display_mode', ['APP','MAP','VOR']),
 					is_true: func(nd) {
 						nd.symbols.hdgGroup.show();
 						if(nd.get_switch('toggle_centered'))
