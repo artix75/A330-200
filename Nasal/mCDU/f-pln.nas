@@ -141,6 +141,8 @@ var f_pln = {
 		me.update_disp();
 		
 		setprop("/autopilot/route-manager/current-wp", 0);
+		setprop(rm_route~ "active", 1); # TRICK: refresh canvas
+		setprop(rm_route~ "active", 0);
 	
 	},
 	

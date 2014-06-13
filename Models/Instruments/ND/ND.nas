@@ -85,6 +85,7 @@ setlistener("sim/signals/fdm-initialized", func() {
         .setText(me.model.id)
         .setFont("LiberationFonts/LiberationSans-Regular.ttf")
         .setFontSize(28)
+        .setColor(0,0.57,1)
         .setTranslation(45,25);
         me.svg_loaded = 1;
     }
@@ -139,6 +140,25 @@ setlistener("sim/signals/fdm-initialized", func() {
 
         # draw routines should always return their canvas group to the caller for further processing
 
+    }
+
+    canvas.RouteModel.init = func {
+        me._view.reset();
+        #if (!getprop("/autopilot/route-manager/active"))
+        #    return;
+
+        ## TODO: all the model stuff is still inside the draw file for now, this just ensures that it will be called once
+        foreach(var t; [nil] )
+        me.push(t);
+
+        me.notifyView();
+
+        #FIXME: segfault of the day: use this layer once without a route, and then with a route - and  BOOM, need to investigate.
+
+        # TODO: should register a route manager listener here to update itself whenever the route/active WPT changes!
+        # also, if the layer is used in a dialog, the listener should be removed when the dialog is closed
+        if (me.route_monitor == nil) # FIXME: remove this listener durint reinit
+        me.route_monitor=setlistener("/autopilot/route-manager/active", func me.init() ); # this can probably be shared (singleton), because all canvases will be displaying same route ???
     }
 
     canvas.updatewp = func(activeWp)
@@ -210,11 +230,14 @@ setlistener("sim/signals/fdm-initialized", func() {
         .setColor(0.4,0.7,0.4);
 		
         var lnav = (getprop('flight-management/control/lat-ctrl') == 'fmgc');
-
-        if(!lnav)
+		var actv = getprop('autopilot/route-manager/active');
+        
+        if(!lnav or !actv)
             route.setStrokeDashArray([32, 16]);
         else
             route.setStrokeDashArray([]);
+        if(!actv)
+            route.setColor(0.95,0.95,0.21);
         
         var cmds = [];
         var coords = [];
