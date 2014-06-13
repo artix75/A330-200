@@ -181,7 +181,7 @@
      id="path4089"
      inkscape:connector-curvature="0"
      sodipodi:nodetypes="cc" /></g><path
-   style="fill:none;stroke:#ff00ff;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:32, 16;stroke-dashoffset:0"
+     style="fill:none;stroke:#66b266;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:32, 16;stroke-dashoffset:0"
    d="m 512,560.25 0,-327.134"
    id="selHdgLine2"
    inkscape:connector-curvature="0"
@@ -194,7 +194,7 @@
    inkscape:connector-curvature="0"
    id="selHdgLine"
    d="m 512,824.75 0,-682.634"
-   style="fill:none;stroke:#ff00ff;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:32, 16;stroke-dashoffset:0" /><path
+   style="fill:none;stroke:#66b266;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:32, 16;stroke-dashoffset:0" /><path
    inkscape:transform-center-y="-715.775"
    inkscape:label="#path3882"
    sodipodi:nodetypes="cccc"
@@ -1010,7 +1010,7 @@
      d="m 340.958,820.476 c 0,-94.166 76.335,-170.502 170.501,-170.502 94.166,0 170.501,76.335 170.501,170.502 0,0 0,0 0,0"
      style="fill:none;stroke:#ededed;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" /></g><text
    xml:space="preserve"
-   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
+   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    x="41.732624"
    y="769.12952"
    id="status.wxr"
@@ -1034,7 +1034,7 @@
    id="status.arpt"
    y="734.12946"
    x="41.732624"
-   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
+   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    xml:space="preserve"><tspan
      y="734.12946"
      x="41.732624"
@@ -1050,7 +1050,7 @@
 
 <text
    xml:space="preserve"
-   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
+   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    x="41.732624"
    y="697.12939"
    id="status.wpt"
@@ -1074,7 +1074,7 @@
    id="status.sta"
    y="661.12933"
    x="41.732624"
-   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
+   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    xml:space="preserve"><tspan
      y="661.12933"
      x="41.732624"

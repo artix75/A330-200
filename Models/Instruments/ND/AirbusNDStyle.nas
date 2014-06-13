@@ -355,7 +355,7 @@ canvas.NDStyles["Airbus"] = {
 				id:'hdgGroup',
 				impl: {
 					init: func(nd,symbol),
-					predicate: func(nd) false,#nd.in_mode('toggle_display_mode', ['APP','MAP','VOR']),
+					predicate: func(nd) {return 0},#nd.in_mode('toggle_display_mode', ['APP','MAP','VOR']),
 					is_true: func(nd) {
 						nd.symbols.hdgGroup.show();
 						if(nd.get_switch('toggle_centered'))
