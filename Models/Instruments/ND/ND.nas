@@ -136,6 +136,124 @@ setlistener("sim/signals/fdm-initialized", func() {
         # draw routines should always return their canvas group to the caller for further processing
 
     }
+
+    canvas.updatewp = func(activeWp)
+    {
+        forindex(var i; canvas.wp) {
+            if(i == activeWp) {
+                canvas.wp[i].setColor(1,1,1);
+                #text_wp[i].setColor(1,0,1);
+            } else {
+                canvas.wp[i].setColor(0.4,0.7,0.4);
+                #text_wp[i].setColor(1,1,1);
+            }
+        }
+    }
+
+    canvas.drawwp =  func (group, lat, lon, alt, name, i, wp) {
+        var wp_group = group.createChild("group","wp");
+        wp[i] = wp_group.createChild("path", "wp-" ~ i)
+        .setStrokeLineWidth(3)
+        .moveTo(-10,0)
+        .lineTo(0,-17)
+        .lineTo(10,0)
+        .lineTo(0,17)
+        .setColor(1,1,1)
+        .close();
+        #####
+        # The commented code leads to a segfault when a route is replaced by a new one
+        #####
+        #
+        # text_wp[i] = wp_group.createChild("text", "wp-text-" ~ i)
+        #
+        if (alt == 0){
+            alt = "";
+        }
+        else{
+            var alt_path = wp_group.createChild("path").
+            setStrokeLineWidth(3).
+            moveTo(-17,0).
+            arcSmallCW(17,17,0,34,0).
+            arcSmallCW(17,17,0,-34,0).
+            setColor(1,1,1);
+            alt = "\n"~alt;
+        }
+        var text_wps = wp_group.createChild("text", "wp-text-" ~ i)
+        .setDrawMode( canvas.Text.TEXT )
+        .setText(name~alt)
+        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+        .setFontSize(28)
+        .setTranslation(25,35)
+        .setColor(1,1,1);
+        wp_group.setGeoPosition(lat, lon)
+        .set("z-index",4);
+    };
+
+    canvas.draw_route =  func (group, theroute, controller=nil, lod=0)
+    {
+        #print("draw_route");
+        var route_group = group;
+
+        var route = route_group.createChild("path","route")
+        .setStrokeLineWidth(5)
+        .setColor(0.4,0.7,0.4);
+
+        var cmds = [];
+        var coords = [];
+
+        var fp = flightplan();
+        var fpSize = fp.getPlanSize();
+
+        canvas.wp = [];
+        canvas.text_wp = [];
+        setsize(canvas.wp,fpSize);
+        setsize(canvas.text_wp,fpSize);
+
+        # Retrieve route coordinates
+        for (var i=0; i<(fpSize); i += 1)
+        {
+            if (i == 0) {
+                var leg = fp.getWP(1);
+                var j = 0;
+                foreach (var pt; leg.path()) {
+                    append(coords,"N"~pt.lat);
+                    append(coords,"E"~pt.lon);
+                    if (j==0){
+                        append(cmds,2);
+                        j=1;
+                    } else
+                        append(cmds,4);
+                }
+                canvas.drawwp(group, leg.path()[0].lat, leg.path()[0].lon, fp.getWP(0).alt_cstr, fp.getWP(0).wp_name, i, canvas.wp);
+                i+=1;
+            }
+            var leg = fp.getWP(i);
+            foreach (var pt; leg.path()) {
+                append(coords,"N"~pt.lat);
+                append(coords,"E"~pt.lon);
+                append(cmds,4);
+            }
+            canvas.drawwp(group, leg.path()[-1].lat, leg.path()[-1].lon, leg.alt_cstr, leg.wp_name, i, canvas.wp);
+        }
+
+        # Set Top Of Climb coordinate
+        canvas.drawprofile(route_group, "tc", "T/C");
+        # Set Top Of Descent coordinate
+        canvas.drawprofile(route_group, "td", "T/D");
+        # Set Step Climb coordinate
+        canvas.drawprofile(route_group, "sc", "S/C");
+        # Set Top Of Descent coordinate
+        canvas.drawprofile(route_group, "ed", "E/D");
+
+        # Update route coordinates
+        debug.dump(cmds);
+        debug.dump(coords);
+        route.setDataGeo(cmds, coords);
+        canvas.updatewp(0);
+
+    }
+
+
 	# get a handle to the NavDisplay in canvas namespace (for now), see $FG_ROOT/Nasal/canvas/map/navdisplay.mfd
 	var ND = canvas.NavDisplay;
 
