@@ -44,6 +44,46 @@ setlistener("sim/signals/fdm-initialized", func() {
 	# add new switches here
       };       
     
+    canvas.Symbol.get("FIX").icon_fix = nil;
+    canvas.Symbol.get("FIX").draw = func{
+        if (me.icon_fix != nil) return;
+        # the fix symbol
+        me.icon_fix = me.element.createChild("path")
+        .moveTo(-10,0)
+        .lineTo(0,-17)
+        .lineTo(10,0)
+        .lineTo(0,17)
+        .close()
+        .setStrokeLineWidth(3)
+        .setColor(0.69,0,0.39)
+        .setScale(0.8,0.8); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
+        # the fix label
+        me.text_fix = me.element.createChild("text")
+        .setDrawMode( canvas.Text.TEXT )
+        .setText(me.model.id)
+        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+        .setFontSize(28)
+        .setTranslation(5,25);
+    } 
+
+	canvas.Symbol.get("VOR").svg_loaded = nil;
+	canvas.Symbol.get("VOR").draw = func{
+        if(me.svg_loaded != nil) return;
+        var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+        var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_vor.svg";
+        me.element.removeAllChildren();
+        var grp = me.element.createChild("group");
+        canvas.parsesvg(grp, svg_path);
+        grp.setScale(0.8,0.8);
+        print("VOR SVG: " ~ svg_path);
+        me.text_vor = me.element.createChild("text")
+        .setDrawMode( canvas.Text.TEXT )
+        .setText(me.model.id)
+        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+        .setFontSize(28)
+        .setTranslation(45,25);
+        me.svg_loaded = 1;
+    }
             
     canvas.Symbol.get("NDB").icon_ndb = nil;
     canvas.Symbol.get("NDB").draw = func{
@@ -56,7 +96,7 @@ setlistener("sim/signals/fdm-initialized", func() {
         .close()
         .setStrokeLineWidth(3)
         .setColor(0.69,0,0.39)
-        .setScale(0.5,0.5); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
+        .setScale(0.8,0.8); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
         # the fix label
         me.text_ndb = me.element.createChild("text")
         .setDrawMode( canvas.Text.TEXT )
@@ -65,6 +105,37 @@ setlistener("sim/signals/fdm-initialized", func() {
         .setFontSize(28)
         .setTranslation(5,25);
     } 
+
+	canvas.draw_apt = func(group, apt, controller=nil, lod=0){
+        var lat = apt.lat;
+        var lon = apt.lon;
+        var name = apt.id;
+        # print("drawing nd airport:", name);
+
+        var apt_grp = group.createChild("group", name);
+
+        # FIXME: conditions don't belong here, use the controller hash instead!
+        # if (1 or getprop("instrumentation/efis/inputs/arpt")) {
+        var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+        var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_airport.svg";
+        #me.element.removeAllChildren();
+        canvas.parsesvg(apt_grp, svg_path);
+        apt_grp.setScale(0.8,0.8);
+        print("VOR SVG: " ~ svg_path);
+        var text_apt = apt_grp.createChild("text", name ~ " label")
+        .setDrawMode( canvas.Text.TEXT )
+        .setTranslation(35,35)
+        .setText(name)
+        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+        .setColor(1,1,1)
+        .setFontSize(28);
+        apt_grp.setGeoPosition(lat, lon)
+        .set("z-index",1); # FIXME: this needs to be configurable!!
+        #}
+
+        # draw routines should always return their canvas group to the caller for further processing
+
+    }
 	# get a handle to the NavDisplay in canvas namespace (for now), see $FG_ROOT/Nasal/canvas/map/navdisplay.mfd
 	var ND = canvas.NavDisplay;
 
