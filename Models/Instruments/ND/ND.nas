@@ -23,25 +23,29 @@ setlistener("sim/signals/fdm-initialized", func() {
 # refer to incomplete symbol implementations to learn how they work (e.g. WXR, STA)
 
       var myCockpit_switches = {
-	# symbolic alias : relative property (as used in bindings), initial value, type
-	'toggle_range': 	{path: '/inputs/range-nm', value:40, type:'INT'},
-	'toggle_weather': 	{path: '/inputs/wxr', value:0, type:'BOOL'},
-	'toggle_airports': 	{path: '/inputs/arpt', value:0, type:'BOOL'},
-	'toggle_ndb': 	{path: '/inputs/NDB', value:0, type:'BOOL'},
-    'toggle_stations':     {path: '/inputs/sta', value:0, type:'BOOL'},
-    'toggle_vor': 	{path: '/inputs/VORD', value:0, type:'BOOL'},
-	'toggle_waypoints': 	{path: '/inputs/wpt', value:0, type:'BOOL'},
-	'toggle_position': 	{path: '/inputs/pos', value:0, type:'BOOL'},
-	'toggle_data': 		{path: '/inputs/data',value:0, type:'BOOL'},
-	'toggle_terrain': 	{path: '/inputs/terr',value:0, type:'BOOL'},
-	'toggle_traffic': 		{path: '/inputs/tfc',value:0, type:'BOOL'},
-	'toggle_centered': 		{path: '/inputs/nd-centered',value:0, type:'BOOL'},
-	'toggle_lh_vor_adf':	{path: '/inputs/lh-vor-adf',value:0, type:'INT'},
-	'toggle_rh_vor_adf':	{path: '/inputs/rh-vor-adf',value:0, type:'INT'},
-	'toggle_display_mode': 	{path: '/nd/canvas-display-mode', value:'NAV', type:'STRING'},
-	'toggle_display_type': 	{path: '/mfd/display-type', value:'LCD', type:'STRING'},
-	'toggle_true_north': 	{path: '/mfd/true-north', value:0, type:'BOOL'},
-	# add new switches here
+        # symbolic alias : relative property (as used in bindings), initial value, type
+            'toggle_range': 	{path: '/inputs/range-nm', value:40, type:'INT'},
+            'toggle_weather': 	{path: '/inputs/wxr', value:0, type:'BOOL'},
+            'toggle_airports': 	{path: '/inputs/arpt', value:0, type:'BOOL'},
+            'toggle_ndb': 	{path: '/inputs/NDB', value:0, type:'BOOL'},
+            'toggle_stations':     {path: '/inputs/sta', value:0, type:'BOOL'},
+            'toggle_vor': 	{path: '/inputs/VORD', value:0, type:'BOOL'},
+            'toggle_cstr': 	{path: '/inputs/CSTR', value:0, type:'BOOL'},
+            'toggle_waypoints': 	{path: '/inputs/wpt', value:0, type:'BOOL'},
+            'toggle_position': 	{path: '/inputs/pos', value:0, type:'BOOL'},
+            'toggle_data': 		{path: '/inputs/data',value:0, type:'BOOL'},
+            'toggle_terrain': 	{path: '/inputs/terr',value:0, type:'BOOL'},
+            'toggle_traffic': 		{path: '/inputs/tfc',value:0, type:'BOOL'},
+            'toggle_centered': 		{path: '/inputs/nd-centered',value:0, type:'BOOL'},
+            'toggle_lh_vor_adf':	{path: '/input/lh-vor-adf',value:0, type:'INT'},
+            'toggle_rh_vor_adf':	{path: '/input/eh-vor-adf',value:0, type:'INT'},
+            'toggle_display_mode': 	{path: '/nd/canvas-display-mode', value:'NAV', type:'STRING'},
+            'toggle_display_type': 	{path: '/mfd/display-type', value:'LCD', type:'STRING'},
+            'toggle_true_north': 	{path: '/mfd/true-north', value:0, type:'BOOL'},
+            'toggle_fplan': {path: '/nd/route-manager-active', value:0, type: 'BOOL'},
+            'toggle_lnav': {path: '/nd/lnav', value:0, type: 'BOOL'},
+            'toggle_vnav': {path: '/nd/vnav', value:0, type: 'BOOL'},
+        # add new switches here
       };       
     
     canvas.Symbol.get("FIX").icon_fix = nil;
@@ -174,9 +178,16 @@ setlistener("sim/signals/fdm-initialized", func() {
             setStrokeLineWidth(3).
             moveTo(-17,0).
             arcSmallCW(17,17,0,34,0).
-            arcSmallCW(17,17,0,-34,0).
-            setColor(1,1,1);
-            alt = "\n"~alt;
+            arcSmallCW(17,17,0,-34,0);
+            if(getprop("flight-management/control/ver-ctrl") == 'fmgc')
+                alt_path.setColor(0.69,0,0.39);
+            else
+            	alt_path.setColor(1,1,1);
+            if(getprop('instrumentation/efis/inputs/CSTR'))
+                alt_path.show();
+            else 
+                alt_path.hide();
+            alt = "";#\n"~alt;
         }
         var text_wps = wp_group.createChild("text", "wp-text-" ~ i)
         .setDrawMode( canvas.Text.TEXT )
@@ -197,7 +208,14 @@ setlistener("sim/signals/fdm-initialized", func() {
         var route = route_group.createChild("path","route")
         .setStrokeLineWidth(5)
         .setColor(0.4,0.7,0.4);
+		
+        var lnav = (getprop('flight-management/control/lat-ctrl') == 'fmgc');
 
+        if(!lnav)
+            route.setStrokeDashArray([32, 16]);
+        else
+            route.setStrokeDashArray([]);
+        
         var cmds = [];
         var coords = [];
 
@@ -309,6 +327,21 @@ setlistener("instrumentation/efis/nd/display-mode", func{
     }
 	setprop(canvas_mode, cvs_mode);
 	setprop(nd_centered, centered);
+});
+
+setlistener('autopilot/route-manager/active', func{
+    var actv = getprop("autopilot/route-manager/active");
+	setprop('instrumentation/efis/nd/route-manager-active', actv);
+});
+
+setlistener('flight-management/control/ver-ctrl', func{
+    var verctrl = getprop("flight-management/control/ver-ctrl");
+    setprop('instrumentation/efis/nd/vnav', (verctrl == 'fmgc'));
+});
+
+setlistener('flight-management/control/lat-ctrl', func{
+    var latctrl = getprop("flight-management/control/lat-ctrl");
+    setprop('instrumentation/efis/nd/lnav', (latctrl == 'fmgc'));
 });
 
 var showNd = func() {

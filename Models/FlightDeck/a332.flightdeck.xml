@@ -373,6 +373,7 @@
 					else
 						setprop(hdg_prop, 0);
 					
+                                        setprop('autopilot/settings/heading-bug-deg', getprop(hdg_prop));
 				</script>
 			</binding>
 		</action>
@@ -390,6 +391,7 @@
 					else
 						setprop(hdg_prop, 359);
 					
+                                        setprop('autopilot/settings/heading-bug-deg', getprop(hdg_prop));
 				</script>
 			</binding>
 		</action>
@@ -2756,6 +2758,13 @@
 				<value>1</value> <!-- VOR -->
 				<value>2</value> <!-- ADF -->
 			</binding>
+			<binding>
+				<command>property-cycle</command>
+				<property>/instrumentation/efis/input/lh-vor-adf</property>
+				<value>0</value> <!-- OFF -->
+				<value>1</value> <!-- VOR -->
+				<value>-1</value> <!-- ADF -->
+			</binding>
                         <binding>
                             <command>nasal</command>
                             <script>utils.clickSound(7)</script>
@@ -2776,6 +2785,13 @@
 				<value>0</value> <!-- OFF -->
 				<value>1</value> <!-- VOR -->
 				<value>2</value> <!-- ADF -->
+			</binding>
+			<binding>
+				<command>property-cycle</command>
+				<property>/instrumentation/efis/input/rh-vor-adf</property>
+				<value>0</value> <!-- OFF -->
+				<value>1</value> <!-- VOR -->
+				<value>-1</value> <!-- ADF -->
 			</binding>
                         <binding>
                             <command>nasal</command>

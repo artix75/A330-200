@@ -1010,7 +1010,7 @@
      d="m 340.958,820.476 c 0,-94.166 76.335,-170.502 170.501,-170.502 94.166,0 170.501,76.335 170.501,170.502 0,0 0,0 0,0"
      style="fill:none;stroke:#ededed;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" /></g><text
    xml:space="preserve"
-   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
+   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    x="41.732624"
    y="769.12952"
    id="status.wxr"
@@ -1020,7 +1020,7 @@
      sodipodi:role="line"
      id="tspan3097"
      x="41.732624"
-     y="769.12952">WXR</tspan></text>
+     y="769.12952"></tspan></text>
 
 
 
@@ -1034,13 +1034,13 @@
    id="status.arpt"
    y="734.12946"
    x="41.732624"
-   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
+   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:0;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    xml:space="preserve"><tspan
      y="734.12946"
      x="41.732624"
      id="tspan3101"
      sodipodi:role="line"
-     style="font-size:32px;fill:#0099d9;fill-opacity:1">ARPT</tspan></text>
+     style="font-size:32px;fill:#0099d9;fill-opacity:1"></tspan></text>
 
 
 
@@ -1050,7 +1050,7 @@
 
 <text
    xml:space="preserve"
-   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
+   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    x="41.732624"
    y="697.12939"
    id="status.wpt"
@@ -1060,7 +1060,7 @@
      sodipodi:role="line"
      id="tspan3105"
      x="41.732624"
-     y="697.12939">WPT</tspan></text>
+     y="697.12939"></tspan></text>
 
 
 
@@ -1074,13 +1074,13 @@
    id="status.sta"
    y="661.12933"
    x="41.732624"
-   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
+   style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    xml:space="preserve"><tspan
      y="661.12933"
      x="41.732624"
      id="tspan3109"
      sodipodi:role="line"
-     style="font-size:32px;fill:#0099d9;fill-opacity:1">STA</tspan></text>
+     style="font-size:32px;fill:#0099d9;fill-opacity:1"></tspan></text>
 
 
 
