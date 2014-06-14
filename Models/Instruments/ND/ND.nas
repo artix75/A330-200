@@ -1,5 +1,5 @@
 ##
-# storage container for all ND instances 
+# storage container for all ND instances
 var nd_display = {};
 
 ###
@@ -9,12 +9,12 @@ setlistener("sim/signals/fdm-initialized", func() {
 
 ##
 # configure aircraft specific cockpit/ND switches here
-# these are to be found in the property branch you specify 
+# these are to be found in the property branch you specify
 # via the NavDisplay.new() call
 # the backend code in navdisplay.mfd should NEVER contain any aircraft-specific
 # properties, or it will break other aircraft using different properties
-# instead, make up an identifier (hash key) and map it to the property used 
-# in your aircraft, relative to your ND root in the backend code, only ever 
+# instead, make up an identifier (hash key) and map it to the property used
+# in your aircraft, relative to your ND root in the backend code, only ever
 # refer to the handle/key instead via the me.get_switch('toggle_range') method
 # which would internally look up the matching aircraft property, e.g. '/instrumentation/efis'/inputs/range-nm'
 #
@@ -46,8 +46,8 @@ setlistener("sim/signals/fdm-initialized", func() {
             'toggle_lnav': {path: '/nd/lnav', value:0, type: 'BOOL'},
             'toggle_vnav': {path: '/nd/vnav', value:0, type: 'BOOL'},
         # add new switches here
-      };       
-    
+      };
+
     canvas.Symbol.get("FIX").icon_fix = nil;
     canvas.Symbol.get("FIX").draw = func{
         if (me.icon_fix != nil) return;
@@ -68,10 +68,10 @@ setlistener("sim/signals/fdm-initialized", func() {
         .setFont("LiberationFonts/LiberationSans-Regular.ttf")
         .setFontSize(28)
         .setTranslation(5,25);
-    } 
+    }
 
-	canvas.Symbol.get("VOR").svg_loaded = nil;
-	canvas.Symbol.get("VOR").draw = func{
+    canvas.Symbol.get("VOR").svg_loaded = nil;
+    canvas.Symbol.get("VOR").draw = func{
         if(me.svg_loaded != nil) return;
         var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
         var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_vor.svg";
@@ -89,7 +89,7 @@ setlistener("sim/signals/fdm-initialized", func() {
         .setTranslation(45,25);
         me.svg_loaded = 1;
     }
-            
+
     canvas.Symbol.get("NDB").icon_ndb = nil;
     canvas.Symbol.get("NDB").draw = func{
         if (me.icon_ndb != nil) return;
@@ -109,9 +109,9 @@ setlistener("sim/signals/fdm-initialized", func() {
         .setFont("LiberationFonts/LiberationSans-Regular.ttf")
         .setFontSize(28)
         .setTranslation(5,25);
-    } 
+    }
 
-	canvas.draw_apt = func(group, apt, controller=nil, lod=0){
+    canvas.draw_apt = func(group, apt, controller=nil, lod=0){
         var lat = apt.lat;
         var lon = apt.lon;
         var name = apt.id;
@@ -205,7 +205,7 @@ setlistener("sim/signals/fdm-initialized", func() {
             	alt_path.setColor(1,1,1);
             if(getprop('instrumentation/efis/inputs/CSTR'))
                 alt_path.show();
-            else 
+            else
                 alt_path.hide();
             alt = "";#\n"~alt;
         }
@@ -228,17 +228,17 @@ setlistener("sim/signals/fdm-initialized", func() {
         var route = route_group.createChild("path","route")
         .setStrokeLineWidth(5)
         .setColor(0.4,0.7,0.4);
-		
+
         var lnav = (getprop('flight-management/control/lat-ctrl') == 'fmgc');
-		var actv = getprop('autopilot/route-manager/active');
-        
+        var actv = getprop('autopilot/route-manager/active');
+
         if(!lnav or !actv)
             route.setStrokeDashArray([32, 16]);
         else
             route.setStrokeDashArray([]);
         if(!actv)
             route.setColor(0.95,0.95,0.21);
-        
+
         var cmds = [];
         var coords = [];
 
@@ -295,34 +295,35 @@ setlistener("sim/signals/fdm-initialized", func() {
     }
 
 
-	# get a handle to the NavDisplay in canvas namespace (for now), see $FG_ROOT/Nasal/canvas/map/navdisplay.mfd
-	var ND = canvas.NavDisplay;
+    # get a handle to the NavDisplay in canvas namespace (for now), see $FG_ROOT/Nasal/canvas/map/navdisplay.mfd
+    var ND = canvas.NavDisplay;
 
-	## TODO: We want to support multiple independent ND instances here!
-	# foreach(var pilot; var pilots = [ {name:'cpt', path:'instrumentation/efis',
-	#				     name:'fo',  path:'instrumentation[1]/efis']) {
+    ## TODO: We want to support multiple independent ND instances here!
+    # foreach(var pilot; var pilots = [ {name:'cpt', path:'instrumentation/efis',
+    #				     name:'fo',  path:'instrumentation[1]/efis']) {
 
 
-	##
-	# set up a  new ND instance, under 'instrumentation/efis' and use the 
-	# myCockpit_switches hash to map control properties
+    ##
+    # set up a  new ND instance, under 'instrumentation/efis' and use the
+    # myCockpit_switches hash to map control properties
     var NDCpt = ND.new("instrumentation/efis", myCockpit_switches, 'Airbus');
-	
-	nd_display.main = canvas.new({
-		"name": "ND",
-		"size": [1024, 1024],
-		"view": [1024, 1024],
-		"mipmapping": 1
-	});
 
-	nd_display.main.addPlacement({"node": "ND.screen"});
-	var group = nd_display.main.createGroup();
-	NDCpt.newMFD(group);
+    nd_display.main = canvas.new({
+        "name": "ND",
+        "size": [1024, 1024],
+        "view": [1024, 1024],
+        "mipmapping": 1
+    });
 
-	NDCpt.update();
+    nd_display.main.addPlacement({"node": "ND.screen"});
+    var group = nd_display.main.createGroup();
+    NDCpt.newMFD(group);
 
-		
-	print("ND Canvas Initialized!");
+    NDCpt.update();
+
+    setprop("instrumentation/efis/inputs/plan-wpt-index", -1);
+
+    print("ND Canvas Initialized!");
 
 }); # fdm-initialized listener callback
 
@@ -330,31 +331,31 @@ setlistener("instrumentation/efis/nd/display-mode", func{
    	var canvas_mode = "instrumentation/efis/nd/canvas-display-mode";
    	var nd_centered = "instrumentation/efis/inputs/nd-centered";
    	var mode = getprop("instrumentation/efis/nd/display-mode");
-	var cvs_mode = 'NAV';
-	var centered = 1;
-	if(mode == 'ILS'){
+    var cvs_mode = 'NAV';
+    var centered = 1;
+    if(mode == 'ILS'){
         cvs_mode = 'APP';
     }
-	elsif(mode == 'VOR') {
+    elsif(mode == 'VOR') {
         cvs_mode = 'VOR';
     }
-	elsif(mode == 'NAV'){
+    elsif(mode == 'NAV'){
         cvs_mode = 'MAP';
     }
-	elsif(mode == 'ARC'){
+    elsif(mode == 'ARC'){
         cvs_mode = 'MAP';
         centered = 0;
     }
-	elsif(mode == 'PLAN'){
+    elsif(mode == 'PLAN'){
         cvs_mode = 'PLAN';
     }
-	setprop(canvas_mode, cvs_mode);
-	setprop(nd_centered, centered);
+    setprop(canvas_mode, cvs_mode);
+    setprop(nd_centered, centered);
 });
 
 setlistener('autopilot/route-manager/active', func{
     var actv = getprop("autopilot/route-manager/active");
-	setprop('instrumentation/efis/nd/route-manager-active', actv);
+    setprop('instrumentation/efis/nd/route-manager-active', actv);
 });
 
 setlistener('flight-management/control/ver-ctrl', func{
@@ -367,10 +368,16 @@ setlistener('flight-management/control/lat-ctrl', func{
     setprop('instrumentation/efis/nd/lnav', (latctrl == 'fmgc'));
 });
 
+setlistener("/instrumentation/mcdu/f-pln/disp/first", func{
+    var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+    if(typeof(first) == 'nil') first = -1;
+    setprop("instrumentation/efis/inputs/plan-wpt-index", first);
+});
+
 var showNd = func() {
-	# The optional second arguments enables creating a window decoration
-	var dlg = canvas.Window.new([400, 400], "dialog");
-	dlg.setCanvas( nd_display["main"] );
+    # The optional second arguments enables creating a window decoration
+    var dlg = canvas.Window.new([400, 400], "dialog");
+    dlg.setCanvas( nd_display["main"] );
 }
 
 
