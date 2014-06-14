@@ -454,6 +454,42 @@ canvas.NDStyles["Airbus"] = {
                 },
             },
             {
+                id:'aplSymMap',
+                    impl: {
+                        init: func(nd,symbol),
+                            predicate: func(nd) (nd.get_switch('toggle_display_mode') == "MAP" and !nd.get_switch('toggle_centered')),
+                                is_true: func(nd) {
+                                    nd.symbols.aplSymMap.show();
+
+                                },
+                                is_false: func(nd) nd.symbols.aplSymMap.hide(),
+                    },
+            },
+            {
+                id:'aplSymMapCtr',
+                    impl: {
+                        init: func(nd,symbol),
+                            predicate: func(nd) ((nd.get_switch('toggle_display_mode') == "MAP" and nd.get_switch('toggle_centered')) or nd.in_mode('toggle_display_mode', ['APP','VOR'])),
+                                is_true: func(nd) {
+                                    nd.symbols.aplSymMapCtr.show();
+
+                                },
+                                is_false: func(nd) nd.symbols.aplSymMapCtr.hide(),
+                    },
+            },
+            {
+                id:'aplSymVor',
+                    impl: {
+                        init: func(nd,symbol),
+                            predicate: func(nd) {return 0;},
+                                is_true: func(nd) {
+                                    nd.symbols.aplSymVor.show();
+
+                                },
+                                    is_false: func(nd) nd.symbols.aplSymVor.hide(),
+                    },
+            },
+            {
                 id:'crsLbl',
                 impl: {
                     init: func(nd,symbol),

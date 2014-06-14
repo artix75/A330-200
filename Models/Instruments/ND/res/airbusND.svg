@@ -243,8 +243,8 @@
    sodipodi:nodetypes="cccc"
    inkscape:connector-curvature="0"
    id="aplSymMap"
-   d="m 541.5,892 -59,0 29.5,-68 z"
-   style="fill:none;stroke:#ededed;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+      d="m 512,892 0,-68 M 546.5, 848 l -70,0 M 526.5, 880 l -30,0"
+   style="fill:none;stroke:#f2f235;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
    inkscape:label="#path7253" /><path
    inkscape:label="#path3017"
    sodipodi:nodetypes="cccccc"
@@ -1099,8 +1099,8 @@
 
 <path
    inkscape:label="#path7253"
-   style="fill:none;stroke:#ededed;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-   d="m 541.5,627.342 -59,0 29.5,-68 z"
+   style="fill:none;stroke:#f2f235;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+      d="m 512,627.342 0,-68 M 546.5,583 l -70,0 M 526.5, 615 l -30,0"
    id="aplSymMapCtr"
    inkscape:connector-curvature="0"
    sodipodi:nodetypes="cccc" /><g

@@ -142,6 +142,23 @@ setlistener("sim/signals/fdm-initialized", func() {
 
     }
 
+    canvas.draw_airplane_symbol = func (group, apl, controller=nil, lod=0) {
+        var lat = apl.lat;
+        var lon = apl.lon;
+        var hdg = apl.hdg;
+
+        var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+        var airplane_grp = group.createChild("group","airplane");
+        canvas.parsesvg(airplane_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbusAirplane.svg");
+        var aplSymbol = airplane_grp.getElementById("airplane");
+
+        aplSymbol.setTranslation(-45,-52)
+        .setCenter(0,0);
+        airplane_grp.setGeoPosition(lat, lon)
+        .set("z-index",10)
+        .setRotation(hdg*D2R);
+    }
+
     canvas.RouteModel.init = func {
         me._view.reset();
         #if (!getprop("/autopilot/route-manager/active"))
@@ -371,6 +388,7 @@ setlistener('flight-management/control/lat-ctrl', func{
 setlistener("/instrumentation/mcdu/f-pln/disp/first", func{
     var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
     if(typeof(first) == 'nil') first = -1;
+    if(getprop('autopilot/route-manager/route/num') == 0) first = -1;
     setprop("instrumentation/efis/inputs/plan-wpt-index", first);
 });
 
