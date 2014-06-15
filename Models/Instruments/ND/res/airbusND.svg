@@ -1040,8 +1040,8 @@
      inkscape:connector-curvature="0"
      id="path3103"
      d="m 168.665,820.476 c 0,-189.321 153.474,-342.796 342.795,-342.796 189.319,0 342.794,153.473 342.794,342.796 0,0 0,0 0,0"
-     style="fill:none;stroke:#ededed;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" /><path
-     style="fill:none;stroke:#ededed;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+     style="fill:none;stroke:#ededed;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:32,16;stroke-dashoffset:0" /><path
+     style="fill:none;stroke:#ededed;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:32,16;stroke-dashoffset:0"
      d="m -4.01174,820.476 c 0,-284.688 230.78374,-515.473 515.47174,-515.473 284.685,0 515.47,230.782 515.47,515.473 0,0 0,0 0,0"
      id="path3886"
      inkscape:connector-curvature="0"
@@ -1050,7 +1050,7 @@
      inkscape:connector-curvature="0"
      id="path3888"
      d="m 340.958,820.476 c 0,-94.166 76.335,-170.502 170.501,-170.502 94.166,0 170.501,76.335 170.501,170.502 0,0 0,0 0,0"
-     style="fill:none;stroke:#ededed;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" /></g><text
+     style="fill:none;stroke:#ededed;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:32,16;stroke-dashoffset:0" /></g><text
    xml:space="preserve"
    style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0099d9;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    x="41.732624"
