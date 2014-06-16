@@ -382,9 +382,9 @@ canvas.NDStyles["Airbus"] = {
                 id:'compassApp',
                     impl: {
                         init: func(nd,symbol),
-                            predicate: func(nd) {return 0;},
-                                is_true: func(nd) nd.symbols.compassApp.show(),
-                                    is_false: func(nd) nd.symbols.compassApp.hide(),
+                            predicate: func(nd) (nd.get_switch('toggle_centered') and  nd.get_switch('toggle_display_mode') != "PLAN"),
+                            is_true: func(nd) nd.symbols.compassApp.show(),
+                            is_false: func(nd) nd.symbols.compassApp.hide(),
                     }, # of compassApp.impl
             }, # of compassApp
             {
