@@ -255,7 +255,7 @@
    inkscape:connector-curvature="0"
    id="windArrow"
    d="m 75.2914,119.519 -2e-4,65.158 m 0,0 7.0125,-12.145 -14.8092,0 7.7967,12.146"
-   style="fill:#ededed;stroke:#ededed;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" /><text
+   style="fill:#32f519;stroke:#32f519;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" /><text
    xml:space="preserve"
    style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#32f519;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    x="36.862175"
@@ -285,7 +285,7 @@
    style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#32f519;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    xml:space="preserve"><tspan
      y="53.306854"
-     x="77.874374"
+     x="87.874374"
      id="tspan3809"
      sodipodi:role="line">999</tspan></text>
 
@@ -307,7 +307,7 @@
    inkscape:label="#text7243"><tspan
      sodipodi:role="line"
      id="tspan3813"
-     x="210.49673"
+     x="225.49673"
      y="53.306854">999</tspan></text>
 
 
@@ -326,7 +326,7 @@
    id="gsLbl"
    sodipodi:linespacing="125%"
    inkscape:label="#text7243"><tspan
-     style="font-size:24px"
+     style="font-size:36px"
      sodipodi:role="line"
      id="tspan3817"
      x="38.276394"
@@ -352,7 +352,7 @@
      x="158.17084"
      id="tspan3821"
      sodipodi:role="line"
-     style="font-size:24px">TAS</tspan></text>
+     style="font-size:36px">TAS</tspan></text>
 
 
 
