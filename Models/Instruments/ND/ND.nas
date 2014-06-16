@@ -2,6 +2,12 @@
 # storage container for all ND instances
 var nd_display = {};
 
+var update_apl_sym = func {
+    if (getprop("/instrumentation/efis/nd/display-mode") == "PLAN")
+        setprop("/instrumentation/efis/nd/display-mode","PLAN");
+    settimer(update_apl_sym, 2);
+}
+
 ###
 # entry point, this will set up all ND instances
 
@@ -45,6 +51,7 @@ setlistener("sim/signals/fdm-initialized", func() {
             'toggle_fplan': {path: '/nd/route-manager-active', value:0, type: 'BOOL'},
             'toggle_lnav': {path: '/nd/lnav', value:0, type: 'BOOL'},
             'toggle_vnav': {path: '/nd/vnav', value:0, type: 'BOOL'},
+            'toggle_wpt_idx': {path: 'inputs/plan-wpt-index', value: -1, type: 'INT'}
         # add new switches here
       };
 
@@ -207,7 +214,7 @@ setlistener("sim/signals/fdm-initialized", func() {
         #
         # text_wp[i] = wp_group.createChild("text", "wp-text-" ~ i)
         #
-        if (alt == 0){
+        if (alt <= 0){
             alt = "";
         }
         else{
@@ -299,18 +306,50 @@ setlistener("sim/signals/fdm-initialized", func() {
         # Set Top Of Descent coordinate
         canvas.drawprofile(route_group, "td", "T/D");
         # Set Step Climb coordinate
-        canvas.drawprofile(route_group, "sc", "S/C");
+        #canvas.drawprofile(route_group, "sc", "S/C");
         # Set Top Of Descent coordinate
-        canvas.drawprofile(route_group, "ed", "E/D");
+        #canvas.drawprofile(route_group, "ed", "E/D");
 
         # Update route coordinates
         debug.dump(cmds);
         debug.dump(coords);
         route.setDataGeo(cmds, coords);
-        canvas.updatewp(0);
-
+        #canvas.updatewp(0);
+        canvas.updatewp(getprop("/autopilot/route-manager/current-wp"));
     }
 
+    canvas.drawprofile =  func (group, property, disptext)
+    {
+        print("Reading profile for instrumentation/nd/symbols/"~property);
+        var symNode = props.globals.getNode("instrumentation/nd/symbols/"~property, 1);
+        var lon = symNode.getNode("longitude-deg", 1).getValue();
+        var lat = symNode.getNode("latitude-deg", 1).getValue();
+        if(lat != nil and lon != nil)
+            print("Coord: "~lat~", "~lon);
+        var sym_group = group.createChild("group", property);
+        var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+
+        if(lon != nil)
+        {
+            canvas.parsesvg(sym_group, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_"~property~".svg");
+            sym_group.setGeoPosition(lat, lon)
+            .set("z-index",4);
+            if(property == 'tc')
+                sym_group.setTranslation(-48,0);
+            #var rot = me.map._node.getNode("hdg",1).getDoubleValue();
+            #var rot = nd_display.main._node.getNode('group/map/hdg').getValue();
+            #sym_group.setRotation(rot);
+        }
+    }
+
+    canvas.NavDisplay.old_update = canvas.NavDisplay.update;
+
+    canvas.NavDisplay.update = func(){
+        me.old_update();
+        if(me.in_mode('toggle_display_mode', ['PLAN'])) {
+            me.map._node.getNode("hdg",1).setDoubleValue(0);
+        }
+    };
 
     # get a handle to the NavDisplay in canvas namespace (for now), see $FG_ROOT/Nasal/canvas/map/navdisplay.mfd
     var ND = canvas.NavDisplay;
@@ -341,7 +380,7 @@ setlistener("sim/signals/fdm-initialized", func() {
     setprop("instrumentation/efis/inputs/plan-wpt-index", -1);
 
     print("ND Canvas Initialized!");
-
+    update_apl_sym();
 }); # fdm-initialized listener callback
 
 setlistener("instrumentation/efis/nd/display-mode", func{

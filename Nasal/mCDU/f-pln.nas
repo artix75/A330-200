@@ -142,8 +142,8 @@ var f_pln = {
 		
 		setprop("/autopilot/route-manager/current-wp", 0);
                 setprop("instrumentation/efis/inputs/plan-wpt-index", 0);
-		setprop(rm_route~ "active", 1); # TRICK: refresh canvas
-		setprop(rm_route~ "active", 0);
+		#setprop(rm_route~ "active", 1); # TRICK: refresh canvas
+		#setprop(rm_route~ "active", 0);
 	
 	},
 	
@@ -268,6 +268,7 @@ var f_pln = {
 			}
 		
 			# Set Airborne to get distance to last waypoint
+                        var old_actv = getprop(rm_route~ "active");
 		
 			setprop(rm_route~ "active", 1);
 		
@@ -275,7 +276,7 @@ var f_pln = {
 		
 			var rte_dist = getprop(rm_route~ "wp-last/dist");
 		
-			setprop(rm_route~ "active", 0);
+			setprop(rm_route~ "active", old_actv);
 	
 			setprop(f_pln_disp~ "dest", dest_name);
 		
