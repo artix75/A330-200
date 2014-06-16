@@ -537,7 +537,7 @@ canvas.NDStyles["Airbus"] = {
                 id:'trkInd2',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) (nd.in_mode('toggle_display_mode', ['APP','VOR']) and nd.get_switch('toggle_centered')),
+                    predicate: func(nd) (nd.in_mode('toggle_display_mode', ['APP','VOR','MAP']) and nd.get_switch('toggle_centered')),
                     is_true: func(nd) {
                         nd.symbols.trkInd2.show();
                         nd.symbols.trkInd2.setRotation((nd.aircraft_source.get_trk_tru()-nd.aircraft_source.get_hdg_tru())*D2R);
