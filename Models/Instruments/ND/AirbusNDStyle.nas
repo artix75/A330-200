@@ -553,6 +553,7 @@ canvas.NDStyles["Airbus"] = {
                     is_true: func(nd) {
                         nd.symbols.vorCrsPtr.show();
                         nd.symbols.vorCrsPtr.setRotation((getprop("instrumentation/nav/radials/selected-deg")-nd.aircraft_source.get_hdg_tru())*D2R);
+
                     },
                     is_false: func(nd) nd.symbols.vorCrsPtr.hide(),
                 },
@@ -565,6 +566,15 @@ canvas.NDStyles["Airbus"] = {
                     is_true: func(nd) {
                         nd.symbols.vorCrsPtr2.show();
                         nd.symbols.vorCrsPtr2.setRotation((getprop("instrumentation/nav/radials/selected-deg")-nd.aircraft_source.get_hdg_tru())*D2R);
+                        var line = nd.symbols.vorCrsPtr2.getElementById('vorCrsPtr2_line');
+                        if(nd.get_switch('toggle_display_mode') == 'VOR'){
+                            #nd.symbols.vorCrsPtr2.setColor(0,0.62,0.84);
+                            line.setColor(0,0.62,0.84);
+                            line.setColorFill(0,0.62,0.84);
+                        } else {
+                            line.setColor(1,0,1);
+                            line.setColorFill(1,0,1);
+                        }
                     },
                     is_false: func(nd) nd.symbols.vorCrsPtr2.hide(),
                 },
@@ -611,6 +621,21 @@ canvas.NDStyles["Airbus"] = {
                         #	nd.symbols.locPtr2.setColorFill(1,0,1,1);
                         #else
                         #	nd.symbols.locPtr2.setColorFill(1,0,1,0);
+                        var line = nd.symbols.locPtr2.getElementById('locPtr2_line');
+                        var arr1 = nd.symbols.locPtr2.getElementById('locPtr2_arr1');
+                        var arr2 = nd.symbols.locPtr2.getElementById('locPtr2_arr2');
+                        if(nd.get_switch('toggle_display_mode') == 'VOR'){
+                            #nd.symbols.vorCrsPtr2.setColor(0,0.62,0.84);
+                            line.setColor(0,0.62,0.84);
+                            line.setColorFill(0,0.62,0.84);
+                            arr1.show();
+                            arr2.show();
+                        } else {
+                            line.setColor(1,0,1);
+                            line.setColorFill(1,0,1);
+                            arr1.hide();
+                            arr2.hide();
+                        }
                     },
                     is_false: func(nd) nd.symbols.locPtr2.hide(),
                 },
