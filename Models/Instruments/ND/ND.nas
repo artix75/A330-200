@@ -51,7 +51,7 @@ setlistener("sim/signals/fdm-initialized", func() {
             'toggle_traffic': 		{path: '/inputs/tfc',value:0, type:'BOOL'},
             'toggle_centered': 		{path: '/inputs/nd-centered',value:0, type:'BOOL'},
             'toggle_lh_vor_adf':	{path: '/input/lh-vor-adf',value:0, type:'INT'},
-            'toggle_rh_vor_adf':	{path: '/input/eh-vor-adf',value:0, type:'INT'},
+            'toggle_rh_vor_adf':	{path: '/input/rh-vor-adf',value:0, type:'INT'},
             'toggle_display_mode': 	{path: '/nd/canvas-display-mode', value:'NAV', type:'STRING'},
             'toggle_display_type': 	{path: '/mfd/display-type', value:'LCD', type:'STRING'},
             'toggle_true_north': 	{path: '/mfd/true-north', value:0, type:'BOOL'},
