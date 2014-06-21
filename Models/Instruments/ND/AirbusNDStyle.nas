@@ -80,12 +80,13 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible(visible);
                 }, # end of layer update predicate
             }, # end of storms layer
-            { name:'airplaneSymbol', update_on:['toggle_display_mode'],
+            { name:'airplaneSymbol', update_on:['toggle_display_mode','toggle_plan_loop'],
                 predicate: func(nd, layer) {
                     var visible = nd.get_switch('toggle_display_mode') == "PLAN";
                     if (visible) {
                         trigger_update( layer );
-                    } layer._view.setVisible(visible);
+                    } 
+                    layer._view.setVisible(visible);
                 },
             },
             { name:'airports-nd', update_on:['toggle_range','toggle_airports','toggle_display_mode'],

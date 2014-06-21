@@ -3,8 +3,15 @@
 var nd_display = {};
 
 var update_apl_sym = func {
-    if (getprop("/instrumentation/efis/nd/display-mode") == "PLAN")
-        setprop("/instrumentation/efis/nd/display-mode","PLAN");
+    if (getprop("/instrumentation/efis/nd/display-mode") == "PLAN"){
+    #    setprop("/instrumentation/efis/nd/display-mode","PLAN");
+        var loopid = getprop("/instrumentation/efis/nd/plan-mode-loop");
+        if(loopid == nil) loopid = 0;
+        loopid = loopid + 1;
+        if(loopid > 100) loopid = 0;
+        setprop("/instrumentation/efis/nd/plan-mode-loop", loopid);
+    }
+
     settimer(update_apl_sym, 2);
 }
 
@@ -51,7 +58,8 @@ setlistener("sim/signals/fdm-initialized", func() {
             'toggle_fplan': {path: '/nd/route-manager-active', value:0, type: 'BOOL'},
             'toggle_lnav': {path: '/nd/lnav', value:0, type: 'BOOL'},
             'toggle_vnav': {path: '/nd/vnav', value:0, type: 'BOOL'},
-            'toggle_wpt_idx': {path: 'inputs/plan-wpt-index', value: -1, type: 'INT'}
+            'toggle_wpt_idx': {path: '/inputs/plan-wpt-index', value: -1, type: 'INT'},
+            'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'}
         # add new switches here
       };
 
@@ -155,15 +163,24 @@ setlistener("sim/signals/fdm-initialized", func() {
         var hdg = apl.hdg;
 
         var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-        var airplane_grp = group.createChild("group","airplane");
-        canvas.parsesvg(airplane_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbusAirplane.svg");
-        var aplSymbol = airplane_grp.getElementById("airplane");
-
-        aplSymbol.setTranslation(-45,-52)
-        .setCenter(0,0);
+        var airplane_grp = group.getElementById("airplane");
+        var apl_path = nil;
+        var aplSymbol = nil;
+        if(airplane_grp == nil){
+            airplane_grp = group.createChild("group","airplane");
+            canvas.parsesvg(airplane_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbusAirplane.svg");
+            aplSymbol = airplane_grp.getElementById("airplane");
+            apl_path = aplSymbol.getElementById("apl_path");
+            #aplSymbol.hide();
+            aplSymbol.setTranslation(-45,-52)
+            .setCenter(0,0);
+            #airplane_grp.setScale(0,0);
+        }
+        apl_path = aplSymbol.getElementById("apl_path");
         airplane_grp.setGeoPosition(lat, lon)
         .set("z-index",10)
         .setRotation(hdg*D2R);
+        #.setScale(1,1);
     }
 
     canvas.RouteModel.init = func {
