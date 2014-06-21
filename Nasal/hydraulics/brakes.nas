@@ -1,7 +1,8 @@
 var oldApplyBrake = controls.applyBrakes;
 controls.applyBrakes = func(v, which = 0){
     oldApplyBrake(v, which);
-     setprop("/hydraulics/brakes/autobrake-setting", 0);
+    if(getprop("/hydraulics/brakes/autobrake-setting") < 3)
+        setprop("/hydraulics/brakes/autobrake-setting", 0);
 }
 var brakes = {
 
