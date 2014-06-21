@@ -322,6 +322,7 @@ setlistener("sim/signals/fdm-initialized", func() {
         canvas.drawprofile(route_group, "tc", "T/C");
         # Set Top Of Descent coordinate
         canvas.drawprofile(route_group, "td", "T/D");
+        canvas.drawprofile(route_group, "decel", "D");
         # Set Step Climb coordinate
         #canvas.drawprofile(route_group, "sc", "S/C");
         # Set Top Of Descent coordinate

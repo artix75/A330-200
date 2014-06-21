@@ -321,11 +321,11 @@
    sodipodi:linespacing="125%"
    id="gs"
    y="53.306854"
-   x="77.874374"
+   x="101.87437"
    style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#32f519;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    xml:space="preserve"><tspan
      y="53.306854"
-     x="77.874374"
+     x="101.87437"
      id="tspan3809"
      sodipodi:role="line">999</tspan></text>
 
@@ -353,14 +353,14 @@
 <text
    xml:space="preserve"
    style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#32f519;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
-   x="210.49673"
+   x="248.49673"
    y="53.306854"
    id="tas"
    sodipodi:linespacing="125%"
    inkscape:label="#text7243"><tspan
      sodipodi:role="line"
      id="tspan3813"
-     x="210.49673"
+     x="248.49673"
      y="53.306854">999</tspan></text>
 
 
@@ -424,11 +424,11 @@
    sodipodi:linespacing="125%"
    id="tasLbl"
    y="53.306854"
-   x="158.17084"
+   x="170.17084"
    style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ededed;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
    xml:space="preserve"><tspan
      y="53.306854"
-     x="158.17084"
+     x="170.17084"
      id="tspan3821"
      sodipodi:role="line"
      style="font-size:36px">TAS</tspan></text>
