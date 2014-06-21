@@ -769,9 +769,15 @@ canvas.NDStyles["Airbus"] = {
                     predicate: func(nd) (nd.get_switch('toggle_lh_vor_adf') != 0),
                     is_true: func(nd) {
                         nd.symbols.dmeL.show();
-                        nd.symbols.vorL.setText("VOR 1");
+                        if(nd.get_switch('toggle_lh_vor_adf') < 0)
+                            nd.symbols.vorL.setText("ADF 1");
+                        else
+                            nd.symbols.vorL.setText("VOR 1");
                         nd.symbols.dmeL.setText('NM');
                         nd.symbols.dmeL.setColor(0,0.59,0.8);
+                        nd.symbols.vorL.setColor(0.195,0.96,0.097);
+                        nd.symbols.vorLId.setColor(0.195,0.96,0.097);
+                        nd.symbols.dmeLDist.setColor(0.195,0.96,0.097);
                     },
                     is_false: func(nd){
                         nd.symbols.dmeL.hide();
@@ -785,9 +791,15 @@ canvas.NDStyles["Airbus"] = {
                     predicate: func(nd) (nd.get_switch('toggle_rh_vor_adf') != 0),
                     is_true: func(nd) {
                         nd.symbols.dmeR.show();
-                        nd.symbols.vorR.setText("VOR 2");
+                        if(nd.get_switch('toggle_rh_vor_adf') < 0)
+                            nd.symbols.vorR.setText("ADF 2");
+                        else
+                            nd.symbols.vorR.setText("VOR 2");
                         nd.symbols.dmeR.setText('NM');
                         nd.symbols.dmeR.setColor(0,0.59,0.8);
+                        nd.symbols.vorR.setColor(0.195,0.96,0.097);
+                        nd.symbols.vorRId.setColor(0.195,0.96,0.097);
+                        nd.symbols.dmeRDist.setColor(0.195,0.96,0.097);
                     },
                     is_false: func(nd){
                         nd.symbols.dmeR.hide();
