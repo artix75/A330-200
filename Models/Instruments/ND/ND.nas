@@ -100,7 +100,7 @@ setlistener("sim/signals/fdm-initialized", func() {
         .setText(me.model.id)
         .setFont("LiberationFonts/LiberationSans-Regular.ttf")
         .setFontSize(28)
-        .setColor(0,0.57,1)
+        .setColor(1,1,1)
         .setTranslation(45,25);
         me.svg_loaded = 1;
     }
