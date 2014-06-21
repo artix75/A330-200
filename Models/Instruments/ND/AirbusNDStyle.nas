@@ -679,6 +679,25 @@ canvas.NDStyles["Airbus"] = {
                     is_false: func(nd) nd.symbols.windArrow.hide(),
                 },
             },
+            {
+                id:'staToL2',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) !(nd.in_mode('toggle_display_mode', ['PLAN', 'MAP'])) and ((getprop("instrumentation/nav/in-range") and nd.get_switch('toggle_lh_vor_adf') == 1)),
+                    is_true: func(nd) {
+                    print('SHOW STA');
+                        nd.symbols.staToL2.setColor(1,1,1);
+                        nd.symbols.staFromL2.setColor(1,1,1);
+                        nd.symbols.staToL2.show();
+                        nd.symbols.staFromL2.show();
+                    },
+                    is_false: func(nd){
+                    print('HIDE STA');
+                        nd.symbols.staToL2.hide();
+                        nd.symbols.staFromL2.hide();
+                    }
+                }
+            }
 
         ], # end of vector with features
 
