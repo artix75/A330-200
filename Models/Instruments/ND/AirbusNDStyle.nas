@@ -271,12 +271,25 @@ canvas.NDStyles["Airbus"] = {
                 id: 'wpActiveId',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) getprop("/autopilot/route-manager/wp/id") != nil and getprop("autopilot/route-manager/active"),
+                    predicate: func(nd) getprop("/autopilot/route-manager/wp/id") != nil and getprop("autopilot/route-manager/active") and nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']),
                     is_true: func(nd) {
                         nd.symbols.wpActiveId.setText(getprop("/autopilot/route-manager/wp/id"));
                         nd.symbols.wpActiveId.show();
                     },
                     is_false: func(nd) nd.symbols.wpActiveId.hide(),
+                }, # of wpActiveId.impl
+            }, # of wpActiveId
+            {
+                id: 'wpActiveCrs',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) getprop("/autopilot/route-manager/wp/id") != nil and getprop("autopilot/route-manager/active") and nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']),
+                    is_true: func(nd) {
+                        var deg = int(getprop("/autopilot/route-manager/wp/bearing-deg"));
+                        nd.symbols.wpActiveCrs.setText(''~deg~'°');
+                        nd.symbols.wpActiveCrs.show();
+                    },
+                    is_false: func(nd) nd.symbols.wpActiveCrs.hide(),
                 }, # of wpActiveId.impl
             }, # of wpActiveId
             {
