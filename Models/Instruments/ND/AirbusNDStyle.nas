@@ -419,7 +419,7 @@ canvas.NDStyles["Airbus"] = {
                 id:'rangePln1',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) nd.get_switch('toggle_display_mode') == "PLAN",
+                    predicate: func(nd) {return 0},
                     is_true: func(nd) {
                         nd.symbols.rangePln1.show();
                         nd.symbols.rangePln1.setText(sprintf("%3.0f",nd.rangeNm()));
@@ -431,7 +431,7 @@ canvas.NDStyles["Airbus"] = {
                 id:'rangePln2',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) nd.get_switch('toggle_display_mode') == "PLAN",
+                    predicate: func(nd) {return 0},
                     is_true: func(nd) {
                         nd.symbols.rangePln2.show();
                         nd.symbols.rangePln2.setText(sprintf("%3.0f",nd.rangeNm()/2));
@@ -443,7 +443,7 @@ canvas.NDStyles["Airbus"] = {
                 id:'rangePln3',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) nd.get_switch('toggle_display_mode') == "PLAN",
+                    predicate: func(nd) nd.get_switch('toggle_display_mode') == "PLAN" or nd.get_switch('toggle_centered'),
                     is_true: func(nd) {
                         nd.symbols.rangePln3.show();
                         nd.symbols.rangePln3.setText(sprintf("%3.0f",nd.rangeNm()/2));
@@ -455,12 +455,23 @@ canvas.NDStyles["Airbus"] = {
                 id:'rangePln4',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) nd.get_switch('toggle_display_mode') == "PLAN",
+                    predicate: func(nd) nd.get_switch('toggle_display_mode') == "PLAN" or nd.get_switch('toggle_centered'),
                     is_true: func(nd) {
                         nd.symbols.rangePln4.show();
                         nd.symbols.rangePln4.setText(sprintf("%3.0f",nd.rangeNm()));
                     },
                     is_false: func(nd) nd.symbols.rangePln4.hide(),
+                },
+            },
+            {
+                id:'range',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) !nd.get_switch('toggle_centered'),
+                    is_true: func(nd) {
+                        nd.symbols.range.show();
+                    },
+                    is_false: func(nd) nd.symbols.range.hide(),
                 },
             },
             {
@@ -769,6 +780,19 @@ canvas.NDStyles["Airbus"] = {
                     },
                     is_false: func(nd){
                         nd.symbols.vorLSym.hide();
+                    }
+                }
+            },
+            {
+                id:'vorRSym',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) (nd.get_switch('toggle_rh_vor_adf') != 0),
+                    is_true: func(nd) {
+                        nd.symbols.vorRSym.show();
+                    },
+                    is_false: func(nd){
+                        nd.symbols.vorRSym.hide();
                     }
                 }
             }
