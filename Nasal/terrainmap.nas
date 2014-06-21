@@ -33,7 +33,7 @@ var terrain_map = func {
 
 	var heading = getprop("/orientation/heading-deg");
 	
-	var range = getprop("/instrumentation/nd[1]/range") * 1.2;
+	var range = getprop("/instrumentation/nd/range") * 1.2;
 	
 	if (row == 0) {
 	

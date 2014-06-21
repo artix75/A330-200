@@ -390,6 +390,17 @@ canvas.NDStyles["Airbus"] = {
                 },
             },
             {
+                id:'altArc',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) {return 0},#nd.in_mode('toggle_display_mode', ['APP','MAP','VOR']),
+                    is_true: func(nd) {
+                        nd.symbols.altArc.show();
+                    },
+                    is_false: func(nd) nd.symbols.altArc.hide(),
+                },
+            },
+            {
                 id:'gs',
                 impl: {
                     init: func(nd,symbol),
