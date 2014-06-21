@@ -1,5 +1,5 @@
 # ==============================================================================
-# Boeing Navigation Display by Gijs de Rooy
+# Airbus Navigation Display by Artix based on Boeing ND Gijs de Rooy
 # ==============================================================================
 
 ##
@@ -236,13 +236,18 @@ canvas.NDStyles["Airbus"] = {
                 id: 'ilsFreq',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) nd.in_mode('toggle_display_mode', ['APP']),
+                    predicate: func(nd) nd.in_mode('toggle_display_mode', ['APP', 'VOR']),
                     is_true: func(nd) {
                         nd.symbols.ilsFreq.show();
-                        if(getprop("instrumentation/nav/in-range"))
-                            nd.symbols.ilsFreq.setText(getprop("instrumentation/nav/nav-id"));
+                        #if(getprop("instrumentation/nav/in-range"))
+                        #    nd.symbols.ilsFreq.setText(getprop("instrumentation/nav/nav-id"));
+                        #else
+                            #nd.symbols.ilsFreq.setText(getprop("instrumentation/nav/frequencies/selected-mhz-fmt"));
+                        nd.symbols.ilsFreq.setText(getprop("instrumentation/nav/frequencies/selected-mhz-fmt"));
+                        if(nd.get_switch('toggle_display_mode') == 'APP')
+                            nd.symbols.ilsFreq.setColor(0.69,0,0.39);
                         else
-                            nd.symbols.ilsFreq.setText(getprop("instrumentation/nav/frequencies/selected-mhz-fmt"));
+                            nd.symbols.ilsFreq.setColor(1,1,1);
                     },
                     is_false: func(nd) nd.symbols.ilsFreq.hide(),
                 },
@@ -251,9 +256,13 @@ canvas.NDStyles["Airbus"] = {
                 id: 'ilsLbl',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) nd.in_mode('toggle_display_mode', ['APP']),
+                    predicate: func(nd) nd.in_mode('toggle_display_mode', ['APP', 'VOR']),
                     is_true: func(nd) {
                         nd.symbols.ilsLbl.show();
+                        if(nd.get_switch('toggle_display_mode') == 'APP')
+                            nd.symbols.ilsLbl.setText('ILS');
+                        else
+                            nd.symbols.ilsLbl.setText('VOR 1');
                     },
                     is_false: func(nd) nd.symbols.ilsLbl.hide(),
                 },
@@ -528,8 +537,13 @@ canvas.NDStyles["Airbus"] = {
                     predicate: func(nd) nd.in_mode('toggle_display_mode', ['APP','VOR']),
                     is_true: func(nd) {
                         nd.symbols.dme.show();
-                        if(getprop("instrumentation/dme/in-range"))
-                            nd.symbols.dme.setText(sprintf("%3.1f",getprop("instrumentation/nav/nav-distance")*0.000539));
+                        #if(getprop("instrumentation/dme/in-range"))
+                        #    nd.symbols.dme.setText(sprintf("%3.1f",getprop("instrumentation/nav/nav-distance")*0.000539));
+                        nd.symbols.dme.setText(getprop("instrumentation/nav/nav-id"));
+                        if(nd.get_switch('toggle_display_mode') == 'APP')
+                            nd.symbols.dme.setColor(0.69,0,0.39);
+                        else
+                            nd.symbols.dme.setColor(1,1,1);
                     },
                     is_false: func(nd) nd.symbols.dme.hide(),
                 },
@@ -710,6 +724,51 @@ canvas.NDStyles["Airbus"] = {
                     is_false: func(nd){
                         nd.symbols.staToR2.hide();
                         nd.symbols.staFromR2.hide();
+                    }
+                }
+            },
+            {
+                id:'dmeL',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) (nd.get_switch('toggle_lh_vor_adf') != 0),
+                    is_true: func(nd) {
+                        nd.symbols.dmeL.show();
+                        nd.symbols.vorL.setText("VOR 1");
+                        nd.symbols.dmeL.setText('NM');
+                        nd.symbols.dmeL.setColor(0,0.59,0.8);
+                    },
+                    is_false: func(nd){
+                        nd.symbols.dmeL.hide();
+                    }
+                }
+            },
+            {
+                id:'dmeR',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) (nd.get_switch('toggle_rh_vor_adf') != 0),
+                    is_true: func(nd) {
+                        nd.symbols.dmeR.show();
+                        nd.symbols.vorR.setText("VOR 2");
+                        nd.symbols.dmeR.setText('NM');
+                        nd.symbols.dmeR.setColor(0,0.59,0.8);
+                    },
+                    is_false: func(nd){
+                        nd.symbols.dmeR.hide();
+                    }
+                }
+            },
+            {
+                id:'vorLSym',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) (nd.get_switch('toggle_lh_vor_adf') != 0),
+                    is_true: func(nd) {
+                        nd.symbols.vorLSym.show();
+                    },
+                    is_false: func(nd){
+                        nd.symbols.vorLSym.hide();
                     }
                 }
             }
