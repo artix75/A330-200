@@ -85,7 +85,7 @@ canvas.NDStyles["Airbus"] = {
                     var visible = nd.get_switch('toggle_display_mode') == "PLAN";
                     if (visible) {
                         trigger_update( layer );
-                    } 
+                    }
                     layer._view.setVisible(visible);
                 },
             },
@@ -296,7 +296,7 @@ canvas.NDStyles["Airbus"] = {
                 id: 'wpActiveDist',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) getprop("/autopilot/route-manager/wp/dist") != nil and getprop("autopilot/route-manager/active"),
+                        predicate: func(nd) getprop("/autopilot/route-manager/wp/dist") != nil and getprop("autopilot/route-manager/active") and nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']),
                     is_true: func(nd) {
                         nd.symbols.wpActiveDist.setText(sprintf("%3.01f",getprop("/autopilot/route-manager/wp/dist")));
                         nd.symbols.wpActiveDist.show();
@@ -308,7 +308,7 @@ canvas.NDStyles["Airbus"] = {
                 id: 'wpActiveDistLbl',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) getprop("/autopilot/route-manager/wp/dist") != nil and getprop("autopilot/route-manager/active"),
+                        predicate: func(nd) getprop("/autopilot/route-manager/wp/dist") != nil and getprop("autopilot/route-manager/active")  and nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']),
                     is_true: func(nd) {
                         nd.symbols.wpActiveDistLbl.show();
                         if(getprop("/autopilot/route-manager/wp/dist") > 1000)
@@ -321,7 +321,7 @@ canvas.NDStyles["Airbus"] = {
                 id: 'eta',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) getprop("autopilot/route-manager/wp/eta") != nil and getprop("autopilot/route-manager/active"),
+                        predicate: func(nd) getprop("autopilot/route-manager/wp/eta") != nil and getprop("autopilot/route-manager/active")  and nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']),
                     is_true: func(nd) {
                         var etaSec = getprop("/sim/time/utc/day-seconds")+getprop("autopilot/route-manager/wp/eta-seconds");
                         var h = math.floor(etaSec/3600);
