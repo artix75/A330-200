@@ -664,6 +664,12 @@ canvas.NDStyles["Airbus"] = {
                     init: func(nd,symbol),
                     predicate: func(nd) (nd.in_mode('toggle_display_mode', ['APP','VOR']) and nd.get_switch('toggle_centered') and getprop("instrumentation/nav/in-range")),
                     is_true: func(nd) {
+                        var curmode = nd.get_switch('toggle_display_mode');
+                        var ils_mode = getprop('/flight-management/freq/ils-mode');
+                        if((ils_mode and curmode == 'VOR') or (!ils_mode and curmode == 'APP')){
+                            nd.symbols.locPtr2.hide();
+                            return;
+                        }
                         nd.symbols.locPtr2.show();
                         var deflection = getprop("instrumentation/nav/heading-needle-deflection-norm");
                         nd.symbols.locPtr2.setTranslation(deflection*150,0);
@@ -674,7 +680,7 @@ canvas.NDStyles["Airbus"] = {
                         var line = nd.symbols.locPtr2.getElementById('locPtr2_line');
                         var arr1 = nd.symbols.locPtr2.getElementById('locPtr2_arr1');
                         var arr2 = nd.symbols.locPtr2.getElementById('locPtr2_arr2');
-                        if(nd.get_switch('toggle_display_mode') == 'VOR'){
+                        if(curmode == 'VOR'){
                             #nd.symbols.vorCrsPtr2.setColor(0,0.62,0.84);
                             line.setColor(0,0.62,0.84);
                             line.setColorFill(0,0.62,0.84);
