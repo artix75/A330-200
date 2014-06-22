@@ -859,6 +859,7 @@
 				<range-nm type="int">10</range-nm>
                                 <nd-centered type="bool">true</nd-centered>
                                 <wxr type="bool">true</wxr>
+                                <tfc type="bool">true</tfc>
 			</inputs>
 
 		</efis>
