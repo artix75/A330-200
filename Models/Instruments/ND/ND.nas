@@ -498,7 +498,7 @@ setlistener("/instrumentation/mcdu/f-pln/disp/first", func{
 setlistener('/instrumentation/efis/nd/terrain-on-nd', func{
     var terr_on_hd = getprop('/instrumentation/efis/nd/terrain-on-nd');
     var alpha = 1;
-    if(terr_on_hd) alpha = 0;
+    if(terr_on_hd) alpha = 0.5;
     nd_display.main.setColorBackground(0,0,0,alpha);
 });
 
