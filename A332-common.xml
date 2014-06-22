@@ -858,6 +858,7 @@
 				<taxi type="bool">true</taxi>
 				<range-nm type="int">10</range-nm>
                                 <nd-centered type="bool">true</nd-centered>
+                                <wxr type="bool">true</wxr>
 			</inputs>
 
 		</efis>
