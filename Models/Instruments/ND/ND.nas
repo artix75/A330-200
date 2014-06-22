@@ -83,7 +83,7 @@ setlistener("sim/signals/fdm-initialized", func() {
         .setText(me.model.id)
         .setFont("LiberationFonts/LiberationSans-Regular.ttf")
         .setFontSize(28)
-        .setTranslation(5,25);
+        .setTranslation(20,10);
     }
 
     canvas.Symbol.get("VOR").svg_loaded = nil;
@@ -124,7 +124,7 @@ setlistener("sim/signals/fdm-initialized", func() {
         .setText(me.model.id)
         .setFont("LiberationFonts/LiberationSans-Regular.ttf")
         .setFontSize(28)
-        .setTranslation(5,25);
+        .setTranslation(25,10);
     }
 
     canvas.draw_apt = func(group, apt, controller=nil, lod=0){
@@ -141,11 +141,11 @@ setlistener("sim/signals/fdm-initialized", func() {
         var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_airport.svg";
         #me.element.removeAllChildren();
         canvas.parsesvg(apt_grp, svg_path);
-        apt_grp.setScale(0.8,0.8);
+        #apt_grp.setScale(0.8,0.8);
         print("VOR SVG: " ~ svg_path);
         var text_apt = apt_grp.createChild("text", name ~ " label")
         .setDrawMode( canvas.Text.TEXT )
-        .setTranslation(35,35)
+        .setTranslation(45,35)
         .setText(name)
         .setFont("LiberationFonts/LiberationSans-Regular.ttf")
         .setColor(1,1,1)
