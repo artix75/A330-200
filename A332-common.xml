@@ -835,11 +835,11 @@
 					<display-mode type="string">FUEL</display-mode>
 			</ecam>
 			<nd>
-					<display-mode type="string">VOR</display-mode>
-					<display-mode-knob type="int">2</display-mode-knob>
+					<display-mode type="string">ILS</display-mode>
+					<display-mode-knob type="int">0</display-mode-knob>
 					<display-range type="int">40</display-range>
 					<terrain-on-nd type="int">0</terrain-on-nd>
-					<canvas-display-mode type="string">VOR</canvas-display-mode>
+					<canvas-display-mode type="string">APP</canvas-display-mode>
 				
 			</nd>
 			<input>
