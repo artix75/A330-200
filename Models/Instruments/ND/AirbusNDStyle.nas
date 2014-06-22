@@ -837,8 +837,22 @@ canvas.NDStyles["Airbus"] = {
                         nd.symbols.vorRSym.hide();
                     }
                 }
+            },
+            {
+                id:'appMode',
+                impl: {
+                    init: func(nd,symbol),
+                        predicate: func(nd) (nd.get_switch('toggle_app_mode') != ''),
+                    is_true: func(nd) {
+                        nd.symbols.appMode.show(nd.get_switch('toggle_app_mode'));
+                        nd.setText();
+                    },
+                    is_false: func(nd){
+                        nd.symbols.appMode.hide();
+                    }
+                }  
             }
-
+            
         ], # end of vector with features
 
 }

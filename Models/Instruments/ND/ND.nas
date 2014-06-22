@@ -59,7 +59,8 @@ setlistener("sim/signals/fdm-initialized", func() {
             'toggle_lnav': {path: '/nd/lnav', value:0, type: 'BOOL'},
             'toggle_vnav': {path: '/nd/vnav', value:0, type: 'BOOL'},
             'toggle_wpt_idx': {path: '/inputs/plan-wpt-index', value: -1, type: 'INT'},
-            'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'}
+            'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'},
+            'toggle_app_mode': {path: '/nd/app-mode', value:'', type: 'STRING'}
         # add new switches here
       };
 

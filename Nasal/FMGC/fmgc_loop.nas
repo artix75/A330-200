@@ -917,10 +917,12 @@ update : func {
                                     } elsif ((phase == "DES") and (getprop("/flight-management/control/ver-mode") == "ils")) {
 
                                         setprop("/flight-management/phase", "APP");
+                                        setprop('/instrumentation/efis/nd/app-mode', 'ILS APP');
 
                                     } elsif ((phase == "APP") and (getprop("/gear/gear/wow"))) {
 
                                         setprop("/flight-management/phase", "T/O");
+                                        setprop('/instrumentation/efis/nd/app-mode', '');
 
                                         new_flight();
 
