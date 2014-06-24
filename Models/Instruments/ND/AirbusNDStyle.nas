@@ -636,7 +636,7 @@ canvas.NDStyles["Airbus"] = {
                     predicate: func(nd) nd.in_mode('toggle_display_mode', ['APP']),
                     is_true: func(nd) {
                         if(getprop("instrumentation/nav/gs-needle-deflection-norm") != nil)
-                            nd.symbols.gsDiamond.setTranslation(-getprop("instrumentation/nav/gs-needle-deflection-norm")*150,0);
+                            nd.symbols.gsDiamond.setTranslation(getprop("instrumentation/nav/gs-needle-deflection-norm")*150,0);
                     },
                     is_false: func(nd) nd.symbols.gsGroup.hide(),
                 },
