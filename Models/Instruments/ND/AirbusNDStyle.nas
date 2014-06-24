@@ -622,8 +622,8 @@ canvas.NDStyles["Airbus"] = {
                             line.setColor(0,0.62,0.84);
                             line.setColorFill(0,0.62,0.84);
                         } else {
-                            line.setColor(1,0,1);
-                            line.setColorFill(1,0,1);
+                            line.setColor(0.9,0,0.47);
+                            line.setColorFill(0.9,0,0.47);
                         }
                     },
                     is_false: func(nd) nd.symbols.vorCrsPtr2.hide(),
@@ -687,8 +687,8 @@ canvas.NDStyles["Airbus"] = {
                             arr1.show();
                             arr2.show();
                         } else {
-                            line.setColor(1,0,1);
-                            line.setColorFill(1,0,1);
+                            line.setColor(0.9,0,0.47);
+                            line.setColorFill(0.9,0,0.47);
                             arr1.hide();
                             arr2.hide();
                         }
