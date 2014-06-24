@@ -740,8 +740,13 @@ canvas.NDStyles["Airbus"] = {
                     init: func(nd,symbol),
                     predicate: func(nd) !(nd.in_mode('toggle_display_mode', ['PLAN', 'MAP'])) and ((getprop("instrumentation/nav/in-range") and nd.get_switch('toggle_lh_vor_adf') == 1) or (getprop("instrumentation/adf/in-range") and nd.get_switch('toggle_lh_vor_adf') == -1)),
                     is_true: func(nd) {
-                        nd.symbols.staToL2.setColor(1,1,1);
-                        nd.symbols.staFromL2.setColor(1,1,1);
+                        if(nd.get_switch('toggle_lh_vor_adf') < 0){
+                            nd.symbols.staToL2.setColor(0.195,0.96,0.097);
+                            nd.symbols.staFromL2.setColor(0.195,0.96,0.097);
+                        } else {
+                            nd.symbols.staToL2.setColor(1,1,1);
+                            nd.symbols.staFromL2.setColor(1,1,1);
+                        }
                         nd.symbols.staToL2.show();
                         nd.symbols.staFromL2.show();
                     },
@@ -757,8 +762,13 @@ canvas.NDStyles["Airbus"] = {
                     init: func(nd,symbol),
                     predicate: func(nd) !(nd.in_mode('toggle_display_mode', ['PLAN', 'MAP'])) and ((getprop("instrumentation/nav[1]/in-range") and nd.get_switch('toggle_rh_vor_adf') == 1) or (getprop("instrumentation/adf[1]/in-range") and nd.get_switch('toggle_rh_vor_adf') == -1)),
                     is_true: func(nd) {
-                        nd.symbols.staToR2.setColor(1,1,1);
-                        nd.symbols.staFromR2.setColor(1,1,1);
+                        if(nd.get_switch('toggle_rh_vor_adf') < 0){
+                            nd.symbols.staToR2.setColor(0.195,0.96,0.097);
+                            nd.symbols.staFromR2.setColor(0.195,0.96,0.097);
+                        } else {
+                            nd.symbols.staToR2.setColor(1,1,1);
+                            nd.symbols.staFromR2.setColor(1,1,1);
+                        }
                         nd.symbols.staToR2.show();
                         nd.symbols.staFromR2.show();
                     },
