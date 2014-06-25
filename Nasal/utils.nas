@@ -41,3 +41,34 @@ var fastStartUp = func(){
     setprop('services/ext-pwr/enable', 0);
     setprop('/controls/gear/tiller-enabled', 1);
 }
+
+var test_nd_symbol = func(symbol, dist_nm){
+    var prop = "instrumentation/nd/symbols/"~symbol;
+    if(dist_nm == 0){
+        setprop(prop,'');
+    } else {
+        if (getprop("/autopilot/route-manager/active")){
+            var f= flightplan(); 
+            var point = f.pathGeod(0, dist_nm);
+            setprop(prop ~ "/latitude-deg", point.lat); 
+            setprop(prop ~ "/longitude-deg", point.lon);
+        } 
+    }
+    var rt = 'autopilot/route-manager/route/';
+    var n = getprop(rt~'num');
+    if(n != nil and n != 0){
+        var bearing = 0;
+        var idx = 0;
+        for(idx = 0; idx < n; idx += 1){
+            var wp = rt~'wp['~idx~']';
+            var dist = getprop(wp~'/distance-along-route-nm');
+            if(dist >= dist_nm){
+                break;
+            }
+            bearing = getprop(wp~'/leg-bearing-true-deg');
+        }
+        setprop(prop~'/bearing-deg', bearing);
+    }
+
+    setprop('instrumentation/efis/nd/current-'~symbol, dist_nm);
+}

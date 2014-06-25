@@ -60,7 +60,11 @@ setlistener("sim/signals/fdm-initialized", func() {
             'toggle_vnav': {path: '/nd/vnav', value:0, type: 'BOOL'},
             'toggle_wpt_idx': {path: '/inputs/plan-wpt-index', value: -1, type: 'INT'},
             'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'},
-            'toggle_app_mode': {path: '/nd/app-mode', value:'', type: 'STRING'}
+            'toggle_app_mode': {path: '/nd/app-mode', value:'', type: 'STRING'},
+            'toggle_cur_td': {path: '/nd/current-td', value: 0, type: 'INT'},
+            'toggle_cur_tc': {path: '/nd/current-tc', value: 0, type: 'INT'},
+            'toggle_cur_ed': {path: '/nd/current-ec', value: 0, type: 'INT'},
+            'toggle_cur_ec': {path: '/nd/current-ed', value: 0, type: 'INT'},
         # add new switches here
       };
 
@@ -327,7 +331,8 @@ setlistener("sim/signals/fdm-initialized", func() {
         # Set Step Climb coordinate
         #canvas.drawprofile(route_group, "sc", "S/C");
         # Set Top Of Descent coordinate
-        #canvas.drawprofile(route_group, "ed", "E/D");
+        canvas.drawprofile(route_group, "ed", "E/D");
+        canvas.drawprofile(route_group, "ec", "E/C");
 
         # Update route coordinates
         debug.dump(cmds);
@@ -353,8 +358,21 @@ setlistener("sim/signals/fdm-initialized", func() {
             canvas.parsesvg(sym_group, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_"~property~".svg");
             sym_group.setGeoPosition(lat, lon)
             .set("z-index",4);
-            if(property == 'tc')
-                sym_group.setTranslation(-48,0);
+            var grp = sym_group.getElementById(property~'_symbol');
+            if(property == 'tc' or property == 'ec' or property == 'ed'){
+                grp.setTranslation(-50,0);
+            }
+            if(grp != nil){
+                var bearing = getprop("instrumentation/nd/symbols/"~property~"/bearing-deg");
+                if(bearing){
+                    print(property~" bearing: " ~ bearing);
+                    var hdg = a332.nd_display.main._node.getNode('group/map').getValue('hdg');
+                    if(hdg == nil) hdg = 0;
+                    bearing -= hdg;
+                    if(bearing < 0) bearing = 360 + bearing; 
+                    grp.setRotation(bearing*D2R);
+                }
+            }
             #var rot = me.map._node.getNode("hdg",1).getDoubleValue();
             #var rot = nd_display.main._node.getNode('group/map/hdg').getValue();
             #sym_group.setRotation(rot);

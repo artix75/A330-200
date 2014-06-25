@@ -180,7 +180,7 @@ canvas.NDStyles["Airbus"] = {
                 }, # end of layer update predicate
             }, # end of airports-nd layer
 
-{ name:'route', update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx'],
+            { name:'route', update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx', 'toggle_cur_td', 'toggle_cur_tc','toggle_cur_ed','toggle_cur_ec'],
                 predicate: func(nd, layer) {
                     var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']));
                     if (visible)

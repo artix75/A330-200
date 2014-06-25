@@ -139,6 +139,7 @@ update : func {
         var top_desc = me.calc_td();
     	me.calc_tc();
     	var decel_point = me.calc_decel_point();
+        me.calc_level_off();
     	var plan_mode = getprop("/instrumentation/nd/plan-mode");
     	if(plan_mode != nil and plan_mode){
         	setprop("/instrumentation/nd/symbols/aircraft/latitude-deg", getprop('position/latitude-deg'));
@@ -962,6 +963,15 @@ update : func {
                                                 top_of_descent += (cruise_alt - 3000) / 1000 * 3;
                                             }
                                             top_of_descent -= (destination_elevation / 1000 * 3);
+                                            var td_raw_prop = 'instrumentation/efis/nd/current-td';
+                                            var cur_td = getprop(td_raw_prop);
+                                            if(cur_td == nil) cur_td = 0;
+                                            if(math.abs(top_of_descent - cur_td) > 4){
+                                                setprop(td_raw_prop, top_of_descent);
+                                                var bearing = me.calc_point_bearing(top_of_descent, -1);
+                                                setprop(tdNode~'/bearing-deg', bearing);
+                                            }
+                                                
                                             #print("TD: " ~ top_of_descent);
                                             var f= flightplan(); 
                                             #                   var topClimb = f.pathGeod(0, 100);
@@ -988,6 +998,16 @@ update : func {
                                                 var remaining = getprop("autopilot/route-manager/distance-remaining-nm");
                                                 var totdist = getprop("autopilot/route-manager/total-distance");
                                                 nm = nm + (totdist - remaining);
+                                                if(d > 1000)
+                                                    nm += 5;
+                                                var tc_raw_prop = 'instrumentation/efis/nd/current-tc';
+                                                var cur_tc = getprop(tc_raw_prop);
+                                                if(cur_tc == nil) cur_tc = 0;
+                                                if(math.abs(nm - cur_tc) > 2){
+                                                    setprop(tc_raw_prop, nm);
+                                                    var bearing = me.calc_point_bearing(nm);
+                                                    setprop(tcNode~'/bearing-deg', bearing);
+                                                } 
                                                 var f= flightplan(); 
                                                 #print("TC: " ~ nm);
                                                 var topClimb = f.pathGeod(0, nm);
@@ -998,6 +1018,78 @@ update : func {
                                             }
                                         } else {
                                             setprop(tcNode, '');
+                                        }
+
+                                    },
+                                    calc_level_off: func {
+                                        var edNode = "/instrumentation/nd/symbols/ed"; #END OF DESCENT
+                                        var ecNode = "/instrumentation/nd/symbols/ec"; #END OF CLIMB
+                                        if (getprop("/autopilot/route-manager/active") and !getprop("/gear/gear[3]/wow")){
+                                            var vs_fpm = int(0.6 * getprop("velocities/vertical-speed-fps")) * 100;
+                                            var trgt_alt = 0;
+                                            if(me.ver_ctrl == "fmgc"){
+                                                trgt_alt = getprop(fmgc_val ~ 'vnav-target-alt');
+                                            } else {
+                                                trgt_alt = getprop(fcu~'alt');
+                                            }
+                                            if(trgt_alt == nil){
+                                                setprop(edNode, '');
+                                                setprop(ecNode, ''); 
+                                                return;
+                                            }
+                                            var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
+                                            var d = 0;
+                                            var prop = '';
+                                            var deact_prop = '';
+                                            if(altitude > trgt_alt){
+                                                d = altitude - trgt_alt;
+                                                prop = 'ed';
+                                                deact_prop = 'ec';
+                                            } else {
+                                                var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
+                                                if(cruise_alt == trgt_alt){
+                                                    setprop(ecNode, ''); 
+                                                    return;
+                                                }
+                                                d = trgt_alt - altitude;
+                                                prop = 'ec';
+                                                deact_prop = 'ed';
+                                            }
+                                            if(d > 100){
+                                                var min = d / vs_fpm;
+                                                var ground_speed_kt = getprop("/velocities/groundspeed-kt");
+                                                var nm_min = ground_speed_kt / 60;
+                                                var nm = nm_min * min;
+                                                var remaining = getprop("autopilot/route-manager/distance-remaining-nm");
+                                                var totdist = getprop("autopilot/route-manager/total-distance");
+                                                nm = nm + (totdist - remaining);
+                                                if(d > 1000)
+                                                    nm += 5;
+                                                var node = "/instrumentation/nd/symbols/" ~ prop;
+                                                var lo_raw_prop = 'instrumentation/efis/nd/current-'~prop;
+                                                var cur_lo = getprop(lo_raw_prop);
+                                                if(cur_lo == nil) cur_lo = 0;
+                                                if(math.abs(nm - cur_lo) > 3){
+                                                    setprop(lo_raw_prop, nm);
+                                                    var bearing = me.calc_point_bearing(nm);
+                                                    setprop(node~'/bearing-deg', bearing);
+                                                }
+                                                    
+                                                var f= flightplan(); 
+                                                #print("TC: " ~ nm);
+                                                var point = f.pathGeod(0, nm);
+                                                
+                                                var deact_node = "/instrumentation/nd/symbols/" ~ deact_prop;
+                                                setprop(node ~ "/latitude-deg", point.lat); 
+                                                setprop(node ~ "/longitude-deg", point.lon);
+                                                setprop(deact_node, ''); 
+                                            } else {
+                                                setprop(edNode, ''); 
+                                                setprop(ecNode, ''); 
+                                            }
+                                        } else {
+                                            setprop(edNode, '');
+                                            setprop(ecNode, ''); 
                                         }
 
                                     },
@@ -1035,6 +1127,26 @@ update : func {
                                             setprop(decelNode, '');
                                         }
                                         return 0;
+                                    },
+                                    calc_point_bearing: func(nm, offset = 0){
+                                        var rt = 'autopilot/route-manager/route/';
+                                        var n = getprop(rt~'num');
+                                        if(n == nil or n == 0) return 0;
+                                        var bearing = 0;
+                                        if(offset < 0){
+                                            var totdist = getprop("autopilot/route-manager/total-distance");
+                                            nm = totdist - nm;
+                                        }
+                                        var idx = 0;
+                                        for(idx = 0; idx < n; idx += 1){
+                                            var wp = rt~'wp['~idx~']';
+                                            var dist = getprop(wp~'/distance-along-route-nm');
+                                            if(dist >= nm){
+                                                break;
+                                            }
+                                            bearing = getprop(wp~'/leg-bearing-true-deg');
+                                        }
+                                        return bearing;
                                     },
                                         reset : func {
                                             me.loopid += 1;
