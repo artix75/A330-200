@@ -54,6 +54,15 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible(visible);
                 }, # end of layer update predicate
             }, # end of fixes layer
+            { name:'APS', isMapStructure:1, update_on:['toggle_display_mode','toggle_plan_loop'], 
+             predicate: func(nd, layer) {
+                 var visible = nd.get_switch('toggle_display_mode') == "PLAN";
+                 layer.group.setVisible( visible );
+                 if (visible) {
+                     layer.update();
+                 }
+             },
+            },
             { name:'FIX', isMapStructure:1, update_on:['toggle_range','toggle_waypoints'],
                 # FIXME: this is a really ugly place for controller code
                 predicate: func(nd, layer) {
@@ -80,7 +89,7 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible(visible);
                 }, # end of layer update predicate
             }, # end of storms layer
-            { name:'airplaneSymbol', update_on:['toggle_display_mode','toggle_plan_loop'],
+            { name:'airplaneSymbol', disabled: 1,update_on:['toggle_display_mode','toggle_plan_loop'],
                 predicate: func(nd, layer) {
                     var visible = nd.get_switch('toggle_display_mode') == "PLAN";
                     if (visible) {

@@ -1,0 +1,44 @@
+# See: http://wiki.flightgear.org/MapStructure
+# Class things:
+var name = 'APS';
+var parents = [canvas.SymbolLayer.Controller];
+var __self__ = caller(0)[0];
+canvas.SymbolLayer.Controller.add(name, __self__);
+canvas.SymbolLayer.add(name, {
+    #parents: [canvas.SingleSymbolLayer],
+    parents: [canvas.SymbolLayer],
+    type: name, # Symbol type
+    df_controller: __self__, # controller to use by default -- this one
+    df_style: {},
+});
+# N.B.: if used, this SymbolLayer should be updated every frame
+# by the Map Controller, or as often as the position is changed.
+var new = func(layer) {
+    layer.searcher._equals = func(a,b) a.id == b.id;
+    return {
+        parents: [__self__],
+        #_model: layer.map.getPosCoord(),
+    };
+};
+var del = func;
+var searchCmd = func{
+    return [{
+        parents: [geo.Coord],
+        id: 999999,
+        pos: props.globals.getNode('position'),
+        type: 'position',
+        latlon: func(){ 
+            print('CALLING latlon');
+            debug.dump(me.pos.getValue("latitude-deg"));
+            return [
+                me.pos.getValue("latitude-deg"),
+                me.pos.getValue("longitude-deg"),
+                me.pos.getValue("altitude-ft")
+            ];
+        },
+        equals: func(o){me.id == o.id}
+    }];
+    #return positioned.findWithinRange(25, 'ndb');
+   #return props.globals.getNode('position'); 
+};
+
