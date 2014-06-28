@@ -25,7 +25,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.27"
-     inkscape:cx="14.464853"
+     inkscape:cx="-22.252415"
      inkscape:cy="15.800695"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -55,15 +55,15 @@
     <g
        id="ed_symbol"
        transform="matrix(1,0,0,-1,0,48.142858)"
-       style="stroke:#ffffff">
+       style="stroke:#118eff;stroke-opacity:1">
       <path
          sodipodi:nodetypes="cccc"
          inkscape:connector-curvature="0"
          id="path2993"
          d="m 2.9285709,34.185715 12.3428571,-12.685716 30.514286,0 -4.8,-7.542856"
-         style="fill:none;stroke:#ffffff;stroke-width:2.40000010000000019;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+         style="fill:none;stroke:#118eff;stroke-width:2.40000010000000019;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
-         style="fill:none;stroke:#ffffff;stroke-width:2.40000010000000019px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="fill:none;stroke:#118eff;stroke-width:2.40000010000000019px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 45.785714,21.561266 -4.8,7.542856"
          id="path3094"
          inkscape:connector-curvature="0"

@@ -933,7 +933,7 @@ update : func {
 
                                 },
                                     calc_td: func {
-                                        var tdNode = "/instrumentation/nd/symbols/td";
+                                        var tdNode = "/autopilot/route-manager/vnav/td";
                                         var top_of_descent = 36;
 
                                         if (getprop("/autopilot/route-manager/active")){
@@ -979,12 +979,14 @@ update : func {
                                             setprop(tdNode ~ "/latitude-deg", topDescent.lat); 
                                             setprop(tdNode ~ "/longitude-deg", topDescent.lon); 
                                         } else {
-                                            setprop(tdNode, ''); 
+                                            var node = props.globals.getNode(tdNode);
+                                            if(node != nil) props.globals.getNode(tdNode).remove(); 
                                         }
                                         return top_of_descent;
                                     },
                                     calc_tc: func {
-                                        var tcNode = "/instrumentation/nd/symbols/tc";
+                                        var tcNode = "/autopilot/route-manager/vnav/tc";
+                                        var tc_raw_prop = 'instrumentation/efis/nd/current-tc';
                                         if (getprop("/autopilot/route-manager/active") and !getprop("/gear/gear[3]/wow")){
                                             var vs_fpm = int(0.6 * getprop("velocities/vertical-speed-fps")) * 100;
                                             var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
@@ -1000,7 +1002,6 @@ update : func {
                                                 nm = nm + (totdist - remaining);
                                                 if(d > 1000)
                                                     nm += 5;
-                                                var tc_raw_prop = 'instrumentation/efis/nd/current-tc';
                                                 var cur_tc = getprop(tc_raw_prop);
                                                 if(cur_tc == nil) cur_tc = 0;
                                                 if(math.abs(nm - cur_tc) > 2){
@@ -1014,16 +1015,24 @@ update : func {
                                                 setprop(tcNode ~ "/latitude-deg", topClimb.lat); 
                                                 setprop(tcNode ~ "/longitude-deg", topClimb.lon); 
                                             } else {
-                                               setprop(tcNode, ''); 
+                                                var node = props.globals.getNode(tcNode);
+                                                if(node != nil) node.remove();
+                                                setprop(tc_raw_prop, 0);
                                             }
                                         } else {
-                                            setprop(tcNode, '');
+                                            var node = props.globals.getNode(tcNode);
+                                            if(node != nil) node.remove();
+                                            setprop(tc_raw_prop, 0);
                                         }
 
                                     },
                                     calc_level_off: func {
-                                        var edNode = "/instrumentation/nd/symbols/ed"; #END OF DESCENT
-                                        var ecNode = "/instrumentation/nd/symbols/ec"; #END OF CLIMB
+                                        var edProp = "/autopilot/route-manager/vnav/ed"; #END OF DESCENT
+                                        var scProp = "/autopilot/route-manager/vnav/sc"; #STEP CLIMB
+                                        var remnode = func(ndpath){
+                                            var node = props.globals.getNode(ndpath);
+                                            if(node != nil) node.remove();
+                                        };
                                         if (getprop("/autopilot/route-manager/active") and !getprop("/gear/gear[3]/wow")){
                                             var vs_fpm = int(0.6 * getprop("velocities/vertical-speed-fps")) * 100;
                                             var trgt_alt = 0;
@@ -1033,8 +1042,10 @@ update : func {
                                                 trgt_alt = getprop(fcu~'alt');
                                             }
                                             if(trgt_alt == nil){
-                                                setprop(edNode, '');
-                                                setprop(ecNode, ''); 
+                                                remnode(edProp);
+                                                remnode(scProp); 
+                                                setprop('instrumentation/efis/nd/current-sc', 0);
+                                                setprop('instrumentation/efis/nd/current-ed', 0);
                                                 return;
                                             }
                                             var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
@@ -1044,19 +1055,21 @@ update : func {
                                             if(altitude > trgt_alt){
                                                 d = altitude - trgt_alt;
                                                 prop = 'ed';
-                                                deact_prop = 'ec';
+                                                deact_prop = 'sc';
                                             } else {
                                                 var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
                                                 if(cruise_alt == trgt_alt){
-                                                    setprop(ecNode, ''); 
+                                                    #print('SAME ALT');
+                                                    remnode(scProp);
+                                                    setprop('instrumentation/efis/nd/current-sc', 0);
                                                     return;
                                                 }
                                                 d = trgt_alt - altitude;
-                                                prop = 'ec';
+                                                prop = 'sc';
                                                 deact_prop = 'ed';
                                             }
                                             if(d > 100){
-                                                var min = d / vs_fpm;
+                                                var min = d / math.abs(vs_fpm);
                                                 var ground_speed_kt = getprop("/velocities/groundspeed-kt");
                                                 var nm_min = ground_speed_kt / 60;
                                                 var nm = nm_min * min;
@@ -1065,7 +1078,7 @@ update : func {
                                                 nm = nm + (totdist - remaining);
                                                 if(d > 1000)
                                                     nm += 5;
-                                                var node = "/instrumentation/nd/symbols/" ~ prop;
+                                                var node = "/autopilot/route-manager/vnav/" ~ prop;
                                                 var lo_raw_prop = 'instrumentation/efis/nd/current-'~prop;
                                                 var cur_lo = getprop(lo_raw_prop);
                                                 if(cur_lo == nil) cur_lo = 0;
@@ -1079,17 +1092,21 @@ update : func {
                                                 #print("TC: " ~ nm);
                                                 var point = f.pathGeod(0, nm);
                                                 
-                                                var deact_node = "/instrumentation/nd/symbols/" ~ deact_prop;
+                                                var deact_node = "/autopilot/route-manager/vnav/" ~ deact_prop;
                                                 setprop(node ~ "/latitude-deg", point.lat); 
                                                 setprop(node ~ "/longitude-deg", point.lon);
-                                                setprop(deact_node, ''); 
+                                                remnode(deact_node); 
                                             } else {
-                                                setprop(edNode, ''); 
-                                                setprop(ecNode, ''); 
+                                                remnode(edProp);
+                                                remnode(scProp); 
+                                                setprop('instrumentation/efis/nd/current-sc', 0);
+                                                setprop('instrumentation/efis/nd/current-ed', 0);
                                             }
                                         } else {
-                                            setprop(edNode, '');
-                                            setprop(ecNode, ''); 
+                                            remnode(edProp);
+                                            remnode(scProp); 
+                                            setprop('instrumentation/efis/nd/current-sc', 0);
+                                            setprop('instrumentation/efis/nd/current-ed', 0);
                                         }
 
                                     },

@@ -1,0 +1,42 @@
+# See: http://wiki.flightgear.org/MapStructure
+# Class things:
+var name = 'ALT-profile';
+var parents = [canvas.DotSym];
+var __self__ = caller(0)[0];
+canvas.DotSym.makeinstance( name, __self__ );
+ 
+#canvas.SymbolLayer.get(name).df_style = {
+#    radius: 13,
+#};
+ 
+var element_type = "group";
+
+var init = func {
+    var name = me.model.getName();
+    #var radius = me.style.radius;
+    var sym_group = me.element.createChild("group", name);
+    var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+    canvas.parsesvg(sym_group, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_"~name~".svg");
+    sym_group.set("z-index",4);
+    var grp = sym_group.getElementById(name~'_symbol');
+    if(name != 'td'){
+        grp.setTranslation(-50,0);
+    }
+}
+
+var draw = func{
+    var property = me.model.getName();
+    var bearing = getprop("autopilot/route-manager/vnav/"~property~"/bearing-deg");
+    if(0 and bearing){
+        var sym_group = me.element.getElementById(property);
+        if(sym_group == nil) return;
+        grp = sym_group.getElementById(property~'_symbol');
+        if(grp == nil) return;
+        print(property~" bearing: " ~ bearing);
+        var hdg = a332.nd_display.main._node.getNode('group/map').getValue('hdg');
+        if(hdg == nil) hdg = 0;
+        bearing -= hdg;
+        if(bearing < 0) bearing = 360 + bearing; 
+        grp.setRotation(bearing*D2R);
+    }
+}

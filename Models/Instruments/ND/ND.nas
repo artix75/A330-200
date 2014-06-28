@@ -20,6 +20,91 @@ var update_apl_sym = func {
 
 setlistener("sim/signals/fdm-initialized", func() {
 
+    canvas.SymbolLayer.findsym = func(model, del=0) {
+        print("findsym");
+        debug.dump(model);
+        forindex (var i; me.list) {
+            var e = me.list[i];
+            print("List["~i~"]");
+            #debug.dump(e);
+            print('e.model');
+            if (canvas.Symbol.Controller.equals(e.model, model)) {
+                print("EQUALS!!");
+                if (del) {
+                    # Remove this element from the list
+                    # TODO: maybe C function for this? extend pop() to accept index?
+                    var prev = subvec(me.list, 0, i);
+                    var next = subvec(me.list, i+1);
+                    me.list = prev~next;
+                    #return 1;
+                }
+                return e;
+            }
+        }
+        print("NOT EQUALS");
+        #return (del ? 0 : nil);
+        return nil;
+    };
+    
+    # to add support for additional ghosts, just append them to the vector below, possibly at runtime:
+    var supported_ghosts = ['positioned','Navaid','Fix','flightplan-leg','FGAirport'];
+    var is_positioned_ghost = func(obj) {
+        var gt = ghosttype(obj);
+        foreach(var ghost; supported_ghosts) {
+            if (gt == ghost) return 1; # supported ghost was found
+        }
+        return 0; # not a known/supported ghost
+    };
+    
+    canvas.Symbol.Controller.equals = func(l, r, p=nil) {
+        print('Equals TEST');
+        if (l == r) return 1;
+        if (p == nil) {
+            print("RECURSIVE");
+            var ret = canvas.Symbol.Controller.equals(l, r, l);
+            if (ret != nil) return ret;
+            if (contains(l, "parents")) {
+                foreach (var p; l.parents) {
+                    var ret = canvas.Symbol.Controller.equals(l, r, p);
+                    if (ret != nil) return ret;
+                }
+            }
+            debug.dump(l);
+            die("Symbol.Controller: no suitable equals() found! Of type: "~typeof(l));
+        } else {
+            if (typeof(p) == 'ghost')
+                if ( is_positioned_ghost(p) )
+                    return l.id == r.id;
+                else
+                    die("Symbol.Controller: bad/unsupported ghost of type '"~ghosttype(l)~"' (see MapStructure.nas Symbol.Controller.getpos() to add new ghosts)");
+            if (typeof(p) == 'hash'){
+                # Somewhat arbitrary convention:
+                #   * l.equals(r)         -- instance method, i.e. uses "me" and "arg[0]"
+                #   * parent._equals(l,r) -- class method, i.e. uses "arg[0]" and "arg[1]"
+                print('HASH equals');
+                print(contains(p, "equals"));
+                if (contains(p, "equals"))
+                    return l.equals(r);
+            }
+            if (contains(p, "_equals"))
+                return p._equals(l,r);
+        }
+        return nil; # scio correctum est
+    };
+    
+    canvas.SymbolLayer.onRemoved = func(model) {
+        debug.dump(model);
+        var sym = me.findsym(model, 1);
+        if (sym == nil) die("model not found");
+        #print(typeof(model.del));
+        call(func sym.del, nil, var err = []);
+        #sym.del();
+        print('ERR CHK');
+        #debug.dump(err);
+        # ignore errors
+        # TODO: ignore only missing member del() errors? and only from the above line?
+        # Note: die(err[0]) rethrows it; die(err[0]~"") does not.
+    }
 ####### LOAD FILES #######
 #print("loading files");
 (func {
@@ -61,7 +146,7 @@ var load_deps = func(name) {
     load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".scontroller", name);
 }
 
-foreach( var name; ['APS'] )
+foreach( var name; ['APS','ALT-profile'] )
 load_deps( name );
 
 })();
@@ -109,8 +194,8 @@ var myCockpit_switches = {
     'toggle_app_mode': {path: '/nd/app-mode', value:'', type: 'STRING'},
     'toggle_cur_td': {path: '/nd/current-td', value: 0, type: 'INT'},
     'toggle_cur_tc': {path: '/nd/current-tc', value: 0, type: 'INT'},
-    'toggle_cur_ed': {path: '/nd/current-ec', value: 0, type: 'INT'},
-    'toggle_cur_ec': {path: '/nd/current-ed', value: 0, type: 'INT'},
+    'toggle_cur_sc': {path: '/nd/current-sc', value: 0, type: 'INT'},
+    'toggle_cur_ed': {path: '/nd/current-ed', value: 0, type: 'INT'},
     # add new switches here
 };
 
@@ -370,15 +455,15 @@ canvas.draw_route =  func (group, theroute, controller=nil, lod=0)
     }
 
     # Set Top Of Climb coordinate
-    canvas.drawprofile(route_group, "tc", "T/C");
+    #canvas.drawprofile(route_group, "tc", "T/C");
     # Set Top Of Descent coordinate
-    canvas.drawprofile(route_group, "td", "T/D");
+    #canvas.drawprofile(route_group, "td", "T/D");
     canvas.drawprofile(route_group, "decel", "D");
     # Set Step Climb coordinate
     #canvas.drawprofile(route_group, "sc", "S/C");
     # Set Top Of Descent coordinate
-    canvas.drawprofile(route_group, "ed", "E/D");
-    canvas.drawprofile(route_group, "ec", "E/C");
+    #canvas.drawprofile(route_group, "ed", "E/D");
+    #canvas.drawprofile(route_group, "ec", "E/C");
 
     # Update route coordinates
     debug.dump(cmds);

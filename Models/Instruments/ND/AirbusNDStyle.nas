@@ -77,6 +77,18 @@ canvas.NDStyles["Airbus"] = {
                     }
                 }, # end of layer update predicate
             }, # end of FIX layer
+            {
+                name: 'ALT-profile',
+                isMapStructure: 1,
+                update_on: ['toggle_range','toggle_cur_td','toggle_cur_tc','toggle_cur_ed','toggle_cur_sc','toggle_vnav','toggle_fplan','toggle_vnav'],
+                predicate: func(nd, layer) {
+                    var visible = nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']);# and nd.get_switch('toggle_fplan');
+                    layer.group.setVisible( visible );
+                    if (visible) {
+                        layer.update();
+                    }
+                },
+            },
             # Should redraw every 10 seconds
             { name:'storms', update_on:['toggle_range','toggle_weather','toggle_display_mode'],
                 predicate: func(nd, layer) {
@@ -189,7 +201,7 @@ canvas.NDStyles["Airbus"] = {
                 }, # end of layer update predicate
             }, # end of airports-nd layer
 
-            { name:'route', update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx', 'toggle_cur_td', 'toggle_cur_tc','toggle_cur_ed','toggle_cur_ec'],
+            { name:'route', update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx'],
                 predicate: func(nd, layer) {
                     var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']));
                     if (visible)
@@ -294,7 +306,8 @@ canvas.NDStyles["Airbus"] = {
                     init: func(nd,symbol),
                     predicate: func(nd) getprop("/autopilot/route-manager/wp/id") != nil and getprop("autopilot/route-manager/active") and nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']),
                     is_true: func(nd) {
-                        var deg = int(getprop("/autopilot/route-manager/wp/bearing-deg"));
+                        var cur_wp = getprop("autopilot/route-manager/current-wp");
+                        var deg = int(getprop("/autopilot/route-manager/route/wp["~cur_wp~"]/leg-bearing-true-deg"));
                         nd.symbols.wpActiveCrs.setText(''~deg~'°');
                         nd.symbols.wpActiveCrs.show();
                     },
