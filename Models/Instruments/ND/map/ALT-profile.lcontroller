@@ -43,14 +43,15 @@ var searchCmd = func {
         foreach (var t; me._options.types) {
             var n = symNode.getNode(t);
             if (n != nil and n.getValue('longitude-deg') != nil){
-                n.__layer = me.layer;
-                n.del = func{
-                    if(me.__layer != nil){
-                        var sym = me.__layer.findsym(me);
-                        if(sym != nil)
-                            sym.del();
-                    }
-                };
+                #n.__layer = me.layer;
+                #n.del = func{
+                #    if(me.__layer != nil){
+                #        var sym = me.__layer.findsym(me);
+                #        if(sym != nil)
+                #            sym.del();
+                #    }
+                #};
+                #n.vnav_armed = getprop('instrumentation/efis/nd/vnav');
                 append(results, n);
             }
         }

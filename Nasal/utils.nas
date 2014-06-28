@@ -43,9 +43,11 @@ var fastStartUp = func(){
 }
 
 var test_nd_symbol = func(symbol, dist_nm){
-    var prop = "instrumentation/nd/symbols/"~symbol;
+    var prop = "autopilot/route-manager/vnav/"~symbol;
+    var node = props.globals.getNode(prop);
     if(dist_nm == 0){
-        setprop(prop,'');
+        if(node != nil)
+            node.remove();;
     } else {
         if (getprop("/autopilot/route-manager/active")){
             var f= flightplan(); 

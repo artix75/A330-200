@@ -978,6 +978,10 @@ update : func {
                                             var topDescent = f.pathGeod(-1, -top_of_descent);
                                             setprop(tdNode ~ "/latitude-deg", topDescent.lat); 
                                             setprop(tdNode ~ "/longitude-deg", topDescent.lon); 
+                                            if(me.ver_ctrl == "fmgc")
+                                                setprop(tdNode ~ "/vnav-armed", 1);
+                                            else
+                                                setprop(tdNode ~ "/vnav-armed", 0);
                                         } else {
                                             var node = props.globals.getNode(tdNode);
                                             if(node != nil) props.globals.getNode(tdNode).remove(); 
@@ -1000,8 +1004,8 @@ update : func {
                                                 var remaining = getprop("autopilot/route-manager/distance-remaining-nm");
                                                 var totdist = getprop("autopilot/route-manager/total-distance");
                                                 nm = nm + (totdist - remaining);
-                                                if(d > 1000)
-                                                    nm += 5;
+                                                if(d > 500)
+                                                    nm += 8;
                                                 var cur_tc = getprop(tc_raw_prop);
                                                 if(cur_tc == nil) cur_tc = 0;
                                                 if(math.abs(nm - cur_tc) > 2){
@@ -1076,8 +1080,8 @@ update : func {
                                                 var remaining = getprop("autopilot/route-manager/distance-remaining-nm");
                                                 var totdist = getprop("autopilot/route-manager/total-distance");
                                                 nm = nm + (totdist - remaining);
-                                                if(d > 1000)
-                                                    nm += 5;
+                                                if(d > 500)
+                                                    nm += 8;
                                                 var node = "/autopilot/route-manager/vnav/" ~ prop;
                                                 var lo_raw_prop = 'instrumentation/efis/nd/current-'~prop;
                                                 var cur_lo = getprop(lo_raw_prop);

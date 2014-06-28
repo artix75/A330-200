@@ -21,15 +21,11 @@ var update_apl_sym = func {
 setlistener("sim/signals/fdm-initialized", func() {
 
     canvas.SymbolLayer.findsym = func(model, del=0) {
-        print("findsym");
-        debug.dump(model);
         forindex (var i; me.list) {
             var e = me.list[i];
-            print("List["~i~"]");
+            #print("List["~i~"]");
             #debug.dump(e);
-            print('e.model');
             if (canvas.Symbol.Controller.equals(e.model, model)) {
-                print("EQUALS!!");
                 if (del) {
                     # Remove this element from the list
                     # TODO: maybe C function for this? extend pop() to accept index?
@@ -41,8 +37,6 @@ setlistener("sim/signals/fdm-initialized", func() {
                 return e;
             }
         }
-        print("NOT EQUALS");
-        #return (del ? 0 : nil);
         return nil;
     };
     
@@ -57,10 +51,8 @@ setlistener("sim/signals/fdm-initialized", func() {
     };
     
     canvas.Symbol.Controller.equals = func(l, r, p=nil) {
-        print('Equals TEST');
         if (l == r) return 1;
         if (p == nil) {
-            print("RECURSIVE");
             var ret = canvas.Symbol.Controller.equals(l, r, l);
             if (ret != nil) return ret;
             if (contains(l, "parents")) {
@@ -69,7 +61,6 @@ setlistener("sim/signals/fdm-initialized", func() {
                     if (ret != nil) return ret;
                 }
             }
-            debug.dump(l);
             die("Symbol.Controller: no suitable equals() found! Of type: "~typeof(l));
         } else {
             if (typeof(p) == 'ghost')
@@ -81,8 +72,6 @@ setlistener("sim/signals/fdm-initialized", func() {
                 # Somewhat arbitrary convention:
                 #   * l.equals(r)         -- instance method, i.e. uses "me" and "arg[0]"
                 #   * parent._equals(l,r) -- class method, i.e. uses "arg[0]" and "arg[1]"
-                print('HASH equals');
-                print(contains(p, "equals"));
                 if (contains(p, "equals"))
                     return l.equals(r);
             }
@@ -97,9 +86,9 @@ setlistener("sim/signals/fdm-initialized", func() {
         var sym = me.findsym(model, 1);
         if (sym == nil) die("model not found");
         #print(typeof(model.del));
-        call(func sym.del, nil, var err = []);
-        #sym.del();
-        print('ERR CHK');
+        #call(func sym.del, nil, var err = []);
+        sym.del();
+        #print('ERR CHK');
         #debug.dump(err);
         # ignore errors
         # TODO: ignore only missing member del() errors? and only from the above line?
