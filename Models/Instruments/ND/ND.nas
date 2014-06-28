@@ -503,24 +503,27 @@ canvas._draw_rwy_nd = func (group, lat, lon, length, width, rwyhdg) {
     var apt = airportinfo("EHAM");
     var rwy = apt.runway("18R");
 
+    var ctr_len = length * 0.75;
     var crds = [];
     var coord = geo.Coord.new();
     width=width*20; # Else rwy is too thin to be visible
     coord.set_latlon(lat, lon);
-    coord.apply_course_distance(rwyhdg, -14.2*NM2M);
+    coord.apply_course_distance(rwyhdg, -(ctr_len / 2));
     append(crds,"N"~coord.lat());
     append(crds,"E"~coord.lon());
-    coord.apply_course_distance(rwyhdg, 28.4*NM2M+length);
+    coord.apply_course_distance(rwyhdg, (ctr_len));
     append(crds,"N"~coord.lat());
     append(crds,"E"~coord.lon());
     icon_rwy = group.createChild("path", "rwy-cl")
     .setStrokeLineWidth(3)
     .setDataGeo([2,4],crds)
-    .setColor(1,1,1)
-    .setStrokeDashArray([10, 20, 10, 20, 10]);
-    icon_rwy.hide();
+    .setColor(1,1,1);
+    #.setStrokeDashArray([10, 20, 10, 20, 10]);
+    #icon_rwy.hide();
     var crds = [];
     coord.set_latlon(lat, lon);
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
     coord.apply_course_distance(rwyhdg + 90, width/2);
     append(crds,"N"~coord.lat());
     append(crds,"E"~coord.lon());
@@ -529,18 +532,23 @@ canvas._draw_rwy_nd = func (group, lat, lon, length, width, rwyhdg) {
     append(crds,"E"~coord.lon());
     icon_rwy = group.createChild("path", "rwy")
     .setStrokeLineWidth(3)
-    .setDataGeo([2,4],crds)
+    .setDataGeo([2,4,4],crds)
     .setColor(1,1,1);
     var crds = [];
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
     coord.apply_course_distance(rwyhdg - 90, width);
     append(crds,"N"~coord.lat());
     append(crds,"E"~coord.lon());
     coord.apply_course_distance(rwyhdg, -length);
     append(crds,"N"~coord.lat());
     append(crds,"E"~coord.lon());
+    coord.apply_course_distance(rwyhdg + 90, width / 2);
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
     icon_rwy = group.createChild("path", "rwy")
     .setStrokeLineWidth(3)
-    .setDataGeo([2,4],crds)
+    .setDataGeo([2,4,4,4],crds)
     .setColor(1,1,1);
 };
 
