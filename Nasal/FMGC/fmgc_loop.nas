@@ -139,6 +139,7 @@ update : func {
         var top_desc = me.calc_td();
     	me.calc_tc();
     	var decel_point = me.calc_decel_point();
+        me.calc_speed_change();
         me.calc_level_off();
     	var plan_mode = getprop("/instrumentation/nd/plan-mode");
     	if(plan_mode != nil and plan_mode){
@@ -697,6 +698,7 @@ update : func {
                 if(remaining <= top_desc){
                     ref_altitude = destination_elevation; 
                     phase = 'des';
+                    setprop("/flight-management/phase", "DES");
                 } else {
                     ref_altitude = cruise_alt;
                     phase = 'clb';
@@ -991,8 +993,13 @@ update : func {
                                     calc_tc: func {
                                         var tcNode = "/autopilot/route-manager/vnav/tc";
                                         var tc_raw_prop = 'instrumentation/efis/nd/current-tc';
-                                        if (getprop("/autopilot/route-manager/active") and !getprop("/gear/gear[3]/wow")){
-                                            var vs_fpm = int(0.6 * getprop("velocities/vertical-speed-fps")) * 100;
+                                        var phase = getprop("/flight-management/phase");
+                                        var vspd_fps = getprop("velocities/vertical-speed-fps");
+                                        if (getprop("/autopilot/route-manager/active") and 
+                                            !getprop("/gear/gear[3]/wow") and 
+                                            (phase == 'CLB' or 
+                                             (phase == 'CRZ' and vspd_fps >= -0.8))){
+                                            var vs_fpm = int(0.6 * vspd_fps) * 100;
                                             var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
                                             var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
                                             var d = cruise_alt - altitude;
@@ -1006,6 +1013,8 @@ update : func {
                                                 nm = nm + (totdist - remaining);
                                                 if(d > 500)
                                                     nm += 8;
+                                                else 
+                                                    nm += (8 * (d / 500));
                                                 var cur_tc = getprop(tc_raw_prop);
                                                 if(cur_tc == nil) cur_tc = 0;
                                                 if(math.abs(nm - cur_tc) > 2){
@@ -1040,8 +1049,10 @@ update : func {
                                         if (getprop("/autopilot/route-manager/active") and !getprop("/gear/gear[3]/wow")){
                                             var vs_fpm = int(0.6 * getprop("velocities/vertical-speed-fps")) * 100;
                                             var trgt_alt = 0;
+                                            var vnav_actv = 0;
                                             if(me.ver_ctrl == "fmgc"){
                                                 trgt_alt = getprop(fmgc_val ~ 'vnav-target-alt');
+                                                vnav_actv = 1;
                                             } else {
                                                 trgt_alt = getprop(fcu~'alt');
                                             }
@@ -1056,11 +1067,13 @@ update : func {
                                             var d = 0;
                                             var prop = '';
                                             var deact_prop = '';
+                                            var climbing = 0;
                                             if(altitude > trgt_alt){
                                                 d = altitude - trgt_alt;
                                                 prop = 'ed';
                                                 deact_prop = 'sc';
                                             } else {
+                                                climbing = 1;
                                                 var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
                                                 if(cruise_alt == trgt_alt){
                                                     #print('SAME ALT');
@@ -1080,8 +1093,10 @@ update : func {
                                                 var remaining = getprop("autopilot/route-manager/distance-remaining-nm");
                                                 var totdist = getprop("autopilot/route-manager/total-distance");
                                                 nm = nm + (totdist - remaining);
-                                                if(d > 500)
-                                                    nm += 8;
+                                                #if(d > 500)
+                                                #    nm += 8;
+                                                #else 
+                                                #    nm += (8 * (d / 500));
                                                 var node = "/autopilot/route-manager/vnav/" ~ prop;
                                                 var lo_raw_prop = 'instrumentation/efis/nd/current-'~prop;
                                                 var cur_lo = getprop(lo_raw_prop);
@@ -1148,6 +1163,86 @@ update : func {
                                             setprop(decelNode, '');
                                         }
                                         return 0;
+                                    },
+                                    calc_speed_change: func(){
+                                        var spdChangeNode = "/autopilot/route-manager/spd/spd-change-point";
+                                        var spd_change_raw = 'instrumentation/efis/nd/spd-change-raw';
+                                        if (!getprop("/autopilot/route-manager/active") or getprop("/gear/gear[3]/wow"))
+                                            return 0;
+                                        if ((me.spd_ctrl != "fmgc") or (me.a_thr == "off")) 
+                                            return 0;
+                                        var phase = getprop("/flight-management/phase");
+                                        var trgt_alt = 0;
+                                        if(me.ver_ctrl == "fmgc"){
+                                            if(phase == 'CLB')
+                                                trgt_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
+                                            else
+                                                trgt_alt = getprop(fmgc_val ~ 'vnav-target-alt');
+                                        } else {
+                                            trgt_alt = getprop(fcu~'alt');
+                                        }
+                                        var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
+                                        var vs_fpm = int(0.6 * getprop("velocities/vertical-speed-fps")) * 100;
+                                        var spd_cange_count = 0;
+                                        foreach(var alt; [10000,14000,25000,26000]){
+                                            var alt_100 = alt / 100;
+                                            var node_path = spdChangeNode ~ '-' ~ alt_100;
+                                            var node_raw_path = spd_change_raw ~ '-' ~ alt_100;
+                                            var cond = 0;
+                                            if(phase == 'CLB'){
+                                                var mode = getprop("/flight-management/spd-manager/climb/mode");
+                                                if((mode == "MANAGED (F-PLN)" and (alt == 14000 or alt == 26000)) or 
+                                                   (mode != "MANAGED (F-PLN)" and (alt == 10000 or alt == 25000)))
+                                                    cond = 0;
+                                                else
+                                                    cond = ((altitude < alt) and trgt_alt >= alt);
+                                            }                                                
+                                            elsif(phase == 'DES'){
+                                                var mode = getprop("/flight-management/spd-manager/descent/mode");
+                                                if((mode == "MANAGED (F-PLN)" and (alt == 14000 or alt == 26000)) or 
+                                                   (mode != "MANAGED (F-PLN)" and (alt == 10000 or alt == 25000)))
+                                                    cond = 0;
+                                                else
+                                                    cond = ((altitude > alt)  and trgt_alt <= alt);
+                                                #print('SPD ALT' ~ alt ~ ' (DES): '~ cond);
+                                            }      
+                                            if(cond){
+                                                var d = 0;
+                                                if(phase == 'CLB')
+                                                    d = alt - altitude;
+                                                elsif(phase == 'DES')
+                                                    d = altitude - alt;
+                                                if(d > 100){
+                                                    var min = d / math.abs(vs_fpm);
+                                                    var ground_speed_kt = getprop("/velocities/groundspeed-kt");
+                                                    var nm_min = ground_speed_kt / 60;
+                                                    var nm = nm_min * min;
+                                                    var remaining = getprop("autopilot/route-manager/distance-remaining-nm");
+                                                    var totdist = getprop("autopilot/route-manager/total-distance");
+                                                    nm = nm + (totdist - remaining);
+                                                    if(d > 500 and alt == trgt_alt)
+                                                        nm += 8;
+                                                    elsif(d <= 500 and alt == trgt_alt)
+                                                        nm += (8 * (d / 500));
+                                                    else 
+                                                        nm += 1;
+                                                    var cur_raw = getprop(node_raw_path);
+                                                    if(cur_raw == nil) cur_raw = 0;
+                                                    if(math.abs(nm - cur_raw) > 2){
+                                                        setprop(node_raw_path, nm);
+                                                    } 
+                                                    var f= flightplan(); 
+                                                    #print("TC: " ~ nm);
+                                                    var point = f.pathGeod(0, nm);
+                                                    setprop(node_path ~ "/latitude-deg", point.lat); 
+                                                    setprop(node_path ~ "/longitude-deg", point.lon); 
+                                                } else {
+                                                    var node = props.globals.getNode(node_path);
+                                                    if(node != nil) node.remove();
+                                                    setprop(node_raw_path, 0);
+                                                }
+                                            }
+                                        }
                                     },
                                     calc_point_bearing: func(nm, offset = 0){
                                         var rt = 'autopilot/route-manager/route/';

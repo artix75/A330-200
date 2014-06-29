@@ -54,15 +54,6 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible(visible);
                 }, # end of layer update predicate
             }, # end of fixes layer
-            { name:'APS', isMapStructure:1, update_on:['toggle_display_mode','toggle_plan_loop'], 
-             predicate: func(nd, layer) {
-                 var visible = nd.get_switch('toggle_display_mode') == "PLAN";
-                 layer.group.setVisible( visible );
-                 if (visible) {
-                     layer.update();
-                 }
-             },
-            },
             { name:'FIX', isMapStructure:1, update_on:['toggle_range','toggle_waypoints'],
                 # FIXME: this is a really ugly place for controller code
                 predicate: func(nd, layer) {
@@ -80,7 +71,7 @@ canvas.NDStyles["Airbus"] = {
             {
                 name: 'ALT-profile',
                 isMapStructure: 1,
-                update_on: ['toggle_range','toggle_cur_td','toggle_cur_tc','toggle_cur_ed','toggle_cur_sc','toggle_vnav','toggle_fplan','toggle_vnav'],
+                update_on: ['toggle_display_mode','toggle_range','toggle_cur_td','toggle_cur_tc','toggle_cur_ed','toggle_cur_sc','toggle_vnav','toggle_fplan'],
                 predicate: func(nd, layer) {
                     var visible = nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']);# and nd.get_switch('toggle_fplan');
                     layer.group.setVisible( visible );
@@ -192,7 +183,7 @@ canvas.NDStyles["Airbus"] = {
                 }, # end of layer update predicate
             }, # end of traffic  layer
 
-            { name:'runway-nd', update_on:['toggle_range','toggle_display_mode'],
+            { name:'runway-nd', update_on:['toggle_range','toggle_display_mode','toggle_fplan'],
                 predicate: func(nd, layer) {
                     var visible = (nd.rangeNm() <= 40) and getprop("autopilot/route-manager/active") and nd.in_mode('toggle_display_mode', ['MAP','PLAN']) ;
                     if (visible)
@@ -209,6 +200,27 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible( visible );
                 }, # end of layer update predicate
             }, # end of route layer
+            {
+                name: 'SPD-profile',
+                isMapStructure: 1,
+                update_on: ['toggle_display_mode','toggle_range','toggle_vnav','toggle_fplan','toggle_man_spd','toggle_athr','toggle_spd_point_100','toggle_spd_point_140','toggle_spd_point_250','toggle_spd_point_260'],
+                predicate: func(nd, layer) {
+                    var visible = nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']);# and nd.get_switch('toggle_fplan');
+                    layer.group.setVisible( visible );
+                    if (visible) {
+                        layer.update();
+                    }
+                },
+            },
+            { name:'APS', isMapStructure:1, update_on:['toggle_display_mode','toggle_plan_loop'], 
+                 predicate: func(nd, layer) {
+                     var visible = nd.get_switch('toggle_display_mode') == "PLAN";
+                     layer.group.setVisible( visible );
+                     if (visible) {
+                         layer.update();
+                     }
+                 },
+            },
 
             ## add other layers here, layer names must match the registered names as used in *.layer files for now
             ## this will all change once we're using Philosopher's MapStructure framework
@@ -526,6 +538,7 @@ canvas.NDStyles["Airbus"] = {
                         init: func(nd,symbol),
                             predicate: func(nd) (nd.get_switch('toggle_display_mode') == "MAP" and !nd.get_switch('toggle_centered')),
                                 is_true: func(nd) {
+                                    nd.symbols.aplSymMap.set('z-index', 10);
                                     nd.symbols.aplSymMap.show();
 
                                 },
@@ -538,6 +551,7 @@ canvas.NDStyles["Airbus"] = {
                         init: func(nd,symbol),
                             predicate: func(nd) ((nd.get_switch('toggle_display_mode') == "MAP" and nd.get_switch('toggle_centered')) or nd.in_mode('toggle_display_mode', ['APP','VOR'])),
                                 is_true: func(nd) {
+                                    nd.symbols.aplSymMapCtr.set('z-index', 10);
                                     nd.symbols.aplSymMapCtr.show();
 
                                 },

@@ -12,7 +12,7 @@ var update_apl_sym = func {
         setprop("/instrumentation/efis/nd/plan-mode-loop", loopid);
     }
 
-    settimer(update_apl_sym, 2);
+    settimer(update_apl_sym, 1);
 }
 
 ###
@@ -82,7 +82,7 @@ setlistener("sim/signals/fdm-initialized", func() {
     };
     
     canvas.SymbolLayer.onRemoved = func(model) {
-        debug.dump(model);
+        #debug.dump(model);
         var sym = me.findsym(model, 1);
         if (sym == nil) die("model not found");
         #print(typeof(model.del));
@@ -135,7 +135,7 @@ var load_deps = func(name) {
     load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".scontroller", name);
 }
 
-foreach( var name; ['APS','ALT-profile'] )
+foreach( var name; ['APS','ALT-profile','SPD-profile'] )
 load_deps( name );
 
 })();
@@ -185,6 +185,12 @@ var myCockpit_switches = {
     'toggle_cur_tc': {path: '/nd/current-tc', value: 0, type: 'INT'},
     'toggle_cur_sc': {path: '/nd/current-sc', value: 0, type: 'INT'},
     'toggle_cur_ed': {path: '/nd/current-ed', value: 0, type: 'INT'},
+    'toggle_man_spd': {path: '/nd/managed-spd', value: 0, type: 'INT'},
+    'toggle_athr': {path: '/nd/athr', value: 0, type: 'INT'},
+    'toggle_spd_point_100': {path: '/nd/spd-change-raw-100', value: 0, type: 'INT'},
+    'toggle_spd_point_140': {path: '/nd/spd-change-raw-140', value: 0, type: 'INT'},
+    'toggle_spd_point_250': {path: '/nd/spd-change-raw-250', value: 0, type: 'INT'},
+    'toggle_spd_point_260': {path: '/nd/spd-change-raw-260', value: 0, type: 'INT'}
     # add new switches here
 };
 
@@ -219,7 +225,6 @@ canvas.Symbol.get("VOR").draw = func{
     var grp = me.element.createChild("group");
     canvas.parsesvg(grp, svg_path);
     grp.setScale(0.8,0.8);
-    print("VOR SVG: " ~ svg_path);
     me.text_vor = me.element.createChild("text")
     .setDrawMode( canvas.Text.TEXT )
     .setText(me.model.id)
@@ -266,7 +271,6 @@ canvas.draw_apt = func(group, apt, controller=nil, lod=0){
     #me.element.removeAllChildren();
     canvas.parsesvg(apt_grp, svg_path);
     #apt_grp.setScale(0.8,0.8);
-    print("VOR SVG: " ~ svg_path);
     var text_apt = apt_grp.createChild("text", name ~ " label")
     .setDrawMode( canvas.Text.TEXT )
     .setTranslation(45,35)
@@ -366,7 +370,7 @@ canvas.drawwp =  func (group, lat, lon, alt, name, i, wp) {
         arcSmallCW(17,17,0,34,0).
         arcSmallCW(17,17,0,-34,0);
         if(getprop("flight-management/control/ver-ctrl") == 'fmgc')
-        alt_path.setColor(0.69,0,0.39);
+            alt_path.setColor(0.69,0,0.39);
         else
             alt_path.setColor(1,1,1);
         if(getprop('instrumentation/efis/inputs/CSTR'))
@@ -442,6 +446,12 @@ canvas.draw_route =  func (group, theroute, controller=nil, lod=0)
         }
         canvas.drawwp(group, leg.path()[-1].lat, leg.path()[-1].lon, leg.alt_cstr, leg.wp_name, i, canvas.wp);
     }
+    var first_wp = canvas.wp[0];
+    var last_wp = canvas.wp[fpSize - 1];
+    if(fp.departure_runway != nil and first_wp != nil) 
+        first_wp.hide();
+    if(fp.destination_runway != nil and last_wp != nil) 
+        last_wp.hide();
 
     # Set Top Of Climb coordinate
     #canvas.drawprofile(route_group, "tc", "T/C");
@@ -455,8 +465,8 @@ canvas.draw_route =  func (group, theroute, controller=nil, lod=0)
     #canvas.drawprofile(route_group, "ec", "E/C");
 
     # Update route coordinates
-    debug.dump(cmds);
-    debug.dump(coords);
+    #debug.dump(cmds);
+    #debug.dump(coords);
     route.setDataGeo(cmds, coords);
     #canvas.updatewp(0);
     canvas.updatewp(getprop("/autopilot/route-manager/current-wp"));
@@ -464,12 +474,12 @@ canvas.draw_route =  func (group, theroute, controller=nil, lod=0)
 
 canvas.drawprofile =  func (group, property, disptext)
 {
-    print("Reading profile for instrumentation/nd/symbols/"~property);
+    #print("Reading profile for instrumentation/nd/symbols/"~property);
     var symNode = props.globals.getNode("instrumentation/nd/symbols/"~property, 1);
     var lon = symNode.getNode("longitude-deg", 1).getValue();
     var lat = symNode.getNode("latitude-deg", 1).getValue();
-    if(lat != nil and lon != nil)
-        print("Coord: "~lat~", "~lon);
+    #if(lat != nil and lon != nil)
+    #    print("Coord: "~lat~", "~lon);
     var sym_group = group.createChild("group", property);
     var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
 
@@ -485,7 +495,7 @@ canvas.drawprofile =  func (group, property, disptext)
         if(grp != nil){
             var bearing = getprop("instrumentation/nd/symbols/"~property~"/bearing-deg");
             if(bearing){
-                print(property~" bearing: " ~ bearing);
+                #print(property~" bearing: " ~ bearing);
                 var hdg = a332.nd_display.main._node.getNode('group/map').getValue('hdg');
                 if(hdg == nil) hdg = 0;
                 bearing -= hdg;
@@ -621,13 +631,23 @@ setprop(nd_centered, centered);
 });
 
 setlistener('autopilot/route-manager/active', func{
-            var actv = getprop("autopilot/route-manager/active");
-setprop('instrumentation/efis/nd/route-manager-active', actv);
+    var actv = getprop("autopilot/route-manager/active");
+    setprop('instrumentation/efis/nd/route-manager-active', actv);
+});
+
+setlistener('/flight-management/control/a-thrust', func{
+    var athr = getprop('/flight-management/control/a-thrust');
+    setprop('instrumentation/efis/nd/athr', (athr == 'eng'));
 });
 
 setlistener('flight-management/control/ver-ctrl', func{
-            var verctrl = getprop("flight-management/control/ver-ctrl");
-setprop('instrumentation/efis/nd/vnav', (verctrl == 'fmgc'));
+    var verctrl = getprop("flight-management/control/ver-ctrl");
+    setprop('instrumentation/efis/nd/vnav', (verctrl == 'fmgc'));
+});
+
+setlistener("/flight-management/control/spd-ctrl", func{
+    var spdctrl = getprop("/flight-management/control/spd-ctrl");
+    setprop('instrumentation/efis/nd/managed-spd', (spdctrl == 'fmgc'));
 });
 
 setlistener('flight-management/control/lat-ctrl', func{

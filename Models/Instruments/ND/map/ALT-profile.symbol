@@ -17,7 +17,7 @@ var init = func {
     var sym_group = me.element.createChild("group", name);
     var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
     canvas.parsesvg(sym_group, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_"~name~".svg");
-    sym_group.set("z-index",4);
+    sym_group.set("z-index",6);
     var grp = sym_group.getElementById(name~'_symbol');
     print('Init: -> '~name);
     if(name != 'td'){
@@ -40,11 +40,9 @@ var draw = func{
         if(bearing < 0) bearing = 360 + bearing; 
         grp.setRotation(bearing*D2R);
     }
-    print('Draw: -> ' ~ name);
+    #print('Draw: -> ' ~ name);
     if(name == 'td'){
-    print('Check VNAV');
         var vnav_armed = me.model.getValue('vnav-armed');
-    print(vnav_armed);
         if(vnav_armed)
             grp.setColor(0.06,0.55,1);
         else
