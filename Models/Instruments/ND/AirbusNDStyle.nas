@@ -774,7 +774,7 @@ canvas.NDStyles["Airbus"] = {
                 id:'staToL2',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) !(nd.in_mode('toggle_display_mode', ['PLAN', 'MAP'])) and ((getprop("instrumentation/nav/in-range") and nd.get_switch('toggle_lh_vor_adf') == 1) or (getprop("instrumentation/adf/in-range") and nd.get_switch('toggle_lh_vor_adf') == -1)),
+                        predicate: func(nd) !(nd.in_mode('toggle_display_mode', ['PLAN'])) and nd.get_switch('toggle_centered')  and ((getprop("instrumentation/nav/in-range") and nd.get_switch('toggle_lh_vor_adf') == 1) or (getprop("instrumentation/adf/in-range") and nd.get_switch('toggle_lh_vor_adf') == -1)),
                     is_true: func(nd) {
                         if(nd.get_switch('toggle_lh_vor_adf') < 0){
                             nd.symbols.staToL2.setColor(0.195,0.96,0.097);
@@ -796,7 +796,7 @@ canvas.NDStyles["Airbus"] = {
                 id:'staToR2',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) !(nd.in_mode('toggle_display_mode', ['PLAN', 'MAP'])) and ((getprop("instrumentation/nav[1]/in-range") and nd.get_switch('toggle_rh_vor_adf') == 1) or (getprop("instrumentation/adf[1]/in-range") and nd.get_switch('toggle_rh_vor_adf') == -1)),
+                        predicate: func(nd) !(nd.in_mode('toggle_display_mode', ['PLAN'])) and nd.get_switch('toggle_centered') and ((getprop("instrumentation/nav[1]/in-range") and nd.get_switch('toggle_rh_vor_adf') == 1) or (getprop("instrumentation/adf[1]/in-range") and nd.get_switch('toggle_rh_vor_adf') == -1)),
                     is_true: func(nd) {
                         if(nd.get_switch('toggle_rh_vor_adf') < 0){
                             nd.symbols.staToR2.setColor(0.195,0.96,0.097);
@@ -814,6 +814,50 @@ canvas.NDStyles["Airbus"] = {
                     }
                 }
             },
+            {
+                id:'staToL',
+                    impl: {
+                        init: func(nd,symbol),
+                            predicate: func(nd) nd.in_mode('toggle_display_mode', ['MAP']) and !nd.get_switch('toggle_centered') and ((getprop("instrumentation/nav/in-range") and nd.get_switch('toggle_lh_vor_adf') == 1) or (getprop("instrumentation/adf/in-range") and nd.get_switch('toggle_lh_vor_adf') == -1)),
+                                is_true: func(nd) {
+                                    if(nd.get_switch('toggle_lh_vor_adf') < 0){
+                                        nd.symbols.staToL.setColor(0.195,0.96,0.097);
+                                        nd.symbols.staFromL.setColor(0.195,0.96,0.097);
+                                    } else {
+                                        nd.symbols.staToL.setColor(1,1,1);
+                                        nd.symbols.staFromL.setColor(1,1,1);
+                                    }
+                                    nd.symbols.staToL.show();
+                                    nd.symbols.staFromL.show();
+                                },
+                                is_false: func(nd){
+                                    nd.symbols.staToL.hide();
+                                    nd.symbols.staFromL.hide();
+                                }
+                    }
+            },
+                {
+                    id:'staToR',
+                        impl: {
+                            init: func(nd,symbol),
+                                predicate: func(nd) nd.in_mode('toggle_display_mode', ['MAP']) and !nd.get_switch('toggle_centered') and ((getprop("instrumentation/nav[1]/in-range") and nd.get_switch('toggle_rh_vor_adf') == 1) or (getprop("instrumentation/adf[1]/in-range") and nd.get_switch('toggle_rh_vor_adf') == -1)),
+                                    is_true: func(nd) {
+                                        if(nd.get_switch('toggle_rh_vor_adf') < 0){
+                                            nd.symbols.staToR.setColor(0.195,0.96,0.097);
+                                            nd.symbols.staFromR.setColor(0.195,0.96,0.097);
+                                        } else {
+                                            nd.symbols.staToR.setColor(1,1,1);
+                                            nd.symbols.staFromR.setColor(1,1,1);
+                                        }
+                                        nd.symbols.staToR.show();
+                                        nd.symbols.staFromR.show();
+                                    },
+                                        is_false: func(nd){
+                                            nd.symbols.staToR.hide();
+                                            nd.symbols.staFromR.hide();
+                                        }
+                        }
+                },
             {
                 id:'dmeL',
                 impl: {
