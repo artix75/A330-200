@@ -950,6 +950,19 @@ canvas.NDStyles["Airbus"] = {
                         nd.symbols.appMode.hide();
                     }
                 }  
+            },
+            {
+                id:'degreeArrows',
+                    impl: {
+                        init: func(nd,symbol),
+                        predicate: func(nd) (nd.get_switch('toggle_display_mode') != 'PLAN' and nd.get_switch('toggle_centered')),
+                        is_true: func(nd) {
+                            nd.symbols.degreeArrows.show();
+                        },
+                        is_false: func(nd){
+                            nd.symbols.degreeArrows.hide();
+                        }
+                    }  
             }
             
         ], # end of vector with features
