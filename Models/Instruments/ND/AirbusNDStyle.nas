@@ -123,7 +123,7 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible( nd.get_switch('toggle_vor') );
                 }, # end of layer update predicate
             }, # end of VOR layer
-            { name:'VOR', isMapStructure:1, update_on:['toggle_range','toggle_vor','toggle_display_mode'],
+            { name:'VOR', isMapStructure:1, update_on:['toggle_range','toggle_vor','toggle_display_mode','toggle_nav1_frq','toggle_nav2_frq'],
                 # FIXME: this is a really ugly place for controller code
                 predicate: func(nd, layer) {
                     # print("Running vor layer predicate");
@@ -148,7 +148,7 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible( nd.get_switch('toggle_ndb') );
                 }, # end of layer update predicate
             }, # end of NDB layers
-            { name:'NDB', isMapStructure:1, update_on:['toggle_range','toggle_ndb'],
+            { name:'NDB', isMapStructure:1, update_on:['toggle_range','toggle_ndb','toggle_display_mode','toggle_adf1_frq','toggle_adf2_frq'],
                 # FIXME: this is a really ugly place for controller code
                 predicate: func(nd, layer) {
                     var visible = nd.get_switch('toggle_ndb') and nd.in_mode('toggle_display_mode', ['MAP']) and (nd.rangeNm() <= 40);

@@ -19,6 +19,23 @@ var update_apl_sym = func {
 # entry point, this will set up all ND instances
 
 setlistener("sim/signals/fdm-initialized", func() {
+    
+    canvas.Group.setColor = func(r,g,b, excl = nil){
+        var children = me.getChildren();
+        foreach(var e; children){
+            var do_skip = 0;
+            if(excl != nil){
+                foreach(var cl; excl){
+                    if(isa(e, cl)){
+                        do_skip = 1;
+                        continue;                 
+                    }
+                }
+            }
+            if(!do_skip)
+                e.setColor(r,g,b);
+        }
+    }
 
     canvas.SymbolLayer.findsym = func(model, del=0) {
         forindex (var i; me.list) {
@@ -190,7 +207,11 @@ var myCockpit_switches = {
     'toggle_spd_point_100': {path: '/nd/spd-change-raw-100', value: 0, type: 'INT'},
     'toggle_spd_point_140': {path: '/nd/spd-change-raw-140', value: 0, type: 'INT'},
     'toggle_spd_point_250': {path: '/nd/spd-change-raw-250', value: 0, type: 'INT'},
-    'toggle_spd_point_260': {path: '/nd/spd-change-raw-260', value: 0, type: 'INT'}
+    'toggle_spd_point_260': {path: '/nd/spd-change-raw-260', value: 0, type: 'INT'},
+    'toggle_nav1_frq': {path: '/nd/nav1_frq', value: 0, type: 'INT'},
+    'toggle_nav2_frq': {path: '/nd/nav2_frq', value: 0, type: 'INT'},
+    'toggle_adf1_frq': {path: '/nd/adf1_frq', value: 0, type: 'INT'},
+    'toggle_adf2_frq': {path: '/nd/adf2_frq', value: 0, type: 'INT'}
     # add new switches here
 };
 
@@ -218,42 +239,70 @@ canvas.Symbol.get("FIX").draw = func{
 
 canvas.Symbol.get("VOR").svg_loaded = nil;
 canvas.Symbol.get("VOR").draw = func{
-    if(me.svg_loaded != nil) return;
-    var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-    var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_vor.svg";
-    me.element.removeAllChildren();
-    var grp = me.element.createChild("group");
-    canvas.parsesvg(grp, svg_path);
-    grp.setScale(0.8,0.8);
-    me.text_vor = me.element.createChild("text")
-    .setDrawMode( canvas.Text.TEXT )
-    .setText(me.model.id)
-    .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-    .setFontSize(28)
-    .setColor(1,1,1)
-    .setTranslation(45,25);
-    me.svg_loaded = 1;
+    var grp = nil;
+    if(me.svg_loaded == nil) {
+        var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+        var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_vor.svg";
+        me.element.removeAllChildren();
+        grp = me.element.createChild("group");
+        canvas.parsesvg(grp, svg_path);
+        grp.setScale(0.8,0.8);
+
+        me.text_vor = me.element.createChild("text")
+        .setDrawMode( canvas.Text.TEXT )
+        .setText(me.model.id)
+        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+        .setFontSize(28)
+        .setColor(1,1,1)
+        .setTranslation(45,25);
+        me.svg_loaded = 1;
+    } else {
+        grp = me.element;
+    }
+    var frq = me.model.frequency;
+    if(frq != nil and grp != nil){
+        frq = frq / 100;
+        var nav1_frq = getprop('instrumentation/nav/frequencies/selected-mhz');
+        var nav2_frq = getprop('instrumentation/nav[1]/frequencies/selected-mhz');
+        if(nav1_frq == frq or nav2_frq == frq){
+            grp.setColor(0,0.62,0.84, [canvas.Text]);
+        } else {
+            grp.setColor(0.9,0,0.47, [canvas.Text]);
+        }
+    }
 }
 
 canvas.Symbol.get("NDB").icon_ndb = nil;
 canvas.Symbol.get("NDB").draw = func{
-    if (me.icon_ndb != nil) return;
-    # the fix symbol
-    me.icon_ndb = me.element.createChild("path")
-    .moveTo(-15,15)
-    .lineTo(0,-15)
-    .lineTo(15,15)
-    .close()
-    .setStrokeLineWidth(3)
-    .setColor(0.69,0,0.39)
-    .setScale(0.8,0.8); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
-    # the fix label
-    me.text_ndb = me.element.createChild("text")
-    .setDrawMode( canvas.Text.TEXT )
-    .setText(me.model.id)
-    .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-    .setFontSize(28)
-    .setTranslation(25,10);
+    if (me.icon_ndb == nil) {
+        # the fix symbol
+        me.icon_ndb = me.element.createChild("path")
+        .moveTo(-15,15)
+        .lineTo(0,-15)
+        .lineTo(15,15)
+        .close()
+        .setStrokeLineWidth(3)
+        .setColor(0.69,0,0.39)
+        .setScale(0.8,0.8); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
+        # the fix label
+        me.text_ndb = me.element.createChild("text")
+        .setDrawMode( canvas.Text.TEXT )
+        .setText(me.model.id)
+        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+        .setFontSize(28)
+        .setTranslation(25,10);
+    };
+    var frq = me.model.frequency;
+    if(frq != nil and me.icon_ndb != nil){
+        frq = frq / 100;
+        var adf1_frq = getprop('instrumentation/adf/frequencies/selected-khz');
+        var adf2_frq = getprop('instrumentation/adf[1]/frequencies/selected-khz');
+        if(adf1_frq == frq or adf2_frq == frq){
+            me.icon_ndb.setColor(0,0.62,0.84);
+        } else {
+            me.icon_ndb.setColor(0.9,0,0.47);
+        }
+    }
 }
 
 canvas.draw_apt = func(group, apt, controller=nil, lod=0){
@@ -446,12 +495,14 @@ canvas.draw_route =  func (group, theroute, controller=nil, lod=0)
         }
         canvas.drawwp(group, leg.path()[-1].lat, leg.path()[-1].lon, leg.alt_cstr, leg.wp_name, i, canvas.wp);
     }
-    var first_wp = canvas.wp[0];
-    var last_wp = canvas.wp[fpSize - 1];
-    if(fp.departure_runway != nil and first_wp != nil) 
-        first_wp.hide();
-    if(fp.destination_runway != nil and last_wp != nil) 
-        last_wp.hide();
+    if(fpSize > 0){
+        var first_wp = canvas.wp[0];
+        var last_wp = canvas.wp[fpSize - 1];
+        if(fp.departure_runway != nil and first_wp != nil) 
+            first_wp.hide();
+        if(fp.destination_runway != nil and last_wp != nil) 
+            last_wp.hide();
+    }
 
     # Set Top Of Climb coordinate
     #canvas.drawprofile(route_group, "tc", "T/C");
@@ -656,17 +707,41 @@ setprop('instrumentation/efis/nd/lnav', (latctrl == 'fmgc'));
 });
 
 setlistener("/instrumentation/mcdu/f-pln/disp/first", func{
-            var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-if(typeof(first) == 'nil') first = -1;
-if(getprop('autopilot/route-manager/route/num') == 0) first = -1;
-setprop("instrumentation/efis/inputs/plan-wpt-index", first);
+    var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+    if(typeof(first) == 'nil') first = -1;
+    if(getprop('autopilot/route-manager/route/num') == 0) first = -1;
+    setprop("instrumentation/efis/inputs/plan-wpt-index", first);
 });
 
 setlistener('/instrumentation/efis/nd/terrain-on-nd', func{
-            var terr_on_hd = getprop('/instrumentation/efis/nd/terrain-on-nd');
-var alpha = 1;
-if(terr_on_hd) alpha = 0.5;
-nd_display.main.setColorBackground(0,0,0,alpha);
+    var terr_on_hd = getprop('/instrumentation/efis/nd/terrain-on-nd');
+    var alpha = 1;
+    if(terr_on_hd) alpha = 0.5;
+    nd_display.main.setColorBackground(0,0,0,alpha);
+});
+
+setlistener('instrumentation/nav/frequencies/selected-mhz', func{
+    var mhz = getprop('instrumentation/nav/frequencies/selected-mhz');
+    if(mhz == nil) mhz = 0;
+    setprop('/instrumentation/efis/nd/nav1_frq', mhz);
+});
+
+setlistener('instrumentation/nav[1]/frequencies/selected-mhz', func{
+    var mhz = getprop('instrumentation/nav[1]/frequencies/selected-mhz');
+    if(mhz == nil) mhz = 0;
+    setprop('/instrumentation/efis/nd/nav2_frq', mhz);
+});
+
+setlistener('instrumentation/adf/frequencies/selected-khz', func{
+    var khz = getprop('instrumentation/adf/frequencies/selected-khz');
+    if(khz == nil) khz = 0;
+    setprop('/instrumentation/efis/nd/adf1_frq', khz);
+});
+
+setlistener('instrumentation/adf[1]/frequencies/selected-khz', func{
+    var khz = getprop('instrumentation/adf[1]/frequencies/selected-khz');
+    if(khz == nil) khz = 0;
+    setprop('/instrumentation/efis/nd/adf2_frq', khz);
 });
 
 var showNd = func() {
