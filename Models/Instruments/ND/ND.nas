@@ -455,6 +455,14 @@ setlistener("sim/signals/fdm-initialized", func() {
             else
                 text_alt.setColor(1,1,1);
         }
+        var hold_id = getprop("/flight-management/hold/wp");
+        if(hold_id != nil and hold_id == wpLeg.id){
+            var hold_grp = wp_group.createChild("group", "wp-hold-" ~ i);
+            var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+            var hold_turn = getprop("/flight-management/hold/turn");
+            canvas.parsesvg(hold_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_hold"~hold_turn~".svg");
+            hold_grp.setTranslation(25,-55).set('z-index', 4);
+        }
         wp_group.setGeoPosition(lat, lon)
         .set("z-index",4);
     };
