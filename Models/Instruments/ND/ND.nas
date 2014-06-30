@@ -114,578 +114,578 @@ setlistener("sim/signals/fdm-initialized", func() {
     ####### LOAD FILES #######
     #print("loading files");
     (func {
-     var FG_ROOT = getprop("/sim/aircraft-dir");
+        var FG_ROOT = getprop("/sim/aircraft-dir");
 
-    var load = func(file, name) {
-        #print(file);
-        if (name == nil)
-            var name = split("/", file)[-1];
-        if (substr(name, size(name)-4) == ".draw")
-        name = substr(name, 0, size(name)-5);
-        #print("reading file");
-        var code = io.readfile(file);
-        #print("compiling file");
-        # This segfaults for some reason:
-        #var code = call(compile, [code], var err=[]);
-        var code = call(func compile(code, file), [code], var err=[]);
-        if (size(err)) {
-            #print("handling error");
-            if (substr(err[0], 0, 12) == "Parse error:") { # hack around Nasal feature
-                var e = split(" at line ", err[0]);
-                if (size(e) == 2)
-                err[0] = string.join("", [e[0], "\n  at ", file, ", line ", e[1], "\n "]);
+        var load = func(file, name) {
+            #print(file);
+            if (name == nil)
+                var name = split("/", file)[-1];
+            if (substr(name, size(name)-4) == ".draw")
+            name = substr(name, 0, size(name)-5);
+            #print("reading file");
+            var code = io.readfile(file);
+            #print("compiling file");
+            # This segfaults for some reason:
+            #var code = call(compile, [code], var err=[]);
+            var code = call(func compile(code, file), [code], var err=[]);
+            if (size(err)) {
+                #print("handling error");
+                if (substr(err[0], 0, 12) == "Parse error:") { # hack around Nasal feature
+                    var e = split(" at line ", err[0]);
+                    if (size(e) == 2)
+                    err[0] = string.join("", [e[0], "\n  at ", file, ", line ", e[1], "\n "]);
+                }
+                for (var i = 1; (var c = caller(i)) != nil; i += 1)
+                err ~= subvec(c, 2, 2);
+                debug.printerror(err);
+                return;
             }
-            for (var i = 1; (var c = caller(i)) != nil; i += 1)
-            err ~= subvec(c, 2, 2);
-            debug.printerror(err);
-            return;
+            #print("calling code");
+            call(code, nil, nil, var hash = {});
+            #debug.dump(keys(hash));
+            return hash;
+        };
+
+        var load_deps = func(name) {
+            load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".lcontroller",  name);
+            load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".symbol", name);
+            load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".scontroller", name);
         }
-        #print("calling code");
-        call(code, nil, nil, var hash = {});
-        #debug.dump(keys(hash));
-        return hash;
+
+        foreach( var name; ['APS','ALT-profile','SPD-profile'] )
+        load_deps( name );
+
+    })();
+
+    ##
+    # configure aircraft specific cockpit/ND switches here
+    # these are to be found in the property branch you specify
+    # via the NavDisplay.new() call
+    # the backend code in navdisplay.mfd should NEVER contain any aircraft-specific
+    # properties, or it will break other aircraft using different properties
+    # instead, make up an identifier (hash key) and map it to the property used
+    # in your aircraft, relative to your ND root in the backend code, only ever
+    # refer to the handle/key instead via the me.get_switch('toggle_range') method
+    # which would internally look up the matching aircraft property, e.g. '/instrumentation/efis'/inputs/range-nm'
+    #
+    # note: it is NOT sufficient to just add new switches here, the backend code in navdisplay.mfd also
+    # needs to know what to do with them !
+    # refer to incomplete symbol implementations to learn how they work (e.g. WXR, STA)
+
+    var myCockpit_switches = {
+        # symbolic alias : relative property (as used in bindings), initial value, type
+        'toggle_range': 	{path: '/inputs/range-nm', value:40, type:'INT'},
+        'toggle_weather': 	{path: '/inputs/wxr', value:0, type:'BOOL'},
+        'toggle_airports': 	{path: '/inputs/arpt', value:0, type:'BOOL'},
+        'toggle_ndb': 	{path: '/inputs/NDB', value:0, type:'BOOL'},
+        'toggle_stations':     {path: '/inputs/sta', value:0, type:'BOOL'},
+        'toggle_vor': 	{path: '/inputs/VORD', value:0, type:'BOOL'},
+        'toggle_cstr': 	{path: '/inputs/CSTR', value:0, type:'BOOL'},
+        'toggle_waypoints': 	{path: '/inputs/wpt', value:0, type:'BOOL'},
+        'toggle_position': 	{path: '/inputs/pos', value:0, type:'BOOL'},
+        'toggle_data': 		{path: '/inputs/data',value:0, type:'BOOL'},
+        'toggle_terrain': 	{path: '/inputs/terr',value:0, type:'BOOL'},
+        'toggle_traffic': 		{path: '/inputs/tfc',value:0, type:'BOOL'},
+        'toggle_centered': 		{path: '/inputs/nd-centered',value:0, type:'BOOL'},
+        'toggle_lh_vor_adf':	{path: '/input/lh-vor-adf',value:0, type:'INT'},
+        'toggle_rh_vor_adf':	{path: '/input/rh-vor-adf',value:0, type:'INT'},
+        'toggle_display_mode': 	{path: '/nd/canvas-display-mode', value:'NAV', type:'STRING'},
+        'toggle_display_type': 	{path: '/mfd/display-type', value:'LCD', type:'STRING'},
+        'toggle_true_north': 	{path: '/mfd/true-north', value:0, type:'BOOL'},
+        'toggle_track_heading': 	{path: '/trk-selected', value:0, type:'BOOL'},
+        'toggle_fplan': {path: '/nd/route-manager-active', value:0, type: 'BOOL'},
+        'toggle_lnav': {path: '/nd/lnav', value:0, type: 'BOOL'},
+        'toggle_vnav': {path: '/nd/vnav', value:0, type: 'BOOL'},
+        'toggle_wpt_idx': {path: '/inputs/plan-wpt-index', value: -1, type: 'INT'},
+        'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'},
+        'toggle_app_mode': {path: '/nd/app-mode', value:'', type: 'STRING'},
+        'toggle_cur_td': {path: '/nd/current-td', value: 0, type: 'INT'},
+        'toggle_cur_tc': {path: '/nd/current-tc', value: 0, type: 'INT'},
+        'toggle_cur_sc': {path: '/nd/current-sc', value: 0, type: 'INT'},
+        'toggle_cur_ed': {path: '/nd/current-ed', value: 0, type: 'INT'},
+        'toggle_man_spd': {path: '/nd/managed-spd', value: 0, type: 'INT'},
+        'toggle_athr': {path: '/nd/athr', value: 0, type: 'INT'},
+        'toggle_spd_point_100': {path: '/nd/spd-change-raw-100', value: 0, type: 'INT'},
+        'toggle_spd_point_140': {path: '/nd/spd-change-raw-140', value: 0, type: 'INT'},
+        'toggle_spd_point_250': {path: '/nd/spd-change-raw-250', value: 0, type: 'INT'},
+        'toggle_spd_point_260': {path: '/nd/spd-change-raw-260', value: 0, type: 'INT'},
+        'toggle_nav1_frq': {path: '/nd/nav1_frq', value: 0, type: 'INT'},
+        'toggle_nav2_frq': {path: '/nd/nav2_frq', value: 0, type: 'INT'},
+        'toggle_adf1_frq': {path: '/nd/adf1_frq', value: 0, type: 'INT'},
+        'toggle_adf2_frq': {path: '/nd/adf2_frq', value: 0, type: 'INT'}
+        # add new switches here
     };
 
-    var load_deps = func(name) {
-        load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".lcontroller",  name);
-        load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".symbol", name);
-        load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".scontroller", name);
-    }
-
-    foreach( var name; ['APS','ALT-profile','SPD-profile'] )
-    load_deps( name );
-
-})();
-
-##
-# configure aircraft specific cockpit/ND switches here
-# these are to be found in the property branch you specify
-# via the NavDisplay.new() call
-# the backend code in navdisplay.mfd should NEVER contain any aircraft-specific
-# properties, or it will break other aircraft using different properties
-# instead, make up an identifier (hash key) and map it to the property used
-# in your aircraft, relative to your ND root in the backend code, only ever
-# refer to the handle/key instead via the me.get_switch('toggle_range') method
-# which would internally look up the matching aircraft property, e.g. '/instrumentation/efis'/inputs/range-nm'
-#
-# note: it is NOT sufficient to just add new switches here, the backend code in navdisplay.mfd also
-# needs to know what to do with them !
-# refer to incomplete symbol implementations to learn how they work (e.g. WXR, STA)
-
-var myCockpit_switches = {
-    # symbolic alias : relative property (as used in bindings), initial value, type
-    'toggle_range': 	{path: '/inputs/range-nm', value:40, type:'INT'},
-    'toggle_weather': 	{path: '/inputs/wxr', value:0, type:'BOOL'},
-    'toggle_airports': 	{path: '/inputs/arpt', value:0, type:'BOOL'},
-    'toggle_ndb': 	{path: '/inputs/NDB', value:0, type:'BOOL'},
-    'toggle_stations':     {path: '/inputs/sta', value:0, type:'BOOL'},
-    'toggle_vor': 	{path: '/inputs/VORD', value:0, type:'BOOL'},
-    'toggle_cstr': 	{path: '/inputs/CSTR', value:0, type:'BOOL'},
-    'toggle_waypoints': 	{path: '/inputs/wpt', value:0, type:'BOOL'},
-    'toggle_position': 	{path: '/inputs/pos', value:0, type:'BOOL'},
-    'toggle_data': 		{path: '/inputs/data',value:0, type:'BOOL'},
-    'toggle_terrain': 	{path: '/inputs/terr',value:0, type:'BOOL'},
-    'toggle_traffic': 		{path: '/inputs/tfc',value:0, type:'BOOL'},
-    'toggle_centered': 		{path: '/inputs/nd-centered',value:0, type:'BOOL'},
-    'toggle_lh_vor_adf':	{path: '/input/lh-vor-adf',value:0, type:'INT'},
-    'toggle_rh_vor_adf':	{path: '/input/rh-vor-adf',value:0, type:'INT'},
-    'toggle_display_mode': 	{path: '/nd/canvas-display-mode', value:'NAV', type:'STRING'},
-    'toggle_display_type': 	{path: '/mfd/display-type', value:'LCD', type:'STRING'},
-    'toggle_true_north': 	{path: '/mfd/true-north', value:0, type:'BOOL'},
-    'toggle_track_heading': 	{path: '/trk-selected', value:0, type:'BOOL'},
-    'toggle_fplan': {path: '/nd/route-manager-active', value:0, type: 'BOOL'},
-    'toggle_lnav': {path: '/nd/lnav', value:0, type: 'BOOL'},
-    'toggle_vnav': {path: '/nd/vnav', value:0, type: 'BOOL'},
-    'toggle_wpt_idx': {path: '/inputs/plan-wpt-index', value: -1, type: 'INT'},
-    'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'},
-    'toggle_app_mode': {path: '/nd/app-mode', value:'', type: 'STRING'},
-    'toggle_cur_td': {path: '/nd/current-td', value: 0, type: 'INT'},
-    'toggle_cur_tc': {path: '/nd/current-tc', value: 0, type: 'INT'},
-    'toggle_cur_sc': {path: '/nd/current-sc', value: 0, type: 'INT'},
-    'toggle_cur_ed': {path: '/nd/current-ed', value: 0, type: 'INT'},
-    'toggle_man_spd': {path: '/nd/managed-spd', value: 0, type: 'INT'},
-    'toggle_athr': {path: '/nd/athr', value: 0, type: 'INT'},
-    'toggle_spd_point_100': {path: '/nd/spd-change-raw-100', value: 0, type: 'INT'},
-    'toggle_spd_point_140': {path: '/nd/spd-change-raw-140', value: 0, type: 'INT'},
-    'toggle_spd_point_250': {path: '/nd/spd-change-raw-250', value: 0, type: 'INT'},
-    'toggle_spd_point_260': {path: '/nd/spd-change-raw-260', value: 0, type: 'INT'},
-    'toggle_nav1_frq': {path: '/nd/nav1_frq', value: 0, type: 'INT'},
-    'toggle_nav2_frq': {path: '/nd/nav2_frq', value: 0, type: 'INT'},
-    'toggle_adf1_frq': {path: '/nd/adf1_frq', value: 0, type: 'INT'},
-    'toggle_adf2_frq': {path: '/nd/adf2_frq', value: 0, type: 'INT'}
-    # add new switches here
-};
-
-canvas.Symbol.get("FIX").icon_fix = nil;
-canvas.Symbol.get("FIX").draw = func{
-    if (me.icon_fix != nil) return;
-    # the fix symbol
-    me.icon_fix = me.element.createChild("path")
-    .moveTo(-10,0)
-    .lineTo(0,-17)
-    .lineTo(10,0)
-    .lineTo(0,17)
-    .close()
-    .setStrokeLineWidth(3)
-    .setColor(0.69,0,0.39)
-    .setScale(0.8,0.8); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
-    # the fix label
-    me.text_fix = me.element.createChild("text")
-    .setDrawMode( canvas.Text.TEXT )
-    .setText(me.model.id)
-    .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-    .setFontSize(28)
-    .setTranslation(20,10);
-}
-
-canvas.Symbol.get("VOR").svg_loaded = nil;
-canvas.Symbol.get("VOR").draw = func{
-    var grp = nil;
-    if(me.svg_loaded == nil) {
-        var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-        var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_vor.svg";
-        me.element.removeAllChildren();
-        grp = me.element.createChild("group");
-        canvas.parsesvg(grp, svg_path);
-        grp.setScale(0.8,0.8);
-
-        me.text_vor = me.element.createChild("text")
-        .setDrawMode( canvas.Text.TEXT )
-        .setText(me.model.id)
-        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-        .setFontSize(28)
-        .setColor(1,1,1)
-        .setTranslation(45,25);
-        me.svg_loaded = 1;
-    } else {
-        grp = me.element;
-    }
-    var frq = me.model.frequency;
-    if(frq != nil and grp != nil){
-        frq = frq / 100;
-        var nav1_frq = getprop('instrumentation/nav/frequencies/selected-mhz');
-        var nav2_frq = getprop('instrumentation/nav[1]/frequencies/selected-mhz');
-        if(nav1_frq == frq or nav2_frq == frq){
-            grp.setColor(0,0.62,0.84, [canvas.Text]);
-        } else {
-            grp.setColor(0.9,0,0.47, [canvas.Text]);
-        }
-    }
-}
-
-canvas.Symbol.get("NDB").icon_ndb = nil;
-canvas.Symbol.get("NDB").draw = func{
-    if (me.icon_ndb == nil) {
+    canvas.Symbol.get("FIX").icon_fix = nil;
+    canvas.Symbol.get("FIX").draw = func{
+        if (me.icon_fix != nil) return;
         # the fix symbol
-        me.icon_ndb = me.element.createChild("path")
-        .moveTo(-15,15)
-        .lineTo(0,-15)
-        .lineTo(15,15)
+        me.icon_fix = me.element.createChild("path")
+        .moveTo(-10,0)
+        .lineTo(0,-17)
+        .lineTo(10,0)
+        .lineTo(0,17)
         .close()
         .setStrokeLineWidth(3)
         .setColor(0.69,0,0.39)
         .setScale(0.8,0.8); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
         # the fix label
-        me.text_ndb = me.element.createChild("text")
+        me.text_fix = me.element.createChild("text")
         .setDrawMode( canvas.Text.TEXT )
         .setText(me.model.id)
         .setFont("LiberationFonts/LiberationSans-Regular.ttf")
         .setFontSize(28)
-        .setTranslation(25,10);
-    };
-    var frq = me.model.frequency;
-    if(frq != nil and me.icon_ndb != nil){
-        frq = frq / 100;
-        var adf1_frq = getprop('instrumentation/adf/frequencies/selected-khz');
-        var adf2_frq = getprop('instrumentation/adf[1]/frequencies/selected-khz');
-        if(adf1_frq == frq or adf2_frq == frq){
-            me.icon_ndb.setColor(0,0.62,0.84);
+        .setTranslation(20,10);
+    }
+
+    canvas.Symbol.get("VOR").svg_loaded = nil;
+    canvas.Symbol.get("VOR").draw = func{
+        var grp = nil;
+        if(me.svg_loaded == nil) {
+            var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+            var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_vor.svg";
+            me.element.removeAllChildren();
+            grp = me.element.createChild("group");
+            canvas.parsesvg(grp, svg_path);
+            grp.setScale(0.8,0.8);
+
+            me.text_vor = me.element.createChild("text")
+            .setDrawMode( canvas.Text.TEXT )
+            .setText(me.model.id)
+            .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+            .setFontSize(28)
+            .setColor(1,1,1)
+            .setTranslation(45,25);
+            me.svg_loaded = 1;
         } else {
-            me.icon_ndb.setColor(0.9,0,0.47);
+            grp = me.element;
+        }
+        var frq = me.model.frequency;
+        if(frq != nil and grp != nil){
+            frq = frq / 100;
+            var nav1_frq = getprop('instrumentation/nav/frequencies/selected-mhz');
+            var nav2_frq = getprop('instrumentation/nav[1]/frequencies/selected-mhz');
+            if(nav1_frq == frq or nav2_frq == frq){
+                grp.setColor(0,0.62,0.84, [canvas.Text]);
+            } else {
+                grp.setColor(0.9,0,0.47, [canvas.Text]);
+            }
         }
     }
-}
 
-canvas.draw_apt = func(group, apt, controller=nil, lod=0){
-    var lat = apt.lat;
-    var lon = apt.lon;
-    var name = apt.id;
-    # print("drawing nd airport:", name);
+    canvas.Symbol.get("NDB").icon_ndb = nil;
+    canvas.Symbol.get("NDB").draw = func{
+        if (me.icon_ndb == nil) {
+            # the fix symbol
+            me.icon_ndb = me.element.createChild("path")
+            .moveTo(-15,15)
+            .lineTo(0,-15)
+            .lineTo(15,15)
+            .close()
+            .setStrokeLineWidth(3)
+            .setColor(0.69,0,0.39)
+            .setScale(0.8,0.8); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
+            # the fix label
+            me.text_ndb = me.element.createChild("text")
+            .setDrawMode( canvas.Text.TEXT )
+            .setText(me.model.id)
+            .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+            .setFontSize(28)
+            .setTranslation(25,10);
+        };
+        var frq = me.model.frequency;
+        if(frq != nil and me.icon_ndb != nil){
+            frq = frq / 100;
+            var adf1_frq = getprop('instrumentation/adf/frequencies/selected-khz');
+            var adf2_frq = getprop('instrumentation/adf[1]/frequencies/selected-khz');
+            if(adf1_frq == frq or adf2_frq == frq){
+                me.icon_ndb.setColor(0,0.62,0.84);
+            } else {
+                me.icon_ndb.setColor(0.9,0,0.47);
+            }
+        }
+    }
 
-    var apt_grp = group.createChild("group", name);
+    canvas.draw_apt = func(group, apt, controller=nil, lod=0){
+        var lat = apt.lat;
+        var lon = apt.lon;
+        var name = apt.id;
+        # print("drawing nd airport:", name);
 
-    # FIXME: conditions don't belong here, use the controller hash instead!
-    # if (1 or getprop("instrumentation/efis/inputs/arpt")) {
-    var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-    var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_airport.svg";
-    #me.element.removeAllChildren();
-    canvas.parsesvg(apt_grp, svg_path);
-    #apt_grp.setScale(0.8,0.8);
-    var text_apt = apt_grp.createChild("text", name ~ " label")
-    .setDrawMode( canvas.Text.TEXT )
-    .setTranslation(45,35)
-    .setText(name)
-    .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-    .setColor(1,1,1)
-    .setFontSize(28);
-    apt_grp.setGeoPosition(lat, lon)
-    .set("z-index",1); # FIXME: this needs to be configurable!!
-    #}
+        var apt_grp = group.createChild("group", name);
 
-    # draw routines should always return their canvas group to the caller for further processing
+        # FIXME: conditions don't belong here, use the controller hash instead!
+        # if (1 or getprop("instrumentation/efis/inputs/arpt")) {
+        var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+        var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_airport.svg";
+        #me.element.removeAllChildren();
+        canvas.parsesvg(apt_grp, svg_path);
+        #apt_grp.setScale(0.8,0.8);
+        var text_apt = apt_grp.createChild("text", name ~ " label")
+        .setDrawMode( canvas.Text.TEXT )
+        .setTranslation(45,35)
+        .setText(name)
+        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+        .setColor(1,1,1)
+        .setFontSize(28);
+        apt_grp.setGeoPosition(lat, lon)
+        .set("z-index",1); # FIXME: this needs to be configurable!!
+        #}
 
-}
+        # draw routines should always return their canvas group to the caller for further processing
 
-canvas.draw_airplane_symbol = func (group, apl, controller=nil, lod=0) {
-    var lat = apl.lat;
-    var lon = apl.lon;
-    var hdg = apl.hdg;
+    }
 
-    var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-    var airplane_grp = group.getElementById("airplane");
-    var apl_path = nil;
-    var aplSymbol = nil;
-    if(airplane_grp == nil){
-        airplane_grp = group.createChild("group","airplane");
-        canvas.parsesvg(airplane_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbusAirplane.svg");
-        aplSymbol = airplane_grp.getElementById("airplane");
+    canvas.draw_airplane_symbol = func (group, apl, controller=nil, lod=0) {
+        var lat = apl.lat;
+        var lon = apl.lon;
+        var hdg = apl.hdg;
+
+        var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+        var airplane_grp = group.getElementById("airplane");
+        var apl_path = nil;
+        var aplSymbol = nil;
+        if(airplane_grp == nil){
+            airplane_grp = group.createChild("group","airplane");
+            canvas.parsesvg(airplane_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbusAirplane.svg");
+            aplSymbol = airplane_grp.getElementById("airplane");
+            apl_path = aplSymbol.getElementById("apl_path");
+            #aplSymbol.hide();
+            aplSymbol.setTranslation(-45,-52)
+            .setCenter(0,0);
+            #airplane_grp.setScale(0,0);
+        }
         apl_path = aplSymbol.getElementById("apl_path");
-        #aplSymbol.hide();
-        aplSymbol.setTranslation(-45,-52)
-        .setCenter(0,0);
-        #airplane_grp.setScale(0,0);
+        airplane_grp.setGeoPosition(lat, lon)
+        .set("z-index",10)
+        .setRotation(hdg*D2R);
+        #.setScale(1,1);
     }
-    apl_path = aplSymbol.getElementById("apl_path");
-    airplane_grp.setGeoPosition(lat, lon)
-    .set("z-index",10)
-    .setRotation(hdg*D2R);
-    #.setScale(1,1);
-}
 
-canvas.RouteModel.init = func {
-    me._view.reset();
-    #if (!getprop("/autopilot/route-manager/active"))
-    #    return;
+    canvas.RouteModel.init = func {
+        me._view.reset();
+        #if (!getprop("/autopilot/route-manager/active"))
+        #    return;
 
-    ## TODO: all the model stuff is still inside the draw file for now, this just ensures that it will be called once
-    foreach(var t; [nil] )
-    me.push(t);
+        ## TODO: all the model stuff is still inside the draw file for now, this just ensures that it will be called once
+        foreach(var t; [nil] )
+        me.push(t);
 
-    me.notifyView();
+        me.notifyView();
 
-    #FIXME: segfault of the day: use this layer once without a route, and then with a route - and  BOOM, need to investigate.
+        #FIXME: segfault of the day: use this layer once without a route, and then with a route - and  BOOM, need to investigate.
 
-    # TODO: should register a route manager listener here to update itself whenever the route/active WPT changes!
-    # also, if the layer is used in a dialog, the listener should be removed when the dialog is closed
-    if (me.route_monitor == nil) # FIXME: remove this listener durint reinit
-        me.route_monitor=setlistener("/autopilot/route-manager/active", func me.init() ); # this can probably be shared (singleton), because all canvases will be displaying same route ???
-}
+        # TODO: should register a route manager listener here to update itself whenever the route/active WPT changes!
+        # also, if the layer is used in a dialog, the listener should be removed when the dialog is closed
+        if (me.route_monitor == nil) # FIXME: remove this listener durint reinit
+            me.route_monitor=setlistener("/autopilot/route-manager/active", func me.init() ); # this can probably be shared (singleton), because all canvases will be displaying same route ???
+    }
 
-canvas.updatewp = func(activeWp)
-{
-    forindex(var i; canvas.wp) {
-        if(i == activeWp) {
-            canvas.wp[i].setColor(1,1,1);
-            #text_wp[i].setColor(1,0,1);
-        } else {
-            canvas.wp[i].setColor(0.4,0.7,0.4);
-            #text_wp[i].setColor(1,1,1);
+    canvas.updatewp = func(activeWp)
+    {
+        forindex(var i; canvas.wp) {
+            if(i == activeWp) {
+                canvas.wp[i].setColor(1,1,1);
+                #text_wp[i].setColor(1,0,1);
+            } else {
+                canvas.wp[i].setColor(0.4,0.7,0.4);
+                #text_wp[i].setColor(1,1,1);
+            }
         }
     }
-}
 
-canvas.drawwp =  func (group, lat, lon, alt, name, i, wp) {
-    var wp_group = group.createChild("group","wp");
-    wp[i] = wp_group.createChild("path", "wp-" ~ i)
-    .setStrokeLineWidth(3)
-    .moveTo(-10,0)
-    .lineTo(0,-17)
-    .lineTo(10,0)
-    .lineTo(0,17)
-    .setColor(1,1,1)
-    .close();
-    #####
-    # The commented code leads to a segfault when a route is replaced by a new one
-    #####
-    #
-    # text_wp[i] = wp_group.createChild("text", "wp-text-" ~ i)
-    #
-    if (alt <= 0){
-        alt = "";
-    }
-    else{
-        var alt_path = wp_group.createChild("path").
-        setStrokeLineWidth(3).
-        moveTo(-17,0).
-        arcSmallCW(17,17,0,34,0).
-        arcSmallCW(17,17,0,-34,0);
-        if(getprop("flight-management/control/ver-ctrl") == 'fmgc')
-        alt_path.setColor(0.69,0,0.39);
-        else
-            alt_path.setColor(1,1,1);
-        if(getprop('instrumentation/efis/inputs/CSTR'))
-        alt_path.show();
-        else
-            alt_path.hide();
-        alt = "";#\n"~alt;
-    }
-    var text_wps = wp_group.createChild("text", "wp-text-" ~ i)
-    .setDrawMode( canvas.Text.TEXT )
-    .setText(name~alt)
-    .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-    .setFontSize(28)
-    .setTranslation(25,35)
-    .setColor(1,1,1);
-    wp_group.setGeoPosition(lat, lon)
-    .set("z-index",4);
-};
+    canvas.drawwp =  func (group, lat, lon, alt, name, i, wp) {
+        var wp_group = group.createChild("group","wp");
+        wp[i] = wp_group.createChild("path", "wp-" ~ i)
+        .setStrokeLineWidth(3)
+        .moveTo(-10,0)
+        .lineTo(0,-17)
+        .lineTo(10,0)
+        .lineTo(0,17)
+        .setColor(1,1,1)
+        .close();
+        #####
+        # The commented code leads to a segfault when a route is replaced by a new one
+        #####
+        #
+        # text_wp[i] = wp_group.createChild("text", "wp-text-" ~ i)
+        #
+        if (alt <= 0){
+            alt = "";
+        }
+        else{
+            var alt_path = wp_group.createChild("path").
+            setStrokeLineWidth(3).
+            moveTo(-17,0).
+            arcSmallCW(17,17,0,34,0).
+            arcSmallCW(17,17,0,-34,0);
+            if(getprop("flight-management/control/ver-ctrl") == 'fmgc')
+            alt_path.setColor(0.69,0,0.39);
+            else
+                alt_path.setColor(1,1,1);
+            if(getprop('instrumentation/efis/inputs/CSTR'))
+            alt_path.show();
+            else
+                alt_path.hide();
+            alt = "";#\n"~alt;
+        }
+        var text_wps = wp_group.createChild("text", "wp-text-" ~ i)
+        .setDrawMode( canvas.Text.TEXT )
+        .setText(name~alt)
+        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+        .setFontSize(28)
+        .setTranslation(25,35)
+        .setColor(1,1,1);
+        wp_group.setGeoPosition(lat, lon)
+        .set("z-index",4);
+    };
 
-canvas.draw_route =  func (group, theroute, controller=nil, lod=0)
-{
-    #print("draw_route");
-    var route_group = group;
-
-    var route = route_group.createChild("path","route")
-    .setStrokeLineWidth(5)
-    .setColor(0.4,0.7,0.4);
-
-    var lnav = (getprop('flight-management/control/lat-ctrl') == 'fmgc');
-    var actv = getprop('autopilot/route-manager/active');
-
-    if(!lnav or !actv)
-        route.setStrokeDashArray([32, 16]);
-    else
-        route.setStrokeDashArray([]);
-    if(!actv)
-        route.setColor(0.95,0.95,0.21);
-
-    var cmds = [];
-    var coords = [];
-
-    var fp = flightplan();
-    var fpSize = fp.getPlanSize();
-
-    canvas.wp = [];
-    canvas.text_wp = [];
-    setsize(canvas.wp,fpSize);
-    setsize(canvas.text_wp,fpSize);
-
-    # Retrieve route coordinates
-    for (var i=0; i<(fpSize); i += 1)
+    canvas.draw_route =  func (group, theroute, controller=nil, lod=0)
     {
-        if (i == 0) {
-            var leg = fp.getWP(1);
-            var j = 0;
+        #print("draw_route");
+        var route_group = group;
+
+        var route = route_group.createChild("path","route")
+        .setStrokeLineWidth(5)
+        .setColor(0.4,0.7,0.4);
+
+        var lnav = (getprop('flight-management/control/lat-ctrl') == 'fmgc');
+        var actv = getprop('autopilot/route-manager/active');
+
+        if(!lnav or !actv)
+            route.setStrokeDashArray([32, 16]);
+        else
+            route.setStrokeDashArray([]);
+        if(!actv)
+            route.setColor(0.95,0.95,0.21);
+
+        var cmds = [];
+        var coords = [];
+
+        var fp = flightplan();
+        var fpSize = fp.getPlanSize();
+
+        canvas.wp = [];
+        canvas.text_wp = [];
+        setsize(canvas.wp,fpSize);
+        setsize(canvas.text_wp,fpSize);
+
+        # Retrieve route coordinates
+        for (var i=0; i<(fpSize); i += 1)
+        {
+            if (i == 0) {
+                var leg = fp.getWP(1);
+                var j = 0;
+                foreach (var pt; leg.path()) {
+                    append(coords,"N"~pt.lat);
+                    append(coords,"E"~pt.lon);
+                    if (j==0){
+                        append(cmds,2);
+                        j=1;
+                    } else
+                        append(cmds,4);
+                }
+                canvas.drawwp(group, leg.path()[0].lat, leg.path()[0].lon, fp.getWP(0).alt_cstr, fp.getWP(0).wp_name, i, canvas.wp);
+                i+=1;
+            }
+            var leg = fp.getWP(i);
             foreach (var pt; leg.path()) {
                 append(coords,"N"~pt.lat);
                 append(coords,"E"~pt.lon);
-                if (j==0){
-                    append(cmds,2);
-                    j=1;
-                } else
-                    append(cmds,4);
+                append(cmds,4);
             }
-            canvas.drawwp(group, leg.path()[0].lat, leg.path()[0].lon, fp.getWP(0).alt_cstr, fp.getWP(0).wp_name, i, canvas.wp);
-            i+=1;
+            canvas.drawwp(group, leg.path()[-1].lat, leg.path()[-1].lon, leg.alt_cstr, leg.wp_name, i, canvas.wp);
         }
-        var leg = fp.getWP(i);
-        foreach (var pt; leg.path()) {
-            append(coords,"N"~pt.lat);
-            append(coords,"E"~pt.lon);
-            append(cmds,4);
+        if(fpSize > 0){
+            var first_wp = canvas.wp[0];
+            var last_wp = canvas.wp[fpSize - 1];
+            if(fp.departure_runway != nil and first_wp != nil) 
+                first_wp.hide();
+            if(fp.destination_runway != nil and last_wp != nil) 
+                last_wp.hide();
         }
-        canvas.drawwp(group, leg.path()[-1].lat, leg.path()[-1].lon, leg.alt_cstr, leg.wp_name, i, canvas.wp);
+
+        # Set Top Of Climb coordinate
+        #canvas.drawprofile(route_group, "tc", "T/C");
+        # Set Top Of Descent coordinate
+        #canvas.drawprofile(route_group, "td", "T/D");
+        canvas.drawprofile(route_group, "decel", "D");
+        # Set Step Climb coordinate
+        #canvas.drawprofile(route_group, "sc", "S/C");
+        # Set Top Of Descent coordinate
+        #canvas.drawprofile(route_group, "ed", "E/D");
+        #canvas.drawprofile(route_group, "ec", "E/C");
+
+        # Update route coordinates
+        #debug.dump(cmds);
+        #debug.dump(coords);
+        route.setDataGeo(cmds, coords);
+        #canvas.updatewp(0);
+        canvas.updatewp(getprop("/autopilot/route-manager/current-wp"));
     }
-    if(fpSize > 0){
-        var first_wp = canvas.wp[0];
-        var last_wp = canvas.wp[fpSize - 1];
-        if(fp.departure_runway != nil and first_wp != nil) 
-            first_wp.hide();
-        if(fp.destination_runway != nil and last_wp != nil) 
-            last_wp.hide();
-    }
 
-    # Set Top Of Climb coordinate
-    #canvas.drawprofile(route_group, "tc", "T/C");
-    # Set Top Of Descent coordinate
-    #canvas.drawprofile(route_group, "td", "T/D");
-    canvas.drawprofile(route_group, "decel", "D");
-    # Set Step Climb coordinate
-    #canvas.drawprofile(route_group, "sc", "S/C");
-    # Set Top Of Descent coordinate
-    #canvas.drawprofile(route_group, "ed", "E/D");
-    #canvas.drawprofile(route_group, "ec", "E/C");
-
-    # Update route coordinates
-    #debug.dump(cmds);
-    #debug.dump(coords);
-    route.setDataGeo(cmds, coords);
-    #canvas.updatewp(0);
-    canvas.updatewp(getprop("/autopilot/route-manager/current-wp"));
-}
-
-canvas.drawprofile =  func (group, property, disptext)
-{
-    #print("Reading profile for instrumentation/nd/symbols/"~property);
-    var symNode = props.globals.getNode("instrumentation/nd/symbols/"~property, 1);
-    var lon = symNode.getNode("longitude-deg", 1).getValue();
-    var lat = symNode.getNode("latitude-deg", 1).getValue();
-    #if(lat != nil and lon != nil)
-    #    print("Coord: "~lat~", "~lon);
-    var sym_group = group.createChild("group", property);
-    var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-
-    if(lon != nil)
+    canvas.drawprofile =  func (group, property, disptext)
     {
-        canvas.parsesvg(sym_group, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_"~property~".svg");
-        sym_group.setGeoPosition(lat, lon)
-        .set("z-index",4);
-        var grp = sym_group.getElementById(property~'_symbol');
-        if(property == 'tc' or property == 'ec' or property == 'ed'){
-            grp.setTranslation(-50,0);
-        }
-        if(grp != nil){
-            var bearing = getprop("instrumentation/nd/symbols/"~property~"/bearing-deg");
-            if(bearing){
-                #print(property~" bearing: " ~ bearing);
-                var hdg = a332.nd_display.main._node.getNode('group/map').getValue('hdg');
-                if(hdg == nil) hdg = 0;
-                bearing -= hdg;
-                if(bearing < 0) bearing = 360 + bearing; 
-                grp.setRotation(bearing*D2R);
+        #print("Reading profile for instrumentation/nd/symbols/"~property);
+        var symNode = props.globals.getNode("instrumentation/nd/symbols/"~property, 1);
+        var lon = symNode.getNode("longitude-deg", 1).getValue();
+        var lat = symNode.getNode("latitude-deg", 1).getValue();
+        #if(lat != nil and lon != nil)
+        #    print("Coord: "~lat~", "~lon);
+        var sym_group = group.createChild("group", property);
+        var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+
+        if(lon != nil)
+        {
+            canvas.parsesvg(sym_group, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_"~property~".svg");
+            sym_group.setGeoPosition(lat, lon)
+            .set("z-index",4);
+            var grp = sym_group.getElementById(property~'_symbol');
+            if(property == 'tc' or property == 'ec' or property == 'ed'){
+                grp.setTranslation(-50,0);
             }
+            if(grp != nil){
+                var bearing = getprop("instrumentation/nd/symbols/"~property~"/bearing-deg");
+                if(bearing){
+                    #print(property~" bearing: " ~ bearing);
+                    var hdg = a332.nd_display.main._node.getNode('group/map').getValue('hdg');
+                    if(hdg == nil) hdg = 0;
+                    bearing -= hdg;
+                    if(bearing < 0) bearing = 360 + bearing; 
+                    grp.setRotation(bearing*D2R);
+                }
+            }
+            #var rot = me.map._node.getNode("hdg",1).getDoubleValue();
+            #var rot = nd_display.main._node.getNode('group/map/hdg').getValue();
+            #sym_group.setRotation(rot);
         }
-        #var rot = me.map._node.getNode("hdg",1).getDoubleValue();
-        #var rot = nd_display.main._node.getNode('group/map/hdg').getValue();
-        #sym_group.setRotation(rot);
     }
-}
 
-canvas._draw_rwy_nd = func (group, lat, lon, length, width, rwyhdg) {
-    var apt = airportinfo("EHAM");
-    var rwy = apt.runway("18R");
+    canvas._draw_rwy_nd = func (group, lat, lon, length, width, rwyhdg) {
+        var apt = airportinfo("EHAM");
+        var rwy = apt.runway("18R");
 
-    var ctr_len = length * 0.75;
-    var crds = [];
-    var coord = geo.Coord.new();
-    width=width*20; # Else rwy is too thin to be visible
-    coord.set_latlon(lat, lon);
-    coord.apply_course_distance(rwyhdg, -(ctr_len / 2));
-    append(crds,"N"~coord.lat());
-    append(crds,"E"~coord.lon());
-    coord.apply_course_distance(rwyhdg, (ctr_len));
-    append(crds,"N"~coord.lat());
-    append(crds,"E"~coord.lon());
-    icon_rwy = group.createChild("path", "rwy-cl")
-    .setStrokeLineWidth(3)
-    .setDataGeo([2,4],crds)
-    .setColor(1,1,1);
-    #.setStrokeDashArray([10, 20, 10, 20, 10]);
-    #icon_rwy.hide();
-    var crds = [];
-    coord.set_latlon(lat, lon);
-    append(crds,"N"~coord.lat());
-    append(crds,"E"~coord.lon());
-    coord.apply_course_distance(rwyhdg + 90, width/2);
-    append(crds,"N"~coord.lat());
-    append(crds,"E"~coord.lon());
-    coord.apply_course_distance(rwyhdg, length);
-    append(crds,"N"~coord.lat());
-    append(crds,"E"~coord.lon());
-    icon_rwy = group.createChild("path", "rwy")
-    .setStrokeLineWidth(3)
-    .setDataGeo([2,4,4],crds)
-    .setColor(1,1,1);
-    var crds = [];
-    append(crds,"N"~coord.lat());
-    append(crds,"E"~coord.lon());
-    coord.apply_course_distance(rwyhdg - 90, width);
-    append(crds,"N"~coord.lat());
-    append(crds,"E"~coord.lon());
-    coord.apply_course_distance(rwyhdg, -length);
-    append(crds,"N"~coord.lat());
-    append(crds,"E"~coord.lon());
-    coord.apply_course_distance(rwyhdg + 90, width / 2);
-    append(crds,"N"~coord.lat());
-    append(crds,"E"~coord.lon());
-    icon_rwy = group.createChild("path", "rwy")
-    .setStrokeLineWidth(3)
-    .setDataGeo([2,4,4,4],crds)
-    .setColor(1,1,1);
-};
+        var ctr_len = length * 0.75;
+        var crds = [];
+        var coord = geo.Coord.new();
+        width=width*20; # Else rwy is too thin to be visible
+        coord.set_latlon(lat, lon);
+        coord.apply_course_distance(rwyhdg, -(ctr_len / 2));
+        append(crds,"N"~coord.lat());
+        append(crds,"E"~coord.lon());
+        coord.apply_course_distance(rwyhdg, (ctr_len));
+        append(crds,"N"~coord.lat());
+        append(crds,"E"~coord.lon());
+        icon_rwy = group.createChild("path", "rwy-cl")
+        .setStrokeLineWidth(3)
+        .setDataGeo([2,4],crds)
+        .setColor(1,1,1);
+        #.setStrokeDashArray([10, 20, 10, 20, 10]);
+        #icon_rwy.hide();
+        var crds = [];
+        coord.set_latlon(lat, lon);
+        append(crds,"N"~coord.lat());
+        append(crds,"E"~coord.lon());
+        coord.apply_course_distance(rwyhdg + 90, width/2);
+        append(crds,"N"~coord.lat());
+        append(crds,"E"~coord.lon());
+        coord.apply_course_distance(rwyhdg, length);
+        append(crds,"N"~coord.lat());
+        append(crds,"E"~coord.lon());
+        icon_rwy = group.createChild("path", "rwy")
+        .setStrokeLineWidth(3)
+        .setDataGeo([2,4,4],crds)
+        .setColor(1,1,1);
+        var crds = [];
+        append(crds,"N"~coord.lat());
+        append(crds,"E"~coord.lon());
+        coord.apply_course_distance(rwyhdg - 90, width);
+        append(crds,"N"~coord.lat());
+        append(crds,"E"~coord.lon());
+        coord.apply_course_distance(rwyhdg, -length);
+        append(crds,"N"~coord.lat());
+        append(crds,"E"~coord.lon());
+        coord.apply_course_distance(rwyhdg + 90, width / 2);
+        append(crds,"N"~coord.lat());
+        append(crds,"E"~coord.lon());
+        icon_rwy = group.createChild("path", "rwy")
+        .setStrokeLineWidth(3)
+        .setDataGeo([2,4,4,4],crds)
+        .setColor(1,1,1);
+    };
 
 
-canvas.NavDisplay.old_update = canvas.NavDisplay.update;
+    canvas.NavDisplay.old_update = canvas.NavDisplay.update;
 
-canvas.NavDisplay.update = func(){
-    me.old_update();
-    if(me.in_mode('toggle_display_mode', ['PLAN'])) {
-        me.map._node.getNode("hdg",1).setDoubleValue(0);
-    } else {
-        var userHdgMag = me.aircraft_source.get_hdg_mag();
-        var userHdgTru = me.aircraft_source.get_hdg_tru();
-        var userTrkMag = me.aircraft_source.get_trk_mag();
-        var userTrkTru = me.aircraft_source.get_trk_tru();
-
-        if(me.get_switch('toggle_true_north')) {
-            me.symbols.truMag.setText("TRU");
-            var userHdg=userHdgTru;
-            var userTrk=userTrkTru;
+    canvas.NavDisplay.update = func(){
+        me.old_update();
+        if(me.in_mode('toggle_display_mode', ['PLAN'])) {
+            me.map._node.getNode("hdg",1).setDoubleValue(0);
         } else {
-            me.symbols.truMag.setText("MAG");
-            var userHdg=userHdgMag;
-            var userTrk=userTrkMag;
+            var userHdgMag = me.aircraft_source.get_hdg_mag();
+            var userHdgTru = me.aircraft_source.get_hdg_tru();
+            var userTrkMag = me.aircraft_source.get_trk_mag();
+            var userTrkTru = me.aircraft_source.get_trk_tru();
+
+            if(me.get_switch('toggle_true_north')) {
+                me.symbols.truMag.setText("TRU");
+                var userHdg=userHdgTru;
+                var userTrk=userTrkTru;
+            } else {
+                me.symbols.truMag.setText("MAG");
+                var userHdg=userHdgMag;
+                var userTrk=userTrkMag;
+            }
+            var trk_heading = me.get_switch('toggle_track_heading');
+            if(trk_heading){
+                userHdgTrk = userTrk;
+            } else {
+                userHdgTrk = userHdg;
+            }
+            var vhdg_bug = getprop("autopilot/settings/heading-bug-deg");
+
+            var hdgBugRot = (vhdg_bug-userHdgTrk)*D2R;
+            me.map._node.getNode("hdg",1).setDoubleValue(userHdgTrk);
+            me.symbols.hdgBug.setRotation(hdgBugRot);
+            me.symbols.hdgBug2.setRotation(hdgBugRot);
+            me.symbols.trkInd.setRotation((userTrk-userHdg)*D2R);
+            me.symbols.curHdgPtr.setRotation(0);
+            me.symbols.curHdgPtr2.setRotation(0);
+            me.symbols.compass.setRotation(-userHdgTrk*D2R);
+            me.symbols.compassApp.setRotation(-userHdgTrk*D2R);
         }
-        var trk_heading = me.get_switch('toggle_track_heading');
-        if(trk_heading){
-            userHdgTrk = userTrk;
-        } else {
-            userHdgTrk = userHdg;
-        }
-        var vhdg_bug = getprop("autopilot/settings/heading-bug-deg");
-        
-        var hdgBugRot = (vhdg_bug-userHdgTrk)*D2R;
-        me.map._node.getNode("hdg",1).setDoubleValue(userHdgTrk);
-        me.symbols.hdgBug.setRotation(hdgBugRot);
-        me.symbols.hdgBug2.setRotation(hdgBugRot);
-        me.symbols.trkInd.setRotation((userTrk-userHdg)*D2R);
-        me.symbols.curHdgPtr.setRotation(0);
-        me.symbols.curHdgPtr2.setRotation(0);
-        me.symbols.compass.setRotation(-userHdgTrk*D2R);
-        me.symbols.compassApp.setRotation(-userHdgTrk*D2R);
-    }
-};
+    };
 
-# get a handle to the NavDisplay in canvas namespace (for now), see $FG_ROOT/Nasal/canvas/map/navdisplay.mfd
-var ND = canvas.NavDisplay;
+    # get a handle to the NavDisplay in canvas namespace (for now), see $FG_ROOT/Nasal/canvas/map/navdisplay.mfd
+    var ND = canvas.NavDisplay;
 
-## TODO: We want to support multiple independent ND instances here!
-# foreach(var pilot; var pilots = [ {name:'cpt', path:'instrumentation/efis',
-#				     name:'fo',  path:'instrumentation[1]/efis']) {
+    ## TODO: We want to support multiple independent ND instances here!
+    # foreach(var pilot; var pilots = [ {name:'cpt', path:'instrumentation/efis',
+    #				     name:'fo',  path:'instrumentation[1]/efis']) {
 
 
-##
-# set up a  new ND instance, under 'instrumentation/efis' and use the
-# myCockpit_switches hash to map control properties
-var NDCpt = ND.new("instrumentation/efis", myCockpit_switches, 'Airbus');
+    ##
+    # set up a  new ND instance, under 'instrumentation/efis' and use the
+    # myCockpit_switches hash to map control properties
+    var NDCpt = ND.new("instrumentation/efis", myCockpit_switches, 'Airbus');
 
-nd_display.main = canvas.new({
-    "name": "ND",
-    "size": [1024, 1024],
-    "view": [1024, 1024],
-    "mipmapping": 1
-});
+    nd_display.main = canvas.new({
+        "name": "ND",
+        "size": [1024, 1024],
+        "view": [1024, 1024],
+        "mipmapping": 1
+    });
 
-nd_display.main.addPlacement({"node": "ND.screen"});
-var group = nd_display.main.createGroup();
-NDCpt.newMFD(group);
+    nd_display.main.addPlacement({"node": "ND.screen"});
+    var group = nd_display.main.createGroup();
+    NDCpt.newMFD(group);
 
-NDCpt.update();
+    NDCpt.update();
 
-setprop("instrumentation/efis/inputs/plan-wpt-index", -1);
+    setprop("instrumentation/efis/inputs/plan-wpt-index", -1);
 
-print("ND Canvas Initialized!");
-update_apl_sym();
+    print("ND Canvas Initialized!");
+    update_apl_sym();
 }); # fdm-initialized listener callback
 
 setlistener("instrumentation/efis/nd/display-mode", func{
