@@ -394,7 +394,9 @@ setlistener("sim/signals/fdm-initialized", func() {
         }
     }
 
-    canvas.drawwp =  func (group, lat, lon, alt, name, i, wp) {
+    canvas.drawwp =  func (group, lat, lon, wpLeg, i, wp) {
+        var name = wpLeg.wp_name;
+        var alt = wpLeg.alt_cstr;
         var wp_group = group.createChild("group","wp");
         wp[i] = wp_group.createChild("path", "wp-" ~ i)
         .setStrokeLineWidth(3)
@@ -412,17 +414,24 @@ setlistener("sim/signals/fdm-initialized", func() {
         #
         var vnav_actv = getprop("flight-management/control/ver-ctrl") == 'fmgc';
         if(alt > 0){
+            var wp_d = wpLeg.distance_along_route; 
+            var estimated_sc = getprop('instrumentation/efis/nd/current-sc');
             var alt_path = wp_group.createChild("path").
             setStrokeLineWidth(4).
             moveTo(-22,0).
             arcSmallCW(22,22,0,44,0).
             arcSmallCW(22,22,0,-44,0);
-            if(vnav_actv)
-                alt_path.setColor(0.69,0,0.39);
+            if(vnav_actv){
+                var curwp = getprop("/autopilot/route-manager/current-wp");
+                if((estimated_sc - wp_d) > 0.5 and curwp == i)
+                    alt_path.setColor(1,0.57,0.14);
+                else
+                    alt_path.setColor(0.69,0,0.39);
+            }
             else
                 alt_path.setColor(1,1,1);
             if(getprop('instrumentation/efis/inputs/CSTR'))
-            alt_path.show();
+                alt_path.show();
             else
                 alt_path.hide();
             #alt = "";#\n"~alt;
@@ -495,7 +504,8 @@ setlistener("sim/signals/fdm-initialized", func() {
                     } else
                         append(cmds,4);
                 }
-                canvas.drawwp(group, leg.path()[0].lat, leg.path()[0].lon, fp.getWP(0).alt_cstr, fp.getWP(0).wp_name, i, canvas.wp);
+                var first_wp = fp.getWP(0);
+                canvas.drawwp(group, leg.path()[0].lat, leg.path()[0].lon, first_wp, i, canvas.wp);
                 i+=1;
             }
             var leg = fp.getWP(i);
@@ -504,7 +514,7 @@ setlistener("sim/signals/fdm-initialized", func() {
                 append(coords,"E"~pt.lon);
                 append(cmds,4);
             }
-            canvas.drawwp(group, leg.path()[-1].lat, leg.path()[-1].lon, leg.alt_cstr, leg.wp_name, i, canvas.wp);
+            canvas.drawwp(group, leg.path()[-1].lat, leg.path()[-1].lon, leg, i, canvas.wp);
         }
         if(fpSize > 0){
             var first_wp = canvas.wp[0];
