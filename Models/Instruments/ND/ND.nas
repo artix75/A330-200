@@ -192,6 +192,7 @@ var myCockpit_switches = {
     'toggle_display_mode': 	{path: '/nd/canvas-display-mode', value:'NAV', type:'STRING'},
     'toggle_display_type': 	{path: '/mfd/display-type', value:'LCD', type:'STRING'},
     'toggle_true_north': 	{path: '/mfd/true-north', value:0, type:'BOOL'},
+    'toggle_track_heading': 	{path: '/trk-selected', value:0, type:'BOOL'},
     'toggle_fplan': {path: '/nd/route-manager-active', value:0, type: 'BOOL'},
     'toggle_lnav': {path: '/nd/lnav', value:0, type: 'BOOL'},
     'toggle_vnav': {path: '/nd/vnav', value:0, type: 'BOOL'},
@@ -620,6 +621,33 @@ canvas.NavDisplay.update = func(){
     me.old_update();
     if(me.in_mode('toggle_display_mode', ['PLAN'])) {
         me.map._node.getNode("hdg",1).setDoubleValue(0);
+    } else {
+        var userHdgMag = me.aircraft_source.get_hdg_mag();
+        var userHdgTru = me.aircraft_source.get_hdg_tru();
+        var userTrkMag = me.aircraft_source.get_trk_mag();
+        var userTrkTru = me.aircraft_source.get_trk_tru();
+
+        if(me.get_switch('toggle_true_north')) {
+            me.symbols.truMag.setText("TRU");
+            var userHdg=userHdgTru;
+            var userTrk=userTrkTru;
+        } else {
+            me.symbols.truMag.setText("MAG");
+            var userHdg=userHdgMag;
+            var userTrk=userTrkMag;
+        }
+        var trk_heading = me.get_switch('toggle_track_heading');
+        if(trk_heading){
+            userHdgTrk = userTrk;
+        } else {
+            userHdgTrk = userHdg;
+        }
+        me.map._node.getNode("hdg",1).setDoubleValue(userHdgTrk);
+        me.symbols.trkInd.setRotation((userTrk-userHdg)*D2R);
+        me.symbols.curHdgPtr.setRotation(0);
+        me.symbols.curHdgPtr2.setRotation(0);
+        me.symbols.compass.setRotation(-userHdgTrk*D2R);
+        me.symbols.compassApp.setRotation(-userHdgTrk*D2R);
     }
 };
 
