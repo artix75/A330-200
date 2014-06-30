@@ -410,32 +410,42 @@ setlistener("sim/signals/fdm-initialized", func() {
         #
         # text_wp[i] = wp_group.createChild("text", "wp-text-" ~ i)
         #
-        if (alt <= 0){
-            alt = "";
-        }
-        else{
+        var vnav_actv = getprop("flight-management/control/ver-ctrl") == 'fmgc';
+        if(alt > 0){
             var alt_path = wp_group.createChild("path").
-            setStrokeLineWidth(3).
-            moveTo(-17,0).
-            arcSmallCW(17,17,0,34,0).
-            arcSmallCW(17,17,0,-34,0);
-            if(getprop("flight-management/control/ver-ctrl") == 'fmgc')
-            alt_path.setColor(0.69,0,0.39);
+            setStrokeLineWidth(4).
+            moveTo(-22,0).
+            arcSmallCW(22,22,0,44,0).
+            arcSmallCW(22,22,0,-44,0);
+            if(vnav_actv)
+                alt_path.setColor(0.69,0,0.39);
             else
                 alt_path.setColor(1,1,1);
             if(getprop('instrumentation/efis/inputs/CSTR'))
             alt_path.show();
             else
                 alt_path.hide();
-            alt = "";#\n"~alt;
+            #alt = "";#\n"~alt;
         }
         var text_wps = wp_group.createChild("text", "wp-text-" ~ i)
         .setDrawMode( canvas.Text.TEXT )
-        .setText(name~alt)
+        .setText(name)
         .setFont("LiberationFonts/LiberationSans-Regular.ttf")
         .setFontSize(28)
         .setTranslation(25,35)
         .setColor(1,1,1);
+        if(alt > 0){
+            var text_alt = wp_group.createChild("text", "wp-alt-text-" ~ i)
+            .setDrawMode( canvas.Text.TEXT )
+            .setText("\n" ~ alt)
+            .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+            .setFontSize(28)
+            .setTranslation(25,35);
+            if(vnav_actv)
+                text_alt.setColor(0.69,0,0.39);
+            else
+                text_alt.setColor(1,1,1);
+        }
         wp_group.setGeoPosition(lat, lon)
         .set("z-index",4);
     };
