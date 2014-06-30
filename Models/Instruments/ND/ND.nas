@@ -642,7 +642,12 @@ canvas.NavDisplay.update = func(){
         } else {
             userHdgTrk = userHdg;
         }
+        var vhdg_bug = getprop("autopilot/settings/heading-bug-deg");
+        
+        var hdgBugRot = (vhdg_bug-userHdgTrk)*D2R;
         me.map._node.getNode("hdg",1).setDoubleValue(userHdgTrk);
+        me.symbols.hdgBug.setRotation(hdgBugRot);
+        me.symbols.hdgBug2.setRotation(hdgBugRot);
         me.symbols.trkInd.setRotation((userTrk-userHdg)*D2R);
         me.symbols.curHdgPtr.setRotation(0);
         me.symbols.curHdgPtr2.setRotation(0);
