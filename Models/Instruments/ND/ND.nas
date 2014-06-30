@@ -656,29 +656,29 @@ update_apl_sym();
 }); # fdm-initialized listener callback
 
 setlistener("instrumentation/efis/nd/display-mode", func{
-            var canvas_mode = "instrumentation/efis/nd/canvas-display-mode";
-            var nd_centered = "instrumentation/efis/inputs/nd-centered";
-            var mode = getprop("instrumentation/efis/nd/display-mode");
-var cvs_mode = 'NAV';
-var centered = 1;
-if(mode == 'ILS'){
-    cvs_mode = 'APP';
-}
-elsif(mode == 'VOR') {
-    cvs_mode = 'VOR';
-}
-elsif(mode == 'NAV'){
-    cvs_mode = 'MAP';
-}
-elsif(mode == 'ARC'){
-    cvs_mode = 'MAP';
-    centered = 0;
-}
-elsif(mode == 'PLAN'){
-    cvs_mode = 'PLAN';
-}
-setprop(canvas_mode, cvs_mode);
-setprop(nd_centered, centered);
+    var canvas_mode = "instrumentation/efis/nd/canvas-display-mode";
+    var nd_centered = "instrumentation/efis/inputs/nd-centered";
+    var mode = getprop("instrumentation/efis/nd/display-mode");
+    var cvs_mode = 'NAV';
+    var centered = 1;
+    if(mode == 'ILS'){
+        cvs_mode = 'APP';
+    }
+    elsif(mode == 'VOR') {
+        cvs_mode = 'VOR';
+    }
+    elsif(mode == 'NAV'){
+        cvs_mode = 'MAP';
+    }
+    elsif(mode == 'ARC'){
+        cvs_mode = 'MAP';
+        centered = 0;
+    }
+    elsif(mode == 'PLAN'){
+        cvs_mode = 'PLAN';
+    }
+    setprop(canvas_mode, cvs_mode);
+    setprop(nd_centered, centered);
 });
 
 setlistener('autopilot/route-manager/active', func{

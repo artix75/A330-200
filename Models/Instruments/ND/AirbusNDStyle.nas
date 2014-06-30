@@ -318,8 +318,8 @@ canvas.NDStyles["Airbus"] = {
                     init: func(nd,symbol),
                     predicate: func(nd) getprop("/autopilot/route-manager/wp/id") != nil and getprop("autopilot/route-manager/active") and nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']),
                     is_true: func(nd) {
-                        var cur_wp = getprop("autopilot/route-manager/current-wp");
-                        var deg = int(getprop("/autopilot/route-manager/route/wp["~cur_wp~"]/leg-bearing-true-deg"));
+                        #var cur_wp = getprop("autopilot/route-manager/current-wp");
+                        var deg = int(getprop("/autopilot/route-manager/wp/bearing-deg"));
                         nd.symbols.wpActiveCrs.setText(''~deg~'°');
                         nd.symbols.wpActiveCrs.show();
                     },
