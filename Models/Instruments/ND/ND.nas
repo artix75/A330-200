@@ -216,20 +216,140 @@ setlistener("sim/signals/fdm-initialized", func() {
         # add new switches here
     };
 
+    var SymbolPainter = {
+        aircraft_dir: nil,
+        getOpts: func(opts){
+            if(opts == nil) opts = {};
+            var defOpts = {id:nil,color:nil,scale:nil,create_group:0,update_center:0};
+            if(contains(opts, 'id'))
+                defOpts.id = opts.id;
+            if(contains(opts, 'color'))
+                defOpts.color = opts.color;
+            if(contains(opts, 'scale'))
+                defOpts.scale = opts.scale;
+            if(contains(opts, 'create_group'))
+                defOpts.create_group = opts.create_group;
+            if(contains(opts, 'update_center'))
+                defOpts.update_center = opts.update_center;
+            return defOpts;
+        },
+        getAircraftDir: func(){
+            if(me.aircraft_dir == nil)
+                me.aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+            return me.aircraft_dir;
+        },
+        svgPath: func(file){
+            return "Aircraft/" ~ me.getAircraftDir() ~ "/Models/Instruments/ND/res/"~file;
+        },
+        drawFIX : func(grp, opts = nil){
+            var icon_fix = nil;
+            opts = me.getOpts(opts);
+            var sym_id = opts.id;
+            if(sym_id != nil)
+                icon_fix = grp.createChild("path", sym_id);
+            else 
+                icon_fix = grp.createChild("path");
+            var color = opts.color;
+            if(color == nil){
+                color = {
+                    r: 0.69,
+                    g: 0,
+                    b: 0.39
+                };
+            }
+            var scale = opts.scale;
+            if(scale == nil) scale = 0.8;
+            icon_fix.moveTo(-10,0)
+            .lineTo(0,-17)
+            .lineTo(10,0)
+            .lineTo(0,17)
+            .close()
+            .setStrokeLineWidth(3)
+            .setColor(color.r,color.g,color.b)
+            .setScale(scale,scale);
+            return icon_fix;
+        },
+        drawVOR: func(grp, opts = nil){
+            opts = me.getOpts(opts);
+            if(opts.create_group){
+                var sym_id = opts.id;
+                if(sym_id != nil)
+                    grp = grp.createChild("group", sym_id);
+                else 
+                    grp = grp.createChild("group");
+            }
+            var svg_path = me.svgPath('airbus_vor.svg');
+            canvas.parsesvg(grp, svg_path);
+            var scale = opts.scale;
+            if(scale == nil) scale = 0.8;
+            grp.setScale(scale,scale);
+            if(opts.update_center)
+                grp.setTranslation(-24 * scale,-24 * scale);
+            return grp;
+        },
+        drawNDB: func(grp, opts = nil){
+            var icon_ndb = nil;
+            opts = me.getOpts(opts);
+            var sym_id = opts.id;
+            if(sym_id != nil)
+                icon_ndb = grp.createChild("path", sym_id);
+            else 
+                icon_ndb = grp.createChild("path");
+            var color = opts.color;
+            var color = opts.color;
+            if(color == nil){
+                color = {
+                    r: 0.69,
+                    g: 0,
+                    b: 0.39
+                };
+            }
+            var scale = opts.scale;
+            if(scale == nil) scale = 0.8;
+            icon_ndb.moveTo(-15,15)
+            .lineTo(0,-15)
+            .lineTo(15,15)
+            .close()
+            .setStrokeLineWidth(3)
+            .setColor(color.r,color.g,color.b)
+            .setScale(scale,scale);
+            return icon_ndb;
+        },
+        drawAirport: func(grp, opts = nil){
+            opts = me.getOpts(opts);
+            if(opts.create_group){
+                var sym_id = opts.id;
+                if(sym_id != nil)
+                    grp = grp.createChild("group", sym_id);
+                else 
+                    grp = grp.createChild("group");
+            }
+            var svg_path = me.svgPath('airbus_airport.svg');
+            canvas.parsesvg(grp, svg_path);
+            var scale = opts.scale;
+            if(scale == nil) scale = 0.8;
+            grp.setScale(scale,scale);
+            if(opts.update_center)
+                grp.setTranslation(-24 * scale,-24 * scale);
+            return grp;
+        },
+        draw: func(type, grp, opts = nil){
+            if(type == 'VOR' or type == 'vor')
+                return me.drawVOR(grp, opts);
+            elsif(type == 'NDB' or type == 'ndb')
+                return me.drawNDB(grp, opts);
+            elsif(type == 'ARPT' or type == 'arpt')
+                return me.drawAirport(grp, opts);
+            else 
+                return me.drawFIX(grp, opts);
+        }
+    };
+
     canvas.Symbol.get("FIX").icon_fix = nil;
     canvas.Symbol.get("FIX").draw = func{
         if (me.icon_fix != nil) return;
         # the fix symbol
-        me.icon_fix = me.element.createChild("path")
-        .moveTo(-10,0)
-        .lineTo(0,-17)
-        .lineTo(10,0)
-        .lineTo(0,17)
-        .close()
-        .setStrokeLineWidth(3)
-        .setColor(0.69,0,0.39)
-        .setScale(0.8,0.8); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
-        # the fix label
+        me.icon_fix = SymbolPainter.drawFIX(me.element);
         me.text_fix = me.element.createChild("text")
         .setDrawMode( canvas.Text.TEXT )
         .setText(me.model.id)
@@ -242,12 +362,9 @@ setlistener("sim/signals/fdm-initialized", func() {
     canvas.Symbol.get("VOR").draw = func{
         var grp = nil;
         if(me.svg_loaded == nil) {
-            var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-            var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_vor.svg";
             me.element.removeAllChildren();
             grp = me.element.createChild("group");
-            canvas.parsesvg(grp, svg_path);
-            grp.setScale(0.8,0.8);
+            SymbolPainter.drawVOR(grp);
 
             me.text_vor = me.element.createChild("text")
             .setDrawMode( canvas.Text.TEXT )
@@ -277,15 +394,7 @@ setlistener("sim/signals/fdm-initialized", func() {
     canvas.Symbol.get("NDB").draw = func{
         if (me.icon_ndb == nil) {
             # the fix symbol
-            me.icon_ndb = me.element.createChild("path")
-            .moveTo(-15,15)
-            .lineTo(0,-15)
-            .lineTo(15,15)
-            .close()
-            .setStrokeLineWidth(3)
-            .setColor(0.69,0,0.39)
-            .setScale(0.8,0.8); # FIXME: do proper LOD handling here - we need to scale according to current texture dimensions vs. original/design dimensions
-            # the fix label
+            me.icon_ndb = SymbolPainter.drawNDB(me.element);
             me.text_ndb = me.element.createChild("text")
             .setDrawMode( canvas.Text.TEXT )
             .setText(me.model.id)
@@ -314,13 +423,7 @@ setlistener("sim/signals/fdm-initialized", func() {
 
         var apt_grp = group.createChild("group", name);
 
-        # FIXME: conditions don't belong here, use the controller hash instead!
-        # if (1 or getprop("instrumentation/efis/inputs/arpt")) {
-        var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-        var svg_path = "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_airport.svg";
-        #me.element.removeAllChildren();
-        canvas.parsesvg(apt_grp, svg_path);
-        #apt_grp.setScale(0.8,0.8);
+        SymbolPainter.drawAirport(apt_grp);
         var text_apt = apt_grp.createChild("text", name ~ " label")
         .setDrawMode( canvas.Text.TEXT )
         .setTranslation(45,35)
@@ -397,15 +500,40 @@ setlistener("sim/signals/fdm-initialized", func() {
     canvas.drawwp =  func (group, lat, lon, wpLeg, i, wp) {
         var name = wpLeg.wp_name;
         var alt = wpLeg.alt_cstr;
+        var wp_id = wpLeg.id;
+        var wp_type = wpLeg.wp_type;
+        var idLen = size(wp_id);
         var wp_group = group.createChild("group","wp");
-        wp[i] = wp_group.createChild("path", "wp-" ~ i)
-        .setStrokeLineWidth(3)
-        .moveTo(-10,0)
-        .lineTo(0,-17)
-        .lineTo(10,0)
-        .lineTo(0,17)
-        .setColor(1,1,1)
-        .close();
+        
+        #wp[i] = wp_group.createChild("path", "wp-" ~ i)
+        #.setStrokeLineWidth(3)
+        #.moveTo(-10,0)
+        #.lineTo(0,-17)
+        #.lineTo(10,0)
+        #.lineTo(0,17)
+        #.setColor(1,1,1)
+        #.close();
+        var opts = {
+            id: 'wp-' ~ i,
+            create_group: 1,
+            update_center: 1
+        };
+        if(wp_type == 'navaid'){
+            if(idLen == 4)
+                wp[i] = SymbolPainter.drawAirport(wp_group, opts);
+            elsif(idLen == 3){
+                var navaids = navinfo(lat,lon,wp_id);
+                var type = 'VOR';
+                if(size(navaids) > 0)
+                    type = navaids[0].type;
+                if(type == nil) type = 'VOR';
+                wp[i] = SymbolPainter.draw(type, wp_group, opts);
+            }
+            else
+                wp[i] = SymbolPainter.drawFIX(wp_group, opts);
+        }
+        else
+            wp[i] = SymbolPainter.drawFIX(wp_group, opts);
         #####
         # The commented code leads to a segfault when a route is replaced by a new one
         #####
@@ -548,6 +676,7 @@ setlistener("sim/signals/fdm-initialized", func() {
         #debug.dump(cmds);
         #debug.dump(coords);
         route.setDataGeo(cmds, coords);
+        route.set('z-index', 3);
         #canvas.updatewp(0);
         canvas.updatewp(getprop("/autopilot/route-manager/current-wp"));
     }

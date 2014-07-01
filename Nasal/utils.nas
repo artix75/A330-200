@@ -74,3 +74,28 @@ var test_nd_symbol = func(symbol, dist_nm){
 
     setprop('instrumentation/efis/nd/current-'~symbol, dist_nm);
 }
+
+var print_flightplan = func(){
+    var fp = flightplan();
+    var n = getprop('autopilot/route-manager/route/num');
+    for(i = 0; i < n; i = i + 1){
+        var wp = fp.getWP(i);
+        print('ID: ' ~ wp.id);
+        print('Name: ' ~ wp.wp_name);
+        print('Type: ' ~ wp.wp_type);
+        print('Role: ' ~ (wp.wp_role != nil ? wp.wp_role : 'nil'));
+        print('Lat: ' ~ wp.wp_lat);
+        print('Lon: ' ~ wp.wp_lon);
+        print('Parent: ' ~ (wp.wp_parent != nil ? wp.wp_parent : 'nil'));
+        print('Fly Type: ' ~ wp.fly_type);
+        print('Alt CSTR: ' ~ wp.alt_cstr);
+        print('Alt CSTR Type: ' ~ (wp.alt_cstr_type != nil ? wp.alt_cstr_type : 'nil'));
+        print('Spd CSTR: ' ~ wp.speed_cstr);
+        print('Spd CSTR Type: ' ~ (wp.speed_cstr_type != nil ? wp.speed_cstr_type : 'nil'));
+        print('Leg distance: ' ~ wp.leg_distance);
+        print('Leg bearing: ' ~ wp.leg_bearing);
+        print('Dist along rte: ' ~ wp.distance_along_route);
+        print('-------------------------');
+        print('');
+    }
+}
