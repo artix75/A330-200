@@ -220,7 +220,7 @@ setlistener("sim/signals/fdm-initialized", func() {
         aircraft_dir: nil,
         getOpts: func(opts){
             if(opts == nil) opts = {};
-            var defOpts = {id:nil,color:nil,scale:nil,create_group:0,update_center:0};
+            var defOpts = {id:nil,color:nil,scale:1,create_group:0,update_center:0};
             if(contains(opts, 'id'))
                 defOpts.id = opts.id;
             if(contains(opts, 'color'))
