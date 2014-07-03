@@ -25,18 +25,21 @@ var hold_pattern = {
 		
 		# Get Position from GPS
 		
-		setprop("/instrumentation/gps/scratch/query", wp);
+		#setprop("/instrumentation/gps/scratch/query", wp);
 		 			
-		if (size(wp) <= 3)
-			setprop("/instrumentation/gps/scratch/type", "vor");
-		else
-			setprop("/instrumentation/gps/scratch/type", "fix");
-			
-		setprop("/instrumentation/gps/command", "search");
+		#if (size(wp) <= 3)
+		#	setprop("/instrumentation/gps/scratch/type", "vor");
+		#else
+		#	setprop("/instrumentation/gps/scratch/type", "fix");
+		#	
+		#setprop("/instrumentation/gps/command", "search");
+        var wp_id = getprop("/flight-management/hold/wp_id");
+        var fp = flightplan();
+        var fpWP = fp.getWP(wp_id);
 		
-		var pos_lat = getprop("/instrumentation/gps/scratch/latitude-deg");
+		var pos_lat = fpWP.wp_lat;#getprop("/instrumentation/gps/scratch/latitude-deg");
 		
-		var pos_lon = getprop("/instrumentation/gps/scratch/longitude-deg");
+        var pos_lon = fpWP.wp_lon;#getprop("/instrumentation/gps/scratch/longitude-deg");
 		
 		var wp_pos = geo.Coord.new();
 		

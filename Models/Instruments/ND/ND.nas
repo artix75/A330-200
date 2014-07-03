@@ -584,12 +584,35 @@ setlistener("sim/signals/fdm-initialized", func() {
                 text_alt.setColor(1,1,1);
         }
         var hold_id = getprop("/flight-management/hold/wp");
-        if(hold_id != nil and hold_id == wpLeg.id){
-            var hold_grp = wp_group.createChild("group", "wp-hold-" ~ i);
-            var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-            var hold_turn = getprop("/flight-management/hold/turn");
-            canvas.parsesvg(hold_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_hold"~hold_turn~".svg");
-            hold_grp.setTranslation(25,-55).set('z-index', 4);
+        var hold_init = getprop("/flight-management/hold/init");
+        if(hold_init and hold_id != nil and hold_id == wpLeg.id){
+            #var hold_grp = wp_group.createChild("group", "wp-hold-" ~ i);
+            #var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+            #var hold_turn = getprop("/flight-management/hold/turn");
+            #canvas.parsesvg(hold_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_hold"~hold_turn~".svg");
+            #hold_grp.setTranslation(25,-55).set('z-index', 4);
+            var hold_path = group.createChild('path', 'hold-pattern');
+            var crds = [];
+            var cmds = [];
+            append(crds, 'N'~getprop('/flight-management/hold/points/point[0]/lat'));
+            append(crds, 'E'~getprop('/flight-management/hold/points/point[0]/lon'));
+            append(cmds, 2);
+            append(crds, 'N'~getprop('/flight-management/hold/points/point[1]/lat'));
+            append(crds, 'E'~getprop('/flight-management/hold/points/point[1]/lon'));
+            append(cmds, 4);#20);
+            append(crds, 'N'~getprop('/flight-management/hold/points/point[2]/lat'));
+            append(crds, 'E'~getprop('/flight-management/hold/points/point[2]/lon'));
+            append(cmds, 4);
+            append(crds, 'N'~getprop('/flight-management/hold/points/point[3]/lat'));
+            append(crds, 'E'~getprop('/flight-management/hold/points/point[3]/lon'));
+            append(cmds, 4);#20);
+            append(crds, 'N'~getprop('/flight-management/hold/points/point[0]/lat'));
+            append(crds, 'E'~getprop('/flight-management/hold/points/point[0]/lon'));
+            append(cmds, 4);
+            hold_path.setStrokeLineWidth(5)
+            .setColor(0.4,0.7,0.4)
+            .setDataGeo(cmds,crds);
+            path.addA
         }
         wp_group.setGeoPosition(lat, lon)
         .set("z-index",4);
