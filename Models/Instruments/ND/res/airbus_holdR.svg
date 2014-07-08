@@ -14,7 +14,7 @@
    id="svg6263"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="airbus_hold_r.svg">
+   sodipodi:docname="airbus_holdL.svg">
   <defs
      id="defs6265" />
   <sodipodi:namedview
@@ -26,13 +26,13 @@
      inkscape:pageshadow="2"
      inkscape:zoom="5.5"
      inkscape:cx="11.363636"
-     inkscape:cy="39.272727"
-     inkscape:current-layer="layer1"
+     inkscape:cy="36.978476"
+     inkscape:current-layer="svg6263"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      inkscape:window-width="1280"
-     inkscape:window-height="708"
+     inkscape:window-height="703"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1" />
@@ -51,27 +51,12 @@
   <g
      id="layer1"
      inkscape:label="Layer 1"
-     inkscape:groupmode="layer">
-    <g
-       id="g7064">
-      <rect
-         rx="10.749"
-         y="22.44878"
-         x="2.3123691"
-         height="22.278492"
-         width="58.951363"
-         id="rect7041"
-         style="fill:none;stroke:#66b266;stroke-width:1.40448533999999992;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:55.40000152999999727;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
-      <path
-         transform="matrix(0.87584981,0,0,0.87584981,3.112,4.4230217)"
-         d="m 52.727273,20.636364 a 3.090909,3.1818182 0 1 1 -6.181818,0 3.090909,3.1818182 0 1 1 6.181818,0 z"
-         sodipodi:ry="3.1818182"
-         sodipodi:rx="3.090909"
-         sodipodi:cy="20.636364"
-         sodipodi:cx="49.636364"
-         id="path7043"
-         style="fill:none;stroke:#66b266;stroke-width:1.06599997999999996;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:55.40000152999999727;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-         sodipodi:type="arc" />
-    </g>
+     inkscape:groupmode="layer"
+     transform="matrix(-1,0,0,1,59,0)">
+    <path
+       d="m 38,58 0,-38 a 10,10 0 1 1 -20,0 l -5,-7 m 5,7 8,-2"
+       id="path7043"
+       style="fill:none;stroke:#ffffff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:55.40000153;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

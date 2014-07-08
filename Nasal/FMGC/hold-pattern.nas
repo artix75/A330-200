@@ -49,6 +49,7 @@ var hold_pattern = {
 		setprop("/flight-management/hold/points/point[0]/lon", pos_lon);
 		
 		var rad_perp1 = 0;
+        var ctrl_rad = 0;
 		
 		if (turn == "R") {
 		
@@ -56,6 +57,11 @@ var hold_pattern = {
 				rad_perp1 = radial - 270;
 			else
 				rad_perp1 = radial + 90;
+            
+            if (radial + 30 > 360)
+                ctrl_rad = radial - 330;
+            else
+                ctrl_rad = radial + 30;
 				
 		} else {
 		
@@ -63,14 +69,19 @@ var hold_pattern = {
 				rad_perp1 = radial - 90;
 			else
 				rad_perp1 = radial + 270;
+            
+            if (radial + 330 > 360)
+                ctrl_rad = radial - 30;
+            else
+                ctrl_rad = radial + 330;
 		
 		}
 		
 		wp_pos.apply_course_distance(rad_perp1, (dist * 2 * NM2M) / math.pi);
-		
+        
 		setprop("/flight-management/hold/points/point[1]/lat", wp_pos.lat());
 		setprop("/flight-management/hold/points/point[1]/lon", wp_pos.lon());
-		
+        
 		var rad_inv = 0;
 		
 		if (radial + 180 > 360)

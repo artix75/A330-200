@@ -15,6 +15,15 @@ var update_apl_sym = func {
     settimer(update_apl_sym, 1);
 }
 
+var _arg2valarray = func
+{
+    var ret = arg;
+    while (    typeof(ret) == "vector"
+           and size(ret) == 1 and typeof(ret[0]) == "vector" )
+    ret = ret[0];
+    return ret;
+}
+
 ###
 # entry point, this will set up all ND instances
 
@@ -97,6 +106,44 @@ setlistener("sim/signals/fdm-initialized", func() {
         }
         return nil; # scio correctum est
     };
+    
+    canvas.Path.addSegmentGeo = func(cmd, coords...)
+    {
+        var coords = _arg2valarray(coords);
+        var num_coords = me.num_coords[cmd];
+        if( size(coords) != num_coords )
+        debug.warn
+        (
+            "Invalid number of arguments (expected " ~ num_coords ~ ")"
+        );
+        else
+        {
+            me.setInt("cmd[" ~ (me._last_cmd += 1) ~ "]", cmd);
+            for(var i = 0; i < num_coords; i += 1)
+                me.set("coord-geo[" ~ (me._last_coord += 1) ~ "]", coords[i]);
+        }
+
+        return me;
+    }
+    
+    canvas.Path.arcGeo = func(cmd, rx,ry,unk,lat,lon){
+        if(cmd < 18 and cmd > 24){
+            debug.warn("Invalid command " ~ cmd);
+            return me;
+        }
+        else
+        {
+            me.setInt("cmd[" ~ (me._last_cmd += 1) ~ "]", cmd);
+            #for(var i = 0; i < num_coords; i += 1)
+            me.setDouble("coord[" ~ (me._last_coord += 1) ~ "]", rx);
+            me.setDouble("coord[" ~ (me._last_coord += 1) ~ "]", ry);
+            me.setDouble("coord[" ~ (me._last_coord += 1) ~ "]", unk);
+            me.setDouble("coord-geo[N" ~ (me._last_coord += 1) ~ "]", lat);
+            me.setDouble("coord-geo[E" ~ (me._last_coord += 1) ~ "]", lat);
+        }
+
+        return me;
+    }
 
     canvas.SymbolLayer.onRemoved = func(model) {
         #debug.dump(model);
@@ -152,7 +199,7 @@ setlistener("sim/signals/fdm-initialized", func() {
             load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".scontroller", name);
         }
 
-        foreach( var name; ['APS','ALT-profile','SPD-profile'] )
+        foreach( var name; ['APS','ALT-profile','SPD-profile','HOLD'] )
         load_deps( name );
 
     })();
@@ -212,7 +259,10 @@ setlistener("sim/signals/fdm-initialized", func() {
         'toggle_nav1_frq': {path: '/nd/nav1_frq', value: 0, type: 'INT'},
         'toggle_nav2_frq': {path: '/nd/nav2_frq', value: 0, type: 'INT'},
         'toggle_adf1_frq': {path: '/nd/adf1_frq', value: 0, type: 'INT'},
-        'toggle_adf2_frq': {path: '/nd/adf2_frq', value: 0, type: 'INT'}
+        'toggle_adf2_frq': {path: '/nd/adf2_frq', value: 0, type: 'INT'},
+        'toggle_hold_init': {path: '/nd/hold_init', value: 0, type: 'INT'},
+        'toggle_hold_update': {path: '/nd/hold_update', value: 0, type: 'INT'},
+        'toggle_hold_wp': {path: '/nd/hold_wp', value: '', type: 'STRING'},
         # add new switches here
     };
 
@@ -583,37 +633,7 @@ setlistener("sim/signals/fdm-initialized", func() {
             else
                 text_alt.setColor(1,1,1);
         }
-        var hold_id = getprop("/flight-management/hold/wp");
-        var hold_init = getprop("/flight-management/hold/init");
-        if(hold_init and hold_id != nil and hold_id == wpLeg.id){
-            #var hold_grp = wp_group.createChild("group", "wp-hold-" ~ i);
-            #var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-            #var hold_turn = getprop("/flight-management/hold/turn");
-            #canvas.parsesvg(hold_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_hold"~hold_turn~".svg");
-            #hold_grp.setTranslation(25,-55).set('z-index', 4);
-            var hold_path = group.createChild('path', 'hold-pattern');
-            var crds = [];
-            var cmds = [];
-            append(crds, 'N'~getprop('/flight-management/hold/points/point[0]/lat'));
-            append(crds, 'E'~getprop('/flight-management/hold/points/point[0]/lon'));
-            append(cmds, 2);
-            append(crds, 'N'~getprop('/flight-management/hold/points/point[1]/lat'));
-            append(crds, 'E'~getprop('/flight-management/hold/points/point[1]/lon'));
-            append(cmds, 4);#20);
-            append(crds, 'N'~getprop('/flight-management/hold/points/point[2]/lat'));
-            append(crds, 'E'~getprop('/flight-management/hold/points/point[2]/lon'));
-            append(cmds, 4);
-            append(crds, 'N'~getprop('/flight-management/hold/points/point[3]/lat'));
-            append(crds, 'E'~getprop('/flight-management/hold/points/point[3]/lon'));
-            append(cmds, 4);#20);
-            append(crds, 'N'~getprop('/flight-management/hold/points/point[0]/lat'));
-            append(crds, 'E'~getprop('/flight-management/hold/points/point[0]/lon'));
-            append(cmds, 4);
-            hold_path.setStrokeLineWidth(5)
-            .setColor(0.4,0.7,0.4)
-            .setDataGeo(cmds,crds);
-            path.addA
-        }
+  
         wp_group.setGeoPosition(lat, lon)
         .set("z-index",4);
     };
@@ -825,7 +845,12 @@ setlistener("sim/signals/fdm-initialized", func() {
             var vhdg_bug = getprop("autopilot/settings/heading-bug-deg");
 
             var hdgBugRot = (vhdg_bug-userHdgTrk)*D2R;
-            me.map._node.getNode("hdg",1).setDoubleValue(userHdgTrk);
+            var hdgNode = me.map._node.getNode("hdg",1);
+            var oldVal = hdgNode.getValue();
+            hdgNode.setDoubleValue(userHdgTrk);
+            var hold_init = getprop('instrumentation/efis/nd/hold_init');
+            if(math.abs(oldVal - hdgBugRot) >= 1 and hold_init)
+                setprop('instrumentation/efis/nd/hold_update', 1);
             me.symbols.hdgBug.setRotation(hdgBugRot);
             me.symbols.hdgBug2.setRotation(hdgBugRot);
             me.symbols.trkInd.setRotation((userTrk-userHdg)*D2R);
@@ -955,6 +980,18 @@ setlistener('instrumentation/adf[1]/frequencies/selected-khz', func{
     var khz = getprop('instrumentation/adf[1]/frequencies/selected-khz');
     if(khz == nil) khz = 0;
     setprop('/instrumentation/efis/nd/adf2_frq', khz);
+});
+
+setlistener('flight-management/hold/init', func{
+    var init = getprop('flight-management/hold/init');
+    if(init == nil) init = 0;
+    setprop('/instrumentation/efis/nd/hold_init', init);
+});
+
+setlistener("/flight-management/hold/wp", func{
+    var wpid = getprop("/flight-management/hold/wp");
+    if(wpid == nil) wpid = '';
+    setprop('/instrumentation/efis/nd/hold_wp', wpid);
 });
 
 var showNd = func() {

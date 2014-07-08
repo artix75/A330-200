@@ -28,8 +28,8 @@ var searchCmd = func{
         pos: props.globals.getNode('position'),
         type: 'position',
         latlon: func(){ 
-            print('CALLING latlon');
-            debug.dump(me.pos.getValue("latitude-deg"));
+            #print('CALLING latlon');
+            #debug.dump(me.pos.getValue("latitude-deg"));
             return [
                 me.pos.getValue("latitude-deg"),
                 me.pos.getValue("longitude-deg"),

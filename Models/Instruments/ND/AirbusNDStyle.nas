@@ -200,6 +200,18 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible( visible );
                 }, # end of layer update predicate
             }, # end of route layer
+            { 
+                name:'HOLD', 
+                isMapStructure: 1,
+                update_on:['toggle_range','toggle_display_mode','toggle_lnav', 'toggle_fplan','toggle_hold_init','toggle_hold_update','toggle_wpt_idx','toggle_hold_wp'],
+                predicate: func(nd, layer) {
+                    var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']) and nd.get_switch('toggle_hold_wp'));
+                    layer.group.setVisible( visible );
+                    if (visible) {
+                        layer.update();
+                    }
+                }, # end of layer update predicate
+            }, # end of route layer
             {
                 name: 'SPD-profile',
                 isMapStructure: 1,
