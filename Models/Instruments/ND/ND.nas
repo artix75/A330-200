@@ -859,6 +859,16 @@ setlistener("sim/signals/fdm-initialized", func() {
             me.symbols.compass.setRotation(-userHdgTrk*D2R);
             me.symbols.compassApp.setRotation(-userHdgTrk*D2R);
         }
+        if(me.in_mode('toggle_display_mode', ['PLAN']))
+            #me.map.setTranslation(512,512);
+            me.map.setTranslation(512,565);
+        elsif(me.get_switch('toggle_centered'))
+            me.map.setTranslation(512,565);
+            #me.map.setTranslation(512,512);
+        else
+            me.map.setTranslation(512,824);
+        if(!me.get_switch('toggle_centered'))
+            me.map._node.getNode("range",1).setDoubleValue(me.rangeNm() * 0.676470);#0.62121);#0.551562);#
     };
 
     # get a handle to the NavDisplay in canvas namespace (for now), see $FG_ROOT/Nasal/canvas/map/navdisplay.mfd
