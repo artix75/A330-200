@@ -501,10 +501,10 @@ canvas.NDStyles["Airbus"] = {
                 id:'rangePln2',
                 impl: {
                     init: func(nd,symbol),
-                    predicate: func(nd) {return 0},
+                    predicate: func(nd) nd.get_switch('toggle_display_mode') == "MAP" and !nd.get_switch('toggle_centered'),
                     is_true: func(nd) {
                         nd.symbols.rangePln2.show();
-                        nd.symbols.rangePln2.setText(sprintf("%3.0f",nd.rangeNm()/2));
+                        nd.symbols.rangePln2.setText(sprintf("%3.0f",(nd.rangeNm()/2) + (nd.rangeNm()/4)));
                     },
                     is_false: func(nd) nd.symbols.rangePln2.hide(),
                 },
