@@ -632,6 +632,18 @@ canvas.NDStyles["Airbus"] = {
                 },
             },
             {
+                id:'trkline',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) (nd.get_switch('toggle_display_mode') == 'MAP' and !nd.get_switch('toggle_centered') and !nd.get_switch('toggle_lnav')),
+                    is_true: func(nd) {
+                        nd.symbols.trkline.show();
+                        #nd.symbols.trkline.setRotation((nd.aircraft_source.get_trk_mag()-nd.aircraft_source.get_hdg_mag())*D2R);
+                    },
+                    is_false: func(nd) nd.symbols.trkline.hide(),
+                },
+            },
+            {
                 id:'trkInd2',
                 impl: {
                     init: func(nd,symbol),
