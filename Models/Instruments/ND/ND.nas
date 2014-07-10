@@ -212,6 +212,8 @@ setlistener("sim/signals/fdm-initialized", func() {
         'toggle_cur_wp': {path: '/nd/cur_wp', value: 0, type: 'INT'},
         'toggle_ap1': {path: '/nd/ap1', value: '', type: 'STRING'},
         'toggle_ap2': {path: '/nd/ap2', value: '', type: 'STRING'},
+        'toggle_dep_rwy': {path: '/nd/dep_rwy', value: '', type: 'STRING'},
+        'toggle_dest_rwy': {path: '/nd/dest_rwy', value: '', type: 'STRING'},
         # add new switches here
     };
 
@@ -580,6 +582,28 @@ setlistener("sim/signals/fdm-initialized", func() {
             #sym_group.setRotation(rot);
         }
     }
+    
+    canvas.RunwayNDModel.init = func {
+        me._view.reset();
+
+        var desApt = airportinfo(getprop("/autopilot/route-manager/destination/airport"));
+        var depApt = airportinfo(getprop("/autopilot/route-manager/departure/airport"));
+        var desRwy = desApt.runway(getprop("/autopilot/route-manager/destination/runway"));
+        var depRwy = depApt.runway(getprop("/autopilot/route-manager/departure/runway"));
+
+
+        me.push(depRwy);
+        me.push(desRwy);
+
+
+        me.notifyView();
+    }
+    
+    canvas.draw_rwy_nd = func (group, rwy, controller=nil, lod=nil) {
+        # print("drawing runways-nd");
+        if(rwy == nil) return;
+        canvas._draw_rwy_nd(group,rwy.lat,rwy.lon,rwy.length,rwy.width,rwy.heading);
+    }
 
     canvas._draw_rwy_nd = func (group, lat, lon, length, width, rwyhdg) {
         var apt = airportinfo("EHAM");
@@ -842,6 +866,16 @@ setlistener("/flight-management/control/ap1-master", func(){
 setlistener("/flight-management/control/ap2-master", func(){
     var ap2 = getprop("/flight-management/control/ap2-master");
     setprop('/instrumentation/efis/nd/ap2',ap2);
+});
+
+setlistener("/autopilot/route-manager/departure/runway", func(){
+    var rwy = getprop("/autopilot/route-manager/departure/runway");
+    setprop('/instrumentation/efis/nd/dep_rwy',rwy);
+});
+
+setlistener("/autopilot/route-manager/destination/runway", func(){
+    var rwy = getprop("/autopilot/route-manager/destination/runway");
+    setprop('/instrumentation/efis/nd/dest_rwy',rwy);
 });
 
 var showNd = func() {
