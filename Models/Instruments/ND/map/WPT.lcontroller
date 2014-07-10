@@ -46,6 +46,8 @@ var WPTModel = {
         else var n = fp.getWP(1).path()[0];
         (m.lat,m.lon) = (n.lat,n.lon);
         m.wp = wp;
+        m.is_departure = (idx == 0);
+        m.is_destination = (idx == (fp.getPlanSize() - 1));
         return m;
     },
     equals: func(other) {

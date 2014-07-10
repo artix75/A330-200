@@ -35,7 +35,7 @@ var init = func {
         me.hold_symbol = me.element.createChild("group", 'hold-symbol');
         var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
         canvas.parsesvg(me.hold_symbol, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_hold"~turn~".svg");
-        me.hold_symbol.setTranslation(25,-55).set('z-index', 4);
+        me.hold_symbol.setTranslation(-32,-64).set('z-index', 4);
     }
 }
 
