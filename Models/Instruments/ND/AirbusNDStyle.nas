@@ -71,7 +71,7 @@ canvas.NDStyles["Airbus"] = {
             {
                 name: 'ALT-profile',
                 isMapStructure: 1,
-                update_on: ['toggle_display_mode','toggle_range','toggle_cur_td','toggle_cur_tc','toggle_cur_ed','toggle_cur_sc','toggle_vnav','toggle_fplan'],
+                update_on: ['toggle_display_mode','toggle_range','toggle_cur_td','toggle_cur_tc','toggle_cur_ed','toggle_cur_sc','toggle_vnav','toggle_fplan','toggle_cur_wp','toggle_ap1','toggle_ap2'],
                 predicate: func(nd, layer) {
                     var visible = nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']);# and nd.get_switch('toggle_fplan');
                     layer.group.setVisible( visible );
@@ -192,7 +192,7 @@ canvas.NDStyles["Airbus"] = {
                 }, # end of layer update predicate
             }, # end of airports-nd layer
 
-            { name:'route', update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx'],
+            { name:'route', disabled: 1,update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx'],
                 predicate: func(nd, layer) {
                     var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']));
                     if (visible)
@@ -211,7 +211,31 @@ canvas.NDStyles["Airbus"] = {
                         layer.update();
                     }
                 }, # end of layer update predicate
+            }, # end of HOLD layer
+            { 
+                name:'RTE', 
+                isMapStructure: 1,
+                update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx','toggle_route_num'],
+                predicate: func(nd, layer) {
+                    var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']));
+                    layer.group.setVisible( visible );
+                    if (visible) {
+                        layer.update();
+                    }
+                }, # end of layer update predicate
             }, # end of route layer
+            { 
+                name:'WPT', 
+                isMapStructure: 1,
+                update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx','toggle_route_num','toggle_cur_wp','toggle_cur_ed','toggle_cur_sc'],
+                predicate: func(nd, layer) {
+                    var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']));
+                    layer.group.setVisible( visible );
+                    if (visible) {
+                        layer.update();
+                    }
+                }, # end of layer update predicate
+            }, # end of WPT layer
             {
                 name: 'SPD-profile',
                 isMapStructure: 1,

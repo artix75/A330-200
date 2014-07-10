@@ -1,3 +1,10 @@
+var _MP_dbg_lvl = "info";
+#var _MP_dbg_lvl = "alert";
+
+var makedie = func(prefix) func(msg) globals.die(prefix~" "~msg);
+
+var __die = makedie("MapStructure");
+
 var _arg2valarray = func
 {
     var ret = arg;
@@ -5,6 +12,32 @@ var _arg2valarray = func
            and size(ret) == 1 and typeof(ret[0]) == "vector" )
     ret = ret[0];
     return ret;
+}
+
+##
+# Combine a specific hash with a default hash, e.g. for
+# options/df_options and style/df_style in a SymbolLayer.
+#
+var default_hash = func(opt, df) {
+    if (opt != nil and typeof(opt)=='hash') {
+        if (df != nil and opt != df and !isa(opt, df)) {
+            if (contains(opt, "parents"))
+            opt.parents ~= [df];
+            else
+                opt.parents = [df];
+        }
+        return opt;
+    } else return df;
+}
+
+
+var try_aux_method = func(obj, method_name) {
+    var name = "<test%"~id(caller(0)[0])~">";
+    call(compile("obj."~method_name~"()", name), nil, var err=[]); # try...
+    #debug.dump(err);
+    if (size(err)) # ... and either leave caght or rethrow
+    if (err[1] != name)
+        die(err[0]);
 }
 
 ###
@@ -28,6 +61,23 @@ setlistener("sim/signals/fdm-initialized", func() {
                 e.setColor(r,g,b);
         }
     }
+    
+    canvas.Symbol._new = func(m) {
+        #m.style = m.layer.style;
+        #m.options = m.layer.options;
+        if (m.controller != nil) {
+            temp = m.controller.new(m,m.model);
+            if (temp != nil)
+                m.controller = temp;
+        }
+        else __die("Symbol._new(): default controller not found");
+    };
+    
+    canvas.Symbol.del = func() {
+        if (me.controller != nil)
+            me.controller.del(me, me.model);
+        try_aux_method(me.model, "del");
+    };
 
     canvas.SymbolLayer.findsym = func(model, del=0) {
         forindex (var i; me.list) {
@@ -89,6 +139,76 @@ setlistener("sim/signals/fdm-initialized", func() {
         }
         return nil; # scio correctum est
     };
+    
+    canvas.LineSymbol = {
+        parents:[canvas.Symbol],
+        element_id: nil,
+        needs_update: 1,
+        # Static/singleton:
+        makeinstance: func(name, hash) {
+            if (!isa(hash, canvas.LineSymbol))
+                die("LineSymbol: OOP error");
+            return canvas.Symbol.add(name, hash);
+        },
+        # For the instances returned from makeinstance:
+        new: func(group, model, controller=nil) {
+            if (me == nil) die("Need me reference for LineSymbol.new()");
+            if (typeof(model) != 'vector') die("LineSymbol.new(): need a vector of points");
+            var m = {
+                parents: [me],
+                group: group,
+                #layer: layer,
+                model: model,
+                controller: controller == nil ? me.df_controller : controller,
+                element: group.createChild(
+                    "path", me.element_id
+                ),
+            };
+            append(m.parents, m.element);
+            canvas.Symbol._new(m);
+
+            m.init();
+            return m;
+        },
+        # Non-static:
+        draw: func() {
+            if (!me.needs_update) return;
+            #printlog(_MP_dbg_lvl, "redrawing a LineSymbol "~me.layer.type);
+            me.element.reset();
+            var cmds = [];
+            var coords = [];
+            var cmd = canvas.Path.VG_MOVE_TO;
+            foreach (var m; me.model) {
+                var (lat,lon) = me.controller.getpos(m);
+                append(coords,"N"~lat);
+                append(coords,"E"~lon);
+                append(cmds,cmd); 
+                cmd = canvas.Path.VG_LINE_TO;
+            }
+            me.element.setDataGeo(cmds, coords);
+            me.element.update(); # this doesn't help with flickering, it seems
+        },
+        del: func() {
+            printlog(_MP_dbg_lvl, "LineSymbol.del()");
+            me.deinit();
+            call(canvas.Symbol.del, nil, me);
+            me.element.del();
+        },
+        # Default wrappers:
+        init: func() me.draw(),
+        deinit: func(),
+        update: func() {
+            if (me.controller != nil) {
+                if (!me.controller.update(me, me.model)) return;
+                elsif (!me.controller.isVisible(me.model)) {
+                    me.element.hide();
+                    return;
+                }
+            } else
+                me.element.show();
+            me.draw();
+        },
+    }; # of LineSymbol
 
     canvas.Path.addSegmentGeo = func(cmd, coords...)
     {
@@ -129,6 +249,7 @@ setlistener("sim/signals/fdm-initialized", func() {
     }
 
     canvas.SymbolLayer.onRemoved = func(model) {
+        #print('onRemoved');
         #debug.dump(model);
         var sym = me.findsym(model, 1);
         if (sym == nil) die("model not found");
@@ -182,7 +303,7 @@ setlistener("sim/signals/fdm-initialized", func() {
             load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".scontroller", name);
         }
 
-        foreach( var name; ['APS','ALT-profile','SPD-profile','HOLD'] )
+        foreach( var name; ['APS','ALT-profile','SPD-profile','HOLD','RTE','WPT'] )
         load_deps( name );
 
     })();

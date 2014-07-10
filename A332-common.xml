@@ -1402,10 +1402,12 @@
 			<file>Aircraft/A330-200/Nasal/compression.nas</file>
 			<file>Aircraft/A330-200/Nasal/tyresmoke.nas</file>
 			<file>Aircraft/A330-200/Nasal/general_loop.nas</file>
+		</a332>
+                <canvas_nd>
                         <file>Aircraft/A330-200/Models/Instruments/ND/canvas_compat.nas</file>
                         <file>Aircraft/A330-200/Models/Instruments/ND/AirbusNDStyle.nas</file>
                         <file>Aircraft/A330-200/Models/Instruments/ND/ND.nas</file>
-		</a332>
+                </canvas_nd>
 		<systems>
 			<file>Aircraft/A330-200/Nasal/systems.nas</file>
 		</systems>

@@ -1078,7 +1078,8 @@ update : func {
                                                 if(cruise_alt == trgt_alt){
                                                     #print('SAME ALT');
                                                     remnode(scProp);
-                                                    setprop('instrumentation/efis/nd/current-sc', 0);
+                                                    if(getprop('instrumentation/efis/nd/current-sc') != 0)
+                                                        setprop('instrumentation/efis/nd/current-sc', 0);
                                                     return;
                                                 }
                                                 d = trgt_alt - altitude;
@@ -1118,14 +1119,18 @@ update : func {
                                             } else {
                                                 remnode(edProp);
                                                 remnode(scProp); 
-                                                setprop('instrumentation/efis/nd/current-sc', 0);
-                                                setprop('instrumentation/efis/nd/current-ed', 0);
+                                                if(getprop('instrumentation/efis/nd/current-sc') != 0)
+                                                    setprop('instrumentation/efis/nd/current-sc', 0);
+                                                if(getprop('instrumentation/efis/nd/current-ed') != 0)
+                                                    setprop('instrumentation/efis/nd/current-ed', 0);
                                             }
                                         } else {
                                             remnode(edProp);
                                             remnode(scProp); 
-                                            setprop('instrumentation/efis/nd/current-sc', 0);
-                                            setprop('instrumentation/efis/nd/current-ed', 0);
+                                            if(getprop('instrumentation/efis/nd/current-sc') != 0)
+                                                setprop('instrumentation/efis/nd/current-sc', 0);
+                                            if(getprop('instrumentation/efis/nd/current-ed') != 0)
+                                                setprop('instrumentation/efis/nd/current-ed', 0);
                                         }
 
                                     },

@@ -26,7 +26,7 @@ var init = func {
 # (but one could simply copy the layer for that).
 var draw = func {
     var rot = getprop("/orientation/heading-deg");
-    var hdg = a332.nd_display.main._node.getNode('group/map').getValue('hdg');
+    var hdg = canvas_nd.nd_display.main._node.getNode('group/map').getValue('hdg');
     if(hdg)
         rot -= hdg;
     else

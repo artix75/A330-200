@@ -34,7 +34,7 @@ var draw = func{
     if(grp == nil) return;
     if(0 and bearing){
         print(name~" bearing: " ~ bearing);
-        var hdg = a332.nd_display.main._node.getNode('group/map').getValue('hdg');
+        var hdg = canvas_nd.nd_display.main._node.getNode('group/map').getValue('hdg');
         if(hdg == nil) hdg = 0;
         bearing -= hdg;
         if(bearing < 0) bearing = 360 + bearing; 

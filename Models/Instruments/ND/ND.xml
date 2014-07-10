@@ -72,7 +72,7 @@
                 <repeatable>false</repeatable>
                 <binding>
                         <command>nasal</command>
-                        <script>a332.showNd();</script>
+                        <script>canvas_nd.showNd();</script>
                 </binding>
         </action>
 </animation>    

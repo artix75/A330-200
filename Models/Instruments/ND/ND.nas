@@ -15,6 +15,135 @@ var update_apl_sym = func {
     settimer(update_apl_sym, 1);
 }
 
+var SymbolPainter = {
+    aircraft_dir: nil,
+    getOpts: func(opts){
+        if(opts == nil) opts = {};
+        var defOpts = {id:nil,color:nil,scale:1,create_group:0,update_center:0};
+        if(contains(opts, 'id'))
+        defOpts.id = opts.id;
+        if(contains(opts, 'color'))
+        defOpts.color = opts.color;
+        if(contains(opts, 'scale'))
+        defOpts.scale = opts.scale;
+        if(contains(opts, 'create_group'))
+        defOpts.create_group = opts.create_group;
+        if(contains(opts, 'update_center'))
+        defOpts.update_center = opts.update_center;
+        return defOpts;
+    },
+    getAircraftDir: func(){
+        if(me.aircraft_dir == nil)
+            me.aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+        return me.aircraft_dir;
+    },
+    svgPath: func(file){
+        return "Aircraft/" ~ me.getAircraftDir() ~ "/Models/Instruments/ND/res/"~file;
+    },
+    drawFIX : func(grp, opts = nil){
+        var icon_fix = nil;
+        opts = me.getOpts(opts);
+        var sym_id = opts.id;
+        if(sym_id != nil)
+            icon_fix = grp.createChild("path", sym_id);
+        else 
+            icon_fix = grp.createChild("path");
+        var color = opts.color;
+        if(color == nil){
+            color = {
+                r: 0.69,
+                g: 0,
+                b: 0.39
+            };
+        }
+        var scale = opts.scale;
+        if(scale == nil) scale = 0.8;
+        icon_fix.moveTo(-10,0)
+        .lineTo(0,-17)
+        .lineTo(10,0)
+        .lineTo(0,17)
+        .close()
+        .setStrokeLineWidth(3)
+        .setColor(color.r,color.g,color.b)
+        .setScale(scale,scale);
+        return icon_fix;
+    },
+    drawVOR: func(grp, opts = nil){
+        opts = me.getOpts(opts);
+        if(opts.create_group){
+            var sym_id = opts.id;
+            if(sym_id != nil)
+                grp = grp.createChild("group", sym_id);
+            else 
+                grp = grp.createChild("group");
+        }
+        var svg_path = me.svgPath('airbus_vor.svg');
+        canvas.parsesvg(grp, svg_path);
+        var scale = opts.scale;
+        if(scale == nil) scale = 0.8;
+        grp.setScale(scale,scale);
+        if(opts.update_center)
+            grp.setTranslation(-24 * scale,-24 * scale);
+        return grp;
+    },
+    drawNDB: func(grp, opts = nil){
+        var icon_ndb = nil;
+        opts = me.getOpts(opts);
+        var sym_id = opts.id;
+        if(sym_id != nil)
+            icon_ndb = grp.createChild("path", sym_id);
+        else 
+            icon_ndb = grp.createChild("path");
+        var color = opts.color;
+        var color = opts.color;
+        if(color == nil){
+            color = {
+                r: 0.69,
+                g: 0,
+                b: 0.39
+            };
+        }
+        var scale = opts.scale;
+        if(scale == nil) scale = 0.8;
+        icon_ndb.moveTo(-15,15)
+        .lineTo(0,-15)
+        .lineTo(15,15)
+        .close()
+        .setStrokeLineWidth(3)
+        .setColor(color.r,color.g,color.b)
+        .setScale(scale,scale);
+        return icon_ndb;
+    },
+    drawAirport: func(grp, opts = nil){
+        opts = me.getOpts(opts);
+        if(opts.create_group){
+            var sym_id = opts.id;
+            if(sym_id != nil)
+                grp = grp.createChild("group", sym_id);
+            else 
+                grp = grp.createChild("group");
+        }
+        var svg_path = me.svgPath('airbus_airport.svg');
+        canvas.parsesvg(grp, svg_path);
+        var scale = opts.scale;
+        if(scale == nil) scale = 0.8;
+        grp.setScale(scale,scale);
+        if(opts.update_center)
+            grp.setTranslation(-24 * scale,-24 * scale);
+        return grp;
+    },
+    draw: func(type, grp, opts = nil){
+        if(type == 'VOR' or type == 'vor')
+            return me.drawVOR(grp, opts);
+        elsif(type == 'NDB' or type == 'ndb')
+        return me.drawNDB(grp, opts);
+        elsif(type == 'ARPT' or type == 'arpt')
+        return me.drawAirport(grp, opts);
+        else 
+            return me.drawFIX(grp, opts);
+    }
+};
+
 ###
 # entry point, this will set up all ND instances
 
@@ -79,136 +208,11 @@ setlistener("sim/signals/fdm-initialized", func() {
         'toggle_hold_init': {path: '/nd/hold_init', value: 0, type: 'INT'},
         'toggle_hold_update': {path: '/nd/hold_update', value: 0, type: 'INT'},
         'toggle_hold_wp': {path: '/nd/hold_wp', value: '', type: 'STRING'},
+        'toggle_route_num': {path: '/nd/route_num', value: 0, type: 'INT'},
+        'toggle_cur_wp': {path: '/nd/cur_wp', value: 0, type: 'INT'},
+        'toggle_ap1': {path: '/nd/ap1', value: '', type: 'STRING'},
+        'toggle_ap2': {path: '/nd/ap2', value: '', type: 'STRING'},
         # add new switches here
-    };
-
-    var SymbolPainter = {
-        aircraft_dir: nil,
-        getOpts: func(opts){
-            if(opts == nil) opts = {};
-            var defOpts = {id:nil,color:nil,scale:1,create_group:0,update_center:0};
-            if(contains(opts, 'id'))
-                defOpts.id = opts.id;
-            if(contains(opts, 'color'))
-                defOpts.color = opts.color;
-            if(contains(opts, 'scale'))
-                defOpts.scale = opts.scale;
-            if(contains(opts, 'create_group'))
-                defOpts.create_group = opts.create_group;
-            if(contains(opts, 'update_center'))
-                defOpts.update_center = opts.update_center;
-            return defOpts;
-        },
-        getAircraftDir: func(){
-            if(me.aircraft_dir == nil)
-                me.aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-            return me.aircraft_dir;
-        },
-        svgPath: func(file){
-            return "Aircraft/" ~ me.getAircraftDir() ~ "/Models/Instruments/ND/res/"~file;
-        },
-        drawFIX : func(grp, opts = nil){
-            var icon_fix = nil;
-            opts = me.getOpts(opts);
-            var sym_id = opts.id;
-            if(sym_id != nil)
-                icon_fix = grp.createChild("path", sym_id);
-            else 
-                icon_fix = grp.createChild("path");
-            var color = opts.color;
-            if(color == nil){
-                color = {
-                    r: 0.69,
-                    g: 0,
-                    b: 0.39
-                };
-            }
-            var scale = opts.scale;
-            if(scale == nil) scale = 0.8;
-            icon_fix.moveTo(-10,0)
-            .lineTo(0,-17)
-            .lineTo(10,0)
-            .lineTo(0,17)
-            .close()
-            .setStrokeLineWidth(3)
-            .setColor(color.r,color.g,color.b)
-            .setScale(scale,scale);
-            return icon_fix;
-        },
-        drawVOR: func(grp, opts = nil){
-            opts = me.getOpts(opts);
-            if(opts.create_group){
-                var sym_id = opts.id;
-                if(sym_id != nil)
-                    grp = grp.createChild("group", sym_id);
-                else 
-                    grp = grp.createChild("group");
-            }
-            var svg_path = me.svgPath('airbus_vor.svg');
-            canvas.parsesvg(grp, svg_path);
-            var scale = opts.scale;
-            if(scale == nil) scale = 0.8;
-            grp.setScale(scale,scale);
-            if(opts.update_center)
-                grp.setTranslation(-24 * scale,-24 * scale);
-            return grp;
-        },
-        drawNDB: func(grp, opts = nil){
-            var icon_ndb = nil;
-            opts = me.getOpts(opts);
-            var sym_id = opts.id;
-            if(sym_id != nil)
-                icon_ndb = grp.createChild("path", sym_id);
-            else 
-                icon_ndb = grp.createChild("path");
-            var color = opts.color;
-            var color = opts.color;
-            if(color == nil){
-                color = {
-                    r: 0.69,
-                    g: 0,
-                    b: 0.39
-                };
-            }
-            var scale = opts.scale;
-            if(scale == nil) scale = 0.8;
-            icon_ndb.moveTo(-15,15)
-            .lineTo(0,-15)
-            .lineTo(15,15)
-            .close()
-            .setStrokeLineWidth(3)
-            .setColor(color.r,color.g,color.b)
-            .setScale(scale,scale);
-            return icon_ndb;
-        },
-        drawAirport: func(grp, opts = nil){
-            opts = me.getOpts(opts);
-            if(opts.create_group){
-                var sym_id = opts.id;
-                if(sym_id != nil)
-                    grp = grp.createChild("group", sym_id);
-                else 
-                    grp = grp.createChild("group");
-            }
-            var svg_path = me.svgPath('airbus_airport.svg');
-            canvas.parsesvg(grp, svg_path);
-            var scale = opts.scale;
-            if(scale == nil) scale = 0.8;
-            grp.setScale(scale,scale);
-            if(opts.update_center)
-                grp.setTranslation(-24 * scale,-24 * scale);
-            return grp;
-        },
-        draw: func(type, grp, opts = nil){
-            if(type == 'VOR' or type == 'vor')
-                return me.drawVOR(grp, opts);
-            elsif(type == 'NDB' or type == 'ndb')
-                return me.drawNDB(grp, opts);
-            elsif(type == 'ARPT' or type == 'arpt')
-                return me.drawAirport(grp, opts);
-            else 
-                return me.drawFIX(grp, opts);
-        }
     };
 
     canvas.Symbol.get("FIX").icon_fix = nil;
@@ -564,7 +568,7 @@ setlistener("sim/signals/fdm-initialized", func() {
                 var bearing = getprop("instrumentation/nd/symbols/"~property~"/bearing-deg");
                 if(bearing){
                     #print(property~" bearing: " ~ bearing);
-                    var hdg = a332.nd_display.main._node.getNode('group/map').getValue('hdg');
+                    var hdg = canvas_nd.nd_display.main._node.getNode('group/map').getValue('hdg');
                     if(hdg == nil) hdg = 0;
                     bearing -= hdg;
                     if(bearing < 0) bearing = 360 + bearing; 
@@ -818,6 +822,26 @@ setlistener("/flight-management/hold/wp", func{
     var wpid = getprop("/flight-management/hold/wp");
     if(wpid == nil) wpid = '';
     setprop('/instrumentation/efis/nd/hold_wp', wpid);
+});
+
+setlistener('autopilot/route-manager/route/num', func{
+    var num = getprop('autopilot/route-manager/route/num');
+    setprop('/instrumentation/efis/nd/route_num', num);
+});
+
+setlistener("/autopilot/route-manager/current-wp", func(){
+    var curwp = getprop("/autopilot/route-manager/current-wp");
+    setprop('/instrumentation/efis/nd/cur_wp',curwp);
+});
+
+setlistener("/flight-management/control/ap1-master", func(){
+    var ap1 = getprop("/flight-management/control/ap1-master");
+    setprop('/instrumentation/efis/nd/ap1',ap1);
+});
+
+setlistener("/flight-management/control/ap2-master", func(){
+    var ap2 = getprop("/flight-management/control/ap2-master");
+    setprop('/instrumentation/efis/nd/ap2',ap2);
 });
 
 var showNd = func() {

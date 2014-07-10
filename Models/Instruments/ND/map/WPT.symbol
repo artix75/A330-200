@@ -1,0 +1,109 @@
+# See: http://wiki.flightgear.org/MapStructure
+# Class things:
+var name = 'WPT';
+var parents = [canvas.DotSym];
+var __self__ = caller(0)[0];
+canvas.DotSym.makeinstance( name, __self__ );
+ 
+#canvas.SymbolLayer.get(name).df_style = {
+#    radius: 13,
+#};
+ 
+var element_type = "group";
+
+var init = func {
+    var SymbolPainter = canvas_nd.SymbolPainter;
+    var name = me.model.name;
+    var alt = me.model.alt;
+    var wp_type = me.model.type;
+    var wp_group = me.element;
+
+    #wp[i] = wp_group.createChild("path", "wp-" ~ i)
+    #.setStrokeLineWidth(3)
+    #.moveTo(-10,0)
+    #.lineTo(0,-17)
+    #.lineTo(10,0)
+    #.lineTo(0,17)
+    #.setColor(1,1,1)
+    #.close();
+    var idLen = size(me.model.wp_id);
+    var opts = {
+        id: 'wp-' ~ me.model.idx,
+        create_group: 1,
+        update_center: 1
+    };
+    if(wp_type == 'navaid'){
+        if(idLen == 4)
+            me.wp_sym = SymbolPainter.drawAirport(wp_group, opts);
+        elsif(idLen == 3){
+            var navaids = navinfo(me.model.lat,me.model.lon,me.model.wp_id);
+            var type = 'VOR';
+            if(size(navaids) > 0)
+                type = navaids[0].type;
+            if(type == nil) type = 'VOR';
+            me.wp_sym = SymbolPainter.draw(type, wp_group, opts);
+        }
+        else
+            me.wp_sym = SymbolPainter.drawFIX(wp_group, opts);
+    }
+    else
+        me.wp_sym = SymbolPainter.drawFIX(wp_group, opts);
+    me.text_wps = wp_group.createChild("text", "wp-text-" ~ me.model.idx)
+    .setDrawMode( canvas.Text.TEXT )
+    .setText(me.model.name)
+    .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+    .setFontSize(28)
+    .setTranslation(25,35)
+    .setColor(1,1,1);
+    me.text_alt = nil;
+    if(alt > 0){
+        me.text_alt = wp_group.createChild("text", "wp-alt-text-" ~ me.model.idx)
+        .setDrawMode( canvas.Text.TEXT )
+        .setText("\n" ~ alt)
+        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
+        .setFontSize(28)
+        .setTranslation(25,35);
+    }
+}
+
+var draw = func{
+    var wp_group = me.element;
+    var alt = me.model.alt;
+    var i = me.model.idx;
+    var vnav_actv = getprop("flight-management/control/ver-ctrl") == 'fmgc';
+    var curwp = getprop("/autopilot/route-manager/current-wp");
+    if(alt > 0){
+        var wp_d = me.model.wp.distance_along_route; 
+        var estimated_sc = getprop('instrumentation/efis/nd/current-sc');
+        var alt_path = wp_group.createChild("path").
+        setStrokeLineWidth(4).
+        moveTo(-22,0).
+        arcSmallCW(22,22,0,44,0).
+        arcSmallCW(22,22,0,-44,0);
+        if(vnav_actv){
+            if((estimated_sc - wp_d) > 0.5 and curwp == i)
+                alt_path.setColor(1,0.57,0.14);
+            else
+                alt_path.setColor(0.69,0,0.39);
+        }
+        else
+            alt_path.setColor(1,1,1);
+        if(getprop('instrumentation/efis/inputs/CSTR'))
+            alt_path.show();
+        else
+            alt_path.hide();
+    }
+    wp_group.set("z-index",4);
+    #var sym = me.element.getElementById('wp-' ~ me.model.idx);
+    if(alt > 0 and me.text_alt != nil){
+        if(vnav_actv)
+            me.text_alt.setColor(0.69,0,0.39);
+        else
+            me.text_alt.setColor(1,1,1);
+    }
+    if(i == curwp) {
+        me.wp_sym.setColor(1,1,1);
+    } else {
+        me.wp_sym.setColor(0.4,0.7,0.4);
+    }
+}

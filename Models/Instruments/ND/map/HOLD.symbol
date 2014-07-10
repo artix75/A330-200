@@ -51,13 +51,13 @@ var draw = func{
         var radial = me.model.radial;
         if(radial != nil){
 
-            var hdg = a332.nd_display.main._node.getNode('group/map').getValue('hdg');
+            var hdg = canvas_nd.nd_display.main._node.getNode('group/map').getValue('hdg');
             if(hdg == nil) hdg = 0;
             radial -= hdg;
             if(radial < 0) radial = 360 + radial; 
             me.element.setRotation(radial*D2R);
         }
-        var rng = a332.nd_display.main._node.getNode('group/map').getValue('range');
+        var rng = canvas_nd.nd_display.main._node.getNode('group/map').getValue('range');
         if(rng == nil) rng = 10;
         rng =  10 / rng;
         #print("CANVAS: Hold RNG: " ~ rng);
