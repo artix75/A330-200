@@ -23,9 +23,15 @@ var user = {
 		setprop(active_rte~ "arricao", getprop(rte~"arricao"));
 		
 		setprop(active_rte~ "id", "----------");
-                var flight_num = getprop(rte~"flight-num");
-                if(flight_num != nil and size(flight_num) > 0)
-                    setprop(active_rte~"flight-num", flight_num);
+        var flight_num = getprop(rte~"flight-num");
+        if(flight_num != nil and size(flight_num) > 0)
+            setprop(active_rte~"flight-num", flight_num);
+        var crz_fl = getprop(rte~'crz_fl');
+        if(crz_fl != nil){
+            setprop('flight-management/crz_fl', crz_fl);
+            var fl_lvl = int(crz_fl) * 100;
+            setprop("autopilot/route-manager/cruise/altitude-ft", fl_lvl); 
+        }
 		
 		for (var wp = 0; getprop(rte~ "route/wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
 		
@@ -75,6 +81,7 @@ var user = {
 		mCDU_init.clear_active();
 		
 		f_pln.cpy_to_active();
+                setprop(active_rte~'crz_fl',getprop('flight-management/crz_fl'));
 		
 		var filename = home~ "/Export/"~name~".xml";
 		

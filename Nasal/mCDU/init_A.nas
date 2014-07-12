@@ -170,6 +170,12 @@ var mCDU_init = {
                     var fltnum = getprop(user_rte~"flight-num");
                     if(fltnum != nil and size(fltnum) > 0)
                         setprop(active_rte~"flight-num", fltnum);
+                    var crz_fl = getprop(user_rte~"crz_fl");
+                    if(crz_fl != nil){
+                        setprop('flight-management/crz_fl', crz_fl);
+                        var fl_lvl = int(crz_fl) * 100;
+                        setprop("autopilot/route-manager/cruise/altitude-ft", fl_lvl); 
+                    }
                     
                     for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
                     
@@ -262,27 +268,27 @@ var mCDU_init = {
 		
 		############ IF CO RTE DOES NOT EXIST  TRIES USER ROUTES ###############
 		if (from_to_rte == 0) {
-                    var user_rtes = "/database/user_rtes_list/";
+            var user_rtes = "/database/user_rtes_list/";
 		    for (var index = 0; getprop(user_rtes ~ "name[" ~ index ~ "]") != nil; index += 1) {
-                        var user_rte_name = getprop(user_rtes ~ "name[" ~ index ~ "]");
-                        var user_rte = "/database/user_rtes/" ~ user_rte_name ~ "/";
-                        var dep = getprop(user_rte ~ "depicao");
-                        if(dep == nil) continue;
-                        var arr = getprop(user_rte ~ "arricao");
-			if ((from == dep) and (to == arr)) {
-				setprop(results~ "result[" ~ from_to_rte ~ "]/rte_id", 'user:' ~ user_rte_name);
-				var route = user_rte ~ "route/";
-				
-				for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
-				
-					setprop(results~ "result[" ~ from_to_rte ~ "]/route/wp[" ~ wp ~ "]/wp-id", getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
-				
-				} # End of Waypoints Copy Loop
+                var user_rte_name = getprop(user_rtes ~ "name[" ~ index ~ "]");
+                var user_rte = "/database/user_rtes/" ~ user_rte_name ~ "/";
+                var dep = getprop(user_rte ~ "depicao");
+                if(dep == nil) continue;
+                var arr = getprop(user_rte ~ "arricao");
+                if ((from == dep) and (to == arr)) {
+                    setprop(results~ "result[" ~ from_to_rte ~ "]/rte_id", 'user:' ~ user_rte_name);
+                    var route = user_rte ~ "route/";
 
-				from_to_rte += 1; # From To value increments as index
-                        }
+                    for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
 
-                    }
+                        setprop(results~ "result[" ~ from_to_rte ~ "]/route/wp[" ~ wp ~ "]/wp-id", getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
+
+                    } # End of Waypoints Copy Loop
+
+                    from_to_rte += 1; # From To value increments as index
+                }
+
+            }
 		}
 		############ IF CO RTE DOES NOT EXIST ##################################
 		if (from_to_rte == 0) {
