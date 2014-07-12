@@ -400,7 +400,7 @@ canvas.NDStyles["Airbus"] = {
                         etaSec=etaSec-60*m;
                         var s = etaSec/10;
                         if (h>24) h=h-24;
-                        nd.symbols.eta.setText(sprintf("%02.0f%02.0f.%01.0fz",h,m,s));
+                        nd.symbols.eta.setText(sprintf("%02.0f:%02.0f:%02.0f",h,m,s));
                         nd.symbols.eta.show();
                     },
                     is_false: func(nd) nd.symbols.eta.hide(),
@@ -477,9 +477,10 @@ canvas.NDStyles["Airbus"] = {
                     common: func(nd) nd.symbols.gs.setText(sprintf("%3.0f",nd.aircraft_source.get_gnd_spd() )),
                     predicate: func(nd) nd.aircraft_source.get_gnd_spd() >= 30,
                     is_true: func(nd) {
+                        #nd.symbols.gs.show();
                         nd.symbols.gs.setFontSize(36);
                     },
-                    is_false: func(nd) nd.symbols.gs.setFontSize(52),
+                    is_false: func(nd) {},#nd.symbols.gs.hide(),
                 },
             },
             {
