@@ -17,6 +17,7 @@ var init = func {
     var alt = me.model.alt;
     var wp_type = me.model.type;
     var wp_group = me.element;
+    me.alt_path = nil;
 
     #wp[i] = wp_group.createChild("path", "wp-" ~ i)
     #.setStrokeLineWidth(3)
@@ -75,23 +76,27 @@ var draw = func{
     if(alt > 0){
         var wp_d = me.model.wp.distance_along_route; 
         var estimated_sc = getprop('instrumentation/efis/nd/current-sc');
-        var alt_path = wp_group.createChild("path").
-        setStrokeLineWidth(4).
-        moveTo(-22,0).
-        arcSmallCW(22,22,0,44,0).
-        arcSmallCW(22,22,0,-44,0);
+        if(me.alt_path == nil){
+            me.alt_path = wp_group.createChild("path").
+            setStrokeLineWidth(4).
+            moveTo(-22,0).
+            arcSmallCW(22,22,0,44,0).
+            arcSmallCW(22,22,0,-44,0);
+        }
         if(vnav_actv){
             if((estimated_sc - wp_d) > 0.5 and curwp == i)
-                alt_path.setColor(1,0.57,0.14);
+                me.alt_path.setColor(1,0.57,0.14);
             else
-                alt_path.setColor(0.69,0,0.39);
+                me.alt_path.setColor(0.69,0,0.39);
         }
         else
-            alt_path.setColor(1,1,1);
+            me.alt_path.setColor(1,1,1);
         if(getprop('instrumentation/efis/inputs/CSTR'))
-            alt_path.show();
+            me.alt_path.show();
         else
-            alt_path.hide();
+            me.alt_path.hide();
+    } else {
+        if(me.alt_path != nil) me.alt_path.hide();
     }
     wp_group.set("z-index",4);
     #var sym = me.element.getElementById('wp-' ~ me.model.idx);
