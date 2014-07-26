@@ -802,7 +802,7 @@ var fmgc_loop = {
         me.a_thr = getprop(fmgc~ "a-thrust");
 
     },
-    get_current_state = func(){
+    get_current_state : func(){
         me.flplan_active = getprop("/autopilot/route-manager/active");
         me.agl = getprop("/position/altitude-agl-ft");
         me.current_wp = getprop("autopilot/route-manager/current-wp");
@@ -1008,6 +1008,7 @@ var fmgc_loop = {
         var tc_raw_prop = 'instrumentation/efis/nd/current-tc';
         var phase = me.phase;
         var vspd_fps = me.vs_fps;
+        if(vspd_fps == 0) return;
         if (getprop("/autopilot/route-manager/active") and 
             !getprop("/gear/gear[3]/wow") and 
             (phase == 'CLB' or 
@@ -1017,23 +1018,42 @@ var fmgc_loop = {
             var altitude = me.altitude;
             var d = cruise_alt - altitude;
             if(d > 100){
-                var min = d / vs_fpm;
-                var ground_speed_kt = getprop("/velocities/groundspeed-kt");
-                var nm_min = ground_speed_kt / 60;
-                var nm = nm_min * min;
+                
+                var trans_alt = cruise_alt - (vs_fpm / 2);
+                var before_trans_nm = me.nm2level(altitude, trans_alt, vs_fpm);
+                #before_trans_nm = before_trans_nm * 2;
+                var after_trans_nm = me.nm2level(trans_alt, cruise_alt, vs_fpm / 4);
+                print('ALT: ' ~ altitude);
+                print('D: ' ~ d);
+                print("Trans ALT: "~trans_alt);
+                print("VS: "~vs_fpm);
+                print("Before NM: "~before_trans_nm);
+                print("After NM: "~after_trans_nm);
+                print('---');
+                if(before_trans_nm < 1 or 
+                   (d <= 200 and before_trans_nm <= 2) or 
+                    d < 150) 
+                    return;
+                #var min = d / vs_fpm;
+                #var ground_speed_kt = getprop("/velocities/groundspeed-kt");
+                #var nm_min = ground_speed_kt / 60;
+                #var nm = nm_min * min;
+                var nm = before_trans_nm + after_trans_nm;
+                print("NM: "~nm);
+                print('-----');
                 var remaining = me.remaining_nm;
                 var totdist = getprop("autopilot/route-manager/total-distance");
                 nm = nm + (totdist - remaining);
-                if(d > 500)
-                    nm += 8;
-                else 
-                    nm += (8 * (d / 500));
+                #if(d > 500)
+                #    nm += 8;
+                #else 
+                #    nm += (8 * (d / 500));
                 var cur_tc = getprop(tc_raw_prop);
                 if(cur_tc == nil) cur_tc = 0;
-                if(math.abs(nm - cur_tc) > 2){
+                if(math.abs(nm - cur_tc) > 0){
                     setprop(tc_raw_prop, nm);
-                    var bearing = me.calc_point_bearing(nm);
-                    setprop(tcNode~'/bearing-deg', bearing);
+                    #var bearing = me.calc_point_bearing(nm);
+                    #setprop(tcNode~'/bearing-deg', bearing);
                 } 
                 var f= flightplan(); 
                 #print("TC: " ~ nm);
@@ -1061,6 +1081,7 @@ var fmgc_loop = {
         };
         if (getprop("/autopilot/route-manager/active") and !getprop("/gear/gear[3]/wow")){
             var vs_fpm = int(0.6 * me.vs_fps) * 100;
+            if(vs_fpm == 0) return;
             var trgt_alt = 0;
             var vnav_actv = 0;
             if(me.ver_ctrl == "fmgc"){
@@ -1201,6 +1222,7 @@ var fmgc_loop = {
         }
         var altitude = me.altitude;
         var vs_fpm = int(0.6 * me.vs_fps) * 100;
+        if(vs_fpm == 0) return;
         var spd_cange_count = 0;
         foreach(var alt; [10000,14000,25000,26000]){
             var alt_100 = alt / 100;
@@ -1246,7 +1268,7 @@ var fmgc_loop = {
                         nm += 1;
                     var cur_raw = getprop(node_raw_path);
                     if(cur_raw == nil) cur_raw = 0;
-                    if(math.abs(nm - cur_raw) > 2){
+                    if(math.abs(nm - cur_raw) >= 1){
                         setprop(node_raw_path, nm);
                     } 
                     var f= flightplan(); 
@@ -1261,6 +1283,14 @@ var fmgc_loop = {
                 }
             }
         }
+    },
+    nm2level: func(from_alt, to_alt, vs_fpm){
+        var d = to_alt - from_alt;
+        var min = d / vs_fpm;
+        var ground_speed_kt = getprop("/velocities/groundspeed-kt");
+        var nm_min = ground_speed_kt / 60;
+        var nm = nm_min * min;
+        return nm;
     },
     calc_point_bearing: func(nm, offset = 0){
         var rt = 'autopilot/route-manager/route/';
