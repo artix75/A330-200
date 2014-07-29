@@ -303,7 +303,7 @@ setlistener("sim/signals/fdm-initialized", func() {
             load(FG_ROOT~"/Models/Instruments/ND/map/"~name~".scontroller", name);
         }
 
-        foreach( var name; ['APS','ALT-profile','SPD-profile','HOLD','RTE','WPT'] )
+        foreach( var name; ['APS','ALT-profile','SPD-profile','HOLD','RTE','WPT','DECEL'] )
         load_deps( name );
 
     })();

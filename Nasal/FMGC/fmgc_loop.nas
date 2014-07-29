@@ -1014,6 +1014,7 @@ var fmgc_loop = {
             (phase == 'CLB' or 
              (phase == 'CRZ' and vspd_fps >= -0.8))){
             var vs_fpm = int(0.6 * vspd_fps) * 100;
+            if(vs_fpm == 0) return;
             var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
             var altitude = me.altitude;
             var d = cruise_alt - altitude;
@@ -1031,8 +1032,8 @@ var fmgc_loop = {
                 print("After NM: "~after_trans_nm);
                 print('---');
                 if(before_trans_nm < 1 or 
-                   (d <= 200 and before_trans_nm <= 2) or 
-                    d < 150) 
+                   (d <= 500 and before_trans_nm >= 1) or 
+                    d < 250) 
                     return;
                 #var min = d / vs_fpm;
                 #var ground_speed_kt = getprop("/velocities/groundspeed-kt");
@@ -1136,7 +1137,7 @@ var fmgc_loop = {
                 var lo_raw_prop = 'instrumentation/efis/nd/current-'~prop;
                 var cur_lo = getprop(lo_raw_prop);
                 if(cur_lo == nil) cur_lo = 0;
-                if(math.abs(nm - cur_lo) > 3){
+                if(math.abs(nm - cur_lo) > 0.5){
                     setprop(lo_raw_prop, nm);
                     var bearing = me.calc_point_bearing(nm);
                     setprop(node~'/bearing-deg', bearing);
@@ -1285,6 +1286,7 @@ var fmgc_loop = {
         }
     },
     nm2level: func(from_alt, to_alt, vs_fpm){
+        if(vs_fpm == 0) return 0;
         var d = to_alt - from_alt;
         var min = d / vs_fpm;
         var ground_speed_kt = getprop("/velocities/groundspeed-kt");

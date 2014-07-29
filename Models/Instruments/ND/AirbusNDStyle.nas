@@ -248,6 +248,18 @@ canvas.NDStyles["Airbus"] = {
                     }
                 },
             },
+            {
+                name: 'DECEL',
+                isMapStructure: 1,
+                update_on: ['toggle_display_mode','toggle_range','toggle_vnav','toggle_fplan','toggle_man_spd','toggle_athr','toggle_spd_point_100','toggle_spd_point_140','toggle_spd_point_250','toggle_spd_point_260'],
+                predicate: func(nd, layer) {
+                    var visible = nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']);# and nd.get_switch('toggle_fplan');
+                    layer.group.setVisible( visible );
+                    if (visible) {
+                        layer.update();
+                    }
+                },
+            },
             { name:'APS', isMapStructure:1, update_on:['toggle_display_mode','toggle_plan_loop'], 
                  predicate: func(nd, layer) {
                      var visible = nd.get_switch('toggle_display_mode') == "PLAN";
