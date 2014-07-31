@@ -922,6 +922,9 @@
 		<nav-compass>
 			<nav-display n="0" type="int">0</nav-display>
 		</nav-compass>
+        <pfd-old>
+            <enabled type="bool">false</enabled>
+        </pfd-old>
 
 		<!-- See http://wiki.flightgear.org/index.php/GPWS -->
 		<mk-viii>

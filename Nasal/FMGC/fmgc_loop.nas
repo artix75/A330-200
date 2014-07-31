@@ -3,6 +3,10 @@ var settings = "/flight-management/settings/";
 var fcu = "/flight-management/fcu-values/";
 var fmgc_val = "/flight-management/fmgc-values/";
 var servo = "/servo-control/";
+var flight_modes = "/flight-management/flight-modes/";
+var lmodes = flight_modes ~ "lateral/";
+var vmodes = flight_modes ~ "vertical/";
+var athr_modes = flight_modes ~ "athr/";
 
 setprop("/flight-management/text/qnh", "QNH");
 
@@ -116,6 +120,7 @@ var fmgc_loop = {
 
         me.get_settings();
         me.get_current_state();
+        me.check_flight_modes();
 
         me.lvlch_check();
 
@@ -807,6 +812,170 @@ var fmgc_loop = {
         me.agl = getprop("/position/altitude-agl-ft");
         me.current_wp = getprop("autopilot/route-manager/current-wp");
         me.remaining_nm = getprop("autopilot/route-manager/distance-remaining-nm");
+        me.airborne = !getprop("/gear/gear[3]/wow");
+        me.nav_in_range = getprop('instrumentation/nav/in-range');
+        me.gs_in_range = getprop('instrumentation/nav/gs-in-range');
+        me.v2_spd = getprop('/instrumentation/fmc/vspeeds/V2');
+        me.fcu_alt = getprop(fcu~'alt');
+        me.autoland_phase = getprop('/autoland/phase');
+    },
+    check_flight_modes : func{
+        var flplan_active = me.flplan_active;
+        me.active_athr_mode = '';
+        me.armed_athr_mode = '';
+        me.active_lat_mode = '';
+        me.armed_lat_mode = '';
+        me.active_ver_mode = '';
+        me.armed_ver_mode = '';
+        me.accel_alt = 1500;
+        me.srs_spd = 0;
+        if(me.v2_spd > 0)
+            me.srs_spd = me.v2_spd + 10; 
+        var lmode = '';
+        var lat_sel_mode = 'HDG';#TODO: support track mode
+        if (me.lat_ctrl == "man-set") {
+            if (me.lat_mode == "hdg") {
+                lmode = lat_sel_mode;            
+            } 
+            elsif(me.lat_mode == "nav1"){
+                lmode = 'LOC';
+            }
+        }
+        #TODO: support ROLLOUT lat mode
+        elsif(me.lat_ctrl == "fmgc"){
+            lmode = 'NAV';
+        }
+        var vmode = '';
+        var alt_diff = math.abs(me.fcu_alt - me.altitude);
+        var phase = me.phase;
+        var vphase = '';
+        var vmode_main = '';
+        if(phase == 'CLB' or phase == 'DES')
+            vphase = phase;
+        elsif(phase == 'T/O')
+            vphase = 'CLB';
+        elsif(phase == 'APP')
+            vphase = 'DES';
+        if(alt_diff <= 100){
+            vmode_main = 'ALT';
+        } else {
+            if(phase == 'CRZ')
+                vmode_main = 'ALT*';
+            else
+                vmode_main = vphase;
+        }
+        if(me.ver_ctrl == "man-set" or !flplan_active){
+            if(me.ver_mode == 'alt'){
+                vmode = vmode_main;
+                if(vmode == vphase)
+                    vmode = 'OP '~vmode;
+            }
+            elsif(me.ver_mode = 'ils'){
+                vmode = 'G/S';
+            }
+        }
+        elsif(me.ver_ctrl == "fmgc"){
+            vmode = vmode_main;
+        }
+        
+        if(!me.airborne){
+            me.active_athr_mode = 'MAN';
+            me.armed_athr_mode = 'TO';
+            me.active_lat_mode = ''; #TODO: support RWY
+            me.armed_lat_mode = lmode;
+            if(me.autoland_phase == 'rollout')
+                me.active_ver_mode = 'ROLLOUT';
+            else 
+                me.active_ver_mode = '';
+            me.armed_ver_mode = vmode;
+        } else {
+            
+            #ATHR 
+            
+            if(me.a_thr == 'eng'){
+                if(me.spd_mode == "ias"){
+                    me.active_athr_mode = 'SPEED';
+                } else {
+                    me.active_athr_mode = 'MACH';
+                }
+                me.armed_athr_mode = '';
+            } else {
+                me.active_athr_mode = 'MAN';
+                me.armed_athr_mode = '';
+            }
+            
+            #LATERAL
+            
+            if(me.agl > 30){
+                if(lmode == 'LOC'){
+                    if(me.nav_in_range){
+                        me.active_lat_mode = lmode;
+                        me.armed_lat_mode = 'ROLLOUT';
+                    } else {
+                        me.active_lat_mode = lat_sel_mode;
+                        me.armed_lat_mode = lmode;
+                    }
+                }
+                elsif(lmode == 'NAV'){
+                    if(flplan_active){
+                        me.active_lat_mode = lmode;
+                        me.armed_lat_mode = '';
+                    } else {
+                        me.active_lat_mode = lat_sel_mode;
+                        me.armed_lat_mode = lmode;
+                    }
+                } else {
+                    me.active_lat_mode = lmode;
+                    me.armed_lat_mode = '';
+                }
+            } else {
+                me.active_lat_mode = '';  #TODO: support RWY TRK
+                me.armed_lat_mode = lmode;
+            }
+            
+            #VERTICAL
+            
+            if(me.agl < 1500 and me.srs_spd > 0 and me.phase == 'CLB'){
+                me.active_ver_mode = 'SRS';
+                me.armed_ver_mode = vmode;
+            } else {
+                if(vmode == 'G/S'){
+                    if(me.gs_in_range){
+                        var flare = (me.autoland_phase == 'flare');
+                        var below_early_des = (me.agl < getprop('autoland/early-descent'));
+                        if(flare){
+                            me.active_ver_mode = 'FLARE';
+                            me.armed_ver_mode = '';
+                        }
+                        elsif(below_early_des){
+                            me.active_ver_mode = 'LAND';
+                            me.armed_ver_mode = 'FLARE';
+                        } else {
+                            me.active_ver_mode = vmode;
+                            me.armed_ver_mode = 'LAND'; 
+                        }
+                    } else {
+                        me.active_ver_mode = vmode_main;
+                        me.armed_ver_mode = vmode;
+                    }
+                } else {
+                    if(vmode == 'ALT'){
+                        me.active_ver_mode = vmode;
+                        me.armed_ver_mode = '';
+                    } else {
+                        me.active_ver_mode = vmode;
+                        me.armed_ver_mode = 'ALT'; 
+                    }
+                }
+            }
+            
+        }
+        setprop(athr_modes~'active', me.active_athr_mode);
+        setprop(athr_modes~'armed', me.armed_athr_mode);
+        setprop(vmodes~'active', me.active_ver_mode);
+        setprop(vmodes~'armed', me.armed_ver_mode);
+        setprop(lmodes~'active', me.active_lat_mode);
+        setprop(lmodes~'armed', me.armed_lat_mode);
     },
     lvlch_check : func {
 
@@ -1089,7 +1258,7 @@ var fmgc_loop = {
                 trgt_alt = getprop(fmgc_val ~ 'vnav-target-alt');
                 vnav_actv = 1;
             } else {
-                trgt_alt = getprop(fcu~'alt');
+                trgt_alt = me.fcu_alt;
             }
             if(trgt_alt == nil){
                 remnode(edProp);
@@ -1219,7 +1388,7 @@ var fmgc_loop = {
             else
                 trgt_alt = getprop(fmgc_val ~ 'vnav-target-alt');
         } else {
-            trgt_alt = getprop(fcu~'alt');
+            trgt_alt = me.fcu_alt;
         }
         var altitude = me.altitude;
         var vs_fpm = int(0.6 * me.vs_fps) * 100;
