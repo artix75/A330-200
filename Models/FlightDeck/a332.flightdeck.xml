@@ -249,6 +249,7 @@
 				<property>/flight-management/control/ver-ctrl</property>
 				<value>fmgc</value>
 			</equals>
+            <!--property>/instrumentation/pfd-old/enabled</property-->
 		</condition>
 	</animation>
 	
@@ -453,6 +454,10 @@
 				<value>man-set</value>
 				<value>fmgc</value>
 			</binding>
+            <binding>
+                <command>nasal</command>
+                <script>setprop('/flight-management/control/vsfpa-mode', 0)</script>
+            </binding>
 		</action>
 	</animation>
 	
@@ -483,7 +488,8 @@
 							setprop(fpa_prop, getprop(fpa_prop) + 1);
 					
 					}
-					
+                    setprop('/flight-management/control/vsfpa-mode', 1);
+                    setprop('/flight-management/control/ver-ctrl', 'man-set');
 				</script>
 			</binding>
 		</action>
@@ -511,7 +517,8 @@
 							setprop(fpa_prop, getprop(fpa_prop) - 1);
 					
 					}
-					
+                    setprop('/flight-management/control/vsfpa-mode', 1);
+                    setprop('/flight-management/control/ver-ctrl', 'man-set');
 				</script>
 			</binding>
 		</action>
@@ -529,6 +536,8 @@
 					setprop("/flight-management/fcu-values/fpa", 0);
 				
 					setprop("/flight-management/control/ver-ctrl", "man-set");
+                    setprop('/flight-management/control/vsfpa-mode', 1);
+                    setprop('/flight-management/control/ver-ctrl', 'man-set');
 					
 				</script>
 			</binding>
@@ -779,7 +788,7 @@
 		</condition>
 	</animation>
 	
-	<animation>
+	<!--animation>
 		<type>select</type>
 		<object-name>alt-text</object-name>
 		<condition>
@@ -788,7 +797,7 @@
 				<value>man-set</value>
 			</equals>
 		</condition>
-	</animation>
+	</animation-->
 	
 	<animation>
 		<type>select</type>
@@ -803,6 +812,10 @@
 					<property>/flight-management/control/ver-sub</property>
 					<value>vs</value>
 				</equals>
+                <equals>
+                    <property>/flight-management/control/vsfpa-mode</property>
+                    <value>1</value>
+                </equals>
 			</and>
 		</condition>
 	</animation>
@@ -820,6 +833,10 @@
 					<property>/flight-management/control/ver-sub</property>
 					<value>fpa</value>
 				</equals>
+                <equals>
+                    <property>/flight-management/control/vsfpa-mode</property>
+                    <value>1</value>
+                </equals>
 			</and>
 		</condition>
 	</animation>

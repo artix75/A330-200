@@ -339,9 +339,9 @@ var fmgc_loop = {
 
             ## VERTICAL CONTROL ----------------------------------------------------
 
-            var vs_setting = getprop(fcu~ "vs");
+            var vs_setting = me.vs_setting;
 
-            var fpa_setting = getprop(fcu~ "fpa");
+            var fpa_setting = me.fpa_setting;
 
             if (me.ver_ctrl == "man-set") {
 
@@ -805,6 +805,10 @@ var fmgc_loop = {
         me.ap1 = getprop(fmgc~ "ap1-master");
         me.ap2 = getprop(fmgc~ "ap2-master");
         me.a_thr = getprop(fmgc~ "a-thrust");
+        
+        me.vs_setting = getprop(fcu~ "vs");
+
+        me.fpa_setting = getprop(fcu~ "fpa");
 
     },
     get_current_state : func(){
@@ -818,6 +822,7 @@ var fmgc_loop = {
         me.v2_spd = getprop('/instrumentation/fmc/vspeeds/V2');
         me.fcu_alt = getprop(fcu~'alt');
         me.autoland_phase = getprop('/autoland/phase');
+        me.vsfpa_mode = getprop(fmgc~'vsfpa-mode');
     },
     check_flight_modes : func{
         var flplan_active = me.flplan_active;
@@ -867,8 +872,18 @@ var fmgc_loop = {
         if(me.ver_ctrl == "man-set" or !flplan_active){
             if(me.ver_mode == 'alt'){
                 vmode = vmode_main;
-                if(vmode == vphase)
-                    vmode = 'OP '~vmode;
+                if(vmode == vphase){
+                    if(me.vsfpa_mode){
+                        var sub = me.ver_sub;
+                        if(sub == 'vs'){
+                            vmode = 'VS '~me.vs_setting;
+                        } else {
+                            vmode = 'FPA '~me.fpa_setting;
+                        }
+                    } 
+                    else
+                        vmode = 'OP '~vmode;
+                }
             }
             elsif(me.ver_mode = 'ils'){
                 vmode = 'G/S';
