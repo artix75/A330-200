@@ -1142,6 +1142,80 @@
             <height type="int">32</height>
         </font-resolution>
     </text>
+    
+    <!-- PFD Boxes -->
+    
+    <text>
+        <name>athr-active-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0606226</y-m>
+            <z-m>0.0650781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/pfd-fmgc-empty-box</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">36</width>
+            <height type="int">36</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>ver-active-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0206226</y-m>
+            <z-m>0.0650781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/pfd-fmgc-empty-box</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">36</width>
+            <height type="int">36</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>lat-active-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0106226</y-m>
+            <z-m>0.0650781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/pfd-fmgc-empty-box</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">36</width>
+            <height type="int">36</height>
+        </font-resolution>
+    </text>
 	
 	<!-- Material Animation -->
 	
@@ -1399,6 +1473,33 @@
         </emission>
     </animation>
     
+    <animation>
+        <type>material</type>
+        <object-name>athr-active-box</object-name>
+        <object-name>ver-active-box</object-name>
+        <object-name>lat-active-box</object-name>
+        <diffuse>
+            <red>1</red>
+            <green>1</green>
+            <blue>1</blue>
+        </diffuse>
+        <ambient>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </ambient>
+        <specular>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </specular>
+        <emission>
+            <red>1</red>
+            <green>1</green>
+            <blue>1</blue>
+        </emission>
+    </animation>
+    
 
 	<animation>
 		<type>select</type>
@@ -1479,7 +1580,33 @@
                     </less-than>
 		</condition>
 	</animation>
+    
+    <!-- FMGC Modes Boxes -->
 	
+    <animation>
+        <type>select</type>
+        <object-name>athr-active-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/athr-active-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>lat-active-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/lat-active-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>ver-active-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/ver-active-box</property>
+        </condition>
+    </animation>
+    
 	<!-- Sidestick Deflection -->
 	
     <animation>

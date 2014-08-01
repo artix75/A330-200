@@ -13,6 +13,7 @@ setprop("/flight-management/text/qnh", "QNH");
 setprop(settings~ "gps-accur", "LOW");
 
 setprop("/flight-management/end-flight", 0);
+setprop('/instrumentation/texts/pfd-fmgc-empty-box', '       I');
 
 var fmgc_loop = {
     init : func {
@@ -1576,3 +1577,42 @@ setlistener('/flight-management/control/a-thrust', func{
     }
 
 });
+
+setlistener(athr_modes~'active', func(){
+    var mode = athr_modes~'active';
+    var box_node = 'instrumentation/pfd/athr-active-box';
+    if(mode != ''){
+        setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 5);
+    } else {
+        setprop(box_node, 1);
+    }
+}, 0, 0);
+
+setlistener(lmodes~'active', func(){
+    var mode = lmodes~'active';
+    var box_node = 'instrumentation/pfd/lat-active-box';
+    if(mode != ''){
+        setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 5);
+    } else {
+        setprop(box_node, 1);
+    }
+}, 0, 0);
+
+setlistener(vmodes~'active', func(){
+    var mode = vmodes~'active';
+    var box_node = 'instrumentation/pfd/ver-active-box';
+    if(mode != ''){
+        setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 5);
+    } else {
+        setprop(box_node, 1);
+    }
+}, 0, 0);
