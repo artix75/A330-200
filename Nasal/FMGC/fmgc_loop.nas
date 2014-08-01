@@ -257,6 +257,18 @@ var fmgc_loop = {
         var fdEngaged = getprop("flight-management/control/fd");
         me.ap_engaged = apEngaged;
         me.fd_engaged = fdEngaged;
+        var vmode = me.active_ver_mode;
+        var prfx_v = substr(vmode,0,2);
+        var app_phase = (vmode == 'G/S' or vmode == 'LAND' or vmode == 'FLARE');
+        var ver_managed = (me.ver_ctrl == 'fmgc' and flplan_active and !me.vsfpa_mode and vmode != 'SRS');
+        var vs_fpm = 0;
+        if(altitude < 10000)
+            vs_fpm = 1800;
+        else{
+            vs_fpm = 1600;
+        }
+        if(vmode == 'SRS')
+            vs_fpm = 2500;
         #print("FMGC Loop: AP Eng -> " ~ apEngaged);
         if (!fdEngaged) {
 
@@ -274,68 +286,69 @@ var fmgc_loop = {
 
             ## LATERAL CONTROL -----------------------------------------------------
 
-            if (me.lat_ctrl == "man-set") {
+            #if (me.lat_ctrl == "man-set") {
 
-                if (me.lat_mode == "hdg") {
+                
 
-                    # Find Heading Deflection
+            #}
+            if (me.active_lat_mode == "HDG") {
 
-                    var bug = getprop(fcu~ "hdg");
-                    #print("HDG: bug -> " ~ bug);
+                # Find Heading Deflection
 
-                    var bank = -1 * defl(bug, 20);
-                    #print("HDG: bank -> " ~ bank);
+                var bug = getprop(fcu~ "hdg");
+                #print("HDG: bug -> " ~ bug);
 
-                    var deflection = defl(bug, 180);
-                    #print("HDG: defl -> " ~ deflection);
+                var bank = -1 * defl(bug, 20);
+                #print("HDG: bank -> " ~ bank);
 
-                    if(apEngaged){
-                        setprop(servo~  "aileron", 1);
-                        setprop(servo~ "aileron-nav1", 0);
+                var deflection = defl(bug, 180);
+                #print("HDG: defl -> " ~ deflection);
 
-                        if (math.abs(deflection) <= 1)
-                            setprop(servo~ "target-bank", 0);
-                        else
-                            setprop(servo~ "target-bank", bank);
-                    }
-                    setprop(servo~  "fd-aileron", 1);
-                    setprop(servo~ "fd-aileron-nav1", 0);
+                if(apEngaged){
+                    setprop(servo~  "aileron", 1);
+                    setprop(servo~ "aileron-nav1", 0);
+
                     if (math.abs(deflection) <= 1)
-                        setprop(servo~ "fd-target-bank", 0);
+                    setprop(servo~ "target-bank", 0);
                     else
-                        setprop(servo~ "fd-target-bank", bank);
-
-                } elsif (me.lat_mode == "nav1") {
-
-                    var nav1_error = getprop("/autopilot/internal/nav1-track-error-deg");
-
-                    var agl = me.agl;
-
-                    var bank = limit(nav1_error, 30);
-
-                    if (agl < 100) {
-
-                        bank = 0; # Level the wings for AUTOLAND
-
-                        setprop(servo~ "target-rudder", bank);	
-
-                    }
-
-
-                    if(apEngaged){
-                        setprop(servo~ "aileron", 0);
-
-                        setprop(servo~ "aileron-nav1", 1); 
                         setprop(servo~ "target-bank", bank);
-                    }
-                    setprop(servo~ "fd-aileron", 0);
-
-                    setprop(servo~ "fd-aileron-nav1", 1); 	
+                }
+                setprop(servo~  "fd-aileron", 1);
+                setprop(servo~ "fd-aileron-nav1", 0);
+                if (math.abs(deflection) <= 1)
+                setprop(servo~ "fd-target-bank", 0);
+                else
                     setprop(servo~ "fd-target-bank", bank);
 
-                } # else, this is handed over from fcu to fmgc
+            } elsif (me.active_lat_mode == "LOC") {
 
-            }
+                var nav1_error = getprop("/autopilot/internal/nav1-track-error-deg");
+
+                var agl = me.agl;
+
+                var bank = limit(nav1_error, 30);
+
+                if (agl < 100) {
+
+                    bank = 0; # Level the wings for AUTOLAND
+
+                    setprop(servo~ "target-rudder", bank);	
+
+                }
+
+
+                if(apEngaged){
+                    setprop(servo~ "aileron", 0);
+
+                    setprop(servo~ "aileron-nav1", 1); 
+                    setprop(servo~ "target-bank", bank);
+                }
+                setprop(servo~ "fd-aileron", 0);
+
+                setprop(servo~ "fd-aileron-nav1", 1); 	
+                setprop(servo~ "fd-target-bank", bank);
+
+            } # else, this is handed over from fcu to fmgc
 
             ## VERTICAL CONTROL ----------------------------------------------------
 
@@ -343,23 +356,54 @@ var fmgc_loop = {
 
             var fpa_setting = me.fpa_setting;
 
-            if (me.ver_ctrl == "man-set") {
+            if(app_phase){
+                # Main stuff are done on the PIDs
 
-                if (me.ver_mode == "alt") {
+                autoland.phase_check();
 
+                var agl = me.agl;
+
+                # if (agl > 100) {
+                if(apEngaged){
+                    if (agl > getprop("/autoland/early-descent")) {
+
+                        setprop(servo~ "elevator-gs", 1);
+
+                        setprop(servo~ "elevator-vs", 0);
+
+                    } else {
+
+                        setprop(servo~ "elevator-gs", 0);
+
+                        setprop(servo~ "elevator-vs", 1);
+
+                    }
+
+                    setprop(servo~ "elevator", 0);
+                }
+
+                #setprop(servo~ "fd-elevator", 0);
+
+            } else {
+                if(!ver_managed){
+                    var vs_ref = vs_fpm;
+                    #TODO: FPA standard settings
+                    if(prfx_v == 'VS' or prfx_v == 'FP'){
+                        vs_ref = vs_setting; 
+                    }
                     if (me.ver_sub == "vs") {
 
                         var target = getprop(fcu~ "alt");
 
                         var trgt_vs = 0;
 
-                        if (((altitude - target) * vs_setting) > 0) {
+                        if (((altitude - target) * vs_ref) > 0) {
 
                             trgt_vs = limit((target - altitude) * 2, 200);
 
                         } else {
 
-                            trgt_vs = limit2((target - altitude) * 2, vs_setting);
+                            trgt_vs = limit2((target - altitude) * 2, vs_ref);
 
                         }
                         if(apEngaged){
@@ -395,39 +439,8 @@ var fmgc_loop = {
                         #setprop(servo~ "fd-elevator-gs", 0);
                         setprop(servo~ "fd-target-pitch", trgt_fpa);
                     }
-
-                } elsif (me.ver_mode == "ils") {
-
-                    # Main stuff are done on the PIDs
-
-                    autoland.phase_check();
-
-                    var agl = me.agl;
-
-                    # if (agl > 100) {
-                    if(apEngaged){
-                        if (agl > getprop("/autoland/early-descent")) {
-
-                            setprop(servo~ "elevator-gs", 1);
-
-                            setprop(servo~ "elevator-vs", 0);
-
-                        } else {
-
-                            setprop(servo~ "elevator-gs", 0);
-
-                            setprop(servo~ "elevator-vs", 1);
-
-                        }
-
-                        setprop(servo~ "elevator", 0);
-                    }
-
-                    #setprop(servo~ "fd-elevator", 0);
-
                 }
-
-            } # End of Manual Setting Check
+            }
 
         } # End of AP1 Master Check
 
@@ -442,7 +455,7 @@ var fmgc_loop = {
 
             var agl = me.agl;
 
-            if ((me.ver_mode == "ils") and (agl < 3000) and 
+            if (app_phase and (agl < 3000) and 
                 (getprop("/flight-management/spd-manager/approach/mode") == "MANAGED (AUTO)")) {
 
                 setprop(fmgc~ "fmgc/ias", 1);
@@ -459,16 +472,17 @@ var fmgc_loop = {
                 }
 
             } else {
-
-                if (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and (me.ver_mode != "ils") and flplan_active) {
+                if(vmode == 'SRS' and me.srs_spd > 0){
+                    var spd = me.srs_spd;
+                    setprop(fmgc_val~ "target-spd", spd);
+                }
+                elsif (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and (!app_phase) and flplan_active) {
 
                     var spd = nil;
                     if(getprop("/autopilot/route-manager/route/num") > 0)
                         spd = getprop("/autopilot/route-manager/route/wp[" ~ cur_wp ~ "]/ias-mach");
 
                     if (spd == nil or spd == 0) {
-
-
                         var remaining = me.remaining_nm;
                         if(remaining < decel_point){
                             spd = 180;
@@ -506,7 +520,7 @@ var fmgc_loop = {
                 var spd = getprop(fmgc_val~ "target-spd");
 
                 if (spd == nil) {
-
+                        
                     if (altitude <= 10000)
                         spd = 250;
                     elsif(altitude < 25000)
@@ -519,7 +533,7 @@ var fmgc_loop = {
                     spd = me.vne - 30;
 
                 if (spd < 1) {
-
+                    #TODO: change SPEED/MACH indication on PFD
                     setprop(fmgc~ "fmgc/ias", 0);
                     setprop(fmgc~ "fmgc/mach", 1);
 
@@ -537,11 +551,12 @@ var fmgc_loop = {
             setprop("instrumentation/pfd/target-spd", fcu_ias);
         }
 
+        var lmode = me.active_lat_mode;
         if (apEngaged or fdEngaged) {
 
             ## LATERAL CONTROL -----------------------------------------------------
 
-            if (me.lat_ctrl == "fmgc") {
+            if (lmode == 'NAV') {
 
                 # If A procedure's NOT being flown, we'll fly the active F-PLN (unless it's a hold pattern)
 
@@ -696,31 +711,38 @@ var fmgc_loop = {
 
             ## VERTICAL CONTROL ----------------------------------------------------
 
-            if (me.ver_ctrl == "fmgc") {
+            if (ver_managed) {
 
                 var current_wp = me.current_wp;
 
                 var target_alt = getprop("/autopilot/route-manager/route/wp[" ~ current_wp ~ "]/altitude-ft");
 
-                var ref_altitude = altitude;
+                #var ref_altitude = altitude;
                 var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
                 var destination_elevation = getprop("/autopilot/route-manager/destination/field-elevation-ft");
                 var remaining = me.remaining_nm;
                 var phase = '';
                 var no_constraint = 0;
+                var fcu_alt = me.fcu_alt;
                 if(remaining <= top_desc){
-                    ref_altitude = destination_elevation; 
+                    #ref_altitude = destination_elevation; 
                     phase = 'des';
                     setprop("/flight-management/phase", "DES");
                 } else {
-                    ref_altitude = cruise_alt;
+                    #ref_altitude = cruise_alt;
                     phase = 'clb';
                 }
                 setprop(fmgc_val ~ 'vnav-phase', phase);
 
                 if (target_alt == nil or target_alt < 0){
-                    target_alt = ref_altitude;
+                    target_alt = fcu_alt;
                     no_constraint = 1;
+                } else {
+                    if((vmode == 'CLB' and fcu_alt < target_alt) or 
+                       (vmode == 'DES' and fcu_alt > target_alt)){
+                        target_alt = fcu_alt;
+                        no_constraint = 1;
+                    }   
                 }
                 setprop(fmgc_val ~ 'vnav-target-alt', target_alt);
 
@@ -730,13 +752,13 @@ var fmgc_loop = {
                 var abs_diff = math.abs(alt_diff);
 
                 if (abs_diff >= 500) {
-                    if(no_constraint == 0 or phase == 'des'){
+                    if(no_constraint == 0){
                         var ground_speed_kt = getprop("/velocities/groundspeed-kt");
 
                         #var leg_dist_nm = getprop("/instrumentation/gps/wp/leg-distance-nm");
                         var leg_dist_nm = getprop("/autopilot/route-manager/wp/dist");
-                        if(no_constraint == 1)
-                            leg_dist_nm = remaining;
+                        #if(no_constraint == 1)
+                        #    leg_dist_nm = remaining;
 
                         #var leg_time_hr = leg_dist_nm / ground_speed_kt;
 
@@ -754,14 +776,17 @@ var fmgc_loop = {
                         }
                         final_vs = limit(final_vs, 40);
                     } else {
+                        #TODO: review calculated V/S
                         var vs_fpm = 0;
-                        if(altitude < 10000)
-                            vs_fpm = 1800;
-                        else{
-                            vs_fpm = 1600;
+                        if(target_alt > altitude){
+                            if(altitude < 10000)
+                                vs_fpm = 1800;
+                            else{
+                                vs_fpm = 1600;
+                            }
+                        } else {
+                            vs_fpm = -2400;
                         }
-                        if(altitude > cruise_alt)
-                            vs_fpm = vs_fpm * -1.0;
                         final_vs = limit(vs_fpm / 60.0, 40);
                     }
                 } else {
@@ -809,6 +834,7 @@ var fmgc_loop = {
         me.vs_setting = getprop(fcu~ "vs");
 
         me.fpa_setting = getprop(fcu~ "fpa");
+        me.crz_fl = getprop("/flight-management/crz_fl");
 
     },
     get_current_state : func(){
@@ -851,10 +877,12 @@ var fmgc_loop = {
             lmode = 'NAV';
         }
         var vmode = '';
-        var alt_diff = math.abs(me.fcu_alt - me.altitude);
+        var fcu_alt = me.fcu_alt;
+        var alt_diff = math.abs(fcu_alt - me.altitude);
         var phase = me.phase;
         var vphase = '';
         var vmode_main = '';
+        var crz_alt = me.crz_fl * 100;
         if(phase == 'CLB' or phase == 'DES')
             vphase = phase;
         elsif(phase == 'T/O')
@@ -864,8 +892,12 @@ var fmgc_loop = {
         if(alt_diff <= 100){
             vmode_main = 'ALT';
         } else {
-            if(phase == 'CRZ')
-                vmode_main = 'ALT*';
+            if(phase == 'CRZ'){
+                if((crz_alt - fcu_alt) > 10)
+                    vmode_main = 'DES';
+                else
+                    vmode_main = 'ALT*';
+            }
             else
                 vmode_main = vphase;
         }
@@ -1084,7 +1116,7 @@ var fmgc_loop = {
 
         } elsif (phase == "CLB") {
 
-            var crz_fl = getprop("/flight-management/crz_fl");
+            var crz_fl = me.crz_fl;
 
             if (crz_fl != 0) {
 
