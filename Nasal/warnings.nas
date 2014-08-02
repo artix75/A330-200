@@ -422,7 +422,7 @@ var warning_system = {
 
             # LDG CONFIG
 
-            var ldg_gear_ok = warning.new("AUTO BRK......MAX", "", "cfg_ok", "ldg-gear-ok");
+            var ldg_gear_ok = warning.new("LDG GEAR DN", "", "cfg_ok", "ldg-gear-ok");
             ldg_gear_ok.condition = func(){
                 var gear = getprop("/gear/gear[0]/position-norm");
                 return (gear == 1);
