@@ -69,6 +69,11 @@
 						setprop("autopilot/route-manager/route/wp[" ~ (first - 1) ~ "]/ias-mach", spd);
 					
 						setprop("autopilot/route-manager/route/wp[" ~ (first - 1) ~ "]/altitude-ft", alt);
+                        var fp = flightplan();
+                        var wp = fp.getWP(first - 1);
+                        wp.setSpeed(spd, 'at');
+                    
+                        wp.setAltitude(alt, 'at');
 					
 					}
 					
@@ -108,6 +113,11 @@
 						setprop("autopilot/route-manager/route/wp[" ~ first ~ "]/ias-mach", spd);
 					
 						setprop("autopilot/route-manager/route/wp[" ~ first ~ "]/altitude-ft", alt);
+                        var fp = flightplan();
+                        var wp = fp.getWP(first);
+                        wp.setSpeed(spd, 'at');
+
+                        wp.setAltitude(alt, 'at');
 					
 					}
 					
@@ -143,12 +153,22 @@
 						setprop("autopilot/route-manager/route/wp[1]/ias-mach", spd);
 					
 						setprop("autopilot/route-manager/route/wp[1]/altitude-ft", alt);
+                        var fp = flightplan();
+                        var wp = fp.getWP(1);
+                        wp.setSpeed(spd, 'at');
+
+                        wp.setAltitude(alt, 'at');
 					
 					} else {
 					
 						setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/ias-mach", spd);
 					
 						setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/altitude-ft", alt);
+                        var fp = flightplan();
+                        var wp = fp.getWP(first + 1);
+                        wp.setSpeed(spd, 'at');
+
+                        wp.setAltitude(alt, 'at');
 					
 					}
 					
@@ -186,12 +206,22 @@
 						setprop("autopilot/route-manager/route/wp[2]/ias-mach", spd);
 					
 						setprop("autopilot/route-manager/route/wp[2]/altitude-ft", alt);
+                        var fp = flightplan();
+                        var wp = fp.getWP(2);
+                        wp.setSpeed(spd, 'at');
+
+                        wp.setAltitude(alt, 'at');
 					
 					} else {
 					
 						setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/ias-mach", spd);
 					
 						setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/altitude-ft", alt);
+                        var fp = flightplan();
+                        var wp = fp.getWP(first + 2);
+                        wp.setSpeed(spd, 'at');
+
+                        wp.setAltitude(alt, 'at');
 					
 					}
 					
@@ -229,12 +259,22 @@
 						setprop("autopilot/route-manager/route/wp[3]/ias-mach", spd);
 					
 						setprop("autopilot/route-manager/route/wp[3]/altitude-ft", alt);
+                        var fp = flightplan();
+                        var wp = fp.getWP(3);
+                        wp.setSpeed(spd, 'at');
+
+                        wp.setAltitude(alt, 'at');
 					
 					} else {
 					
 						setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/ias-mach", spd);
 					
 						setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/altitude-ft", alt);
+                        var fp = flightplan();
+                        var wp = fp.getWP(first + 3);
+                        wp.setSpeed(spd, 'at');
+
+                        wp.setAltitude(alt, 'at');
 					
 					}
 					

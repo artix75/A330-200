@@ -24,6 +24,10 @@ var fmgc_loop = {
     
         me.fixed_thrust = 0;
         me.capture_alt_at = 0;
+        me.capture_alt_target = -9999;
+    
+        me.ver_managed = 0;
+        me.top_desc = -9999;
 
         setprop("/flight-management/current-wp", me.current_wp);
         setprop("/flight-management/control/qnh-mode", 'inhg');
@@ -154,7 +158,7 @@ var fmgc_loop = {
         me.flaps = flaps;
         me.stall_spd = stall_spd;
 
-        var top_desc = me.calc_td();
+        me.top_desc = me.calc_td();
         me.calc_tc();
         var decel_point = me.calc_decel_point();
         me.calc_speed_change();
@@ -268,7 +272,7 @@ var fmgc_loop = {
         var vmode = me.active_ver_mode;
         var prfx_v = substr(vmode,0,2);
         var app_phase = (vmode == 'G/S' or vmode == 'LAND' or vmode == 'FLARE');
-        var ver_managed = (me.ver_ctrl == 'fmgc' and flplan_active and !me.vsfpa_mode and vmode != 'SRS');
+        var ver_managed = me.ver_managed;
         var vs_fpm = 0;
         if(altitude < 10000)
             vs_fpm = 1800;
@@ -529,7 +533,7 @@ var fmgc_loop = {
                                 spd = 250;
                             }
                             else{
-                                if(vmode_vs_fps <= -8 or me.phase == 'DES'){ #TODO: this fails with new fixed-thrust DES, use true ver mode instead
+                                if(vmode_vs_fps <= -8 or (me.phase == 'DES' and me.fcu_alt < altitude)){ #TODO: this fails with new fixed-thrust DES, use true ver mode instead
                                     spd = 280; 
                                 } else{
                                     if(altitude < 25000)
@@ -750,91 +754,24 @@ var fmgc_loop = {
             ## VERTICAL CONTROL ----------------------------------------------------
 
             if (ver_managed) {
-
-                var current_wp = me.current_wp;
-
-                var target_alt = getprop("/autopilot/route-manager/route/wp[" ~ current_wp ~ "]/altitude-ft");
-
-                #var ref_altitude = altitude;
-                var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
-                var destination_elevation = getprop("/autopilot/route-manager/destination/field-elevation-ft");
-                var remaining = me.remaining_nm;
-                var phase = '';
-                var no_constraint = 0;
-                var fcu_alt = me.fcu_alt;
-                if(remaining <= top_desc){
-                    #ref_altitude = destination_elevation; 
-                    phase = 'des';
-                    setprop("/flight-management/phase", "DES");
-                } else {
-                    #ref_altitude = cruise_alt;
-                    phase = 'clb';
-                }
-                setprop(fmgc_val ~ 'vnav-phase', phase);
-
-                if (target_alt == nil or target_alt < 0){
-                    target_alt = fcu_alt;
-                    no_constraint = 1;
-                } else {
-                    if((vmode == 'CLB' and fcu_alt < target_alt) or 
-                       (vmode == 'DES' and fcu_alt > target_alt)){
-                        target_alt = fcu_alt;
-                        no_constraint = 1;
-                    }   
-                }
-                setprop(fmgc_val ~ 'vnav-target-alt', target_alt);
-
-                var alt_diff = target_alt - altitude;
+                var target_alt = me.real_target_alt;
+                var alt_diff = me.real_target_alt - altitude;
 
                 var final_vs = 0;
                 var abs_diff = math.abs(alt_diff);
 
-                if (abs_diff >= 500) {
-                    if(no_constraint == 0){
-                        var ground_speed_kt = getprop("/velocities/groundspeed-kt");
-
-                        #var leg_dist_nm = getprop("/instrumentation/gps/wp/leg-distance-nm");
-                        var leg_dist_nm = getprop("/autopilot/route-manager/wp/dist");
-                        #if(no_constraint == 1)
-                        #    leg_dist_nm = remaining;
-
-                        #var leg_time_hr = leg_dist_nm / ground_speed_kt;
-
-                        #var leg_time_sec = leg_time_hr * 3600;
-
-                        #var target_fps = (alt_diff / leg_time_sec) + 5;
-                        var nm_min = ground_speed_kt / 60.0;
-                        var min = leg_dist_nm / nm_min;
-                        if(min == 0) {
-                            final_vs = 0;
-                        }
-                        else{
-                            final_vs = alt_diff / min;
-                            final_vs = final_vs / 60.0;
-                        }
-                        final_vs = limit(final_vs, 40);
-                    } else {
-                        #TODO: review calculated V/S
-                        var vs_fpm = 0;
-                        if(target_alt > altitude){
-                            if(altitude < 10000)
-                                vs_fpm = 1800;
-                            else{
-                                vs_fpm = 1600;
-                            }
-                        } else {
-                            vs_fpm = -2400;
-                        }
-                        final_vs = limit(vs_fpm / 60.0, 40);
-                    }
+                var max_vs = 0; #TODO: is it right?
+                if(target_alt > altitude)
+                    max_vs = 2400;
+                elsif(target_alt < altitude)
+                    max_vs = -2400;
+                if (((altitude - target_alt) * max_vs) > 0) {
+                    final_vs = limit((target_alt - altitude) * 2, 200);
                 } else {
-                        if (((altitude - target_alt) * vs_setting) > 0) {
-                            final_vs = limit((target_alt - altitude) * 2, 200);
-                        } else {
-                            final_vs = limit2((target_alt - altitude) * 2, vs_setting);
-                        } 
-                        final_vs = final_vs / 60.0;
-                }
+                    final_vs = limit2((target_alt - altitude) * 2, max_vs);
+                } 
+                final_vs = final_vs / 60.0;
+                
                 setprop(fmgc_val ~ 'vnav-final-vs', final_vs);
                 if(apEngaged){
                     setprop(servo~ "target-vs", final_vs);
@@ -923,9 +860,51 @@ var fmgc_loop = {
         var vmode = '';
         var fcu_alt = me.fcu_alt;
         var vs_fpm = me.vs_fpm;
-        var raw_alt_diff = fcu_alt - me.altitude;
-        var alt_diff = math.abs(raw_alt_diff);
         var phase = me.phase;
+        
+        var ver_fmgc = me.ver_ctrl == 'fmgc';
+        var try_vnav = (flplan_active and ver_fmgc);
+        
+        var trgt_alt = fcu_alt;
+        var follow_alt_cstr = 0;
+        var alt_cstr = -9999;
+        
+        if(try_vnav){
+            follow_alt_cstr = 1;
+            var current_wp = me.current_wp;
+
+            alt_cstr = getprop("/autopilot/route-manager/route/wp[" ~ current_wp ~ "]/altitude-ft");
+
+            var remaining = me.remaining_nm;
+            
+            if(remaining <= me.top_desc){
+                #ref_altitude = destination_elevation; 
+                phase = 'des';
+                setprop("/flight-management/phase", "DES");
+                phase = 'DES';
+            }
+            
+            #setprop(fmgc_val ~ 'vnav-phase', phase); #TODO: seems to be unused
+
+            if (alt_cstr == nil or alt_cstr < 0){
+                setprop(fmgc_val ~ 'vnav-target-alt', fcu_alt);
+                follow_alt_cstr = 0;
+            } else {
+                if((phase == 'CLB' and fcu_alt < alt_cstr) or 
+                   (phase == 'DES' and fcu_alt > alt_cstr)){
+                    setprop(fmgc_val ~ 'vnav-target-alt', fcu_alt);
+                    follow_alt_cstr = 0;
+                } else {
+                    setprop(fmgc_val ~ 'vnav-target-alt', alt_cstr);
+                }
+            }
+            if(follow_alt_cstr)
+                trgt_alt = alt_cstr;
+        }
+        
+        var raw_alt_diff = trgt_alt - me.altitude;
+        var alt_diff = math.abs(raw_alt_diff);
+        
         var vphase = '';
         var vmode_main = '';
         var crz_alt = me.crz_fl * 100;
@@ -941,28 +920,39 @@ var fmgc_loop = {
         elsif(phase == 'APP')
             vphase = 'DES';
         
+        var is_capturing_alt = 0;
         if(alt_diff <= 100){
             vmode_main = 'ALT';
             me.capture_alt_at = 0;
         } else {
             if(phase == 'CRZ'){
-                if((crz_alt - fcu_alt) > 10)
+                if((crz_alt - trgt_alt) > 10)
                     vmode_main = 'DES';
-                else
-                    vmode_main = 'ALT*';
+                else{
+                    vmode_main = 'ALT';
+                    is_capturing_alt = 1;
+                }      
             }
             else{
+                if(trgt_alt != me.capture_alt_target){
+                    me.capture_alt_target = trgt_alt;
+                    me.capture_alt_at = 0;
+                }
                 var capture_alt_at = me.capture_alt_at;
                 if(capture_alt_at == 0)
-                    capture_alt_at = (vs_fpm != 0 ? fcu_alt - (vs_fpm / 2) : fcu_alt);
-                var capture_alt_rng = math.abs(fcu_alt - capture_alt_at);
+                    capture_alt_at = (vs_fpm != 0 ? trgt_alt - (vs_fpm / 2) : trgt_alt);
+                var capture_alt_rng = math.abs(trgt_alt - capture_alt_at);
                 if(alt_diff < capture_alt_rng){
-                    vmode_main = 'ALT*';
+                    vmode_main = 'ALT';
                     me.capture_alt_at = capture_alt_at;
+                    is_capturing_alt = 1;
                 } else {
                     vmode_main = vphase;
                 }
             }  
+        }
+        if(vmode_main == 'ALT'){
+            vmode_main = me.get_alt_mode(trgt_alt, alt_cstr, crz_alt, is_capturing_alt);
         }
         
         if(me.ver_ctrl == "man-set" or !flplan_active){
@@ -1059,12 +1049,11 @@ var fmgc_loop = {
                         me.armed_ver_mode = vmode;
                     }
                 } else {
-                    if(vmode == 'ALT'){
-                        me.active_ver_mode = vmode;
+                    me.active_ver_mode = vmode;
+                    if(substr(vmode, 0, 3) == 'ALT' and !is_capturing_alt){
                         me.armed_ver_mode = '';
                     } else {
-                        me.active_ver_mode = vmode;
-                        me.armed_ver_mode = 'ALT'; 
+                        me.armed_ver_mode = me.get_alt_mode(trgt_alt, alt_cstr, crz_alt, 0); 
                     }
                 }
             }
@@ -1101,6 +1090,13 @@ var fmgc_loop = {
         setprop(lmodes~'active', me.active_lat_mode);
         setprop(lmodes~'armed', me.armed_lat_mode);
         #setprop(fmgc ~'fixed-thrust', fixed_thrust);
+        me.ver_managed = (me.ver_ctrl == 'fmgc' and 
+                          me.flplan_active and 
+                          !me.vsfpa_mode and 
+                          me.active_ver_mode != 'SRS');
+        me.real_target_alt = trgt_alt;
+        me.follow_alt_cstr = follow_alt_cstr;
+        me.alt_cstr = alt_cstr;
         
     },
     get_athr_mode: func(vmode, spd_mode){
@@ -1119,6 +1115,16 @@ var fmgc_loop = {
             return thr_mode;
         }
         return spd_mode;
+    },
+    get_alt_mode: func(trgt_alt, alt_cstr, crz_alt, capturing){
+        var mode = 'ALT';
+        if(trgt_alt == crz_alt)
+            mode ~= ' CRZ';
+        elsif(trgt_alt == alt_cstr)
+            mode ~= ' CST';
+        if(capturing)
+            mode ~= '*';
+        return mode;
     },
     lvlch_check : func {
 
