@@ -10,7 +10,14 @@
 		<name>IAS hold</name>
 		<debug type="bool">false</debug>
 		<enable>
-			<prop>/flight-management/control/a-thr/ias</prop>
+			<condition>
+                <and>
+                    <property>/flight-management/control/a-thr/ias</property>
+                    <not>
+                        <property>/flight-management/control/spd-with-pitch</property>
+                    </not>
+                </and>
+            </condition>
 		</enable>
 		<input>
 			<prop>/autopilot/internal/lookahead-5-sec-airspeed-kt</prop>
@@ -40,7 +47,14 @@
 		<name>Mach hold</name>
 		<debug type="bool">false</debug>
 		<enable>
-			<prop>/flight-management/control/a-thr/mach</prop>
+            <condition>
+                <and>
+                    <property>/flight-management/control/a-thr/mach</property>
+                    <not>
+                        <property>/flight-management/control/spd-with-pitch</property>
+                    </not>
+                </and>
+            </condition>
 		</enable>
 		<input>
 			<prop>/velocities/mach</prop>
@@ -72,7 +86,14 @@
 		<name>IAS hold</name>
 		<debug type="bool">false</debug>
 		<enable>
-			<prop>/flight-management/control/fmgc/ias</prop>
+            <condition>
+                <and>
+                    <property>/flight-management/control/fmgc/ias</property>
+                    <not>
+                        <property>/flight-management/control/spd-with-pitch</property>
+                    </not>
+                </and>
+            </condition>
 		</enable>
 		<input>
 			<prop>/autopilot/internal/lookahead-5-sec-airspeed-kt</prop>
@@ -102,7 +123,14 @@
 		<name>Mach hold</name>
 		<debug type="bool">false</debug>
 		<enable>
-			<prop>/flight-management/control/fmgc/mach</prop>
+            <condition>
+                <and>
+                    <property>/flight-management/control/fmgc/mach</property>
+                    <not>
+                        <property>/flight-management/control/spd-with-pitch</property>
+                    </not>
+                </and>
+            </condition>
 		</enable>
 		<input>
 			<prop>/velocities/mach</prop>

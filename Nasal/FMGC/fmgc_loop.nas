@@ -21,6 +21,9 @@ var fmgc_loop = {
         me.loopid = 0;
 
         me.current_wp = 0;
+    
+        me.fixed_thrust = 0;
+        me.capture_alt_at = 0;
 
         setprop("/flight-management/current-wp", me.current_wp);
         setprop("/flight-management/control/qnh-mode", 'inhg');
@@ -39,6 +42,10 @@ var fmgc_loop = {
 
         setprop(fmgc~ "fmgc/ias", 0);
         setprop(fmgc~ "fmgc/mach", 0);
+
+        setprop(fmgc~ "spd-with-pitch", 0);
+        setprop('/flight-management/settings/spd-pitch-min', 0);
+        setprop('/flight-management/settings/spd-pitch-max', 0);
 
         # AUTOPILOT (LATERAL)
 
@@ -254,7 +261,7 @@ var fmgc_loop = {
 
         }
 
-        var apEngaged = ((me.ap1 == "eng") or (me.ap2 == "eng"));
+        var apEngaged = me.ap_engaged;
         var fdEngaged = getprop("flight-management/control/fd");
         me.ap_engaged = apEngaged;
         me.fd_engaged = fdEngaged;
@@ -282,6 +289,36 @@ var fmgc_loop = {
             #setprop(servo~ "fd-elevator", 0);
             setprop(servo~ "fd-target-pitch", 0);
 
+        }
+        if(me.fixed_thrust){
+            var min = 0;
+            var max = 0;
+            var thr = 0;
+            if(me.true_vertical_phase == 'CLB'){
+                min = 0.2;
+                max = 15;
+                var thr = 0.94;
+            } 
+            elsif(me.true_vertical_phase == 'DES'){
+                min = -15;
+                max = -0.2;
+                var thr = 0;
+            };
+            if(apEngaged){
+                setprop('/flight-management/settings/spd-pitch-min', min);
+                setprop('/flight-management/settings/spd-pitch-max', max);
+                setprop(fmgc~ "spd-with-pitch", 1);
+            } else {
+                setprop(fmgc~ "spd-with-pitch", 0);
+                setprop('/flight-management/settings/spd-pitch-min', 0);
+                setprop('/flight-management/settings/spd-pitch-max', 0);
+            }
+            setprop('/controls/engines/engine[0]/throttle', thr);
+            setprop('/controls/engines/engine[1]/throttle', thr);
+        } else {
+            setprop(fmgc~ "spd-with-pitch", 0);
+            setprop('/flight-management/settings/spd-pitch-min', 0);
+            setprop('/flight-management/settings/spd-pitch-max', 0);
         }
         if (apEngaged or fdEngaged) {
 
@@ -387,7 +424,7 @@ var fmgc_loop = {
 
             } else {
                 if(!ver_managed){
-                    var vs_ref = vs_fpm;
+                    var vs_ref = vs_fpm; 
                     #TODO: FPA standard settings
                     if(prfx_v == 'VS' or prfx_v == 'FP'){
                         vs_ref = vs_setting; 
@@ -492,8 +529,8 @@ var fmgc_loop = {
                                 spd = 250;
                             }
                             else{
-                                if(vmode_vs_fps <= -8){
-                                    spd = 280;
+                                if(vmode_vs_fps <= -8 or me.phase == 'DES'){ #TODO: this fails with new fixed-thrust DES, use true ver mode instead
+                                    spd = 280; 
                                 } else{
                                     if(altitude < 25000)
                                         spd = 320;
@@ -836,6 +873,9 @@ var fmgc_loop = {
 
         me.fpa_setting = getprop(fcu~ "fpa");
         me.crz_fl = getprop("/flight-management/crz_fl");
+        me.fcu_alt = getprop(fcu~'alt');
+        me.v2_spd = getprop('/instrumentation/fmc/vspeeds/V2');
+        me.vsfpa_mode = getprop(fmgc~'vsfpa-mode');
 
     },
     get_current_state : func(){
@@ -846,10 +886,9 @@ var fmgc_loop = {
         me.airborne = !getprop("/gear/gear[3]/wow");
         me.nav_in_range = getprop('instrumentation/nav/in-range');
         me.gs_in_range = getprop('instrumentation/nav/gs-in-range');
-        me.v2_spd = getprop('/instrumentation/fmc/vspeeds/V2');
-        me.fcu_alt = getprop(fcu~'alt');
         me.autoland_phase = getprop('/autoland/phase');
-        me.vsfpa_mode = getprop(fmgc~'vsfpa-mode');
+        me.vs_fpm = int(0.6 * me.vs_fps) * 100;
+        me.ap_engaged = ((me.ap1 == "eng") or (me.ap2 == "eng"));
     },
     check_flight_modes : func{
         var flplan_active = me.flplan_active;
@@ -863,6 +902,8 @@ var fmgc_loop = {
         me.srs_spd = 0;
         if(me.v2_spd > 0)
             me.srs_spd = me.v2_spd + 10; 
+        
+        # Basic Lateral Mode
         var lmode = '';
         var lat_sel_mode = 'HDG';#TODO: support track mode
         if (me.lat_ctrl == "man-set") {
@@ -877,21 +918,32 @@ var fmgc_loop = {
         elsif(me.lat_ctrl == "fmgc"){
             lmode = 'NAV';
         }
+        
+        #Basic Vertical Mode
         var vmode = '';
         var fcu_alt = me.fcu_alt;
-        var alt_diff = math.abs(fcu_alt - me.altitude);
+        var vs_fpm = me.vs_fpm;
+        var raw_alt_diff = fcu_alt - me.altitude;
+        var alt_diff = math.abs(raw_alt_diff);
         var phase = me.phase;
         var vphase = '';
         var vmode_main = '';
         var crz_alt = me.crz_fl * 100;
+        me.true_vertical_phase = '';
+        if(raw_alt_diff > 0)
+            me.true_vertical_phase = 'CLB';
+        elsif(raw_alt_diff < 0)
+            me.true_vertical_phase = 'DES';
         if(phase == 'CLB' or phase == 'DES')
             vphase = phase;
         elsif(phase == 'T/O')
             vphase = 'CLB';
         elsif(phase == 'APP')
             vphase = 'DES';
+        
         if(alt_diff <= 100){
             vmode_main = 'ALT';
+            me.capture_alt_at = 0;
         } else {
             if(phase == 'CRZ'){
                 if((crz_alt - fcu_alt) > 10)
@@ -899,9 +951,20 @@ var fmgc_loop = {
                 else
                     vmode_main = 'ALT*';
             }
-            else
-                vmode_main = vphase;
+            else{
+                var capture_alt_at = me.capture_alt_at;
+                if(capture_alt_at == 0)
+                    capture_alt_at = (vs_fpm != 0 ? fcu_alt - (vs_fpm / 2) : fcu_alt);
+                var capture_alt_rng = math.abs(fcu_alt - capture_alt_at);
+                if(alt_diff < capture_alt_rng){
+                    vmode_main = 'ALT*';
+                    me.capture_alt_at = capture_alt_at;
+                } else {
+                    vmode_main = vphase;
+                }
+            }  
         }
+        
         if(me.ver_ctrl == "man-set" or !flplan_active){
             if(me.ver_mode == 'alt'){
                 vmode = vmode_main;
@@ -914,8 +977,11 @@ var fmgc_loop = {
                             vmode = 'FPA '~me.fpa_setting;
                         }
                     } 
-                    else
+                    else {
+                        if(raw_alt_diff < -10)
+                            vmode = 'DES';
                         vmode = 'OP '~vmode;
+                    } 
                 }
             }
             elsif(me.ver_mode = 'ils'){
@@ -937,20 +1003,6 @@ var fmgc_loop = {
                 me.active_ver_mode = '';
             me.armed_ver_mode = vmode;
         } else {
-            
-            #ATHR 
-            
-            if(me.a_thr == 'eng'){
-                if(me.spd_mode == "ias"){
-                    me.active_athr_mode = 'SPEED';
-                } else {
-                    me.active_athr_mode = 'MACH';
-                }
-                me.armed_athr_mode = '';
-            } else {
-                me.active_athr_mode = 'MAN';
-                me.armed_athr_mode = '';
-            }
             
             #LATERAL
             
@@ -1017,6 +1069,30 @@ var fmgc_loop = {
                 }
             }
             
+            #ATHR 
+            var fixed_thrust = 0;
+            if(me.a_thr == 'eng'){
+                var spd_mode = '';
+                if(me.spd_mode == "ias"){
+                    spd_mode = 'SPEED';
+                } else {
+                    spd_mode = 'MACH';
+                }
+                if(!me.ap_engaged){
+                    me.active_athr_mode = spd_mode;
+                } else {
+                    me.active_athr_mode = me.get_athr_mode(me.active_ver_mode, spd_mode);
+                    me.armed_athr_mode = me.get_athr_mode(me.armed_ver_mode, spd_mode);
+                    if(me.active_athr_mode == me.armed_athr_mode)
+                        me.armed_athr_mode = '';
+                    if(me.active_athr_mode != spd_mode)
+                        fixed_thrust = 1;
+                }
+            } else {
+                me.active_athr_mode = 'MAN';
+                me.armed_athr_mode = '';
+            }
+            me.fixed_thrust = fixed_thrust;
         }
         setprop(athr_modes~'active', me.active_athr_mode);
         setprop(athr_modes~'armed', me.armed_athr_mode);
@@ -1024,6 +1100,25 @@ var fmgc_loop = {
         setprop(vmodes~'armed', me.armed_ver_mode);
         setprop(lmodes~'active', me.active_lat_mode);
         setprop(lmodes~'armed', me.armed_lat_mode);
+        #setprop(fmgc ~'fixed-thrust', fixed_thrust);
+        
+    },
+    get_athr_mode: func(vmode, spd_mode){
+        if(vmode == 'SRS' or 
+           vmode == 'CLB' or 
+           vmode == 'DES' or 
+           vmode == 'OP CLB' or 
+           vmode == 'OP DES'
+          ){
+            var thr_mode = 'THR';
+            var vphase = me.true_vertical_phase;
+            if(vphase == 'CLB')
+                thr_mode = thr_mode~ ' CLB';
+            else 
+                thr_mode = thr_mode~ ' IDLE';
+            return thr_mode;
+        }
+        return spd_mode;
     },
     lvlch_check : func {
 
@@ -1230,7 +1325,7 @@ var fmgc_loop = {
             !getprop("/gear/gear[3]/wow") and 
             (phase == 'CLB' or 
              (phase == 'CRZ' and vspd_fps >= -0.8))){
-            var vs_fpm = int(0.6 * vspd_fps) * 100;
+            var vs_fpm = me.vs_fpm;
             if(vs_fpm == 0) return;
             var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
             var altitude = me.altitude;
@@ -1241,13 +1336,13 @@ var fmgc_loop = {
                 var before_trans_nm = me.nm2level(altitude, trans_alt, vs_fpm);
                 #before_trans_nm = before_trans_nm * 2;
                 var after_trans_nm = me.nm2level(trans_alt, cruise_alt, vs_fpm / 4);
-                print('ALT: ' ~ altitude);
-                print('D: ' ~ d);
-                print("Trans ALT: "~trans_alt);
-                print("VS: "~vs_fpm);
-                print("Before NM: "~before_trans_nm);
-                print("After NM: "~after_trans_nm);
-                print('---');
+                #print('ALT: ' ~ altitude);
+                #print('D: ' ~ d);
+                #print("Trans ALT: "~trans_alt);
+                #print("VS: "~vs_fpm);
+                #print("Before NM: "~before_trans_nm);
+                #print("After NM: "~after_trans_nm);
+                #print('---');
                 if(before_trans_nm < 1 or 
                    (d <= 500 and before_trans_nm >= 1) or 
                     d < 250) 
@@ -1298,7 +1393,7 @@ var fmgc_loop = {
             if(node != nil) node.remove();
         };
         if (getprop("/autopilot/route-manager/active") and !getprop("/gear/gear[3]/wow")){
-            var vs_fpm = int(0.6 * me.vs_fps) * 100;
+            var vs_fpm = me.vs_fpm;
             if(vs_fpm == 0) return;
             var trgt_alt = 0;
             var vnav_actv = 0;
@@ -1439,7 +1534,7 @@ var fmgc_loop = {
             trgt_alt = me.fcu_alt;
         }
         var altitude = me.altitude;
-        var vs_fpm = int(0.6 * me.vs_fps) * 100;
+        var vs_fpm = me.vs_fpm;
         if(vs_fpm == 0) return;
         var spd_cange_count = 0;
         foreach(var alt; [10000,14000,25000,26000]){
