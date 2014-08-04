@@ -586,6 +586,9 @@
 					setprop("/flight-management/control/ver-mode", "ils");
 	
 					setprop("/flight-management/control/ver-ctrl", "man-set");
+                    setprop("/flight-management/control/lat-mode", "nav1");
+
+                    setprop("/flight-management/control/lat-ctrl", "man-set");
 				
 				} else
 				
