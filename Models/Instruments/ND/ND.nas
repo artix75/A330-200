@@ -2,6 +2,8 @@
 # storage container for all ND instances
 var nd_display = {};
 
+canvas.NavDisplay.old_update = canvas.NavDisplay.update;
+
 var update_apl_sym = func {
     if (getprop("/instrumentation/efis/nd/display-mode") == "PLAN"){
         #    setprop("/instrumentation/efis/nd/display-mode","PLAN");
@@ -657,9 +659,6 @@ setlistener("sim/signals/fdm-initialized", func() {
         .setDataGeo([2,4,4,4],crds)
         .setColor(1,1,1);
     };
-
-
-    canvas.NavDisplay.old_update = canvas.NavDisplay.update;
 
     canvas.NavDisplay.update = func(){
         me.old_update();

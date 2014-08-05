@@ -1004,7 +1004,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0606226</y-m>
-            <z-m>0.0650781</z-m>
+            <z-m>0.0670781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1048,11 +1048,59 @@
     </text>
     
     <text>
+        <name>athr-active-white</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0606226</y-m>
+            <z-m>0.0670781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/athr/active</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.006</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>athr-armed-white</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0606226</y-m>
+            <z-m>0.0540781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/athr/armed</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.006</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
         <name>ver-active-mode</name>
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0206226</y-m>
-            <z-m>0.0650781</z-m>
+            <z-m>0.0670781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1100,7 +1148,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>0.0106226</y-m>
-            <z-m>0.0650781</z-m>
+            <z-m>0.0670781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1150,7 +1198,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0606226</y-m>
-            <z-m>0.0650781</z-m>
+            <z-m>0.0670781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1174,7 +1222,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0206226</y-m>
-            <z-m>0.0650781</z-m>
+            <z-m>0.0670781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1198,7 +1246,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>0.0106226</y-m>
-            <z-m>0.0650781</z-m>
+            <z-m>0.0670781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1478,6 +1526,8 @@
         <object-name>athr-active-box</object-name>
         <object-name>ver-active-box</object-name>
         <object-name>lat-active-box</object-name>
+        <object-name>athr-active-white</object-name>
+        <object-name>athr-armed-white</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>
@@ -1498,6 +1548,32 @@
             <green>1</green>
             <blue>1</blue>
         </emission>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>athr-active-mode</object-name>
+        <object-name>athr-armed-mode</object-name>
+        <condition>
+            <not>
+                <equals>
+                    <property>/flight-management/flight-modes/athr/active</property>
+                    <value>MAN</value>
+                </equals>
+            </not>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>athr-active-white</object-name>
+        <object-name>athr-armed-white</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/flight-modes/athr/active</property>
+                <value>MAN</value>
+            </equals>
+        </condition>
     </animation>
     
 

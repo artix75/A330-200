@@ -110,6 +110,7 @@
 		 			setprop("/instrumentation/fmc/vspeeds/V2", input);
 		 			
 		 			setprop("/instrumentation/mcdu/input", "");
+                    setprop("/flight-management/control/spd-ctrl", 'fmgc');
 		 			
 				</script>
             </binding>

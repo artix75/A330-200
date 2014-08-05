@@ -1025,7 +1025,7 @@ var fmgc_loop = {
             
             #VERTICAL
             
-            if(me.agl < 1500 and me.srs_spd > 0 and me.phase == 'CLB'){
+            if(me.agl < 1500 and me.agl > 0 and me.srs_spd > 0 and me.phase == 'CLB'){
                 me.active_ver_mode = 'SRS';
                 me.armed_ver_mode = vmode;
             } else {
@@ -1071,9 +1071,9 @@ var fmgc_loop = {
                     me.active_athr_mode = spd_mode;
                 } else {
                     me.active_athr_mode = me.get_athr_mode(me.active_ver_mode, spd_mode);
-                    me.armed_athr_mode = me.get_athr_mode(me.armed_ver_mode, spd_mode);
-                    if(me.active_athr_mode == me.armed_athr_mode)
-                        me.armed_athr_mode = '';
+                    me.armed_athr_mode = ''; #me.get_athr_mode(me.armed_ver_mode, spd_mode);
+                    #if(me.active_athr_mode == me.armed_athr_mode)
+                    #    me.armed_athr_mode = '';
                     if(me.active_athr_mode != spd_mode)
                         fixed_thrust = 1;
                 }
