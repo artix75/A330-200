@@ -101,7 +101,7 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible(visible);
                 },
             },
-            { name:'airports-nd', update_on:['toggle_range','toggle_airports','toggle_display_mode'],
+            { name:'airports-nd', disabled: 1, update_on:['toggle_range','toggle_airports','toggle_display_mode'],
                 predicate: func(nd, layer) {
                     # print("Running airports-nd predicate");
                     var visible = nd.get_switch('toggle_airports') and nd.in_mode('toggle_display_mode', ['MAP']);
@@ -111,6 +111,17 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible( visible );
                 }, # end of layer update predicate
             }, # end of airports layer
+            
+            { 
+                name:'APT', isMapStructure:1, update_on:['toggle_range','toggle_airports','toggle_display_mode','toggle_airports'],
+                predicate: func(nd, layer) {
+                    var visible = nd.get_switch('toggle_airports') and nd.in_mode('toggle_display_mode', ['MAP']);
+                    layer.group.setVisible( visible );
+                    if (visible) {
+                        layer.update();
+                    }
+                }, # end of layer update predicate
+            }, # end of VOR layer
 
             # Should distinct between low and high altitude navaids. Hiding above 40 NM for now, to prevent clutter/lag.
             { name:'vor', disabled:1, update_on:['toggle_range','toggle_vor','toggle_display_mode'],

@@ -1,16 +1,16 @@
 # See: http://wiki.flightgear.org/MapStructure
 # Class things:
 var name = 'ALT-profile';
-var parents = [canvas.SymbolLayer.Controller];
+var parents = [SymbolLayer.Controller];
 var __self__ = caller(0)[0];
 var _options = { # default configuration options
     active_node: "/autopilot/route-manager/active",
     vnav_node: "/autopilot/route-manager/vnav/",
     types: ["tc", "td", "sc", "ed"],
 };
-canvas.SymbolLayer.Controller.add(name, __self__);
-canvas.SymbolLayer.add(name, {
-    parents: [canvas.SymbolLayer],
+SymbolLayer.Controller.add(name, __self__);
+SymbolLayer.add(name, {
+    parents: [SymbolLayer],
     type: name, # Symbol type
     df_controller: __self__, # controller to use by default -- this one
 });
@@ -21,9 +21,9 @@ var new = func(layer) {
         #map: layer.map,
         listeners: [],
     };
-    print('LAYER: --->');
-    print(typeof(layer));
-    debug.dump(keys(layer));
+    #print('LAYER: --->');
+    #print(typeof(layer));
+    #debug.dump(keys(layer));
     #debug.dump(layer.parents);
     layer.searcher._equals = func(a,b) a.getName() == b.getName();
     #append(m.listeners, setlistener(layer.options.active_node, func m.layer.update() ));

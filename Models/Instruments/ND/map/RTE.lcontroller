@@ -4,12 +4,12 @@
 # 
 # Class things:
 var name = 'RTE';
-var parents = [canvas.SymbolLayer.Controller];
+var parents = [SymbolLayer.Controller];
 var __self__ = caller(0)[0];
-canvas.SymbolLayer.Controller.add(name, __self__);
-canvas.SymbolLayer.add(name, {
+SymbolLayer.Controller.add(name, __self__);
+SymbolLayer.add(name, {
     #parents: [MultiSymbolLayer],
-    parents: [canvas.SymbolLayer],
+    parents: [SymbolLayer],
     type: name, # Symbol type
     df_controller: __self__, # controller to use by default -- this one
     #df_options: { # default configuration options

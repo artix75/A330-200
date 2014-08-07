@@ -2,9 +2,9 @@
 
 # Class things:
 var name = 'RTE';
-var parents = [canvas.LineSymbol];
+var parents = [LineSymbol];
 var __self__ = caller(0)[0];
-canvas.LineSymbol.makeinstance( name, __self__ );
+LineSymbol.makeinstance( name, __self__ );
 
 var activeStyle = { # style to use by default
     line_width: 5,
@@ -21,7 +21,7 @@ var inactiveStyle = { # style to use by default
     color: [0.95,0.95,0.21]
 };
 
-canvas.SymbolLayer.get(name).df_style = inactiveStyle;
+SymbolLayer.get(name).df_style = inactiveStyle;
 
 var init = func {
     var style = nil;

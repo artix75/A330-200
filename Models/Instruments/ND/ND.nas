@@ -205,100 +205,6 @@ setlistener("sim/signals/fdm-initialized", func() {
         'toggle_dest_rwy': {path: '/nd/dest_rwy', value: '', type: 'STRING'},
         # add new switches here
     };
-
-    canvas.Symbol.get("FIX").icon_fix = nil;
-    canvas.Symbol.get("FIX").draw = func{
-        if (me.icon_fix != nil) return;
-        # the fix symbol
-        me.icon_fix = SymbolPainter.drawFIX(me.element);
-        me.text_fix = me.element.createChild("text")
-        .setDrawMode( canvas.Text.TEXT )
-        .setText(me.model.id)
-        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-        .setFontSize(28)
-        .setTranslation(20,10);
-    }
-
-    canvas.Symbol.get("VOR").svg_loaded = nil;
-    canvas.Symbol.get("VOR").draw = func{
-        var grp = nil;
-        if(me.svg_loaded == nil) {
-            me.element.removeAllChildren();
-            grp = me.element.createChild("group");
-            SymbolPainter.drawVOR(grp);
-
-            me.text_vor = me.element.createChild("text")
-            .setDrawMode( canvas.Text.TEXT )
-            .setText(me.model.id)
-            .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-            .setFontSize(28)
-            .setColor(1,1,1)
-            .setTranslation(45,25);
-            me.svg_loaded = 1;
-        } else {
-            grp = me.element;
-        }
-        var frq = me.model.frequency;
-        if(frq != nil and grp != nil){
-            frq = frq / 100;
-            var nav1_frq = getprop('instrumentation/nav/frequencies/selected-mhz');
-            var nav2_frq = getprop('instrumentation/nav[1]/frequencies/selected-mhz');
-            if(nav1_frq == frq or nav2_frq == frq){
-                grp.setColor(0,0.62,0.84, [canvas.Text]);
-            } else {
-                grp.setColor(0.9,0,0.47, [canvas.Text]);
-            }
-        }
-    }
-
-    canvas.Symbol.get("NDB").icon_ndb = nil;
-    canvas.Symbol.get("NDB").draw = func{
-        if (me.icon_ndb == nil) {
-            # the fix symbol
-            me.icon_ndb = SymbolPainter.drawNDB(me.element);
-            me.text_ndb = me.element.createChild("text")
-            .setDrawMode( canvas.Text.TEXT )
-            .setText(me.model.id)
-            .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-            .setFontSize(28)
-            .setTranslation(25,10);
-        };
-        var frq = me.model.frequency;
-        if(frq != nil and me.icon_ndb != nil){
-            frq = frq / 100;
-            var adf1_frq = getprop('instrumentation/adf/frequencies/selected-khz');
-            var adf2_frq = getprop('instrumentation/adf[1]/frequencies/selected-khz');
-            if(adf1_frq == frq or adf2_frq == frq){
-                me.icon_ndb.setColor(0,0.62,0.84);
-            } else {
-                me.icon_ndb.setColor(0.9,0,0.47);
-            }
-        }
-    }
-
-    canvas.draw_apt = func(group, apt, controller=nil, lod=0){
-        var lat = apt.lat;
-        var lon = apt.lon;
-        var name = apt.id;
-        # print("drawing nd airport:", name);
-
-        var apt_grp = group.createChild("group", name);
-
-        SymbolPainter.drawAirport(apt_grp);
-        var text_apt = apt_grp.createChild("text", name ~ " label")
-        .setDrawMode( canvas.Text.TEXT )
-        .setTranslation(45,35)
-        .setText(name)
-        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-        .setColor(1,1,1)
-        .setFontSize(28);
-        apt_grp.setGeoPosition(lat, lon)
-        .set("z-index",1); # FIXME: this needs to be configurable!!
-        #}
-
-        # draw routines should always return their canvas group to the caller for further processing
-
-    }
     
     canvas.RunwayNDModel.init = func {
         me._view.reset();
@@ -451,8 +357,16 @@ setlistener("sim/signals/fdm-initialized", func() {
 
     nd_display.main.addPlacement({"node": "ND.screen"});
     var group = nd_display.main.createGroup();
-    NDCpt.newMFD(group);
 
+    
+    NDCpt.newMFD(group);
+    var layer_names = keys(NDCpt.layers);
+    
+    foreach(var layer_name; layer_names){
+        var the_layer = NDCpt.layers[layer_name];
+        if(the_layer != nil) 
+            the_layer.map = NDCpt.map;
+    }
     NDCpt.update();
 
     setprop("instrumentation/efis/inputs/plan-wpt-index", -1);
