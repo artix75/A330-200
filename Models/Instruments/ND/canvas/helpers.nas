@@ -21,7 +21,7 @@ var SymbolPainter = {
         return me.aircraft_dir;
     },
     svgPath: func(file){
-        return "Aircraft/" ~ me.getAircraftDir() ~ "/Models/Instruments/ND/res/"~file;
+        return "Aircraft/" ~ me.getAircraftDir() ~ "/Models/Instruments/ND/canvas/res/"~file;
     },
     drawFIX : func(grp, opts = nil){
         var icon_fix = nil;

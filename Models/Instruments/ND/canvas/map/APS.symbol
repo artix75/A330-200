@@ -15,7 +15,7 @@ var model = props.globals.getNode('/position');
 var init = func {
     var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
     me.airplane_grp = me.element.createChild("group","airplane");
-    canvas.parsesvg(me.airplane_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbusAirplane.svg");
+    canvas.parsesvg(me.airplane_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/canvas/res/airbusAirplane.svg");
     var aplSymbol = me.airplane_grp.getElementById("airplane");
     aplSymbol.setTranslation(-45,-52);
 };

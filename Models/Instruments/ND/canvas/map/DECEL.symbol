@@ -14,7 +14,7 @@ var element_type = "group";
 var init = func {
     var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
     me.decel_grp = me.element.createChild("group","decel");
-    canvas.parsesvg(me.decel_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_decel.svg");
+    canvas.parsesvg(me.decel_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/canvas/res/airbus_decel.svg");
     me.decel_grp.set('z-index', 5);
 }
 

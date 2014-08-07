@@ -30,11 +30,11 @@ var init = func {
         me.hold_pattern = pattern;
         me.hold_symbol = nil;
     } else {
-        print('CREATING HOLD SYM');
+        #print('CREATING HOLD SYM');
         me.hold_pattern = nil;
         me.hold_symbol = me.element.createChild("group", 'hold-symbol');
         var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-        canvas.parsesvg(me.hold_symbol, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbus_hold"~turn~".svg");
+        canvas.parsesvg(me.hold_symbol, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/canvas/res/airbus_hold"~turn~".svg");
         me.hold_symbol.setTranslation(-32,-64).set('z-index', 4);
     }
 }

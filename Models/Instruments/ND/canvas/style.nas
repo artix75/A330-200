@@ -37,7 +37,7 @@ canvas.NDStyles["Airbus"] = {
         # TODO: SVG elements should be renamed to use boeing/airbus prefix
         # aircraft developers should all be editing the same ND.svg image
         # the code can deal with the differences now
-        svg_filename: "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/res/airbusND.svg",
+        svg_filename: "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/canvas/res/airbusND.svg",
         ##
         ## this loads and configures existing layers (currently, *.layer files in Nasal/canvas/map)
         ##
