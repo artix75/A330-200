@@ -1,0 +1,41 @@
+# See: http://wiki.flightgear.org/MapStructure
+
+# Class things:
+var name = 'RTE';
+var parents = [LineSymbol];
+var __self__ = caller(0)[0];
+LineSymbol.makeinstance( name, __self__ );
+
+var activeStyle = { # style to use by default
+    line_width: 5,
+    color: [1,0,1]
+};
+
+var activeStyle = { # style to use by default
+    line_width: 5,
+    color: [0.4,0.7,0.4]
+};
+
+var inactiveStyle = { # style to use by default
+    line_width: 5,
+    color: [0.95,0.95,0.21]
+};
+
+SymbolLayer.get(name).df_style = inactiveStyle;
+
+var init = func {
+    var style = nil;
+    var lnav = (getprop('flight-management/control/lat-ctrl') == 'fmgc');
+    var actv = getprop('autopilot/route-manager/active');
+
+    if(!lnav or !actv)
+        me.element.setStrokeDashArray([32, 16]);
+    else
+        me.element.setStrokeDashArray([]);
+    if(actv)
+        style = activeStyle;
+    else
+        style = inactiveStyle;
+    me.element.setColor(style.color)
+    .setStrokeLineWidth(style.line_width);
+};
