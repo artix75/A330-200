@@ -173,44 +173,44 @@ LineSymbol = {
         m.init();
         return m;
     },
-        # Non-static:
-        draw: func() {
-            if (!me.needs_update) return;
-            #printlog(_MP_dbg_lvl, "redrawing a LineSymbol "~me.layer.type);
-            me.element.reset();
-            var cmds = [];
-            var coords = [];
-            var cmd = Path.VG_MOVE_TO;
-            foreach (var m; me.model) {
-                var (lat,lon) = me.controller.getpos(m);
-                append(coords,"N"~lat);
-                append(coords,"E"~lon);
-                append(cmds,cmd); 
-                cmd = Path.VG_LINE_TO;
+    # Non-static:
+    draw: func() {
+        if (!me.needs_update) return;
+        #printlog(_MP_dbg_lvl, "redrawing a LineSymbol "~me.layer.type);
+        me.element.reset();
+        var cmds = [];
+        var coords = [];
+        var cmd = Path.VG_MOVE_TO;
+        foreach (var m; me.model) {
+            var (lat,lon) = me.controller.getpos(m);
+            append(coords,"N"~lat);
+            append(coords,"E"~lon);
+            append(cmds,cmd); 
+            cmd = Path.VG_LINE_TO;
+        }
+        me.element.setDataGeo(cmds, coords);
+        me.element.update(); # this doesn't help with flickering, it seems
+    },
+    del: func() {
+        printlog(_MP_dbg_lvl, "LineSymbol.del()");
+        me.deinit();
+        call(Symbol.del, nil, me);
+        me.element.del();
+    },
+    # Default wrappers:
+    init: func() me.draw(),
+    deinit: func(),
+    update: func() {
+        if (me.controller != nil) {
+            if (!me.controller.update(me, me.model)) return;
+            elsif (!me.controller.isVisible(me.model)) {
+                me.element.hide();
+                return;
             }
-            me.element.setDataGeo(cmds, coords);
-            me.element.update(); # this doesn't help with flickering, it seems
-        },
-            del: func() {
-                printlog(_MP_dbg_lvl, "LineSymbol.del()");
-                me.deinit();
-                call(Symbol.del, nil, me);
-                me.element.del();
-            },
-                # Default wrappers:
-                init: func() me.draw(),
-                    deinit: func(),
-                        update: func() {
-                            if (me.controller != nil) {
-                                if (!me.controller.update(me, me.model)) return;
-                                elsif (!me.controller.isVisible(me.model)) {
-                                    me.element.hide();
-                                    return;
-                                }
-                            } else
-                                me.element.show();
-                            me.draw();
-                        },
+        } else
+            me.element.show();
+        me.draw();
+    },
 }; # of LineSymbol
 
 Path.addSegmentGeo = func(cmd, coords...)
