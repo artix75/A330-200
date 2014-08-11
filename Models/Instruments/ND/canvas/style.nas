@@ -193,16 +193,16 @@ canvas.NDStyles["Airbus"] = {
                     }
                 }, # end of layer update predicate
             }, # end of traffic  layer
-
-            { name:'runway-nd', update_on:['toggle_range','toggle_display_mode','toggle_fplan','toggle_dep_rwy','toggle_dest_rwy'],
-                predicate: func(nd, layer) {
-                    var visible = (nd.rangeNm() <= 40) and (size(nd.get_switch('toggle_dep_rwy')) > 0 or size(nd.get_switch('toggle_dest_rwy')) > 0) and nd.in_mode('toggle_display_mode', ['MAP','PLAN']) ;
-                    if (visible)
-                        trigger_update( layer ); # clear & redraw
-                    layer._view.setVisible( visible );
-                }, # end of layer update predicate
-            }, # end of airports-nd layer
-
+            { name:'RWY-profile', isMapStructure:1, update_on:['toggle_range','toggle_display_mode','toggle_fplan','toggle_dep_rwy','toggle_dest_rwy'],
+             predicate: func(nd, layer) {
+                 var visible = (nd.rangeNm() <= 40) and (size(nd.get_switch('toggle_dep_rwy')) > 0 or size(nd.get_switch('toggle_dest_rwy')) > 0) and nd.in_mode('toggle_display_mode', ['MAP','PLAN']) ;
+                 layer.group.setVisible( visible );
+                 if (visible) {
+                     #print("Updating MapStructure ND layer: TFC");
+                     layer.update();
+                 }
+             }, # end of layer update predicate
+            }, # end of runway layer
             { name:'route', disabled: 1,update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx'],
                 predicate: func(nd, layer) {
                     var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']));

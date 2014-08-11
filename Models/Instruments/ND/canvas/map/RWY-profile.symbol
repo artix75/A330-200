@@ -1,0 +1,78 @@
+# See: http://wiki.flightgear.org/MapStructure
+
+# Class things:
+var name = 'RWY-profile';
+var parents = [DotSym];
+var __self__ = caller(0)[0];
+DotSym.makeinstance( name, __self__ );
+
+var element_type = "group";
+
+var style = { # style to use by default
+    zoom: 20,
+    color: [1,1,1],
+    center_line_len: 0.75,
+    line_width: 3
+};
+
+SymbolLayer.get(name).df_style = style;
+var already_drawn = 0;
+
+var init = func {
+    if(me.already_drawn) return;
+    var style = SymbolLayer.get(name).df_style;
+    var lat = me.model.lat;
+    var lon = me.model.lon;
+    var rwyhdg = me.model.heading;
+    var width = me.model.width;
+    var length = me.model.length;
+    var group = me.element;
+    var ctr_len = length * style.center_line_len;
+    var crds = [];
+    var coord = geo.Coord.new();
+    width=width*style.zoom; # Else rwy is too thin to be visible
+
+    coord.set_latlon(lat, lon);
+    coord.apply_course_distance(rwyhdg, -(ctr_len / 2));
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
+    coord.apply_course_distance(rwyhdg, (ctr_len));
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
+    icon_rwy = group.createChild("path", "rwy-cl")
+    .setStrokeLineWidth(style.line_width)
+    .setDataGeo([2,4],crds)
+    .setColor(style.color);
+    #.setStrokeDashArray([10, 20, 10, 20, 10]);
+    #icon_rwy.hide();
+    var crds = [];
+    coord.set_latlon(lat, lon);
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
+    coord.apply_course_distance(rwyhdg + 90, width/2);
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
+    coord.apply_course_distance(rwyhdg, length);
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
+    icon_rwy = group.createChild("path", "rwy")
+    .setStrokeLineWidth(style.line_width)
+    .setDataGeo([2,4,4],crds)
+    .setColor(style.color);
+    var crds = [];
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
+    coord.apply_course_distance(rwyhdg - 90, width);
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
+    coord.apply_course_distance(rwyhdg, -length);
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
+    coord.apply_course_distance(rwyhdg + 90, width / 2);
+    append(crds,"N"~coord.lat());
+    append(crds,"E"~coord.lon());
+    icon_rwy = group.createChild("path", "rwy")
+    .setStrokeLineWidth(style.line_width)
+    .setDataGeo([2,4,4,4],crds)
+    .setColor(style.color);
+};
