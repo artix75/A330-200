@@ -43,23 +43,17 @@ canvas.NDStyles["Airbus"] = {
         ##
 
         layers: [
-            { name:'fixes', disabled:1, update_on:['toggle_range','toggle_waypoints'],
-                predicate: func(nd, layer) {
-                    # print("Running fixes predicate");
-                    var visible=nd.get_switch('toggle_waypoints') and nd.in_mode('toggle_display_mode', ['MAP']) and (nd.rangeNm() <= 40);
-                    if (visible) {
-                        # print("fixes update requested!");
-                        trigger_update( layer );
-                    }
-                    layer._view.setVisible(visible);
-                }, # end of layer update predicate
-            }, # end of fixes layer
-            { name:'FIX', isMapStructure:1, update_on:['toggle_range','toggle_waypoints'],
+            { 
+                name:'FIX', 
+                isMapStructure:1, 
+                update_on:['toggle_range','toggle_waypoints'],
                 # FIXME: this is a really ugly place for controller code
                 predicate: func(nd, layer) {
                     # print("Running vor layer predicate");
                     # toggle visibility here
-                    var visible=nd.get_switch('toggle_waypoints') and nd.in_mode('toggle_display_mode', ['MAP']) and (nd.rangeNm() <= 40);
+                    var visible = nd.get_switch('toggle_waypoints') and 
+                                  nd.in_mode('toggle_display_mode', ['MAP']) and 
+                                  (nd.rangeNm() <= 40);
                     layer.group.setVisible( nd.get_switch('toggle_waypoints') );
                     if (visible) {
                         #print("Updating MapStructure ND layer: FIX");
@@ -71,7 +65,11 @@ canvas.NDStyles["Airbus"] = {
             {
                 name: 'ALT-profile',
                 isMapStructure: 1,
-                update_on: ['toggle_display_mode','toggle_range','toggle_cur_td','toggle_cur_tc','toggle_cur_ed','toggle_cur_sc','toggle_vnav','toggle_fplan','toggle_cur_wp','toggle_ap1','toggle_ap2'],
+                update_on: ['toggle_display_mode','toggle_range',
+                            'toggle_cur_td','toggle_cur_tc',
+                            'toggle_cur_ed','toggle_cur_sc','toggle_vnav',
+                            'toggle_fplan','toggle_cur_wp','toggle_ap1',
+                            'toggle_ap2'],
                 predicate: func(nd, layer) {
                     var visible = nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']);# and nd.get_switch('toggle_fplan');
                     layer.group.setVisible( visible );
@@ -81,10 +79,13 @@ canvas.NDStyles["Airbus"] = {
                 },
             },
             # Should redraw every 10 seconds
-            { name:'storms', update_on:['toggle_range','toggle_weather','toggle_display_mode'],
+            { 
+                name:'storms', 
+                update_on:['toggle_range','toggle_weather','toggle_display_mode'],
                 predicate: func(nd, layer) {
                     # print("Running fixes predicate");
-                    var visible=nd.get_switch('toggle_weather') and nd.get_switch('toggle_display_mode') != "PLAN";
+                    var visible=nd.get_switch('toggle_weather') and 
+                                nd.get_switch('toggle_display_mode') != "PLAN";
                     if (visible) {
                         #print("storms update requested!");
                         trigger_update( layer );
@@ -92,54 +93,32 @@ canvas.NDStyles["Airbus"] = {
                     layer._view.setVisible(visible);
                 }, # end of layer update predicate
             }, # end of storms layer
-            { name:'airplaneSymbol', disabled: 1,update_on:['toggle_display_mode','toggle_plan_loop'],
-                predicate: func(nd, layer) {
-                    var visible = nd.get_switch('toggle_display_mode') == "PLAN";
-                    if (visible) {
-                        trigger_update( layer );
-                    }
-                    layer._view.setVisible(visible);
-                },
-            },
-            { name:'airports-nd', disabled: 1, update_on:['toggle_range','toggle_airports','toggle_display_mode'],
-                predicate: func(nd, layer) {
-                    # print("Running airports-nd predicate");
-                    var visible = nd.get_switch('toggle_airports') and nd.in_mode('toggle_display_mode', ['MAP']);
-                    if (visible) {
-                        trigger_update( layer ); # clear & redraw
-                    }
-                    layer._view.setVisible( visible );
-                }, # end of layer update predicate
-            }, # end of airports layer
-            
             { 
-                name:'APT', isMapStructure:1, update_on:['toggle_range','toggle_airports','toggle_display_mode','toggle_airports'],
+                name:'APT', 
+                isMapStructure:1, 
+                update_on:['toggle_range','toggle_airports',
+                           'toggle_display_mode','toggle_airports'],
                 predicate: func(nd, layer) {
-                    var visible = nd.get_switch('toggle_airports') and nd.in_mode('toggle_display_mode', ['MAP']);
+                    var visible = nd.get_switch('toggle_airports') and 
+                                  nd.in_mode('toggle_display_mode', ['MAP']);
                     layer.group.setVisible( visible );
                     if (visible) {
                         layer.update();
                     }
                 }, # end of layer update predicate
-            }, # end of VOR layer
-
-            # Should distinct between low and high altitude navaids. Hiding above 40 NM for now, to prevent clutter/lag.
-            { name:'vor', disabled:1, update_on:['toggle_range','toggle_vor','toggle_display_mode'],
-                predicate: func(nd, layer) {
-                    # print("Running vor layer predicate");
-                    var visible = nd.get_switch('toggle_vor') and nd.in_mode('toggle_display_mode', ['MAP']) and (nd.rangeNm() <= 40);
-                    if(visible) {
-                        trigger_update( layer ); # clear & redraw
-                    }
-                    layer._view.setVisible( nd.get_switch('toggle_vor') );
-                }, # end of layer update predicate
-            }, # end of VOR layer
-            { name:'VOR', isMapStructure:1, update_on:['toggle_range','toggle_vor','toggle_display_mode','toggle_nav1_frq','toggle_nav2_frq'],
+            }, # end of APT layer
+            { 
+                name:'VOR', 
+                isMapStructure:1, 
+                update_on:['toggle_range','toggle_vor','toggle_display_mode',
+                           'toggle_nav1_frq','toggle_nav2_frq'],
                 # FIXME: this is a really ugly place for controller code
                 predicate: func(nd, layer) {
                     # print("Running vor layer predicate");
                     # toggle visibility here
-                    var visible = nd.get_switch('toggle_vor') and nd.in_mode('toggle_display_mode', ['MAP']) and (nd.rangeNm() <= 40);
+                    var visible = nd.get_switch('toggle_vor') and 
+                                  nd.in_mode('toggle_display_mode', ['MAP']) and 
+                                  (nd.rangeNm() <= 40);
                     layer.group.setVisible( visible );
                     if (visible) {
                         #print("Updating MapStructure ND layer: VOR");
@@ -148,21 +127,16 @@ canvas.NDStyles["Airbus"] = {
                     }
                 }, # end of layer update predicate
             }, # end of VOR layer
-
-            # Should distinct between low and high altitude navaids. Hiding above 40 NM for now, to prevent clutter/lag.
-            { name:'ndb', disabled:1, update_on:['toggle_range','toggle_ndb'],
-                predicate: func(nd, layer) {
-                    var visible = nd.get_switch('toggle_ndb') and nd.in_mode('toggle_display_mode', ['MAP']) and (nd.rangeNm() <= 40);
-                    if(visible) {
-                        trigger_update( layer ); # clear & redraw
-                    }
-                    layer._view.setVisible( nd.get_switch('toggle_ndb') );
-                }, # end of layer update predicate
-            }, # end of NDB layers
-            { name:'NDB', isMapStructure:1, update_on:['toggle_range','toggle_ndb','toggle_display_mode','toggle_adf1_frq','toggle_adf2_frq'],
+            { 
+                name:'NDB', 
+                isMapStructure:1, 
+                update_on:['toggle_range','toggle_ndb','toggle_display_mode',
+                           'toggle_adf1_frq','toggle_adf2_frq'],
                 # FIXME: this is a really ugly place for controller code
                 predicate: func(nd, layer) {
-                    var visible = nd.get_switch('toggle_ndb') and nd.in_mode('toggle_display_mode', ['MAP']) and (nd.rangeNm() <= 40);
+                    var visible = nd.get_switch('toggle_ndb') and 
+                                  nd.in_mode('toggle_display_mode', ['MAP']) and 
+                                  (nd.rangeNm() <= 40);
                     # print("Running vor layer predicate");
                     # toggle visibility here
                     layer.group.setVisible( visible );
@@ -174,7 +148,9 @@ canvas.NDStyles["Airbus"] = {
                 }, # end of layer update predicate
             }, # end of NDB layer
 
-            { name:'mp-traffic', update_on:['toggle_range','toggle_traffic'],
+            { 
+                name:'mp-traffic', 
+                update_on:['toggle_range','toggle_traffic'],
                 predicate: func(nd, layer) {
                     var visible = nd.get_switch('toggle_traffic');
                     layer._view.setVisible( visible );
@@ -183,7 +159,11 @@ canvas.NDStyles["Airbus"] = {
                     }
                 }, # end of layer update predicate
             }, # end of traffic  layer
-            { name:'TFC', disabled:1, isMapStructure:1, update_on:['toggle_range','toggle_traffic'],
+            { 
+                name:'TFC', 
+                disabled:1, 
+                isMapStructure:1, 
+                update_on:['toggle_range','toggle_traffic'],
                 predicate: func(nd, layer) {
                     var visible = nd.get_switch('toggle_traffic');
                     layer.group.setVisible( visible );
@@ -193,30 +173,33 @@ canvas.NDStyles["Airbus"] = {
                     }
                 }, # end of layer update predicate
             }, # end of traffic  layer
-            { name:'RWY-profile', isMapStructure:1, update_on:['toggle_range','toggle_display_mode','toggle_fplan','toggle_dep_rwy','toggle_dest_rwy'],
-             predicate: func(nd, layer) {
-                 var visible = (nd.rangeNm() <= 40) and (size(nd.get_switch('toggle_dep_rwy')) > 0 or size(nd.get_switch('toggle_dest_rwy')) > 0) and nd.in_mode('toggle_display_mode', ['MAP','PLAN']) ;
-                 layer.group.setVisible( visible );
-                 if (visible) {
-                     #print("Updating MapStructure ND layer: TFC");
-                     layer.update();
-                 }
-             }, # end of layer update predicate
-            }, # end of runway layer
-            { name:'route', disabled: 1,update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx'],
+            { 
+                name:'RWY-profile', 
+                isMapStructure:1, 
+                update_on:['toggle_range','toggle_display_mode','toggle_fplan',
+                           'toggle_dep_rwy','toggle_dest_rwy'],
                 predicate: func(nd, layer) {
-                    var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']));
-                    if (visible)
-                        trigger_update( layer ); # clear & redraw
-                    layer._view.setVisible( visible );
+                    var visible = (nd.rangeNm() <= 40) and 
+                                  (size(nd.get_switch('toggle_dep_rwy')) > 0 or 
+                                   size(nd.get_switch('toggle_dest_rwy')) > 0) and 
+                                    nd.in_mode('toggle_display_mode', ['MAP','PLAN']) ;
+                    layer.group.setVisible( visible );
+                    if (visible) {
+                        #print("Updating MapStructure ND layer: TFC");
+                        layer.update();
+                    }
                 }, # end of layer update predicate
-            }, # end of route layer
+            }, # end of runway layer
             { 
                 name:'HOLD', 
                 isMapStructure: 1,
-                update_on:['toggle_range','toggle_display_mode','toggle_lnav', 'toggle_fplan','toggle_hold_init','toggle_hold_update','toggle_wpt_idx','toggle_hold_wp'],
+                update_on:['toggle_range','toggle_display_mode','toggle_lnav', 
+                           'toggle_fplan','toggle_hold_init',
+                           'toggle_hold_update','toggle_wpt_idx',
+                           'toggle_hold_wp'],
                 predicate: func(nd, layer) {
-                    var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']) and nd.get_switch('toggle_hold_wp'));
+                    var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']) and 
+                                  nd.get_switch('toggle_hold_wp'));
                     layer.group.setVisible( visible );
                     if (visible) {
                         layer.update();
@@ -226,7 +209,9 @@ canvas.NDStyles["Airbus"] = {
             { 
                 name:'RTE', 
                 isMapStructure: 1,
-                update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx','toggle_route_num'],
+                update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 
+                           'toggle_vnav', 'toggle_lnav', 'toggle_cstr',
+                           'toggle_wpt_idx','toggle_route_num'],
                 predicate: func(nd, layer) {
                     var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']));
                     layer.group.setVisible( visible );
@@ -238,7 +223,11 @@ canvas.NDStyles["Airbus"] = {
             { 
                 name:'WPT', 
                 isMapStructure: 1,
-                update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 'toggle_vnav', 'toggle_lnav', 'toggle_cstr','toggle_wpt_idx','toggle_route_num','toggle_cur_wp','toggle_cur_ed','toggle_cur_sc','toggle_dep_rwy','toggle_dest_rwy'],
+                update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 
+                           'toggle_vnav', 'toggle_lnav','toggle_cstr',
+                           'toggle_wpt_idx','toggle_route_num',
+                           'toggle_cur_wp','toggle_cur_ed','toggle_cur_sc',
+                           'toggle_dep_rwy','toggle_dest_rwy'],
                 predicate: func(nd, layer) {
                     var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']));
                     layer.group.setVisible( visible );
@@ -250,7 +239,10 @@ canvas.NDStyles["Airbus"] = {
             {
                 name: 'SPD-profile',
                 isMapStructure: 1,
-                update_on: ['toggle_display_mode','toggle_range','toggle_vnav','toggle_fplan','toggle_man_spd','toggle_athr','toggle_spd_point_100','toggle_spd_point_140','toggle_spd_point_250','toggle_spd_point_260'],
+                update_on: ['toggle_display_mode','toggle_range','toggle_vnav',
+                            'toggle_fplan','toggle_man_spd','toggle_athr',
+                            'toggle_spd_point_100','toggle_spd_point_140',
+                            'toggle_spd_point_250','toggle_spd_point_260'],
                 predicate: func(nd, layer) {
                     var visible = nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']);# and nd.get_switch('toggle_fplan');
                     layer.group.setVisible( visible );
@@ -262,7 +254,10 @@ canvas.NDStyles["Airbus"] = {
             {
                 name: 'DECEL',
                 isMapStructure: 1,
-                update_on: ['toggle_display_mode','toggle_range','toggle_vnav','toggle_fplan','toggle_man_spd','toggle_athr','toggle_spd_point_100','toggle_spd_point_140','toggle_spd_point_250','toggle_spd_point_260'],
+                update_on: ['toggle_display_mode','toggle_range','toggle_vnav',
+                            'toggle_fplan','toggle_man_spd','toggle_athr',
+                            'toggle_spd_point_100','toggle_spd_point_140',
+                            'toggle_spd_point_250','toggle_spd_point_260'],
                 predicate: func(nd, layer) {
                     var visible = nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']);# and nd.get_switch('toggle_fplan');
                     layer.group.setVisible( visible );
@@ -271,14 +266,17 @@ canvas.NDStyles["Airbus"] = {
                     }
                 },
             },
-            { name:'APS', isMapStructure:1, update_on:['toggle_display_mode','toggle_plan_loop'], 
-                 predicate: func(nd, layer) {
+            { 
+                name:'APS', 
+                isMapStructure:1, 
+                update_on:['toggle_display_mode','toggle_plan_loop'], 
+                predicate: func(nd, layer) {
                      var visible = nd.get_switch('toggle_display_mode') == "PLAN";
                      layer.group.setVisible( visible );
                      if (visible) {
                          layer.update();
                      }
-                 },
+                },
             },
 
             ## add other layers here, layer names must match the registered names as used in *.layer files for now

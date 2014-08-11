@@ -3,6 +3,8 @@ var NDConfig = {
         des_apt: "/autopilot/route-manager/destination/airport",
         dep_apt: "/autopilot/route-manager/departure/airport",
         des_rwy: "/autopilot/route-manager/destination/runway",
-        dep_rwy: "/autopilot/route-manager/departure/runway"
+        dep_rwy: "/autopilot/route-manager/departure/runway",
+        fplan_active: 'autopilot/route-manager/active',
+        
     }
 };
