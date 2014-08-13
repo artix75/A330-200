@@ -191,6 +191,8 @@ setlistener("sim/signals/fdm-initialized", func() {
     print("ND Canvas Initialized!");
 }); # fdm-initialized listener callback
 
+var nd_props = canvas.NDConfig.properties;
+
 setlistener("instrumentation/efis/nd/display-mode", func{
     var canvas_mode = "instrumentation/efis/nd/canvas-display-mode";
     var nd_centered = "instrumentation/efis/inputs/nd-centered";
@@ -217,13 +219,13 @@ setlistener("instrumentation/efis/nd/display-mode", func{
     setprop(nd_centered, centered);
 });
 
-setlistener('autopilot/route-manager/active', func{
-    var actv = getprop("autopilot/route-manager/active");
+setlistener(nd_props.fplan_active, func{
+    var actv = getprop(nd_props.fplan_active);
     setprop('instrumentation/efis/nd/route-manager-active', actv);
 });
 
-setlistener('/flight-management/control/a-thrust', func{
-    var athr = getprop('/flight-management/control/a-thrust');
+setlistener(nd_props.athr, func{
+    var athr = getprop(nd_props.athr);
     setprop('instrumentation/efis/nd/athr', (athr == 'eng'));
 });
 
@@ -297,8 +299,8 @@ setlistener('autopilot/route-manager/route/num', func{
     setprop('/instrumentation/efis/nd/route_num', num);
 });
 
-setlistener("/autopilot/route-manager/current-wp", func(){
-    var curwp = getprop("/autopilot/route-manager/current-wp");
+setlistener(nd_props.cur_wp, func(){
+    var curwp = getprop(props.cur_wp);
     setprop('/instrumentation/efis/nd/cur_wp',curwp);
 });
 

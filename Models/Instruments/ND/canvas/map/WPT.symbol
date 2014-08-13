@@ -67,12 +67,14 @@ var init = func {
     }
 }
 
+var nd_props = canvas.NDConfig.properties;
+
 var draw = func{
     var wp_group = me.element;
     var alt = me.model.alt;
     var i = me.model.idx;
-    var vnav_actv = getprop("flight-management/control/ver-ctrl") == 'fmgc';
-    var curwp = getprop("/autopilot/route-manager/current-wp");
+    var vnav_actv = getprop(nd_props.ver_ctrl) == 'fmgc';
+    var curwp = getprop(nd_props.cur_wp);
     if(alt > 0){
         var wp_d = me.model.wp.distance_along_route; 
         var estimated_sc = getprop('instrumentation/efis/nd/current-sc');

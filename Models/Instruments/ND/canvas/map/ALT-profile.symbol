@@ -27,19 +27,12 @@ var init = func {
 
 var draw = func{
     var name = me.model.getName();
-    var bearing = getprop("autopilot/route-manager/vnav/"~name~"/bearing-deg");
+    #var bearing = getprop("autopilot/route-manager/vnav/"~name~"/bearing-deg");
     var sym_group = me.element.getElementById(name);
     if(sym_group == nil) return;
     var grp = sym_group.getElementById(name~'_symbol');
     if(grp == nil) return;
-    if(0 and bearing){
-        print(name~" bearing: " ~ bearing);
-        var hdg = canvas_nd.nd_display.main._node.getNode('group/map').getValue('hdg');
-        if(hdg == nil) hdg = 0;
-        bearing -= hdg;
-        if(bearing < 0) bearing = 360 + bearing; 
-        grp.setRotation(bearing*D2R);
-    }
+    
     #print('Draw: -> ' ~ name);
     if(name == 'td'){
         var vnav_armed = me.model.getValue('vnav-armed');

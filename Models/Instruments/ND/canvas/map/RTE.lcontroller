@@ -39,7 +39,7 @@ var del = func() {
 
 var searchCmd = func {
     # FIXME: do we return the current route even if it isn't active?
-    printlog(_MP_dbg_lvl, "Running query: ", name);
+    #printlog(_MP_dbg_lvl, "Running query: ", name);
     var plans = []; # TODO: multiple flightplans?
 
     # http://wiki.flightgear.org/Nasal_Flightplan

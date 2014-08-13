@@ -23,10 +23,12 @@ var inactiveStyle = { # style to use by default
 
 SymbolLayer.get(name).df_style = inactiveStyle;
 
+var nd_props = canvas.NDConfig.properties;
+
 var init = func {
     var style = nil;
-    var lnav = (getprop('flight-management/control/lat-ctrl') == 'fmgc');
-    var actv = getprop('autopilot/route-manager/active');
+    var lnav = (getprop(nd_props.lat_ctrl) == 'fmgc');
+    var actv = getprop(nd_props.fplan_active);
 
     if(!lnav or !actv)
         me.element.setStrokeDashArray([32, 16]);

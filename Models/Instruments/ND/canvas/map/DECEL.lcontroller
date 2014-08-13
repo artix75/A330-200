@@ -3,9 +3,11 @@
 var name = 'DECEL';
 var parents = [canvas.SymbolLayer.Controller];
 var __self__ = caller(0)[0];
+
+var nd_props = canvas.NDConfig.properties;
 var _options = { # default configuration options
-    active_node: "/autopilot/route-manager/active",
-    decel_nodel: "/instrumentation/nd/symbols/decel/"
+    active_node: nd_props.fplan_active,
+    decel_node: "/instrumentation/nd/symbols/decel/"
 };
 canvas.SymbolLayer.Controller.add(name, __self__);
 canvas.SymbolLayer.add(name, {
@@ -33,7 +35,7 @@ var del = func() {
  
 var searchCmd = func {
     var results = [];
-    var symNode = props.globals.getNode(me._options.decel_nodel);
+    var symNode = props.globals.getNode(me._options.decel_node);
     if (symNode != nil and symNode.getValue('longitude-deg') != nil)
         append(results, symNode);
     return results;

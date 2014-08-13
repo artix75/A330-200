@@ -6,10 +6,12 @@ var __self__ = caller(0)[0];
 DotSym.makeinstance( name, __self__ );
 
 var element_type = "group"; # we want a group, becomes "me.element", which we parse a SVG onto
-var svg_path = "/gui/dialogs/images/ndb_symbol.svg"; # speaking of path, this is our path to use
-var local_svg_path = nil; # track changes in the SVG's path
+#var svg_path = "/gui/dialogs/images/ndb_symbol.svg"; # speaking of path, this is our path to use
+#var local_svg_path = nil; # track changes in the SVG's path
 
 var icon_ndb = nil;
+
+var nd_props = canvas.NDConfig.properties;
 
 var draw = func{
     if (me.icon_ndb == nil) {
@@ -25,8 +27,8 @@ var draw = func{
     var frq = me.model.frequency;
     if(frq != nil and me.icon_ndb != nil){
         frq = frq / 100;
-        var adf1_frq = getprop('instrumentation/adf/frequencies/selected-khz');
-        var adf2_frq = getprop('instrumentation/adf[1]/frequencies/selected-khz');
+        var adf1_frq = getprop(nd_props.adf1_frq);
+        var adf2_frq = getprop(nd_props.adf2_frq);
         if(adf1_frq == frq or adf2_frq == frq){
             me.icon_ndb.setColor(0,0.62,0.84);
         } else {

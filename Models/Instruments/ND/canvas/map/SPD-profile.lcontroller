@@ -3,9 +3,11 @@
 var name = 'SPD-profile';
 var parents = [canvas.SymbolLayer.Controller];
 var __self__ = caller(0)[0];
+
+var nd_props = canvas.NDConfig.properties;
 var _options = { # default configuration options
-    active_node: "/autopilot/route-manager/active",
-    spd_node: "/autopilot/route-manager/spd/",
+    active_node: nd_props.fplan_active,
+    spd_node: nd_props.spd_node,
     alts: [100,140,250,260]
 };
 canvas.SymbolLayer.Controller.add(name, __self__);

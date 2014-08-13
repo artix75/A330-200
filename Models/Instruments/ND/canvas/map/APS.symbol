@@ -30,7 +30,7 @@ var draw = func {
     if(hdg)
         rot -= hdg;
     else
-        print('NO HDG');
+        print('APS Symbol: NO HDG!');
     #me.layer.map.getHdg();
     me.element.setRotation(rot*D2R);
 };

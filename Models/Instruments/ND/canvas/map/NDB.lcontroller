@@ -1,5 +1,5 @@
 # Class things:
-print('LOAD NDB CONTROLLER'); 
+
 var name = 'NDB';
 var parents = [SymbolLayer.Controller];
 var __self__ = caller(0)[0];

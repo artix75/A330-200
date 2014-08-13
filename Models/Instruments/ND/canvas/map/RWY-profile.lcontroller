@@ -58,9 +58,9 @@ var FPRunwayModel = {
 };
 
 var searchCmd = func {
-    var props = NDConfig.properties;
-    var desApt = airportinfo(getprop(props.des_apt));
-    var depApt = airportinfo(getprop(props.dep_apt));
+    var nd_props = canvas.NDConfig.properties;
+    var desApt = airportinfo(getprop(nd_props.des_apt));
+    var depApt = airportinfo(getprop(nd_props.dep_apt));
     if(desApt == nil and depApt == nil)
         return [];
     var res = [];
@@ -68,14 +68,14 @@ var searchCmd = func {
     var depRwy = nil;
     
     if(depApt != nil){
-        depRwy = depApt.runway(getprop(props.dep_rwy));
+        depRwy = depApt.runway(getprop(nd_props.dep_rwy));
         if(depRwy != nil){
             var model = FPRunwayModel.new(depApt, depRwy);
             append(res, model);
         }
     }
     if(desApt != nil){
-        desRwy = desApt.runway(getprop(props.des_rwy));
+        desRwy = desApt.runway(getprop(nd_props.des_rwy));
         if(desRwy != nil){
             var model = FPRunwayModel.new(desApt, desRwy);
             append(res, model);
