@@ -1406,18 +1406,21 @@
 			<file>Aircraft/A330-200/Nasal/tyresmoke.nas</file>
 			<file>Aircraft/A330-200/Nasal/general_loop.nas</file>
 		</a332>
-                <canvas_nd>
-                        <file>Aircraft/A330-200/Models/Instruments/ND/canvas/ND.nas</file>
-                </canvas_nd>
+        <canvas_nd>
+                <file>Aircraft/A330-200/Models/Instruments/ND/canvas/ND.nas</file>
+        </canvas_nd>
 		<systems>
 			<file>Aircraft/A330-200/Nasal/systems.nas</file>
 		</systems>
+        <flightdeck>
+            <file>Aircraft/A330-200/Nasal/flightdeck.nas</file>
+        </flightdeck>
 		<utils>
 			<file>Aircraft/A330-200/Nasal/utils.nas</file>
 		</utils>
-                <throttle_detents>
+        <throttle_detents>
 			<file>Aircraft/A330-200/Nasal/throttle_detents.nas</file>
-                </throttle_detents>
+        </throttle_detents>
 		<electrical>
 			<file>Aircraft/A330-200/Nasal/electrical.nas</file>
 		</electrical>
