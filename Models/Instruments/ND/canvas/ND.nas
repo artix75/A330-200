@@ -300,7 +300,7 @@ setlistener('autopilot/route-manager/route/num', func{
 });
 
 setlistener(nd_props.cur_wp, func(){
-    var curwp = getprop(props.cur_wp);
+    var curwp = getprop(nd_props.cur_wp);
     setprop('/instrumentation/efis/nd/cur_wp',curwp);
 });
 
