@@ -995,8 +995,8 @@ var fmgc_loop = {
         } else {
             
             #LATERAL
-            
-            if(me.agl > 30){
+            var no_terrain_loaded = (me.agl == 0 and phase != 'T/O'); # FIX AGL 0 WHEN TERRAIN IS NOT LOADED
+            if(me.agl > 30 or no_terrain_loaded){
                 if(lmode == 'LOC'){
                     if(me.nav_in_range){
                         me.active_lat_mode = lmode;
