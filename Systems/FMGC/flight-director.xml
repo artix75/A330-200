@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Airbus A320neo Elevator Control -->
+
+<PropertyList>
+    
+
+    <predict-simple>
+        <name>vertical speed in 5 seconds predictor</name>
+        <debug>false</debug>
+        <input>velocities/vertical-speed-fps</input>
+        <output>autopilot/internal/lookahead-5-sec-vs-fps</output>
+        <seconds>5.0</seconds>
+        <filter-gain>0.0</filter-gain>
+    </predict-simple>
+    
+    <pid-controller>
+        <name>FD V/S Target Pitch</name>
+        <debug type="bool">true</debug>
+        <enable>
+            <condition>
+                <and>
+                    <property>/flight-management/fd/pitch-vs</property>
+                    <not>
+                        <property>/flight-management/control/spd-with-pitch</property>
+                    </not>
+                </and>
+            </condition>
+        </enable>
+        <input>
+            <prop>/velocities/vertical-speed-fps</prop>
+            <!--prop>autopilot/internal/lookahead-5-sec-vs-fps</prop-->
+        </input>
+        <reference>
+            <prop>/flight-management/fd/target-vs</prop>
+        </reference>
+        <output>
+            <prop>/flight-management/fd/target-pitch</prop> 
+        </output>
+        <config>
+            <Kp>0.12</Kp>
+            <!--Kp>0.63</Kp-->
+            <beta>1</beta>
+            <alpha>0.1</alpha>
+            <gamma>0</gamma>
+            <Ti>3</Ti>
+            <!--Ti>50</Ti-->
+            <Td>0.00001</Td>
+            <!--Td>0.00001</Td-->
+            <u_min>-15</u_min>
+            <u_max>30</u_max>
+        </config>
+    </pid-controller>
+    
+    <pid-controller>
+        <name>FD V/S Target Pitch</name>
+        <debug type="bool">true</debug>
+        <enable>
+            <condition>
+                <and>
+                    <property>/flight-management/fd/pitch-gs</property>
+                    <not>
+                        <property>/flight-management/control/spd-with-pitch</property>
+                    </not>
+                </and>
+            </condition>
+        </enable>
+        <input>
+            <prop>/velocities/vertical-speed-fps</prop>
+            <!--prop>autopilot/internal/lookahead-5-sec-vs-fps</prop-->
+        </input>
+        <reference>
+            <prop>/instrumentation/nav[0]/gs-rate-of-climb</prop>
+        </reference>
+        <output>
+            <prop>/flight-management/fd/target-pitch</prop> 
+        </output>
+        <config>
+            <Kp>0.12</Kp>
+            <!--Kp>0.63</Kp-->
+            <beta>1</beta>
+            <alpha>0.1</alpha>
+            <gamma>0</gamma>
+            <Ti>3</Ti>
+            <!--Ti>50</Ti-->
+            <Td>0.00001</Td>
+            <!--Td>0.00001</Td-->
+            <u_min>-15</u_min>
+            <u_max>30</u_max>
+        </config>
+    </pid-controller>
+    
+    <!--pid-controller>
+        <name>FD FPA Target Pitch</name>
+        <debug type="bool">true</debug>
+        <enable>
+            <condition>
+                <and>
+                    <property>/flight-management/fd/pitch-fpa</property>
+                    <not>
+                        <property>/flight-management/control/spd-with-pitch</property>
+                    </not>
+                </and>
+            </condition>
+        </enable>
+        <input>
+            <prop>/flight-management/fd/target-fpa</prop>
+        </input>
+        <reference>0</reference>
+        <output>
+            <prop>/flight-management/fd/target-pitch</prop> 
+        </output>
+        <config>
+            <Kp>-1</Kp>
+            <beta>1</beta>
+            <alpha>0.1</alpha>
+            <gamma>0</gamma>
+            <Ti>1</Ti>
+            <Td>0.00001</Td>
+            <u_min>-15</u_min>
+            <u_max>30</u_max>
+        </config>
+    </pid-controller-->
+</PropertyList>  

@@ -1710,30 +1710,28 @@
     </animation>
     
     <!-- Flight Director -->
-	
-    <animation>
-        <type>translate</type>
-        <object-name>fd_pitch</object-name>
-        <property>/servo-control/fd-target-pitch</property>
-        <!--<factor>0.0258</factor>-->
-        <factor>0.001955078</factor>
-        <axis>
-            <x>0</x>
-            <y>0</y>
-            <z>1</z>
-        </axis>
-    </animation>
-
+    
     <animation>
         <type>translate</type>
         <object-name>fd_pitch</object-name>
         <property>orientation/pitch-deg</property>
-        <!--<factor>0.0258</factor>-->
         <factor>0.001955078</factor>
         <axis>
             <x>0</x>
             <y>0</y>
             <z>-1</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>translate</type>
+        <object-name>fd_pitch</object-name>
+        <property>instrumentation/pfd/fd_pitch</property>
+        <factor>0.001955078</factor>
+        <axis>
+            <x>0</x>
+            <y>0</y>
+            <z>1</z>
         </axis>
     </animation>
 

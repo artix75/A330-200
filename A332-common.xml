@@ -368,6 +368,11 @@
 				<name>Autoland Rudder</name>
 				<path>Aircraft/A330-200/Systems/FMGC/autoland-rudder.xml</path>
 			</autopilot>
+            
+            <autopilot>
+                <name>Flight Director</name>
+                <path>Aircraft/A330-200/Systems/FMGC/flight-director.xml</path>
+            </autopilot>
 			
 			<!-- Fly-by-wire =============================================== -->
 			

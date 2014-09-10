@@ -2,6 +2,7 @@ var fmgc = "/flight-management/control/";
 var settings = "/flight-management/settings/";
 var fcu = "/flight-management/fcu-values/";
 var fmgc_val = "/flight-management/fmgc-values/";
+var fmfd = "/flight-management/fd/";
 var servo = "/servo-control/";
 var flight_modes = "/flight-management/flight-modes/";
 var lmodes = flight_modes ~ "lateral/";
@@ -108,7 +109,13 @@ var fmgc_loop = {
         #setprop(servo~ "fd-elevator-vs", 0);
         #setprop(servo~ "fd-elevator-gs", 0);
         #setprop(servo~ "fd-elevator", 0);
-        setprop(servo~ "fd-target-pitch", 0);
+        #setprop(servo~ "fd-target-pitch", 0);
+        setprop(fmfd ~ "target-vs", 0);
+        setprop(fmfd ~ "target-fpa", 0);
+        setprop(fmfd ~ "pitch-vs", 0);
+        setprop(fmfd ~ "pitch-fpa", 0);
+        setprop(fmfd ~ "pitch-gs", 0);
+        setprop('instrumentation/pfd/fd_pitch', 0);
 
         me.vne = getprop('limits/vne');
         me.reset();
@@ -266,12 +273,15 @@ var fmgc_loop = {
         }
 
         var apEngaged = me.ap_engaged;
-        var fdEngaged = getprop("flight-management/control/fd");
-        me.ap_engaged = apEngaged;
-        me.fd_engaged = fdEngaged;
+        var fdEngaged = me.fd_engaged;
+        if(!me.airborne)
+            fdEngaged = 0;
+        #me.ap_engaged = apEngaged;
+        #me.fd_engaged = fdEngaged;
         var vmode = me.active_ver_mode;
         var prfx_v = substr(vmode,0,2);
         var app_phase = (vmode == 'G/S' or vmode == 'LAND' or vmode == 'FLARE');
+        
         var ver_managed = me.ver_managed;
         var vs_fpm = 0;
         if(altitude < 10000)
@@ -282,6 +292,7 @@ var fmgc_loop = {
         if(vmode == 'SRS')
             vs_fpm = 2500;
         #print("FMGC Loop: AP Eng -> " ~ apEngaged);
+        var vs_fps = me.vs_fps;
         if (!fdEngaged) {
 
             setprop(servo~ "fd-aileron", 0);
@@ -291,10 +302,14 @@ var fmgc_loop = {
             #setprop(servo~ "fd-elevator-vs", 0);
             #setprop(servo~ "fd-elevator-gs", 0);
             #setprop(servo~ "fd-elevator", 0);
-            setprop(servo~ "fd-target-pitch", 0);
-
+            #setprop(servo~ "fd-target-pitch", 0);
+            setprop(fmfd ~ "target-vs", vs_fps);
+            setprop(fmfd ~ "target-fpa", vs_fps);
+            setprop(fmfd ~ "pitch-vs", 0);
+            setprop(fmfd ~ "pitch-fpa", 0);
+            setprop(fmfd ~ "pitch-gs", 0);
         }
-        if(me.fixed_thrust){
+        if(me.fixed_thrust and me.airborne){
             var min = 0;
             var max = 0;
             var thr = 0;
@@ -308,21 +323,31 @@ var fmgc_loop = {
                 max = -0.2;
                 var thr = 0;
             };
-            if(apEngaged){
+            if(apEngaged or fdEngaged){
                 setprop('/flight-management/settings/spd-pitch-min', min);
                 setprop('/flight-management/settings/spd-pitch-max', max);
                 setprop(fmgc~ "spd-with-pitch", 1);
+                setprop('/controls/engines/engine[0]/throttle', thr);
+                setprop('/controls/engines/engine[1]/throttle', thr);
             } else {
                 setprop(fmgc~ "spd-with-pitch", 0);
                 setprop('/flight-management/settings/spd-pitch-min', 0);
                 setprop('/flight-management/settings/spd-pitch-max', 0);
             }
-            setprop('/controls/engines/engine[0]/throttle', thr);
-            setprop('/controls/engines/engine[1]/throttle', thr);
         } else {
             setprop(fmgc~ "spd-with-pitch", 0);
             setprop('/flight-management/settings/spd-pitch-min', 0);
             setprop('/flight-management/settings/spd-pitch-max', 0);
+        }
+        me.speed_with_pitch = getprop(fmgc~ "spd-with-pitch");
+        if(!me.speed_with_pitch)
+            setprop('/autopilot/settings/target-pitch-deg', 0);
+        else {
+            setprop(fmfd ~ "target-vs", 0);
+            setprop(fmfd ~ "target-fpa", 0);
+            setprop(fmfd ~ "pitch-vs", 0);
+            setprop(fmfd ~ "pitch-fpa", 0);
+            setprop(fmfd ~ "pitch-gs", 0);
         }
         if (apEngaged or fdEngaged) {
 
@@ -358,7 +383,7 @@ var fmgc_loop = {
                 setprop(servo~  "fd-aileron", 1);
                 setprop(servo~ "fd-aileron-nav1", 0);
                 if (math.abs(deflection) <= 1)
-                setprop(servo~ "fd-target-bank", 0);
+                    setprop(servo~ "fd-target-bank", 0);
                 else
                     setprop(servo~ "fd-target-bank", bank);
 
@@ -398,7 +423,7 @@ var fmgc_loop = {
 
             var fpa_setting = me.fpa_setting;
 
-            if(app_phase){
+            if(app_phase or (!me.airborne and me.ver_mode == 'ils')){
                 # Main stuff are done on the PIDs
 
                 autoland.phase_check();
@@ -423,7 +448,21 @@ var fmgc_loop = {
 
                     setprop(servo~ "elevator", 0);
                 }
+                if(fdEngaged){
+                    if (agl > getprop("/autoland/early-descent")) {
+                        setprop(fmfd ~ "pitch-vs", 0);
+                        setprop(fmfd ~ "pitch-fpa", 0);
+                        setprop(fmfd ~ "pitch-gs", 1);
+                    } else {
+                        setprop(fmfd ~ "target-vs", getprop("/servo-control/target-vs"));
+                        setprop(fmfd ~ "pitch-vs", 1);
+                        setprop(fmfd ~ "pitch-fpa", 0);
+                        setprop(fmfd ~ "pitch-gs", 0);
+                    }
+                }
 
+                
+                #TODO: Flight Director Here
                 #setprop(servo~ "fd-elevator", 0);
 
             } else {
@@ -448,17 +487,22 @@ var fmgc_loop = {
                             trgt_vs = limit2((target - altitude) * 2, vs_ref);
 
                         }
+                        var vs = trgt_vs / 60;
                         if(apEngaged){
-                            setprop(servo~ "target-vs", trgt_vs / 60);
+                            setprop(servo~ "target-vs", vs);
                             setprop(servo~ "elevator-vs", 1);
                             setprop(servo~ "elevator", 0);
                             setprop(servo~ "elevator-gs", 0);
                         }
+                        setprop(fmfd ~ "target-vs", vs);
+                        setprop(fmfd ~ "pitch-vs", 1);
+                        setprop(fmfd ~ "pitch-fpa", 0);
+                        setprop(fmfd ~ "pitch-gs", 0);
                         #setprop(servo~ "fd-elevator-vs", 0);
                         #setprop(servo~ "fd-elevator", 0);
                         #setprop(servo~ "fd-elevator-gs", 0);
-                        setprop(servo~ "fd-target-vs", trgt_vs / 60);
-                        setprop(servo~ "fd-target-pitch", (trgt_vs / 60) * 0.1);
+                        #setprop(servo~ "fd-target-vs", trgt_vs / 60);
+                        #setprop(servo~ "fd-target-pitch", (trgt_vs / 60) * 0.1);
 
                     } else {
 
@@ -474,12 +518,16 @@ var fmgc_loop = {
 
                             setprop(servo~ "elevator-gs", 0);
                         }
+                        setprop(fmfd ~ "target-fpa", trgt_fpa);
+                        setprop(fmfd ~ "pitch-vs", 0);
+                        setprop(fmfd ~ "pitch-fpa", 1);
+                        setprop(fmfd ~ "pitch-gs", 0);
                         #setprop(servo~ "fd-elevator-vs", 0);
 
                         #setprop(servo~ "fd-elevator", 1);
 
                         #setprop(servo~ "fd-elevator-gs", 0);
-                        setprop(servo~ "fd-target-pitch", trgt_fpa);
+                        #setprop(servo~ "fd-target-pitch", trgt_fpa);
                     }
                 }
             }
@@ -782,11 +830,22 @@ var fmgc_loop = {
 
                     setprop(servo~ "elevator-gs", 0);
                 }
-                setprop(servo~ "fd-target-vs", final_vs);
-                setprop(servo~ "fd-target-pitch", final_vs * 0.1);
+                #setprop(servo~ "fd-target-vs", final_vs);
+                #setprop(servo~ "fd-target-pitch", final_vs * 0.1);
+                setprop(fmfd ~ "target-vs", final_vs);
+                setprop(fmfd ~ "pitch-vs", 1);
+                setprop(fmfd ~ "pitch-fpa", 0);
+                setprop(fmfd ~ "pitch-gs", 0);
             }
 
         } # End of AP1 MASTER CHECK
+        var fd_pitch = 0;
+        if(me.speed_with_pitch)
+            fd_pitch = getprop('/autopilot/settings/target-pitch-deg');
+        else
+            fd_pitch = getprop('/flight-management/fd/target-pitch');
+        if(fd_pitch == nil) fd_pitch = 0;
+        setprop('instrumentation/pfd/fd_pitch', fd_pitch);
 
     },
     get_settings : func {
@@ -826,6 +885,7 @@ var fmgc_loop = {
         me.autoland_phase = getprop('/autoland/phase');
         me.vs_fpm = int(0.6 * me.vs_fps) * 100;
         me.ap_engaged = ((me.ap1 == "eng") or (me.ap2 == "eng"));
+        me.fd_engaged = getprop("flight-management/control/fd");
     },
     check_flight_modes : func{
         var flplan_active = me.flplan_active;
@@ -877,7 +937,7 @@ var fmgc_loop = {
 
             var remaining = me.remaining_nm;
             
-            if(remaining <= me.top_desc){
+            if(remaining <= me.top_desc){ #TODO: check...should be this generic and not into try_vnav?
                 #ref_altitude = destination_elevation; 
                 phase = 'des';
                 setprop("/flight-management/phase", "DES");
@@ -974,7 +1034,7 @@ var fmgc_loop = {
                     } 
                 }
             }
-            elsif(me.ver_mode = 'ils'){
+            elsif(me.ver_mode == 'ils'){
                 vmode = 'G/S';
             }
         }
@@ -988,9 +1048,7 @@ var fmgc_loop = {
             me.active_lat_mode = ''; #TODO: support RWY
             me.armed_lat_mode = lmode;
             if(me.autoland_phase == 'rollout')
-                me.active_ver_mode = 'ROLLOUT';
-            else 
-                me.active_ver_mode = '';
+                me.active_lat_mode = 'ROLLOUT'; #TODO: should this be active also without autoland?
             me.armed_ver_mode = vmode;
         } else {
             
@@ -1000,7 +1058,7 @@ var fmgc_loop = {
                 if(lmode == 'LOC'){
                     if(me.nav_in_range){
                         me.active_lat_mode = lmode;
-                        me.armed_lat_mode = 'ROLLOUT';
+                        me.armed_lat_mode = 'ROLLOUT'; #TODO: it seems there's not VOR LOC support
                     } else {
                         me.active_lat_mode = lat_sel_mode;
                         me.armed_lat_mode = lmode;
@@ -1067,7 +1125,7 @@ var fmgc_loop = {
                 } else {
                     spd_mode = 'MACH';
                 }
-                if(!me.ap_engaged){
+                if(!me.ap_engaged and !me.fd_engaged){
                     me.active_athr_mode = spd_mode;
                 } else {
                     me.active_athr_mode = me.get_athr_mode(me.active_ver_mode, spd_mode);
