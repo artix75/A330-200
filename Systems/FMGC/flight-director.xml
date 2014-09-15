@@ -38,13 +38,14 @@
             <prop>/flight-management/fd/target-pitch</prop> 
         </output>
         <config>
-            <Kp>0.12</Kp>
-            <!--Kp>0.63</Kp-->
+            <!--Kp>0.12</Kp-->
+            <!--Kp>0.55</Kp-->
             <beta>1</beta>
             <alpha>0.1</alpha>
             <gamma>0</gamma>
             <Ti>3</Ti>
             <!--Ti>50</Ti-->
+            <!--Ti>6</Ti-->
             <Td>0.00001</Td>
             <!--Td>0.00001</Td-->
             <u_min>-15</u_min>
@@ -53,7 +54,7 @@
     </pid-controller>
     
     <pid-controller>
-        <name>FD V/S Target Pitch</name>
+        <name>FD G/S Target Pitch</name>
         <debug type="bool">true</debug>
         <enable>
             <condition>
@@ -90,35 +91,31 @@
         </config>
     </pid-controller>
     
-    <!--pid-controller>
-        <name>FD FPA Target Pitch</name>
-        <debug type="bool">true</debug>
+    <pi-simple-controller>
+        <name>ILS Rudder</name>
+        <debug type="bool">false</debug>
         <enable>
-            <condition>
-                <and>
-                    <property>/flight-management/fd/pitch-fpa</property>
-                    <not>
-                        <property>/flight-management/control/spd-with-pitch</property>
-                    </not>
-                </and>
-            </condition>
+            <and>
+                <property>/instrumentation/nav[0]/nav-loc</property>
+                <property>/instrumentation/nav[0]/in-range</property>
+                <property>/gear/gear[3]/wow</property>
+            </and>
         </enable>
         <input>
-            <prop>/flight-management/fd/target-fpa</prop>
+            <property>/autopilot/internal/nav1-heading-error-deg</property>
         </input>
-        <reference>0</reference>
+        <reference>
+            <value>0.0</value>
+        </reference>
         <output>
-            <prop>/flight-management/fd/target-pitch</prop> 
+            <property>/flight-management/fd/target-rudder</property>
         </output>
         <config>
-            <Kp>-1</Kp>
-            <beta>1</beta>
-            <alpha>0.1</alpha>
-            <gamma>0</gamma>
-            <Ti>1</Ti>
-            <Td>0.00001</Td>
-            <u_min>-15</u_min>
-            <u_max>30</u_max>
+            <Kp>-0.07</Kp>
+            <Ki>0.0</Ki>
+            <u_min>-5.0</u_min>
+            <u_max>5.0</u_max>
         </config>
-    </pid-controller-->
+    </pi-simple-controller>
+    
 </PropertyList>  

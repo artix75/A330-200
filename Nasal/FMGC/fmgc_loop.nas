@@ -8,6 +8,7 @@ var flight_modes = "/flight-management/flight-modes/";
 var lmodes = flight_modes ~ "lateral/";
 var vmodes = flight_modes ~ "vertical/";
 var athr_modes = flight_modes ~ "athr/";
+var radio = "/flight-management/freq/";
 
 setprop("/flight-management/text/qnh", "QNH");
 
@@ -29,6 +30,8 @@ var fmgc_loop = {
     
         me.ver_managed = 0;
         me.top_desc = -9999;
+    
+        me.rwy_mode = 0;
 
         setprop("/flight-management/current-wp", me.current_wp);
         setprop("/flight-management/control/qnh-mode", 'inhg');
@@ -116,6 +119,16 @@ var fmgc_loop = {
         setprop(fmfd ~ "pitch-fpa", 0);
         setprop(fmfd ~ "pitch-gs", 0);
         setprop('instrumentation/pfd/fd_pitch', 0);
+    
+        # Radio
+    
+        setprop(radio~ 'autotuned', 0);
+        me.autotune = {
+            airport: '',
+            vor: '',
+            rwy: '',
+            frq: ''
+        };
 
         me.vne = getprop('limits/vne');
         me.reset();
@@ -179,27 +192,89 @@ var fmgc_loop = {
             setprop("/instrumentation/nd/symbols/aircraft", '');
         }
         var flplan_active = me.flplan_active;	
-        if (flplan_active and  !getprop("/flight-management/freq/ils")){
-            var dest_airport = getprop("/autopilot/route-manager/destination/airport");
-            var dest_rwy = getprop("/autopilot/route-manager/destination/runway");
-            if(dest_airport and dest_rwy){
-                var apt_info = airportinfo(dest_airport);
-                var rwy_ils = apt_info.runways[dest_rwy].ils;
-                if(rwy_ils != nil){
-                    var frq = rwy_ils.frequency / 100;
-                    var crs = rwy_ils.course;
-                    var dist = getprop("/autopilot/route-manager/wp-last/dist");
-                    if(dist <= 50){
-                        var radio = "/flight-management/freq/";
-                        setprop("/flight-management/freq/ils", frq);
-                        setprop("/flight-management/freq/ils-crs", int(crs));
-                        if (getprop(radio~ "ils-mode")) {
-
-                                mcdu.rad_nav.switch_nav1(1);
-
+        
+        # NAV1 Auto-tuning
+        
+        me.autotuned_nav = getprop(radio~'autotuned');
+        var dest_airport = getprop("/autopilot/route-manager/destination/airport");
+        var dest_rwy = getprop("/autopilot/route-manager/destination/runway");
+        var dep_airport = getprop("/autopilot/route-manager/departure/airport");
+        var dep_rwy = getprop("/autopilot/route-manager/departure/runway");
+        if (flplan_active and (!getprop(radio~ "ils") or me.autotuned_nav)){
+            #var nav = 'instrumentation/nav/';
+            if(!me.airborne){
+                if (dep_airport != nil and 
+                    dep_rwy != nil){
+                    var dist = getprop("/autopilot/route-manager/route/wp/distance-nm");
+                    var not_tuned = (me.autotune.airport != dep_airport or 
+                                     me.autotune.rwy != dep_rwy);
+                    if(dist < 10 and not_tuned){
+                        var apt_info = airportinfo(dep_airport);
+                        var rwy_ils = apt_info.runways[dep_rwy].ils;
+                        if(rwy_ils != nil){
+                            var frq = rwy_ils.frequency / 100;
+                            var crs = rwy_ils.course;
+                            setprop(radio~ "ils", frq);
+                            setprop(radio~ "ils-crs", int(crs));
+                            me.autotune.airport = dep_airport;
+                            me.autotune.rwy = dep_rwy;
+                            me.autotune.frq = frq;
+                            setprop(radio~'autotuned', 1);
                         }
                     }
                 }
+            } 
+            elsif (dest_airport != nil and dest_rwy != nil){
+                #me.rwy_mode = 0;
+                var not_tuned = (me.autotune.airport != dest_airport or 
+                                 me.autotune.rwy != dest_rwy);
+                if(not_tuned){
+                    var apt_info = airportinfo(dest_airport);
+                    var rwy_ils = apt_info.runways[dest_rwy].ils;
+                    if(rwy_ils != nil){
+                        var frq = rwy_ils.frequency / 100;
+                        var crs = rwy_ils.course;
+                        var dist = getprop("/autopilot/route-manager/wp-last/dist");
+                        if(dist <= 50){
+                            setprop("/flight-management/freq/ils", frq);
+                            setprop("/flight-management/freq/ils-crs", int(crs));
+                            if (getprop(radio~ "ils-mode")) {
+                                mcdu.rad_nav.switch_nav1(1);
+                            }
+                            me.autotune.airport = dest_airport;
+                            me.autotune.rwy = dest_rwy;
+                            me.autotune.frq = frq;
+                            setprop(radio~'autotuned', 1);
+                        }
+                    }
+                }
+            }
+        }
+        if(!me.autotuned_nav){
+            me.autotune.airport = '';
+            me.autotune.rwy = '';
+            me.autotune.frq = '';
+            me.autotune.vor = '';
+        }
+        
+        if (flplan_active and (!me.airborne or (me.agl > 0 and me.agl < 30)) and dep_airport != nil){
+            var ils_frq = getprop(radio~ "ils");
+            var dist = getprop("/autopilot/route-manager/route/wp/distance-nm");
+            if (dist < 10 and ils_frq){
+                var apt_info = airportinfo(dep_airport);
+                var rwy_ils = apt_info.runways[dep_rwy].ils;
+                if(rwy_ils != nil and ils_frq != nil){
+                    var frq = rwy_ils.frequency / 100;
+                    #print('RWY ILS: ' ~ rfq ~ ', ILS: ' ~ ils_frq);
+                    if (frq == ils_frq){
+                        setprop(radio~ "ils-mode", 1);
+                        mcdu.rad_nav.switch_nav1(1);
+                        var in_range = getprop('instrumentation/nav/in-range');
+                        if (in_range) me.rwy_mode = 1;
+                    }
+                }
+            } else {
+                me.rwy_mode = 0;
             }
         }
 
@@ -274,8 +349,8 @@ var fmgc_loop = {
 
         var apEngaged = me.ap_engaged;
         var fdEngaged = me.fd_engaged;
-        if(!me.airborne)
-            fdEngaged = 0;
+        #if(!me.airborne)
+        #    fdEngaged = 0;
         #me.ap_engaged = apEngaged;
         #me.fd_engaged = fdEngaged;
         var vmode = me.active_ver_mode;
@@ -387,7 +462,10 @@ var fmgc_loop = {
                 else
                     setprop(servo~ "fd-target-bank", bank);
 
-            } elsif (me.active_lat_mode == "LOC") {
+            } elsif (me.active_lat_mode == "LOC" or 
+                     me.active_lat_mode == "RWY" or 
+                     me.active_lat_mode == "ROLLOUT"
+                    ) {
 
                 var nav1_error = getprop("/autopilot/internal/nav1-track-error-deg");
 
@@ -410,10 +488,20 @@ var fmgc_loop = {
                     setprop(servo~ "aileron-nav1", 1); 
                     setprop(servo~ "target-bank", bank);
                 }
-                setprop(servo~ "fd-aileron", 0);
+                if(fdEngaged){
+                    setprop(servo~ "fd-aileron", 0);
 
-                setprop(servo~ "fd-aileron-nav1", 1); 	
-                setprop(servo~ "fd-target-bank", bank);
+                    setprop(servo~ "fd-aileron-nav1", me.airborne); 	
+
+                    if(me.airborne)
+                        setprop(servo~ "fd-target-bank", bank);
+                    else {
+                        var trgt_rudder = getprop(fmfd~'target-rudder');
+                        var fd_bank = (me.ias >= 10 ? trgt_rudder : 0);
+                        setprop('/autopilot/internal/fd-bank', fd_bank);
+                    }
+                        
+                }
 
             } # else, this is handed over from fcu to fmgc
 
@@ -452,10 +540,10 @@ var fmgc_loop = {
                     if (agl > getprop("/autoland/early-descent")) {
                         setprop(fmfd ~ "pitch-vs", 0);
                         setprop(fmfd ~ "pitch-fpa", 0);
-                        setprop(fmfd ~ "pitch-gs", 1);
+                        setprop(fmfd ~ "pitch-gs", me.airborne);
                     } else {
                         setprop(fmfd ~ "target-vs", getprop("/servo-control/target-vs"));
-                        setprop(fmfd ~ "pitch-vs", 1);
+                        setprop(fmfd ~ "pitch-vs", me.airborne);
                         setprop(fmfd ~ "pitch-fpa", 0);
                         setprop(fmfd ~ "pitch-gs", 0);
                     }
@@ -495,7 +583,7 @@ var fmgc_loop = {
                             setprop(servo~ "elevator-gs", 0);
                         }
                         setprop(fmfd ~ "target-vs", vs);
-                        setprop(fmfd ~ "pitch-vs", 1);
+                        setprop(fmfd ~ "pitch-vs", me.airborne);
                         setprop(fmfd ~ "pitch-fpa", 0);
                         setprop(fmfd ~ "pitch-gs", 0);
                         #setprop(servo~ "fd-elevator-vs", 0);
@@ -519,6 +607,7 @@ var fmgc_loop = {
                             setprop(servo~ "elevator-gs", 0);
                         }
                         setprop(fmfd ~ "target-fpa", trgt_fpa);
+                        setprop(fmfd ~ "target-pitch", trgt_fpa);
                         setprop(fmfd ~ "pitch-vs", 0);
                         setprop(fmfd ~ "pitch-fpa", 1);
                         setprop(fmfd ~ "pitch-gs", 0);
@@ -833,18 +922,21 @@ var fmgc_loop = {
                 #setprop(servo~ "fd-target-vs", final_vs);
                 #setprop(servo~ "fd-target-pitch", final_vs * 0.1);
                 setprop(fmfd ~ "target-vs", final_vs);
-                setprop(fmfd ~ "pitch-vs", 1);
+                setprop(fmfd ~ "pitch-vs", me.airborne);
                 setprop(fmfd ~ "pitch-fpa", 0);
                 setprop(fmfd ~ "pitch-gs", 0);
             }
 
         } # End of AP1 MASTER CHECK
         var fd_pitch = 0;
-        if(me.speed_with_pitch)
+        if(me.speed_with_pitch){
             fd_pitch = getprop('/autopilot/settings/target-pitch-deg');
-        else
+            setprop(fmfd~ 'target-pitch', getprop('/orientation/pitch-deg'));
+        }
+        else{
             fd_pitch = getprop('/flight-management/fd/target-pitch');
-        if(fd_pitch == nil) fd_pitch = 0;
+        }  
+        if(fd_pitch == nil or !me.airborne) fd_pitch = 0;
         setprop('instrumentation/pfd/fd_pitch', fd_pitch);
 
     },
@@ -1047,6 +1139,8 @@ var fmgc_loop = {
             me.armed_athr_mode = 'TO';
             me.active_lat_mode = ''; #TODO: support RWY
             me.armed_lat_mode = lmode;
+            if(me.rwy_mode)
+                me.active_lat_mode = 'RWY';
             if(me.autoland_phase == 'rollout')
                 me.active_lat_mode = 'ROLLOUT'; #TODO: should this be active also without autoland?
             me.armed_ver_mode = vmode;
@@ -1270,7 +1364,7 @@ var fmgc_loop = {
         var phase = getprop("/flight-management/phase");
         var ias = me.ias;
 
-        if ((phase == "T/O") and (!getprop("/gear/gear[3]/wow") and ias > 80)) {
+        if ((phase == "T/O") and (!getprop("/gear/gear[3]/wow") and ias > 70)) {
 
             setprop("/flight-management/phase", "CLB");
 
@@ -1313,13 +1407,17 @@ var fmgc_loop = {
 
         } elsif ((phase == "APP") and (getprop("/gear/gear/wow"))) {
 
+            setprop("/flight-management/phase", "LANDED");
+
+
+        } elsif (phase == "LANDED" and ias <= 70) {
             setprop("/flight-management/phase", "T/O");
             setprop('/instrumentation/efis/nd/app-mode', '');
+            setprop("/autoland/retard", 0);
 
             new_flight();
 
             me.current_wp = 0;
-
         }
         return getprop("/flight-management/phase");
     },
@@ -1416,8 +1514,8 @@ var fmgc_loop = {
                 #var nm_min = ground_speed_kt / 60;
                 #var nm = nm_min * min;
                 var nm = before_trans_nm + after_trans_nm;
-                print("NM: "~nm);
-                print('-----');
+                #print("NM: "~nm);
+                #print('-----');
                 var remaining = me.remaining_nm;
                 var totdist = getprop("autopilot/route-manager/total-distance");
                 nm = nm + (totdist - remaining);

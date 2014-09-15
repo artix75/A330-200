@@ -91,7 +91,7 @@
 		<name>FCU/FD Aileron NAV1 Control</name>
 		<debug type="bool">true</debug>
 		<enable>
-			<prop>/servo-control/fd-aileron-nav1</prop>
+            <prop>/servo-control/fd-aileron-nav1</prop>
 		</enable>
 		<input>
 			<prop>/orientation/roll-deg</prop>

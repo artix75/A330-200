@@ -261,12 +261,27 @@
 	<animation>
 		<type>select</type>
 		<object-name>fd</object-name>
-		<object-name>fd_pitch</object-name>
 		<object-name>fd_roll</object-name>
 		<condition>
 			<property>/flight-management/control/fd</property>
 		</condition>
 	</animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>fd_pitch</object-name>
+        <condition>
+            <and>
+                <property>/flight-management/control/fd</property>
+                <not>
+                    <property>/gear/gear/wow</property>
+                </not>
+                <not>
+                    <property>/gear/gear[3]/wow</property>
+                </not>
+            </and> 
+        </condition>
+    </animation>
 	
 	<!-- AUTO-THROTTLE -->
 	

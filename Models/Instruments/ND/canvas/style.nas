@@ -1026,7 +1026,7 @@ canvas.NDStyles["Airbus"] = {
                         predicate: func(nd) (nd.get_switch('toggle_app_mode') != ''),
                     is_true: func(nd) {
                         nd.symbols.appMode.show(nd.get_switch('toggle_app_mode'));
-                        nd.setText();
+                        #nd.setText();
                     },
                     is_false: func(nd){
                         nd.symbols.appMode.hide();

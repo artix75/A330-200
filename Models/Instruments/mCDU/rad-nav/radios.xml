@@ -264,7 +264,7 @@
 		 			# Check if a frequency was entered or text
 		 			
 		 			if (typeof(input) == "scalar") {
-		 				 if (substr(input, 0, 1) == "1") { # FREQ
+                        if (substr(input, 0, 1) == "1" or input == '') { # FREQ
 		 			
                             setprop(radio~ "ils", input);
                             
@@ -280,7 +280,7 @@
                             } else {
                             }
                         }
-		 			
+                        setprop(radio~ 'autotuned', 0);	 			
 		 			} else {
 		 			
 		 				setprop("/instrumentation/mcdu/input", "ERROR: WRONG FORMAT");
@@ -319,8 +319,6 @@
 		 			if (typeof(input) == "scalar") {
 		 			
 						setprop(radio~ "ils-crs", input);
-						
-                                                #setprop("/instrumentation/nav/radials/selected-deg",input);
 						mcdu.clear_inp();
 		 			
 		 			} else {

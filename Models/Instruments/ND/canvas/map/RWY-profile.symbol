@@ -76,3 +76,5 @@ var init = func {
     .setDataGeo([2,4,4,4],crds)
     .setColor(style.color);
 };
+
+var draw = func{}
