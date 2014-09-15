@@ -536,14 +536,15 @@ var fmgc_loop = {
 
                     setprop(servo~ "elevator", 0);
                 }
+                var update_fd_pitch = (me.airborne and !apEngaged);
                 if(fdEngaged){
                     if (agl > getprop("/autoland/early-descent")) {
                         setprop(fmfd ~ "pitch-vs", 0);
                         setprop(fmfd ~ "pitch-fpa", 0);
-                        setprop(fmfd ~ "pitch-gs", me.airborne);
+                        setprop(fmfd ~ "pitch-gs", update_fd_pitch);
                     } else {
                         setprop(fmfd ~ "target-vs", getprop("/servo-control/target-vs"));
-                        setprop(fmfd ~ "pitch-vs", me.airborne);
+                        setprop(fmfd ~ "pitch-vs", update_fd_pitch);
                         setprop(fmfd ~ "pitch-fpa", 0);
                         setprop(fmfd ~ "pitch-gs", 0);
                     }
@@ -583,7 +584,7 @@ var fmgc_loop = {
                             setprop(servo~ "elevator-gs", 0);
                         }
                         setprop(fmfd ~ "target-vs", vs);
-                        setprop(fmfd ~ "pitch-vs", me.airborne);
+                        setprop(fmfd ~ "pitch-vs", me.airborne and apEngaged);
                         setprop(fmfd ~ "pitch-fpa", 0);
                         setprop(fmfd ~ "pitch-gs", 0);
                         #setprop(servo~ "fd-elevator-vs", 0);
@@ -922,7 +923,7 @@ var fmgc_loop = {
                 #setprop(servo~ "fd-target-vs", final_vs);
                 #setprop(servo~ "fd-target-pitch", final_vs * 0.1);
                 setprop(fmfd ~ "target-vs", final_vs);
-                setprop(fmfd ~ "pitch-vs", me.airborne);
+                setprop(fmfd ~ "pitch-vs", me.airborne and !apEngaged);
                 setprop(fmfd ~ "pitch-fpa", 0);
                 setprop(fmfd ~ "pitch-gs", 0);
             }
@@ -934,7 +935,12 @@ var fmgc_loop = {
             setprop(fmfd~ 'target-pitch', getprop('/orientation/pitch-deg'));
         }
         else{
-            fd_pitch = getprop('/flight-management/fd/target-pitch');
+            if(!apEngaged)
+                fd_pitch = getprop('/flight-management/fd/target-pitch');
+            else {
+                fd_pitch = getprop('/orientation/pitch-deg');
+                setprop('/flight-management/fd/target-pitch', fd_pitch);
+            }     
         }  
         if(fd_pitch == nil or !me.airborne) fd_pitch = 0;
         setprop('instrumentation/pfd/fd_pitch', fd_pitch);
