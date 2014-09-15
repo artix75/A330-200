@@ -38,7 +38,7 @@
             <prop>/flight-management/fd/target-pitch</prop> 
         </output>
         <config>
-            <!--Kp>0.12</Kp-->
+            <Kp>0.12</Kp>
             <!--Kp>0.55</Kp-->
             <beta>1</beta>
             <alpha>0.1</alpha>
