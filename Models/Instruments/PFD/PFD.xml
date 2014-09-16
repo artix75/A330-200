@@ -1206,6 +1206,30 @@
         </font-resolution>
     </text>
     
+    <text>
+        <name>ver-armed-fmgc</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0206226</y-m>
+            <z-m>0.0540781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/vertical/armed</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.006</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
     <!-- PFD Boxes -->
     
     <text>
@@ -1261,6 +1285,30 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>0.0106226</y-m>
+            <z-m>0.0670781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/pfd-fmgc-empty-box</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">36</width>
+            <height type="int">36</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>ver-alert-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0206226</y-m>
             <z-m>0.0670781</z-m>
         </offsets>
         <alignment>center-center</alignment>
@@ -1538,6 +1586,31 @@
     
     <animation>
         <type>material</type>
+        <object-name>ver-armed-fmgc</object-name>
+        <diffuse>
+            <red>1</red>
+            <green>0</green>
+            <blue>1</blue>
+        </diffuse>
+        <ambient>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </ambient>
+        <specular>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </specular>
+        <emission>
+            <red>1</red>
+            <green>0</green>
+            <blue>1</blue>
+        </emission>
+    </animation>
+    
+    <animation>
+        <type>material</type>
         <object-name>athr-active-box</object-name>
         <object-name>ver-active-box</object-name>
         <object-name>lat-active-box</object-name>
@@ -1566,6 +1639,31 @@
     </animation>
     
     <animation>
+        <type>material</type>
+        <object-name>ver-alert-box</object-name>
+        <diffuse>
+            <red>0.99</red>
+            <green>0.6</green>
+            <blue>0.04</blue>
+        </diffuse>
+        <ambient>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </ambient>
+        <specular>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </specular>
+        <emission>
+            <red>0.99</red>
+            <green>0.6</green>
+            <blue>0.04</blue>
+        </emission>
+    </animation>
+    
+    <animation>
         <type>select</type>
         <object-name>athr-active-mode</object-name>
         <object-name>athr-armed-mode</object-name>
@@ -1590,6 +1688,24 @@
             </equals>
         </condition>
     </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>ver-armed-mode</object-name>
+        <condition>
+            <not>
+                <property>flight-management/control/follow-alt-cstr</property>
+            </not>
+        </condition>
+    </animation> 
+    
+    <animation>
+        <type>select</type>
+        <object-name>ver-armed-fmgc</object-name>
+        <condition>
+            <property>flight-management/control/follow-alt-cstr</property>
+        </condition>
+    </animation> 
     
 
 	<animation>
@@ -1695,6 +1811,14 @@
         <object-name>ver-active-box</object-name>
         <condition>
             <property>instrumentation/pfd/ver-active-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>ver-alert-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/ver-alert-box</property>
         </condition>
     </animation>
     

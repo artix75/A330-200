@@ -136,7 +136,8 @@ var fmgc_loop = {
     update : func {   	
 
         var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
-        var ias = ias = getprop("/velocities/airspeed-kt");
+        var ias = getprop("/velocities/airspeed-kt");
+        var mach = getprop("/velocities/mach");
         var vmode_vs_fps = getprop('/velocities/vertical-speed-fps');
         setprop("/instrumentation/pfd/vs-100", vmode_vs_fps * 0.6);
         #if(vmode_vs_fps > 8 or vmode_vs_fps < -8){
@@ -146,6 +147,7 @@ var fmgc_loop = {
         #}
         me.altitude = altitude;
         me.ias = ias;
+        me.mach = mach;
         me.vs_fps = vmode_vs_fps;
 
         me.phase = me.flight_phase();
@@ -165,7 +167,8 @@ var fmgc_loop = {
         setprop("flight-management/procedures/active", procedure.check());
 
         setprop(fcu~ "alt-100", me.alt_100());
-        var flaps = getprop("/controls/flight/flaps");
+        setprop(fmgc~ "follow-alt-cstr", me.follow_alt_cstr and me.armed_ver_mode == 'ALT');
+        var flaps = me.flaps;
         var stall_spd = 0;
         if(flaps <= 0.29)
             stall_spd = 150;
@@ -177,6 +180,7 @@ var fmgc_loop = {
         setprop(fmgc_val ~ 'ind-stall-speed', stall_spd - 125);
         me.flaps = flaps;
         me.stall_spd = stall_spd;
+        var ver_alert = 0;
 
         me.top_desc = me.calc_td();
         me.calc_tc();
@@ -347,10 +351,10 @@ var fmgc_loop = {
 
         }
 
-        var apEngaged = me.ap_engaged;
+        var apEngaged = me.ap_engaged and me.airborne;
         var fdEngaged = me.fd_engaged;
         #if(!me.airborne)
-        #    fdEngaged = 0;
+        #    apEngaged = 0;
         #me.ap_engaged = apEngaged;
         #me.fd_engaged = fdEngaged;
         var vmode = me.active_ver_mode;
@@ -576,6 +580,14 @@ var fmgc_loop = {
                             trgt_vs = limit2((target - altitude) * 2, vs_ref);
 
                         }
+                        if(trgt_vs > 200 and me.ias <= (me.stall_spd + 10)){
+                            ver_alert = 1;
+                            trgt_vs = 200;
+                        }
+                        elsif(trgt_vs < -200 and me.vmax and me.ias >= me.vmax){
+                            ver_alert = 1;
+                            trgt_vs = -200;
+                        } 
                         var vs = trgt_vs / 60;
                         if(apEngaged){
                             setprop(servo~ "target-vs", vs);
@@ -685,6 +697,8 @@ var fmgc_loop = {
                     }
                     if(ias >= (me.vne - 20))
                         spd = me.vne - 20;
+                    if(me.vmax and spd > 1 and spd > me.vmax)
+                        spd = me.vmax;
 
                     setprop(fmgc_val~ "target-spd", spd);
 
@@ -699,18 +713,18 @@ var fmgc_loop = {
 
                 var spd = getprop(fmgc_val~ "target-spd");
 
-                if (spd == nil) {
+                #if (spd == nil) {
                         
-                    if (altitude <= 10000)
-                        spd = 250;
-                    elsif(altitude < 25000)
-                        spd = 320;
-                    else
-                        spd = 0.78;
-
-                }
-                if(ias >= (me.vne - 20))
-                    spd = me.vne - 30;
+                #    if (altitude <= 10000)
+                #        spd = 250;
+                #    elsif(altitude < 25000)
+                #        spd = 320;
+                #    else
+                #        spd = 0.78;
+                #
+                #}
+                #if(ias >= (me.vne - 20))
+                #    spd = me.vne - 30;
 
                 if (spd < 1) {
                     #TODO: change SPEED/MACH indication on PFD
@@ -944,7 +958,7 @@ var fmgc_loop = {
         }  
         if(fd_pitch == nil or !me.airborne) fd_pitch = 0;
         setprop('instrumentation/pfd/fd_pitch', fd_pitch);
-
+        setprop('instrumentation/pfd/ver-alert-box', ver_alert and me.airborne);
     },
     get_settings : func {
 
@@ -970,6 +984,7 @@ var fmgc_loop = {
         me.fcu_alt = getprop(fcu~'alt');
         me.v2_spd = getprop('/instrumentation/fmc/vspeeds/V2');
         me.vsfpa_mode = getprop(fmgc~'vsfpa-mode');
+        me.flaps = getprop("/controls/flight/flaps");
 
     },
     get_current_state : func(){
@@ -984,6 +999,7 @@ var fmgc_loop = {
         me.vs_fpm = int(0.6 * me.vs_fps) * 100;
         me.ap_engaged = ((me.ap1 == "eng") or (me.ap2 == "eng"));
         me.fd_engaged = getprop("flight-management/control/fd");
+        me.vmax = me.calc_vmax();
     },
     check_flight_modes : func{
         var flplan_active = me.flplan_active;
@@ -1021,7 +1037,7 @@ var fmgc_loop = {
         var phase = me.phase;
         
         var ver_fmgc = me.ver_ctrl == 'fmgc';
-        var try_vnav = (flplan_active and ver_fmgc);
+        var try_vnav = (flplan_active and ver_fmgc and me.lat_ctrl == 'fmgc');
         
         var trgt_alt = fcu_alt;
         var follow_alt_cstr = 0;
@@ -1037,7 +1053,7 @@ var fmgc_loop = {
             
             if(remaining <= me.top_desc){ #TODO: check...should be this generic and not into try_vnav?
                 #ref_altitude = destination_elevation; 
-                phase = 'des';
+                #phase = 'des';
                 setprop("/flight-management/phase", "DES");
                 phase = 'DES';
             }
@@ -1118,12 +1134,7 @@ var fmgc_loop = {
                 vmode = vmode_main;
                 if(vmode == vphase){
                     if(me.vsfpa_mode){
-                        var sub = me.ver_sub;
-                        if(sub == 'vs'){
-                            vmode = 'VS '~me.vs_setting;
-                        } else {
-                            vmode = 'FPA '~me.fpa_setting;
-                        }
+                        vmode = me.get_vsfpa_mode(vmode);
                     } 
                     else {
                         if(raw_alt_diff < -10)
@@ -1186,6 +1197,8 @@ var fmgc_loop = {
             if(me.agl < 1500 and me.agl > 0 and me.srs_spd > 0 and me.phase == 'CLB'){
                 me.active_ver_mode = 'SRS';
                 me.armed_ver_mode = vmode;
+                if(me.vmax > me.srs_spd)
+                    me.vmax = me.srs_spd;
             } else {
                 if(vmode == 'G/S'){
                     if(me.gs_in_range){
@@ -1211,9 +1224,17 @@ var fmgc_loop = {
                     if(substr(vmode, 0, 3) == 'ALT' and !is_capturing_alt){
                         me.armed_ver_mode = '';
                     } else {
-                        me.armed_ver_mode = me.get_alt_mode(trgt_alt, alt_cstr, crz_alt, 0); 
+                        me.armed_ver_mode = 'ALT';#me.get_alt_mode(trgt_alt, alt_cstr, crz_alt, 0); 
                     }
                 }
+            }
+            var vmode_sfx = substr(me.active_ver_mode, -3, 3);
+            var clbdes = (vmode_sfx == 'CLB' or vmode_sfx == 'DES');
+            if(clbdes and vmode_sfx != me.true_vertical_phase){
+                me.vsfpa_mode = 1;
+                setprop(fmgc~'vsfpa-mode', 1);
+                setprop(fmgc~ "ver-ctrl", "man-set");
+                me.active_ver_mode = me.get_vsfpa_mode(vmode);
             }
             
             #ATHR 
@@ -1250,6 +1271,7 @@ var fmgc_loop = {
         #setprop(fmgc ~'fixed-thrust', fixed_thrust);
         me.ver_managed = (me.ver_ctrl == 'fmgc' and 
                           me.flplan_active and 
+                          me.lat_ctrl == 'fmgc' and 
                           !me.vsfpa_mode and 
                           me.active_ver_mode != 'SRS');
         me.real_target_alt = trgt_alt;
@@ -1258,6 +1280,11 @@ var fmgc_loop = {
         
     },
     get_athr_mode: func(vmode, spd_mode){
+        if(me.vmax and !me.ap_engaged and me.fd_engaged){
+            if(((me.vmax < 1 and me.mach > me.vmax) or 
+                (me.vmax > 1 and me.ias > me.vmax)))
+                return spd_mode;
+        }
         if(vmode == 'SRS' or 
            vmode == 'CLB' or 
            vmode == 'DES' or 
@@ -1283,6 +1310,37 @@ var fmgc_loop = {
         if(capturing)
             mode ~= '*';
         return mode;
+    },
+    calc_vmax: func(){
+        var vmax = 0;
+        var flaps = me.flaps;
+        if(flaps > 0.74)
+            vmax = 184;
+        elsif(flaps == 0.74)
+            vmax = 190;
+        elsif(flaps == 0.596)
+            vmax = 200;
+        elsif(flaps == 0.29)
+            vmax = 215;
+        else{
+            var alt = me.altitude;
+            if(alt < 10000)
+                vmax = 254;
+            elsif(alt < 25000)
+                vmax = 324;
+            else 
+                vmax = 0.78;
+        }
+        return vmax;
+    },
+    get_vsfpa_mode: func(vmode){
+        var sub = me.ver_sub;
+        if(sub == 'vs'){
+            vmode = 'VS '~me.vs_setting;
+        } else {
+            vmode = 'FPA '~me.fpa_setting;
+        }
+        return vmode;
     },
     lvlch_check : func {
 
@@ -1879,3 +1937,22 @@ setlistener(vmodes~'active', func(){
         setprop(box_node, 1);
     }
 }, 0, 0);
+
+setlistener(fmgc~ "lat-ctrl", func(){
+    var lat_ctrl = getprop(fmgc~ "lat-ctrl");
+    if(lat_ctrl == 'fmgc'){
+        var fp_actv = getprop("flight-management/procedures/active");
+        if(!fp_actv){
+            lat_ctrl = 'man-set';
+        }
+    }
+    if(lat_ctrl == 'man-set')
+        setprop(fmgc~ "ver-ctrl", "man-set");
+});
+
+setlistener(fmgc~ "ver-ctrl", func(){
+    var lat_ctrl = getprop(fmgc~ "lat-ctrl");
+    var ver_ctrl = getprop(fmgc~ "ver-ctrl");
+    if(lat_ctrl == 'man-set' and ver_ctrl == 'fmgc')
+        setprop(fmgc~ "ver-ctrl", "man-set");
+});
