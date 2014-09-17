@@ -120,6 +120,8 @@ var fmgc_loop = {
         setprop(fmfd ~ "pitch-gs", 0);
         setprop('instrumentation/pfd/fd_pitch', 0);
     
+        me.descent_started = 0;
+    
         # Radio
     
         setprop(radio~ 'autotuned', 0);
@@ -1011,6 +1013,7 @@ var fmgc_loop = {
         me.armed_ver_mode = '';
         me.accel_alt = 1500;
         me.srs_spd = 0;
+        var after_td = 0;
         if(me.v2_spd > 0)
             me.srs_spd = me.v2_spd + 10; 
         
@@ -1032,6 +1035,7 @@ var fmgc_loop = {
         
         #Basic Vertical Mode
         var vmode = '';
+        var vmode_sfx = '';
         var fcu_alt = me.fcu_alt;
         var vs_fpm = me.vs_fpm;
         var phase = me.phase;
@@ -1042,21 +1046,20 @@ var fmgc_loop = {
         var trgt_alt = fcu_alt;
         var follow_alt_cstr = 0;
         var alt_cstr = -9999;
+        var remaining = me.remaining_nm;
+        if(flplan_active and remaining <= me.top_desc){ #TODO: check...should be this generic and not into try_vnav?
+            #ref_altitude = destination_elevation; 
+            #phase = 'des';
+            setprop("/flight-management/phase", "DES");
+            phase = 'DES';
+            after_td = 1;
+        }
         
         if(try_vnav){
             follow_alt_cstr = 1;
             var current_wp = me.current_wp;
 
             alt_cstr = getprop("/autopilot/route-manager/route/wp[" ~ current_wp ~ "]/altitude-ft");
-
-            var remaining = me.remaining_nm;
-            
-            if(remaining <= me.top_desc){ #TODO: check...should be this generic and not into try_vnav?
-                #ref_altitude = destination_elevation; 
-                #phase = 'des';
-                setprop("/flight-management/phase", "DES");
-                phase = 'DES';
-            }
             
             #setprop(fmgc_val ~ 'vnav-phase', phase); #TODO: seems to be unused
 
@@ -1188,7 +1191,7 @@ var fmgc_loop = {
                     me.armed_lat_mode = '';
                 }
             } else {
-                me.active_lat_mode = '';  #TODO: support RWY TRK
+                me.active_lat_mode = (me.rwy_mode? 'RWY' : '');  #TODO: support RWY TRK
                 me.armed_lat_mode = lmode;
             }
             
@@ -1228,7 +1231,7 @@ var fmgc_loop = {
                     }
                 }
             }
-            var vmode_sfx = substr(me.active_ver_mode, -3, 3);
+            vmode_sfx = substr(me.active_ver_mode, -3, 3);
             var clbdes = (vmode_sfx == 'CLB' or vmode_sfx == 'DES');
             if(clbdes and vmode_sfx != me.true_vertical_phase){
                 me.vsfpa_mode = 1;
@@ -1261,6 +1264,19 @@ var fmgc_loop = {
                 me.armed_athr_mode = '';
             }
             me.fixed_thrust = fixed_thrust;
+        }
+        if(after_td){
+            vmode = me.active_ver_mode;
+            if(!me.descent_started and 
+               (vmode_sfx == 'DES' or (me.vsfpa_mode and me.vs_fps < -100))){
+               me.descent_started = 1;
+            }
+            if(!me.descent_started)
+                setprop('/flight-management/flight-modes/message', 'DECELERATE');
+            else{
+                if(getprop('/flight-management/flight-modes/message') == 'DECELERATE')
+                    setprop('/flight-management/flight-modes/message', '');
+            }
         }
         setprop(athr_modes~'active', me.active_athr_mode);
         setprop(athr_modes~'armed', me.armed_athr_mode);
@@ -1902,7 +1918,7 @@ setlistener('/flight-management/control/a-thrust', func{
 setlistener(athr_modes~'active', func(){
     var mode = athr_modes~'active';
     var box_node = 'instrumentation/pfd/athr-active-box';
-    if(mode != ''){
+    if(getprop(mode) != ''){
         setprop(box_node, 1);
         settimer(func(){
             setprop(box_node, 0);     
@@ -1915,7 +1931,7 @@ setlistener(athr_modes~'active', func(){
 setlistener(lmodes~'active', func(){
     var mode = lmodes~'active';
     var box_node = 'instrumentation/pfd/lat-active-box';
-    if(mode != ''){
+    if(getprop(mode) != ''){
         setprop(box_node, 1);
         settimer(func(){
             setprop(box_node, 0);     
@@ -1928,13 +1944,26 @@ setlistener(lmodes~'active', func(){
 setlistener(vmodes~'active', func(){
     var mode = vmodes~'active';
     var box_node = 'instrumentation/pfd/ver-active-box';
-    if(mode != ''){
+    if(getprop(mode) != ''){
         setprop(box_node, 1);
         settimer(func(){
             setprop(box_node, 0);     
         }, 5);
     } else {
+        setprop(box_node, 0);
+    }
+}, 0, 0);
+
+setlistener('/flight-management/flight-modes/message', func(){
+    var msg = getprop('/flight-management/flight-modes/message');
+    var box_node = 'instrumentation/pfd/msg-alert-box';
+    if(msg != ''){
         setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 10);
+    } else {
+        setprop(box_node, 0);
     }
 }, 0, 0);
 

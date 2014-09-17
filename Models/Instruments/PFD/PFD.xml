@@ -831,6 +831,31 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+    
+    <text>
+        <name>qnh-alert-box</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>0.05</y-m>
+            <z-m>-0.055</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>flight-management/text/qnh</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008
+        </character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 	
 	<!-- Altitude -->
 	
@@ -1019,7 +1044,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0606226</y-m>
-            <z-m>0.0670781</z-m>
+            <z-m>0.0680781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1031,7 +1056,7 @@
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.006</character-size>
+        <character-size>0.0055</character-size>
         <font-resolution>
             <width type="int">32</width>
             <height type="int">32</height>
@@ -1043,7 +1068,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0606226</y-m>
-            <z-m>0.0540781</z-m>
+            <z-m>0.0605781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1055,7 +1080,7 @@
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.006</character-size>
+        <character-size>0.0055</character-size>
         <font-resolution>
             <width type="int">32</width>
             <height type="int">32</height>
@@ -1067,7 +1092,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0606226</y-m>
-            <z-m>0.0670781</z-m>
+            <z-m>0.0680781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1079,7 +1104,7 @@
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.006</character-size>
+        <character-size>0.0055</character-size>
         <font-resolution>
             <width type="int">32</width>
             <height type="int">32</height>
@@ -1091,7 +1116,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0606226</y-m>
-            <z-m>0.0540781</z-m>
+            <z-m>0.0605781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1103,7 +1128,7 @@
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.006</character-size>
+        <character-size>0.0055</character-size>
         <font-resolution>
             <width type="int">32</width>
             <height type="int">32</height>
@@ -1115,7 +1140,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0206226</y-m>
-            <z-m>0.0670781</z-m>
+            <z-m>0.0680781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1127,7 +1152,7 @@
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.006</character-size>
+        <character-size>0.0055</character-size>
         <font-resolution>
             <width type="int">32</width>
             <height type="int">32</height>
@@ -1139,7 +1164,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0206226</y-m>
-            <z-m>0.0540781</z-m>
+            <z-m>0.0605781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1151,7 +1176,7 @@
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.006</character-size>
+        <character-size>0.0055</character-size>
         <font-resolution>
             <width type="int">32</width>
             <height type="int">32</height>
@@ -1163,7 +1188,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>0.0106226</y-m>
-            <z-m>0.0670781</z-m>
+            <z-m>0.0680781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1175,7 +1200,7 @@
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.006</character-size>
+        <character-size>0.0055</character-size>
         <font-resolution>
             <width type="int">32</width>
             <height type="int">32</height>
@@ -1187,7 +1212,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>0.0106226</y-m>
-            <z-m>0.0540781</z-m>
+            <z-m>0.0605781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1199,7 +1224,7 @@
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.006</character-size>
+        <character-size>0.0055</character-size>
         <font-resolution>
             <width type="int">32</width>
             <height type="int">32</height>
@@ -1211,7 +1236,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0206226</y-m>
-            <z-m>0.0540781</z-m>
+            <z-m>0.0605781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1223,7 +1248,55 @@
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.006</character-size>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>fma-message-white</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.005</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/message</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>fma-message-box-white</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.005</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/message</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
         <font-resolution>
             <width type="int">32</width>
             <height type="int">32</height>
@@ -1237,7 +1310,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0606226</y-m>
-            <z-m>0.0670781</z-m>
+            <z-m>0.0680781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1261,7 +1334,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0206226</y-m>
-            <z-m>0.0670781</z-m>
+            <z-m>0.0680781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1285,7 +1358,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>0.0106226</y-m>
-            <z-m>0.0670781</z-m>
+            <z-m>0.0680781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1309,7 +1382,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0206226</y-m>
-            <z-m>0.0670781</z-m>
+            <z-m>0.0680781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1616,6 +1689,8 @@
         <object-name>lat-active-box</object-name>
         <object-name>athr-active-white</object-name>
         <object-name>athr-armed-white</object-name>
+        <object-name>fma-message-white</object-name>
+        <object-name>fma-message-box-white</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>
@@ -1641,6 +1716,7 @@
     <animation>
         <type>material</type>
         <object-name>ver-alert-box</object-name>
+        <object-name>qnh-alert-box</object-name>
         <diffuse>
             <red>0.99</red>
             <green>0.6</green>
@@ -1819,6 +1895,44 @@
         <object-name>ver-alert-box</object-name>
         <condition>
             <property>instrumentation/pfd/ver-alert-box</property>
+        </condition>
+    </animation>
+    
+    
+    <animation>
+        <type>select</type>
+        <object-name>fma-message-box-white</object-name>
+        <condition>
+            <property>instrumentation/pfd/msg-alert-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>qnh-alert-box</object-name>
+        <condition>
+            <or>
+                <and>
+                    <greater-than-equals>
+                        <property>/instrumentation/altimeter/indicated-altitude-ft</property>
+                        <value>18000</value>
+                    </greater-than-equals>
+                    <equals>
+                        <property>flight-management/text/qnh</property>
+                        <value>QNH</value>
+                    </equals>
+                </and>
+                <and>
+                    <less-than>
+                        <property>/instrumentation/altimeter/indicated-altitude-ft</property>
+                        <value>18000</value>
+                    </less-than>
+                    <equals>
+                        <property>flight-management/text/qnh</property>
+                        <value>STD</value>
+                    </equals>
+                </and>
+            </or>
         </condition>
     </animation>
     

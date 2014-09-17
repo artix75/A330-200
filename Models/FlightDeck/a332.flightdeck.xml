@@ -1334,49 +1334,51 @@
 	<animation>
 		<type>pick</type>
 		<object-name>qnh-0.01</object-name>
-                <!-- Artix -->
-                <action>
-		    <button>0</button>
-		    <repeatable type="bool">false</repeatable>
-                    <binding>
-                            <command>nasal</command>
-                            <script>
-                                setprop("/instrumentation/altimeter/setting-inhg", 29.92);
-                                setprop('/flight-management/control/qnh-mode', 'inhg');
-                            </script>
-                    </binding>
-                    <binding>
-                        <command>nasal</command>
-                        <script>utils.clickSound(6)</script>
-                    </binding>
-                </action>
-                <action>
-		    <button>1</button>
-		    <repeatable type="bool">false</repeatable>
-                    <binding>
-                            <command>nasal</command>
-                            <script>
-                                print("BTN 1 (0.01)"); 
-                            </script>
-                    </binding>
-                </action>
+        <!-- Artix -->
+        <action>
+            <button>0</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                    <command>nasal</command>
+                    <script>
+                        setprop("/instrumentation/altimeter/setting-inhg", 29.92);
+                        setprop('/flight-management/control/qnh-mode', 'inhg');
+                        setprop('/flight-management/text/qnh', 'STD');
+                    </script>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(6)</script>
+            </binding>
+        </action>
+        <action>
+        <button>1</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                    <command>nasal</command>
+                    <script>
+                        print("BTN 1 (0.01)"); 
+                    </script>
+            </binding>
+        </action>
 		<action>
 			<button>3</button>
 			<binding>
 				<command>nasal</command>
 				<script>
-                                        var mode = getprop('/flight-management/control/qnh-mode');
-                                        var incr = 0.01;
-                                        if(!mode){
-                                            mode = 'inhg';
-                                        }
-                                        if(mode == 'hpa'){
-                                            incr = 1.0;
-                                        }
+                    var mode = getprop('/flight-management/control/qnh-mode');
+                    var incr = 0.01;
+                    if(!mode){
+                        mode = 'inhg';
+                    }
+                    if(mode == 'hpa'){
+                        incr = 1.0;
+                    }
 				
 					var qnh = getprop("/instrumentation/altimeter/setting-" ~ mode);
 					
 					setprop("/instrumentation/altimeter/setting-" ~ mode, qnh + incr);
+                    setprop('/flight-management/text/qnh', 'QNH');
 					
 				</script>
 			</binding>
@@ -1388,18 +1390,19 @@
 				<command>nasal</command>
 				<script>
 					
-                                        var mode = getprop('/flight-management/control/qnh-mode');
-                                        var decr = 0.01;
-                                        if(!mode){
-                                            mode = 'inhg';
-                                        }
-                                        if(mode == 'hpa'){
-                                            decr = 1.0;
-                                        }
+                    var mode = getprop('/flight-management/control/qnh-mode');
+                    var decr = 0.01;
+                    if(!mode){
+                        mode = 'inhg';
+                    }
+                    if(mode == 'hpa'){
+                        decr = 1.0;
+                    }
 				
 					var qnh = getprop("/instrumentation/altimeter/setting-" ~ mode);
 					
 					setprop("/instrumentation/altimeter/setting-" ~ mode, qnh - decr);
+                    setprop('/flight-management/text/qnh', 'QNH');
 				</script>
 			</binding>
 		</action>
@@ -1408,17 +1411,17 @@
 	<animation>
 		<type>pick</type>
 		<object-name>qnh</object-name>
-                <!-- Artix -->
-                <action>
-		    <button>0</button>
-		    <repeatable type="bool">false</repeatable>
-                    <binding>
-                            <command>property-cycle</command>
-                            <property>/flight-management/control/qnh-mode</property>
-                            <value>inhg</value>
-                            <value>hpa</value>
-                    </binding>
-                </action>
+        <!-- Artix -->
+        <action>
+        <button>0</button>
+        <repeatable type="bool">false</repeatable>
+            <binding>
+                    <command>property-cycle</command>
+                    <property>/flight-management/control/qnh-mode</property>
+                    <value>inhg</value>
+                    <value>hpa</value>
+            </binding>
+        </action>
 		<action>
 			<button>3</button>
 			<repeatable type="bool">true</repeatable>
@@ -1426,18 +1429,19 @@
 				<command>nasal</command>
 				<script>
 					
-                                        var mode = getprop('/flight-management/control/qnh-mode');
-                                        var incr = 0.01;
-                                        if(!mode){
-                                            mode = 'inhg';
-                                        }
-                                        if(mode == 'hpa'){
-                                            incr = 1.0;
-                                        }
+                    var mode = getprop('/flight-management/control/qnh-mode');
+                    var incr = 0.01;
+                    if(!mode){
+                        mode = 'inhg';
+                    }
+                    if(mode == 'hpa'){
+                        incr = 1.0;
+                    }
 				
 					var qnh = getprop("/instrumentation/altimeter/setting-" ~ mode);
 					
 					setprop("/instrumentation/altimeter/setting-" ~ mode, qnh + incr);
+                    setprop('/flight-management/text/qnh', 'QNH');
 				</script>
 			</binding>
 		</action>
@@ -1447,27 +1451,27 @@
 			<binding>
 				<command>nasal</command>
 				<script>
-					
-                                        var mode = getprop('/flight-management/control/qnh-mode');
-                                        var decr = 0.01;
-                                        if(!mode){
-                                            mode = 'inhg';
-                                        }
-                                        if(mode == 'hpa'){
-                                            decr = 1.0;
-                                        }
+
+                    var mode = getprop('/flight-management/control/qnh-mode');
+                    var decr = 0.01;
+                    if(!mode){
+                        mode = 'inhg';
+                    }
+                    if(mode == 'hpa'){
+                        decr = 1.0;
+                    }
 				
 					var qnh = getprop("/instrumentation/altimeter/setting-" ~ mode);
 					
 					setprop("/instrumentation/altimeter/setting-" ~ mode, qnh - decr);
-					
+                    setprop('/flight-management/text/qnh', 'QNH');
 				</script>
 			</binding>
 		</action>
-                        <binding>
-                            <command>nasal</command>
-                            <script>utils.clickSound(4)</script>
-                        </binding>
+        <binding>
+            <command>nasal</command>
+            <script>utils.clickSound(4)</script>
+        </binding>
 	</animation>
 	
 	<animation>
