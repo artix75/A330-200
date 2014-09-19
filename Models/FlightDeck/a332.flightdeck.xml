@@ -890,6 +890,30 @@
         </animation>
 	
 	<!-- Material Animation -->
+    <animation>
+        <type>material</type>
+        <object-name>gmt-time-text</object-name>
+        <diffuse>
+            <red>1</red>
+            <green>1</green>
+            <blue>1</blue>
+        </diffuse>
+        <ambient>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </ambient>
+        <specular>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </specular>
+        <emission>
+            <red>1</red>
+            <green>1</green>
+            <blue>1</blue>
+        </emission>
+    </animation>
 	
 	<animation>
 		<type>material</type>
@@ -925,6 +949,33 @@
 	</animation>
 	
 	<!-- Actual Text -->
+    
+    <text>
+        <!--name>gmt-time-text</name-->
+        <name>gmt-time-text</name>
+        <offsets>
+            <x-m>-0.58331</x-m>
+            <y-m>0.1332</y-m>
+            <z-m>-0.0516</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>76</roll-deg>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">string-value</type>
+        <format type="string">%s</format>
+        <property>/sim/time/gmt-string</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">led.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 	
 	<text>
 		<name>spd-text</name>
