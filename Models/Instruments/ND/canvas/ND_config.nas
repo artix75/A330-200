@@ -17,7 +17,5 @@ canvas.NDConfig = {
         nav2_frq: 'instrumentation/nav[1]/frequencies/selected-mhz',
         lat_ctrl: 'flight-management/control/lat-ctrl',
         ver_ctrl: "flight-management/control/ver-ctrl",
-        
-        
     }
 };

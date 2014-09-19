@@ -280,7 +280,8 @@
                             } else {
                             }
                         }
-                        setprop(radio~ 'autotuned', 0);	 			
+                        if(input != '')
+                            setprop(radio~ 'autotuned', 0);
 		 			} else {
 		 			
 		 				setprop("/instrumentation/mcdu/input", "ERROR: WRONG FORMAT");

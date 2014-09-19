@@ -370,7 +370,15 @@
         <name>Speed hold (vary pitch) Stage #2</name>
         <debug>false</debug>
         <enable>
-            <prop>/flight-management/control/spd-with-pitch</prop>
+            <condition>
+                <and>
+                    <equals>
+                        <property>/flight-management/control/ap1-master</property>
+                        <value>eng</value>
+                    </equals>
+                    <property>/flight-management/control/spd-with-pitch</property>
+                </and>
+            </condition>
         </enable>
         <input>
             <prop>/orientation/pitch-deg</prop>

@@ -35,7 +35,7 @@ var draw = func{
     
     #print('Draw: -> ' ~ name);
     if(name == 'td'){
-        var vnav_armed = me.model.getValue('vnav-armed');
+        var vnav_armed = me.model.getValue('descent-armed');
         if(vnav_armed)
             grp.setColor(0.06,0.55,1);
         else
