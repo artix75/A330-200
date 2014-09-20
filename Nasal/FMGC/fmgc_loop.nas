@@ -462,7 +462,7 @@ var fmgc_loop = {
                     setprop(servo~ "aileron-nav1", 0);
 
                     if (math.abs(deflection) <= 1)
-                    setprop(servo~ "target-bank", 0);
+                        setprop(servo~ "target-bank", 0);
                     else
                         setprop(servo~ "target-bank", bank);
                 }
@@ -474,6 +474,7 @@ var fmgc_loop = {
                     setprop(servo~ "fd-target-bank", bank);
 
             } elsif (me.active_lat_mode == "LOC" or 
+                     me.active_lat_mode == "LOC*" or 
                      me.active_lat_mode == "RWY" or 
                      me.active_lat_mode == "ROLLOUT"
                     ) {
