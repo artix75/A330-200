@@ -7,6 +7,11 @@ var Group = canvas.Group;
 var Path = canvas.Path;
 var DotSym = canvas.DotSym;
 var Map = canvas.Map;
+var LineSymbol = canvas.LineSymbol;
+
+var SingleSymbolLayer = canvas.SingleSymbolLayer;
+var MultiSymbolLayer = canvas.MultiSymbolLayer;
+var NavaidSymbolLayer = canvas.NavaidSymbolLayer;
 
 var version = getprop('sim/version/flightgear');
 var v = split('.', version);
@@ -108,11 +113,11 @@ setlistener("sim/signals/fdm-initialized", func() {
             var userTrkTru = me.aircraft_source.get_trk_tru();
 
             if(me.get_switch('toggle_true_north')) {
-                me.symbols.truMag.setText("TRU");
+                #me.symbols.truMag.setText("TRU");
                 var userHdg=userHdgTru;
                 var userTrk=userTrkTru;
             } else {
-                me.symbols.truMag.setText("MAG");
+                #me.symbols.truMag.setText("MAG");
                 var userHdg=userHdgMag;
                 var userTrk=userTrkMag;
             }

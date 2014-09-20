@@ -150,6 +150,7 @@ canvas.NDStyles["Airbus"] = {
 
             { 
                 name:'mp-traffic', 
+                disabled: 1,
                 update_on:['toggle_range','toggle_traffic'],
                 predicate: func(nd, layer) {
                     var visible = nd.get_switch('toggle_traffic');
@@ -161,7 +162,7 @@ canvas.NDStyles["Airbus"] = {
             }, # end of traffic  layer
             { 
                 name:'TFC', 
-                disabled:1, 
+                #disabled:1, 
                 isMapStructure:1, 
                 update_on:['toggle_range','toggle_traffic'],
                 predicate: func(nd, layer) {
@@ -505,6 +506,15 @@ canvas.NDStyles["Airbus"] = {
                 },
             },
             {
+                id:'compass',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) (!nd.get_switch('toggle_centered') and  nd.get_switch('toggle_display_mode') != "PLAN"),
+                    is_true: func(nd) nd.symbols.compass.show(),
+                    is_false: func(nd) nd.symbols.compass.hide(),
+                }, # of compass.impl
+            }, # of compass
+            {
                 id:'compassApp',
                     impl: {
                         init: func(nd,symbol),
@@ -513,6 +523,15 @@ canvas.NDStyles["Airbus"] = {
                             is_false: func(nd) nd.symbols.compassApp.hide(),
                     }, # of compassApp.impl
             }, # of compassApp
+            {
+                id:'northUp',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) nd.get_switch('toggle_display_mode') == "PLAN",
+                    is_true: func(nd) nd.symbols.northUp.show(),
+                    is_false: func(nd) nd.symbols.northUp.hide(),
+                }, # of northUp.impl
+            }, # of northUp
             {
                 id:'planArcs',
                     impl: {

@@ -29,8 +29,8 @@ var draw = func {
     var hdg = canvas_nd.nd_display.main._node.getNode('group/map').getValue('hdg');
     if(hdg)
         rot -= hdg;
-    else
-        print('APS Symbol: NO HDG!');
+    #else
+    #    print('APS Symbol: NO HDG!');
     #me.layer.map.getHdg();
     me.element.setRotation(rot*D2R);
 };

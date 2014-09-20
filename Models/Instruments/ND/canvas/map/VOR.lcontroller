@@ -3,7 +3,7 @@ var parents = [SymbolLayer.Controller];
 var __self__ = caller(0)[0];
 SymbolLayer.Controller.add("VOR", __self__);
 SymbolLayer.add("VOR", {
-	parents: [SymbolLayer],
+	parents: [NavaidSymbolLayer],
 	type: "VOR", # Symbol type
 	df_controller: __self__, # controller to use by default -- this one
 });
@@ -49,7 +49,7 @@ var changed_freq = func(update=1) {
 	if (update) me.layer.update();
 };
 var searchCmd = func {
-	printlog(_MP_dbg_lvl, "Running query:", me.query_type);
+	#printlog(_MP_dbg_lvl, "Running query:", me.query_type);
 	return positioned.findWithinRange(100, me.query_type); # the range should also be exposed, it will typically be controlled via a GUI widget or NavDisplay switch
 };
 

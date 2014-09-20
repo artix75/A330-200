@@ -4,7 +4,7 @@ var parents = [SymbolLayer.Controller];
 var __self__ = caller(0)[0];
 SymbolLayer.Controller.add(name, __self__);
 SymbolLayer.add(name, {
-	parents: [SymbolLayer],
+    parents: [NavaidSymbolLayer],
 	type: name, # Symbol type
 	df_controller: __self__, # controller to use by default -- this one
 });

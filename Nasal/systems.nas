@@ -7,6 +7,9 @@
 print("Initializing livery select for " ~ getprop("sim/aero"));
 aircraft.livery.init("Aircraft/A330-200/Models/Liveries/" ~ getprop("sim/aero"));
 
+setprop('sim/failure-manager/engines/engine/serviceable', 1);
+setprop('sim/failure-manager/engines/engine[1]/serviceable', 1);
+
 #setlistener("sim/model/livery/texture", func
 # {
 # var base = getprop("sim/model/livery/texture");

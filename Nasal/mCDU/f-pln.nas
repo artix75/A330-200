@@ -123,12 +123,10 @@ var f_pln = {
 			
 			var time_min = int(dist / gs_min);
 			
-			var last_time = 0;
+			var last_time = getprop(rm_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
 			
-			if (wp != 1)
-				last_time = getprop(rm_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time");
-			else
-				last_time = getprop(rm_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time") + 30;
+			if (wp == 1)
+			    last_time = last_time + 30;
 				
 			# Atm, using 30 min for taxi time. You will be able to change this in INIT B when it's completed
 			
@@ -221,13 +219,10 @@ var f_pln = {
 			
 			var time_min = int(dist / gs_min);
 			
-			var last_time = 0;
+			var last_time = getprop(rm_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
 			
-			if (wp != 1)
-				last_time = getprop(rm_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time");
-			else
-				last_time = getprop(rm_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time") + 30;
-				
+			if (wp == 1)
+			    last_time = last_time + 30;
 			# Atm, using 30 min for taxi time. You will be able to change this in INIT B when it's completed
 			
 			var total_time = last_time + time_min;

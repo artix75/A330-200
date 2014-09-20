@@ -1,3 +1,7 @@
+var version = getprop('sim/version/flightgear');
+var v = split('.', version);
+version = num(v[0]~'.'~v[1]);
+
 setlistener("/nasal/canvas/loaded", func() {
 
     ####### LOAD FILES #######
@@ -36,9 +40,11 @@ setlistener("/nasal/canvas/loaded", func() {
     };
 
     var load_deps = func(name) {
+        print('Loading MapStructure Layer: '~ name);
         load(aircraft_root~"/Models/Instruments/ND/map/"~name~".lcontroller",  name);
         load(aircraft_root~"/Models/Instruments/ND/map/"~name~".symbol", name);
-        load(aircraft_root~"/Models/Instruments/ND/map/"~name~".scontroller", name);
+        if(version < 3.2)
+            load(aircraft_root~"/Models/Instruments/ND/map/"~name~".scontroller", name);
     }
 
     #foreach( var name; ['APS','ALT-profile','SPD-profile','HOLD','RTE','WPT','DECEL','NDB'] )

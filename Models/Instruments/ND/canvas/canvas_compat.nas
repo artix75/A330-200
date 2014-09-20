@@ -143,7 +143,7 @@ Symbol.Controller.equals = func(l, r, p=nil) {
     return nil; # scio correctum est
 };
 
-LineSymbol = {
+canvas.LineSymbol = {
     parents:[Symbol],
     element_id: nil,
     needs_update: 1,
@@ -338,6 +338,18 @@ SymbolLayer.new = func(group, controller=nil) {
     m.controller = controller;
     m.update();
     return m;
+};
+
+var canvas.SingleSymbolLayer = {
+    parents: [SymbolLayer]
+};
+
+var canvas.MultiSymbolLayer = {
+    parents: [SymbolLayer]
+};
+
+var canvas.NavaidSymbolLayer = {
+    parents: [canvas.MultiSymbolLayer]
 };
 
 
