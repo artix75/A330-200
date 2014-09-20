@@ -605,6 +605,7 @@ canvas.NDStyles["Airbus"] = {
                     predicate: func(nd) !nd.get_switch('toggle_centered'),
                     is_true: func(nd) {
                         nd.symbols.range.show();
+                        nd.symbols.range.setText(sprintf("%3.0f",nd.rangeNm()/2));
                     },
                     is_false: func(nd) nd.symbols.range.hide(),
                 },
