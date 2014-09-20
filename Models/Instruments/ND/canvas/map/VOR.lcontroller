@@ -30,7 +30,7 @@ var new = func(layer) {
 	return m;
 };
 var del = func() {
-	printlog(_MP_dbg_lvl, "VOR.lcontroller.del()");
+	#printlog(_MP_dbg_lvl, "VOR.lcontroller.del()");
 	foreach (var l; me.listeners)
 		removelistener(l);
 };
