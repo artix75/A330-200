@@ -16,7 +16,7 @@
     
     <pid-controller>
         <name>FD V/S Target Pitch</name>
-        <debug type="bool">true</debug>
+        <debug type="bool">false</debug>
         <enable>
             <condition>
                 <and>
@@ -55,7 +55,7 @@
     
     <pid-controller>
         <name>FD G/S Target Pitch</name>
-        <debug type="bool">true</debug>
+        <debug type="bool">false</debug>
         <enable>
             <condition>
                 <and>

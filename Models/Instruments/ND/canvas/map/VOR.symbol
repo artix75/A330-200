@@ -9,16 +9,15 @@ var icon_vor = nil;
 var range_vor = nil; # two elements that get drawn when needed
 var radial_vor = nil; # if one is nil, the other has to be nil
 
-var svg_loaded = nil;
+var vor_sym = nil;
 
 var nd_props = canvas.NDConfig.properties;
 
 var draw = func{
-    var grp = nil;
-    if(me.svg_loaded == nil) {
+    if(me.vor_sym == nil) {
         me.element.removeAllChildren();
-        grp = me.element.createChild("group");
-        SymbolPainter.drawVOR(grp);
+        me.vor_sym = me.element.createChild("group");
+        SymbolPainter.drawVOR(me.vor_sym);
 
         me.text_vor = me.element.createChild("text")
         .setDrawMode( canvas.Text.TEXT )
@@ -28,18 +27,16 @@ var draw = func{
         .setColor(1,1,1)
         .setTranslation(45,25);
         me.svg_loaded = 1;
-    } else {
-        grp = me.element;
     }
     var frq = me.model.frequency;
-    if(frq != nil and grp != nil){
+    if(frq != nil and me.vor_sym != nil){
         frq = frq / 100;
         var nav1_frq = getprop(nd_props.nav1_frq);
         var nav2_frq = getprop(nd_props.nav2_frq);
         if(nav1_frq == frq or nav2_frq == frq){
-            grp.setColor(0,0.62,0.84, [canvas.Text]);
+            me.vor_sym.setColor(0,0.62,0.84);
         } else {
-            grp.setColor(0.9,0,0.47, [canvas.Text]);
+            me.vor_sym.setColor(0.9,0,0.47);
         }
     }
 }

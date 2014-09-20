@@ -67,6 +67,17 @@ var SymbolPainter = {
         grp.setScale(scale,scale);
         if(opts.update_center)
             grp.setTranslation(-24 * scale,-24 * scale);
+        if(!contains(grp, 'setColor')){
+            grp.setColor = func {
+                var layer1 = grp.getElementById('layer1');
+                if(layer1 == nil) return;
+                var children = layer1.getChildren();
+                foreach(var c; children){
+                    if(isa(c, canvas.Path))
+                        c.setColor(arg);
+                }
+            };
+        }
         return grp;
     },
     drawNDB: func(grp, opts = nil){
