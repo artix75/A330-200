@@ -17,7 +17,21 @@ var new = func(layer) {
     #layer.searcher._equals = func(a,b) a.id == b.id;
     return {
         parents: [__self__],
-        _model: layer.map.getPosCoord(),
+        _model: {
+            parents: [geo.Coord],
+            id: 999999,
+            pos: props.globals.getNode('position'),
+            type: 'position',
+            latlon: func(){ 
+                me.pos = props.globals.getNode('position');
+                return [
+                    me.pos.getValue("latitude-deg"),
+                    me.pos.getValue("longitude-deg"),
+                    me.pos.getValue("altitude-ft")
+                ];
+            },
+            equals: func(o){me.id == o.id}
+        }#layer.map.getPosCoord(),
     };
 };
 var del = func;
