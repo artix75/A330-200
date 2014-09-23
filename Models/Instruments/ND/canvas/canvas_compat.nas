@@ -340,15 +340,15 @@ SymbolLayer.new = func(group, controller=nil) {
     return m;
 };
 
-var canvas.SingleSymbolLayer = {
+canvas.SingleSymbolLayer = {
     parents: [SymbolLayer]
 };
 
-var canvas.MultiSymbolLayer = {
+canvas.MultiSymbolLayer = {
     parents: [SymbolLayer]
 };
 
-var canvas.NavaidSymbolLayer = {
+canvas.NavaidSymbolLayer = {
     parents: [canvas.MultiSymbolLayer]
 };
 

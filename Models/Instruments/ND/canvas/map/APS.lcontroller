@@ -14,7 +14,8 @@ canvas.SymbolLayer.add(name, {
 # N.B.: if used, this SymbolLayer should be updated every frame
 # by the Map Controller, or as often as the position is changed.
 var new = func(layer) {
-    #layer.searcher._equals = func(a,b) a.id == b.id;
+    if(version < 3.2)
+        layer.searcher._equals = func(a,b) a.id == b.id;
     return {
         parents: [__self__],
         _model: {
@@ -35,20 +36,23 @@ var new = func(layer) {
     };
 };
 var del = func;
-var searchCmdOld = func{
-    return [{
-        parents: [geo.Coord],
-        id: 999999,
-        pos: props.globals.getNode('position'),
-        type: 'position',
-        latlon: func(){ 
-            return [
+if(version < 3.2){
+
+    var searchCmd = func{
+        return [{
+            parents: [geo.Coord],
+            id: 999999,
+            pos: props.globals.getNode('position'),
+            type: 'position',
+            latlon: func(){ 
+                return [
                 me.pos.getValue("latitude-deg"),
                 me.pos.getValue("longitude-deg"),
                 me.pos.getValue("altitude-ft")
             ];
-        },
-        equals: func(o){me.id == o.id}
-    }];
-};
+            },
+            equals: func(o){me.id == o.id}
+        }];
+    };
+}
 

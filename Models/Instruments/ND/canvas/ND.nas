@@ -1,25 +1,27 @@
 ##
 # storage container for all ND instances
 
+var version = getprop('sim/version/flightgear');
+var v = split('.', version);
+version = num(v[0]~'.'~v[1]);
+
 var SymbolLayer = canvas.SymbolLayer;
 var Symbol = canvas.Symbol;
 var Group = canvas.Group;
 var Path = canvas.Path;
 var DotSym = canvas.DotSym;
 var Map = canvas.Map;
-var LineSymbol = canvas.LineSymbol;
-
-var SingleSymbolLayer = canvas.SingleSymbolLayer;
-var MultiSymbolLayer = canvas.MultiSymbolLayer;
-var NavaidSymbolLayer = canvas.NavaidSymbolLayer;
-
-var version = getprop('sim/version/flightgear');
-var v = split('.', version);
-version = num(v[0]~'.'~v[1]);
 
 if(version < 3.2){
     io.include('canvas_compat.nas');
 }
+
+var LineSymbol = canvas.LineSymbol;
+var SingleSymbolLayer = canvas.SingleSymbolLayer;
+var MultiSymbolLayer = canvas.MultiSymbolLayer;
+var NavaidSymbolLayer = canvas.NavaidSymbolLayer;
+
+
 io.include('ND_config.nas');
 io.include('loaders.nas');
 io.include('helpers.nas');
