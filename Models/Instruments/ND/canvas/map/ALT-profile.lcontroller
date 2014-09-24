@@ -7,7 +7,7 @@ var nd_props = canvas.NDConfig.properties;
 var _options = { # default configuration options
     active_node: nd_props.fplan_active,
     vnav_node: nd_props.vnav_node,
-    types: ["tc", "td", "sc", "ed"],
+    types: ["tc", "td", "ec", "ed", "sc", "sd"],
 };
 SymbolLayer.Controller.add(name, __self__);
 SymbolLayer.add(name, {

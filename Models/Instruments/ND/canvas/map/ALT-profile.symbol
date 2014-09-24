@@ -20,7 +20,7 @@ var init = func {
     sym_group.set("z-index",6);
     var grp = sym_group.getElementById(name~'_symbol');
     print('Init: -> '~name);
-    if(name != 'td'){
+    if(name != 'td' and name != 'sd' and name != 'sc'){
         grp.setTranslation(-50,0);
     }
 }
@@ -34,11 +34,18 @@ var draw = func{
     if(grp == nil) return;
     
     #print('Draw: -> ' ~ name);
-    if(name == 'td'){
-        var vnav_armed = me.model.getValue('descent-armed');
+    if(name == 'td' or name == 'sd' or name == 'sc'){
+        var vnav_armed = me.model.getValue('vnav-armed');
         if(vnav_armed)
             grp.setColor(0.06,0.55,1);
         else
             grp.setColor(1,1,1);
+    }
+    elsif(name == 'ed'){
+        var is_cstr = me.model.getValue('alt-cstr');
+        if(is_cstr)
+            grp.setColor(0.68, 0, 0.38);
+        else
+            grp.setColor(0.06,0.55,1);
     }
 }

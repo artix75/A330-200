@@ -14,7 +14,7 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="airbus_sc.svg">
+   sodipodi:docname="airbus_ec.svg">
   <defs
      id="defs2987" />
   <sodipodi:namedview
@@ -24,10 +24,10 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.3"
-     inkscape:cx="-39.763263"
-     inkscape:cy="24.002241"
-     inkscape:current-layer="Layer 1"
+     inkscape:zoom="5.27"
+     inkscape:cx="11.14417"
+     inkscape:cy="15.800695"
+     inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
      inkscape:document-units="px"
@@ -49,14 +49,24 @@
     </rdf:RDF>
   </metadata>
   <g
-     id="Layer 1"
+     id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
-    <path
-       style="stroke:#ffffff;stroke-width:2.07588959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 0.30339278,31.209046 c 44.00763722,0 34.21827422,0 34.21827422,0 l 9.840217,-13.513241 2.733394,9.652315 M 34.291189,18.20861 44.865702,16.790953"
-       id="sc_symbol"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccccc" />
+    <g
+       id="ec_symbol"
+       style="stroke:#af0063;stroke-opacity:1">
+      <path
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0"
+         id="path2993"
+         d="m 2.9285709,34.185715 12.3428571,-12.685716 30.514286,0 -4.8,-7.542856"
+         style="fill:none;stroke:#af0063;stroke-width:2.39999999999999991;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
+      <path
+         style="fill:none;stroke:#af0063;stroke-width:2.40000010000000019px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 45.785714,21.561266 -4.8,7.542856"
+         id="path3094"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+    </g>
   </g>
 </svg>
