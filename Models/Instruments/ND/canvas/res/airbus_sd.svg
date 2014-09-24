@@ -14,7 +14,7 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="airbus_sc.svg">
+   sodipodi:docname="airbus_td.svg">
   <defs
      id="defs2987" />
   <sodipodi:namedview
@@ -25,9 +25,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="4.3"
-     inkscape:cx="-39.763263"
+     inkscape:cx="-8.8330301"
      inkscape:cy="24.002241"
-     inkscape:current-layer="Layer 1"
+     inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
      inkscape:document-units="px"
@@ -53,9 +53,9 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <path
-       style="stroke:#ffffff;stroke-width:2.07588959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 0.30339278,31.209046 c 44.00763722,0 34.21827422,0 34.21827422,0 l 9.840217,-13.513241 2.733394,9.652315 M 34.291189,18.20861 44.865702,16.790953"
-       id="sc_symbol"
+       style="fill:#none;stroke:#ffffff;stroke-width:2.07588959000000006px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 0.30339278,21.60313 c 44.00763722,0 34.21827422,0 34.21827422,0 l 9.840217,13.513241 2.733394,-9.652314 m -12.804089,9.139509 10.574513,1.417657"
+       id="sd_symbol"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccc" />
   </g>

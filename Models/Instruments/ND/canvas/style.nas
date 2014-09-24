@@ -66,8 +66,9 @@ canvas.NDStyles["Airbus"] = {
                 name: 'ALT-profile',
                 isMapStructure: 1,
                 update_on: ['toggle_display_mode','toggle_range',
-                            'toggle_cur_td','toggle_cur_tc',
+                            'toggle_cur_td','toggle_cur_tc','toggle_lvl_off_at',
                             'toggle_cur_ed','toggle_cur_sc','toggle_vnav',
+                            'toggle_cur_sd', 'toggle_cur_ec',
                             'toggle_fplan','toggle_cur_wp','toggle_ap1',
                             'toggle_ap2'],
                 predicate: func(nd, layer) {
@@ -226,7 +227,7 @@ canvas.NDStyles["Airbus"] = {
                 update_on:['toggle_range','toggle_display_mode', 'toggle_fplan', 
                            'toggle_vnav', 'toggle_lnav','toggle_cstr',
                            'toggle_wpt_idx','toggle_route_num',
-                           'toggle_cur_wp','toggle_cur_ed','toggle_cur_sc',
+                           'toggle_cur_wp','toggle_cur_ed','toggle_lvl_off_at',
                            'toggle_dep_rwy','toggle_dest_rwy'],
                 predicate: func(nd, layer) {
                     var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']));

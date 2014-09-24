@@ -9,6 +9,7 @@ var lmodes = flight_modes ~ "lateral/";
 var vmodes = flight_modes ~ "vertical/";
 var athr_modes = flight_modes ~ "athr/";
 var radio = "/flight-management/freq/";
+var actrte = "/autopilot/route-manager/route/";
 
 setprop("/flight-management/text/qnh", "QNH");
 
@@ -999,6 +1000,7 @@ var fmgc_loop = {
         me.flplan_active = getprop("/autopilot/route-manager/active");
         me.agl = getprop("/position/altitude-agl-ft");
         me.current_wp = getprop("autopilot/route-manager/current-wp");
+        me.wp_count = getprop(actrte~"num");
         me.remaining_nm = getprop("autopilot/route-manager/distance-remaining-nm");
         me.airborne = !getprop("/gear/gear[3]/wow");
         me.nav_in_range = getprop('instrumentation/nav/in-range');
@@ -1078,7 +1080,7 @@ var fmgc_loop = {
             
             #setprop(fmgc_val ~ 'vnav-phase', phase); #TODO: seems to be unused
 
-            if (alt_cstr == nil or alt_cstr < 0){
+            if (alt_cstr == nil or alt_cstr <= 0){
                 setprop(fmgc_val ~ 'vnav-target-alt', fcu_alt);
                 follow_alt_cstr = 0;
             } else {
@@ -1583,9 +1585,9 @@ var fmgc_loop = {
             setprop(tdNode ~ "/latitude-deg", topDescent.lat); 
             setprop(tdNode ~ "/longitude-deg", topDescent.lon); 
             if(me.armed_ver_mode == "DES")
-                setprop(tdNode ~ "/descent-armed", 1);
+                setprop(tdNode ~ "/vnav-armed", 1);
             else
-                setprop(tdNode ~ "/descent-armed", 0);
+                setprop(tdNode ~ "/vnav-armed", 0);
         } else {
             var node = props.globals.getNode(tdNode);
             if(node != nil) props.globals.getNode(tdNode).remove(); 
@@ -1664,26 +1666,34 @@ var fmgc_loop = {
     },
     calc_level_off: func {
         var edProp = "/autopilot/route-manager/vnav/ed"; #END OF DESCENT
-        var scProp = "/autopilot/route-manager/vnav/sc"; #STEP CLIMB
+        var ecProp = "/autopilot/route-manager/vnav/ec"; #END OF CLIMB
+        var scProp = "/autopilot/route-manager/vnav/sc"; #START OF CLIMB
+        var sdProp = "/autopilot/route-manager/vnav/sd"; #START OF DESCENT
         var remnode = func(ndpath){
             var node = props.globals.getNode(ndpath);
             if(node != nil) node.remove();
         };
-        if (getprop("/autopilot/route-manager/active") and !getprop("/gear/gear[3]/wow")){
+        var trgt_alt = 0;
+        var fcu_alt = me.fcu_alt;
+        if (me.flplan_active and me.airborne and me.ver_mode != 'ils'){
+            var f= flightplan(); 
             var vs_fpm = me.vs_fpm;
             if(vs_fpm == 0) return;
-            var trgt_alt = 0;
             var vnav_actv = 0;
             if(me.ver_ctrl == "fmgc"){
                 trgt_alt = getprop(fmgc_val ~ 'vnav-target-alt');
                 vnav_actv = 1;
             } else {
-                trgt_alt = me.fcu_alt;
+                trgt_alt = fcu_alt;
             }
             if(trgt_alt == nil){
                 remnode(edProp);
+                remnode(ecProp);
                 remnode(scProp); 
+                remnode(sdProp); 
                 setprop('instrumentation/efis/nd/current-sc', 0);
+                setprop('instrumentation/efis/nd/current-sd', 0);
+                setprop('instrumentation/efis/nd/current-ec', 0);
                 setprop('instrumentation/efis/nd/current-ed', 0);
                 return;
             }
@@ -1695,19 +1705,19 @@ var fmgc_loop = {
             if(altitude > trgt_alt){
                 d = altitude - trgt_alt;
                 prop = 'ed';
-                deact_prop = 'sc';
+                deact_prop = 'ec';
             } else {
                 climbing = 1;
                 var cruise_alt = getprop("autopilot/route-manager/cruise/altitude-ft");
                 if(cruise_alt == trgt_alt){
                     #print('SAME ALT');
-                    remnode(scProp);
-                    if(getprop('instrumentation/efis/nd/current-sc') != 0)
-                        setprop('instrumentation/efis/nd/current-sc', 0);
+                    remnode(ecProp);
+                    if(getprop('instrumentation/efis/nd/current-ec') != 0)
+                        setprop('instrumentation/efis/nd/current-ec', 0);
                     return;
                 }
                 d = trgt_alt - altitude;
-                prop = 'sc';
+                prop = 'ec';
                 deact_prop = 'ed';
             }
             if(d > 100){
@@ -1728,42 +1738,88 @@ var fmgc_loop = {
                 if(cur_lo == nil) cur_lo = 0;
                 if(math.abs(nm - cur_lo) > 0.5){
                     setprop(lo_raw_prop, nm);
-                    var bearing = me.calc_point_bearing(nm);
-                    setprop(node~'/bearing-deg', bearing);
+                    setprop('instrumentation/efis/nd/level-off-at', nm);
                 }
-
-                var f= flightplan(); 
+                
                 #print("TC: " ~ nm);
                 var point = f.pathGeod(0, nm);
 
                 var deact_node = "/autopilot/route-manager/vnav/" ~ deact_prop;
                 setprop(node ~ "/latitude-deg", point.lat); 
                 setprop(node ~ "/longitude-deg", point.lon);
+                if(prop == 'ed')
+                    setprop(node ~ "/alt-cstr", me.follow_alt_cstr);
                 remnode(deact_node); 
             } else {
                 remnode(edProp);
-                remnode(scProp); 
-                if(getprop('instrumentation/efis/nd/current-sc') != 0)
-                    setprop('instrumentation/efis/nd/current-sc', 0);
+                remnode(ecProp); 
+                if(getprop('instrumentation/efis/nd/current-ec') != 0)
+                    setprop('instrumentation/efis/nd/current-ec', 0);
                 if(getprop('instrumentation/efis/nd/current-ed') != 0)
                     setprop('instrumentation/efis/nd/current-ed', 0);
             }
+            if(trgt_alt and trgt_alt != fcu_alt){
+                var cur_wp = me.current_wp;
+                var continue_at = nil;
+                var numwp = me.wp_count;
+                for(i = cur_wp + 1; i < numwp; i = i + 1){
+                    if(i == 1) continue;
+                    var wp = f.getWP(i);
+                    var alt_cstr = wp.alt_cstr;
+                    if(alt_cstr < 0) alt_cstr = 0;
+                    if(climbing){
+                        if((alt_cstr and alt_cstr > trgt_alt) or 
+                           (!alt_cstr and fcu_alt > trgt_alt)){
+                            continue_at = f.getWP(i - 1);
+                            break;
+                        }
+                    } else {
+                        if((alt_cstr and alt_cstr < trgt_alt) or 
+                           (!alt_cstr and fcu_alt < trgt_alt)){
+                            continue_at = f.getWP(i - 1);
+                            break;
+                        }
+                    }
+                }
+                if(continue_at != nil){
+                    var cprops = [sdProp, scProp];
+                    #var fl_modes = ['DES', 'CLB'];
+                    var act_prop = cprops[climbing];
+                    var deact_prop = cprops[!climbing];
+                    #var armed = me.armed_ver_mode == fl_modes[climbing];
+                    remnode(deact_prop);
+                    #var cnode = "/autopilot/route-manager/vnav/" ~ act_prop;
+                    var dnm = continue_at.distance_along_route;
+                    var point = f.pathGeod(0, dnm + 1.2);
+                    setprop(act_prop ~ "/latitude-deg", point.lat); 
+                    setprop(act_prop ~ "/longitude-deg", point.lon);
+                    setprop(act_prop ~ "/vnav-armed", 1);
+                } else {
+                    remnode(scProp);
+                    remnode(sdProp);
+                }
+            }
         } else {
             remnode(edProp);
+            remnode(ecProp); 
+            remnode(sdProp);
             remnode(scProp); 
-            if(getprop('instrumentation/efis/nd/current-sc') != 0)
-                setprop('instrumentation/efis/nd/current-sc', 0);
+            if(getprop('instrumentation/efis/nd/current-ec') != 0)
+                setprop('instrumentation/efis/nd/current-ec', 0);
             if(getprop('instrumentation/efis/nd/current-ed') != 0)
                 setprop('instrumentation/efis/nd/current-ed', 0);
+            if(getprop('instrumentation/efis/nd/current-sc') != 0)
+                setprop('instrumentation/efis/nd/current-sc', 0);
+            if(getprop('instrumentation/efis/nd/current-sd') != 0)
+                setprop('instrumentation/efis/nd/current-sd', 0);
         }
 
     },
     calc_decel_point: func{
         var decelNode = "/instrumentation/nd/symbols/decel";
         if (getprop("/autopilot/route-manager/active")){
-            var actrte = "/autopilot/route-manager/route/";
             var f= flightplan(); 
-            var numwp = getprop(actrte~"num");
+            var numwp = me.wp_count;
             var i = 0;
             var first_approach_wp = nil;
             for(i = 0; i < numwp; i = i + 1){

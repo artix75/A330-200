@@ -55,25 +55,33 @@
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
 		 			
 					var input = getprop("/instrumentation/mcdu/input");
+					var comps = split('/', input);
+					var spd = nil;
 					
-					var spd = substr(input, 0, 3);
-					
-					var alt = substr(input, 4, 5);
-					
+					var alt = nil;
+					var ncomps = size(comps);
+                    if(ncomps == 1){
+                        alt = num(comps[0]);
+                    } 
+                    elsif(ncomps == 2){
+                        spd = num(comps[0]);
+                        alt = num(comps[1]);
+                    }
 					if (first == 0) {
 					
 						setprop("/instrumentation/mcdu/input", "ERROR: VER REV NOT POSSIBLE");
 					
 					} else {
-					
-						setprop("autopilot/route-manager/route/wp[" ~ (first - 1) ~ "]/ias-mach", spd);
-					
-						setprop("autopilot/route-manager/route/wp[" ~ (first - 1) ~ "]/altitude-ft", alt);
+					    if(spd != nil)
+						  setprop("autopilot/route-manager/route/wp[" ~ (first - 1) ~ "]/ias-mach", spd);
+                        if(alt != nil)
+						  setprop("autopilot/route-manager/route/wp[" ~ (first - 1) ~ "]/altitude-ft", alt);
                         var fp = flightplan();
                         var wp = fp.getWP(first - 1);
-                        wp.setSpeed(spd, 'at');
-                    
-                        wp.setAltitude(alt, 'at');
+                        if(spd != nil)
+                            wp.setSpeed(spd, 'at');
+                        if(alt != nil)
+                            wp.setAltitude(alt, 'at');
 					
 					}
 					
@@ -100,24 +108,34 @@
 		 			
 					var input = getprop("/instrumentation/mcdu/input");
 					
-					var spd = substr(input, 0, 3);
-					
-					var alt = substr(input, 4, 5);
+                    var comps = split('/', input);
+                    var spd = nil;
+
+                    var alt = nil;
+                    var ncomps = size(comps);
+                    if(ncomps == 1){
+                        alt = num(comps[0]);
+                    } 
+                    elsif(ncomps == 2){
+                        spd = num(comps[0]);
+                        alt = num(comps[1]);
+                    }
 					
 					if (first == 0) {
 					
 						setprop("/instrumentation/mcdu/input", "ERROR: VER REV NOT POSSIBLE");
 					
 					} else {
-					
-						setprop("autopilot/route-manager/route/wp[" ~ first ~ "]/ias-mach", spd);
-					
-						setprop("autopilot/route-manager/route/wp[" ~ first ~ "]/altitude-ft", alt);
+                        if(spd != nil)
+						  setprop("autopilot/route-manager/route/wp[" ~ first ~ "]/ias-mach", spd);
+                        if(alt != nil)
+						  setprop("autopilot/route-manager/route/wp[" ~ first ~ "]/altitude-ft", alt);
                         var fp = flightplan();
                         var wp = fp.getWP(first);
-                        wp.setSpeed(spd, 'at');
-
-                        wp.setAltitude(alt, 'at');
+                        if(spd != nil)
+                            wp.setSpeed(spd, 'at');
+                        if(alt != nil)
+                            wp.setAltitude(alt, 'at');
 					
 					}
 					
@@ -144,31 +162,42 @@
 		 			
 					var input = getprop("/instrumentation/mcdu/input");
 					
-					var spd = substr(input, 0, 3);
-					
-					var alt = substr(input, 4, 5);
+                    var comps = split('/', input);
+                    var spd = nil;
+
+                    var alt = nil;
+                    var ncomps = size(comps);
+                    if(ncomps == 1){
+                        alt = num(comps[0]);
+                    } 
+                    elsif(ncomps == 2){
+                        spd = num(comps[0]);
+                        alt = num(comps[1]);
+                    }
 					
 					if (first == 0) {
-					
-						setprop("autopilot/route-manager/route/wp[1]/ias-mach", spd);
-					
-						setprop("autopilot/route-manager/route/wp[1]/altitude-ft", alt);
+                        if(spd != nil)
+						  setprop("autopilot/route-manager/route/wp[1]/ias-mach", spd);
+                        if(alt != nil)
+						  setprop("autopilot/route-manager/route/wp[1]/altitude-ft", alt);
                         var fp = flightplan();
                         var wp = fp.getWP(1);
-                        wp.setSpeed(spd, 'at');
-
-                        wp.setAltitude(alt, 'at');
+                        if(spd != nil)
+                            wp.setSpeed(spd, 'at');
+                        if(alt != nil)
+                            wp.setAltitude(alt, 'at');
 					
 					} else {
-					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/ias-mach", spd);
-					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/altitude-ft", alt);
+                        if(spd != nil)
+						  setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/ias-mach", spd);
+                        if(alt != nil)
+                            setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/altitude-ft", alt);
                         var fp = flightplan();
                         var wp = fp.getWP(first + 1);
-                        wp.setSpeed(spd, 'at');
-
-                        wp.setAltitude(alt, 'at');
+                        if(spd != nil)
+                            wp.setSpeed(spd, 'at');
+                        if(alt != nil)
+                            wp.setAltitude(alt, 'at');
 					
 					}
 					
@@ -197,31 +226,42 @@
 		 			
 					var input = getprop("/instrumentation/mcdu/input");
 					
-					var spd = substr(input, 0, 3);
-					
-					var alt = substr(input, 4, 5);
+                    var comps = split('/', input);
+                    var spd = nil;
+
+                    var alt = nil;
+                    var ncomps = size(comps);
+                    if(ncomps == 1){
+                        alt = num(comps[0]);
+                    } 
+                    elsif(ncomps == 2){
+                        spd = num(comps[0]);
+                        alt = num(comps[1]);
+                    }
 					
 					if (first == 0) {
-					
-						setprop("autopilot/route-manager/route/wp[2]/ias-mach", spd);
-					
-						setprop("autopilot/route-manager/route/wp[2]/altitude-ft", alt);
+                        if(spd != nil)
+                            setprop("autopilot/route-manager/route/wp[2]/ias-mach", spd);
+                        if(alt != nil)
+                            setprop("autopilot/route-manager/route/wp[2]/altitude-ft", alt);
                         var fp = flightplan();
                         var wp = fp.getWP(2);
-                        wp.setSpeed(spd, 'at');
-
-                        wp.setAltitude(alt, 'at');
+                        if(spd != nil)
+                            wp.setSpeed(spd, 'at');
+                        if(alt != nil)
+                            wp.setAltitude(alt, 'at');
 					
 					} else {
-					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/ias-mach", spd);
-					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/altitude-ft", alt);
+                        if(spd != nil)
+                            setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/ias-mach", spd);
+                        if(alt != nil)
+                            setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/altitude-ft", alt);
                         var fp = flightplan();
                         var wp = fp.getWP(first + 2);
-                        wp.setSpeed(spd, 'at');
-
-                        wp.setAltitude(alt, 'at');
+                        if(spd != nil)
+                            wp.setSpeed(spd, 'at');
+                        if(alt != nil)
+                            wp.setAltitude(alt, 'at');
 					
 					}
 					
@@ -250,31 +290,42 @@
 		 			
 					var input = getprop("/instrumentation/mcdu/input");
 					
-					var spd = substr(input, 0, 3);
-					
-					var alt = substr(input, 4, 5);
+                    var comps = split('/', input);
+                    var spd = nil;
+
+                    var alt = nil;
+                    var ncomps = size(comps);
+                    if(ncomps == 1){
+                        alt = num(comps[0]);
+                    } 
+                    elsif(ncomps == 2){
+                        spd = num(comps[0]);
+                        alt = num(comps[1]);
+                    }
 					
 					if (first == 0) {
-					
-						setprop("autopilot/route-manager/route/wp[3]/ias-mach", spd);
-					
-						setprop("autopilot/route-manager/route/wp[3]/altitude-ft", alt);
+                        if(spd != nil)
+                            setprop("autopilot/route-manager/route/wp[3]/ias-mach", spd);
+                        if(alt != nil)
+                            setprop("autopilot/route-manager/route/wp[3]/altitude-ft", alt);
                         var fp = flightplan();
                         var wp = fp.getWP(3);
-                        wp.setSpeed(spd, 'at');
-
-                        wp.setAltitude(alt, 'at');
+                        if(spd != nil)
+                            wp.setSpeed(spd, 'at');
+                        if(alt != nil)
+                            wp.setAltitude(alt, 'at');
 					
 					} else {
-					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/ias-mach", spd);
-					
-						setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/altitude-ft", alt);
+                        if(spd != nil)
+                            setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/ias-mach", spd);
+                        if(alt != nil)
+                            setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/altitude-ft", alt);
                         var fp = flightplan();
                         var wp = fp.getWP(first + 3);
-                        wp.setSpeed(spd, 'at');
-
-                        wp.setAltitude(alt, 'at');
+                        if(spd != nil)
+                            wp.setSpeed(spd, 'at');
+                        if(alt != nil)
+                            wp.setAltitude(alt, 'at');
 					
 					}
 					
