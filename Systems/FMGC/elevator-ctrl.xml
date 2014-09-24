@@ -232,7 +232,7 @@
 
     <pid-controller>
         <name>FMGC Speed hold (vary pitch) Stage #1</name>
-        <debug>true</debug>
+        <debug>false</debug>
         <enable>
             <condition>
                 <and>
@@ -324,7 +324,7 @@
 
     <pid-controller>
         <name>FMGC MAch hold (vary pitch) Stage #1</name>
-        <debug>true</debug>
+        <debug>false</debug>
         <enable>
             <condition>
                 <and>

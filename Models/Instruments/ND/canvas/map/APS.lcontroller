@@ -14,8 +14,10 @@ canvas.SymbolLayer.add(name, {
 # N.B.: if used, this SymbolLayer should be updated every frame
 # by the Map Controller, or as often as the position is changed.
 var new = func(layer) {
-    if(version < 3.2)
+    if(version < 3.2){
         layer.searcher._equals = func(a,b) a.id == b.id;
+    }
+        
     return {
         parents: [__self__],
         _model: {
