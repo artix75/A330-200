@@ -244,7 +244,7 @@ var fmgc_loop = {
                     var apt_info = airportinfo(dest_airport);
                     var rwy = apt_info.runways[dest_rwy];
                     var rwy_ils = nil;
-                    if(rwy)
+                    if(rwy != nil)
                         rwy_ils = rwy.ils;
                     if(rwy_ils != nil){
                         var frq = rwy_ils.frequency / 100;
