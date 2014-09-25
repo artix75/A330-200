@@ -10,3 +10,7 @@ var isActive = func(model) LayerController.a_instance.isActive(model);
 var query_range = func()
 	die(name~".scontroller.query_range /MUST/ be provided by implementation");
 
+var getpos = func(model){
+    [model.lat, model.lon];
+}
+
