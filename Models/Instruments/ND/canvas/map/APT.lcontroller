@@ -35,7 +35,7 @@ var del = func() {
     foreach (var l; me.listeners)
         removelistener(l);
 };
- 
+
 var searchCmd = func {
     #print("Running query:", name);
     var range = me.map.getRange();

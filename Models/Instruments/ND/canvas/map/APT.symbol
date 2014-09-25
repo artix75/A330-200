@@ -12,7 +12,7 @@ var text_apt = nil;
 # add the draw routine from airports-nd.draw here
 var init = func(){
         
-    var apt_name = me.model.name;
+    var apt_name = me.model.id;#me.model.name;
     var apt_grp = me.element.createChild("group", apt_name);
 
     SymbolPainter.drawAirport(apt_grp);
@@ -23,8 +23,7 @@ var init = func(){
     .setFont("LiberationFonts/LiberationSans-Regular.ttf")
     .setColor(1,1,1)
     .setFontSize(28);
-    apt_grp.setGeoPosition(lat, lon)
-    .set("z-index",1); # FIXME: this needs to be configurable!!
+    apt_grp.set("z-index",1); # FIXME: this needs to be configurable!!
     #}
 
     # draw routines should always return their canvas group to the caller for further processing
