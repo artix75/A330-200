@@ -219,7 +219,10 @@ var fmgc_loop = {
                                      me.autotune.rwy != dep_rwy);
                     if(dist < 10 and not_tuned){
                         var apt_info = airportinfo(dep_airport);
-                        var rwy_ils = apt_info.runways[dep_rwy].ils;
+                        var rwy = apt_info.runways[dep_rwy];
+                        var rwy_ils = nil;
+                        if(rwy != nil)
+                            rwy_ils = rwy.ils;
                         if(rwy_ils != nil){
                             var frq = rwy_ils.frequency / 100;
                             var crs = rwy_ils.course;
@@ -239,7 +242,10 @@ var fmgc_loop = {
                                  me.autotune.rwy != dest_rwy);
                 if(not_tuned){
                     var apt_info = airportinfo(dest_airport);
-                    var rwy_ils = apt_info.runways[dest_rwy].ils;
+                    var rwy = apt_info.runways[dest_rwy];
+                    var rwy_ils = nil;
+                    if(rwy)
+                        rwy_ils = rwy.ils;
                     if(rwy_ils != nil){
                         var frq = rwy_ils.frequency / 100;
                         var crs = rwy_ils.course;
