@@ -16,12 +16,12 @@ var autoland = {
 		
 		var main_wow = getprop("/gear/gear[3]/wow");
         
-        print("Autoland phase check");
+        #print("Autoland phase check");
 		
 		# LAND > FLARE1 > FLARE2 > MAIN_TOUCH (SLOWLY REDUCE PITCH) > NOSE TOUCH (RETARD)
 		
 		if ((getprop("/flight-management/control/a-thrust") != "off") and (getprop("/flight-management/control/spd-ctrl") == "fmgc") and (getprop("/flight-management/spd-manager/approach/mode") == "MANAGED (AUTO)")) {
-		    print("Autoland speed management");
+		    #print("Autoland speed management");
             if (nose_wow or main_wow) { 
                 print("Autoland: Touch down, retard...");
 		
@@ -32,7 +32,7 @@ var autoland = {
 				#me.slow(spd);
 
 			} elsif (agl <= 50) {
-                print("Autoland: AGL <= 50, retard...");
+                #print("Autoland: AGL <= 50, retard...");
 			
 				#setprop("/flight-management/fmgc-values/target-spd", 60);
 				
@@ -48,7 +48,7 @@ var autoland = {
 				##setprop("/controls/engines/engine[1]/throttle", throttle_r / 2);
 
 			} elsif (agl <= 100) {
-                print("Autoland: AGL <= 100, regulating speed and activating autoland");
+                #print("Autoland: AGL <= 100, regulating speed and activating autoland");
 
 				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 15);
 			    setprop("/autoland/active", 1);
@@ -56,7 +56,7 @@ var autoland = {
                 
 		
 			} else {
-                print("Autoland: regulating speed and activating autoland");
+                #print("Autoland: regulating speed and activating autoland");
 				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs));
                 setprop("/autoland/retard", 0);
 			}
@@ -64,7 +64,7 @@ var autoland = {
 		}
 		
 		if (getprop("/velocities/airspeed-kt") <= 70) {
-            print("Autoland: IAS <= 70, deactivating autoland and AP");
+            #print("Autoland: IAS <= 70, deactivating autoland and AP");
 			setprop("/autoland/active", 0);
 			
 			setprop("/autoland/phase", "disengaged");
@@ -74,7 +74,7 @@ var autoland = {
 			setprop("/flight-management/control/ap2-master", "off");
 		
 		} elsif (nose_wow) {
-            print("Autoland: nose touch down, deactivating ATHR, activating rollout");
+            #print("Autoland: nose touch down, deactivating ATHR, activating rollout");
 			setprop("/flight-management/control/a-thrust", "off");
 			
 			setprop("/autoland/phase", "rollout");
@@ -82,14 +82,14 @@ var autoland = {
 			setprop("/autoland/rudder", 1);
 		
 		} elsif (main_wow) {
-            print("Autoland: main touch down, target-vs -10 and rollout");
+            #print("Autoland: main touch down, target-vs -10 and rollout");
             setprop("/servo-control/target-vs", -10);
 			setprop("/autoland/rudder", 1);
 			
 			setprop("/autoland/phase", "rollout");
 		
 		} elsif (agl <= 25) {
-            print("Autoland: AGL <= 25, flare2");
+            #print("Autoland: AGL <= 25, flare2");
 		
 			me.flare2(agl);
 			
@@ -98,7 +98,7 @@ var autoland = {
 			setprop("/autoland/phase", "flare");
 		
 		} elsif (agl <= 50) {
-            print("Autoland: AGL <= 50, flare1");
+            #print("Autoland: AGL <= 50, flare1");
 		
 			me.flare1(agl);
 
@@ -111,12 +111,12 @@ var autoland = {
 		# Early Descent Approach Scenario as Proposed by Geir
 		
 		elsif (agl < getprop("/autoland/early-descent")) {
-            print("Autoland: early descent");
+            #print("Autoland: early descent");
 		
 			me.early_descent(spd);
 		
 		} else {
-            print("Autoland: no rudder");
+            #print("Autoland: no rudder");
 		
 			setprop("/autoland/phase", "land");
 			

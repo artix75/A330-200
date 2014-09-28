@@ -33,7 +33,10 @@ var fmgc_loop = {
         me.top_desc = -9999;
     
         me.rwy_mode = 0;
-
+        me.ref_crz_alt = 0;
+        me.crz_fl = 0;
+        me.fcu_alt = 0;
+    
         setprop("/flight-management/current-wp", me.current_wp);
         setprop("/flight-management/control/qnh-mode", 'inhg');
 
@@ -413,7 +416,7 @@ var fmgc_loop = {
             } 
             elsif(me.true_vertical_phase == 'DES'){
                 min = -15;
-                max = -0.2;
+                max = -0.05;#-0.2;
                 var thr = 0;
             };
             if(apEngaged or fdEngaged){
@@ -652,6 +655,7 @@ var fmgc_loop = {
         } # End of AP1 Master Check
 
         # FMGC CONTROL MODE ====================================================
+        var remaining = me.remaining_nm;
         var toga_mode = (me.throttle == 1 and me.speed_with_pitch);
         if ((me.spd_ctrl == "fmgc") and (me.a_thr == "eng" or toga_mode)) {
 
@@ -670,6 +674,7 @@ var fmgc_loop = {
 
                 setprop(fmgc~ "a-thr/ias", 0);
                 setprop(fmgc~ "a-thr/mach", 0);
+                setprop(fmgc~ "spd-mode", 'ias');
                 var spd = getprop(fmgc_val~ "target-spd");
 
                 if (spd != nil) {
@@ -679,9 +684,11 @@ var fmgc_loop = {
                 }
 
             } else {
+                var srs = 0;
                 if(vmode == 'SRS' and me.srs_spd > 0){
                     var spd = me.srs_spd;
                     setprop(fmgc_val~ "target-spd", spd);
+                    srs = 1;
                 }
                 elsif (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and !app_phase and flplan_active and !toga_mode) {
 
@@ -690,7 +697,7 @@ var fmgc_loop = {
                         spd = getprop("/autopilot/route-manager/route/wp[" ~ cur_wp ~ "]/ias-mach");
 
                     if (spd == nil or spd == 0) {
-                        var remaining = me.remaining_nm;
+                        
                         if(remaining < decel_point){
                             spd = 180;
                         } else {
@@ -720,8 +727,8 @@ var fmgc_loop = {
                 }
 
                 # Performance and Automatic Calculated speeds from the PERF page on the mCDU are managed separately
-
-                manage_speeds();
+                if(!srs)
+                    manage_speeds(me.descent_started, (remaining < decel_point), me.vmax);
 
                 setprop(fmgc~ "a-thr/ias", 0);
                 setprop(fmgc~ "a-thr/mach", 0);
@@ -745,12 +752,13 @@ var fmgc_loop = {
                     #TODO: change SPEED/MACH indication on PFD
                     setprop(fmgc~ "fmgc/ias", 0);
                     setprop(fmgc~ "fmgc/mach", 1);
-
+                    setprop(fmgc~ "spd-mode", 'mach');
                 } else {
 
                     setprop(fmgc~ "fmgc/ias", 1);
                     setprop(fmgc~ "fmgc/mach", 0);
                     setprop("instrumentation/pfd/target-spd", spd);
+                    setprop(fmgc~ "spd-mode", 'ias');
                 }
 
             }
@@ -1071,8 +1079,10 @@ var fmgc_loop = {
             #    phase = 'APP';
             #}
             if(remaining <= me.top_desc){
-                setprop("/flight-management/phase", "DES");
-                phase = 'DES';
+                if(me.ver_mode != 'ils'){
+                    setprop("/flight-management/phase", "DES");
+                    phase = 'DES';
+                }
                 after_td = 1;
             }
             me.phase = phase;
@@ -1125,7 +1135,7 @@ var fmgc_loop = {
             vmode_main = 'ALT';
             me.capture_alt_at = 0;
         } else {
-            if(phase == 'CRZ'){
+            if(crz_alt and phase == 'CRZ'){
                 if((crz_alt - trgt_alt) > 10)
                     vmode_main = 'DES';
                 else{
@@ -1165,6 +1175,7 @@ var fmgc_loop = {
                     else {
                         if(raw_alt_diff < -10)
                             vmode = 'DES';
+                        if(vmode == '') vmode = me.true_vertical_phase;
                         vmode = 'OP '~vmode;
                     } 
                 }
@@ -1486,6 +1497,9 @@ var fmgc_loop = {
 
         var phase = getprop("/flight-management/phase");
         var ias = me.ias;
+        var crz_fl = me.crz_fl;
+        var fcu_alt = me.fcu_alt;
+        var alt = me.altitude;
 
         if ((phase == "T/O") and (!getprop("/gear/gear[3]/wow") and ias > 70)) {
 
@@ -1493,23 +1507,21 @@ var fmgc_loop = {
 
         } elsif (phase == "CLB") {
 
-            var crz_fl = me.crz_fl;
-
+            
             if (crz_fl != 0) {
 
-                if (getprop("/position/altitude-ft") >= ((crz_fl * 100) - 500))
+                if (alt >= ((crz_fl * 100) - 500))
                     setprop("/flight-management/phase", "CRZ");
 
             } else {
-
-                if (getprop("/position/altitude-ft") > 26000)
+                if (alt > 26000 and alt >= (fcu_alt - 500)){
                     setprop("/flight-management/phase", "CRZ");
-
+                    me.ref_crz_alt = alt;
+                }
             }
 
         } elsif (phase == "CRZ") {
 
-            var crz_fl = getprop("/flight-management/crz_fl");
 
             if (crz_fl != 0) {
 
@@ -1517,8 +1529,9 @@ var fmgc_loop = {
                     setprop("/flight-management/phase", "DES");
 
             } else {
-
-                if (getprop("/position/altitude-ft") < 26000)
+                var ref_alt = me.ref_crz_alt;
+                if(ref_alt) ref_alt = 26000;
+                if (getprop("/position/altitude-ft") < ref_alt)
                     setprop("/flight-management/phase", "DES");
 
             }
