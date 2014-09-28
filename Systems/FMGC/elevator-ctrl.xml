@@ -3,6 +3,15 @@
 <!-- Airbus A320neo Elevator Control -->
 
 <PropertyList>
+    
+    <predict-simple>
+        <name>mach speed in 5 seconds predictor</name>
+        <debug>false</debug>
+        <input>/velocities/mach</input>
+        <output>autopilot/internal/lookahead-5-sec-mach</output>
+        <seconds>5.0</seconds>
+        <filter-gain>0.0</filter-gain>
+    </predict-simple>
 
 	<pid-controller>
 		<name>FCU/AP Elevator Control</name>
@@ -295,7 +304,7 @@
             </condition>
         </enable>
         <input>
-            <prop>/velocities/mach</prop>
+            <prop>/autopilot/internal/lookahead-5-sec-mach</prop>
         </input>
         <reference>
             <prop>/flight-management/fcu-values/mach</prop>
@@ -304,12 +313,12 @@
             <prop>/autopilot/settings/target-pitch-deg</prop>
         </output>
         <config>
-            <Kp>-0.5</Kp>       <!-- proportional gain -->
+            <Kp>-40</Kp>       <!-- proportional gain -->
             <beta>1.0</beta>    <!-- input value weighing factor -->
             <alpha>0.1</alpha>  <!-- low pass filter weighing factor -->
             <gamma>0.0</gamma>  <!-- input value weighing factor for -->
             <!-- unfiltered derivative error -->
-            <Ti>40.0</Ti>        <!-- integrator time -->
+            <Ti>60.0</Ti>        <!-- integrator time -->
             <Td>0.00001</Td>    <!-- derivator time -->
             <u_min>
                 <property>/flight-management/settings/spd-pitch-min</property>
@@ -350,12 +359,12 @@
             <prop>/autopilot/settings/target-pitch-deg</prop>
         </output>
         <config>
-            <Kp>-0.5</Kp>       <!-- proportional gain -->
+            <Kp>-40</Kp>       <!-- proportional gain -->
             <beta>1.0</beta>    <!-- input value weighing factor -->
             <alpha>0.1</alpha>  <!-- low pass filter weighing factor -->
             <gamma>0.0</gamma>  <!-- input value weighing factor for -->
             <!-- unfiltered derivative error -->
-            <Ti>40.0</Ti>        <!-- integrator time -->
+            <Ti>60.0</Ti>        <!-- integrator time -->
             <Td>0.00001</Td>    <!-- derivator time -->
             <u_min>
                 <property>/flight-management/settings/spd-pitch-min</property>
