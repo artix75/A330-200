@@ -1059,6 +1059,11 @@
 			<x-center type="float">0.5</x-center>
 			<y-center type="float">0.5</y-center>
 		</nd>
+        <texts>
+            <ap-status type="string"></ap-status>
+            <fd-status type="string">1 FD 2</fd-status>
+            <athr-status type="string">ATHR</athr-status>
+        </texts>
 
 	</instrumentation>
 
