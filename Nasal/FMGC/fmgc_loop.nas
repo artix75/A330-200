@@ -1286,7 +1286,8 @@ var fmgc_loop = {
             # Reverses to VS/FPA mode if there's contrast
             vmode_sfx = substr(me.active_ver_mode, -3, 3);
             var clbdes = (vmode_sfx == 'CLB' or vmode_sfx == 'DES');
-            if(clbdes and vmode_sfx != me.true_vertical_phase){
+            var tvp = me.true_vertical_phase;
+            if(clbdes and vmode_sfx != tvp and tvp != ''){
                 me.vsfpa_mode = 1;
                 setprop(fmgc~'vsfpa-mode', 1);
                 setprop(fmgc~ "ver-ctrl", "man-set");
