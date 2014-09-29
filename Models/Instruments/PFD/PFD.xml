@@ -221,10 +221,11 @@
 		<type>select</type>
 		<object-name>ap1_</object-name>
 		<condition>
-			<equals>
+			<!--equals>
 				<property>/flight-management/control/ap1-master</property>
 				<value>eng</value>
-			</equals>
+			</equals-->
+            <property>/instrumentation/pfd-old/enabled</property>
 		</condition>
 	</animation>
 	
@@ -232,10 +233,11 @@
 		<type>select</type>
 		<object-name>ap2_</object-name>
 		<condition>
-			<equals>
+			<!--equals>
 				<property>/flight-management/control/ap2-master</property>
 				<value>eng</value>
-			</equals>
+			</equals-->
+            <property>/instrumentation/pfd-old/enabled</property>
 		</condition>
 	</animation>
 	
@@ -243,7 +245,7 @@
 		<type>select</type>
 		<object-name>ap</object-name>
 		<condition>
-		<or>
+		<!--or>
 			<equals>
 				<property>/flight-management/control/ap1-master</property>
 				<value>eng</value>
@@ -252,7 +254,8 @@
 				<property>/flight-management/control/ap2-master</property>
 				<value>eng</value>
 			</equals>
-		</or>
+		</or-->
+            <property>/instrumentation/pfd-old/enabled</property>
 		</condition>
 	</animation>
 	
@@ -260,7 +263,7 @@
 	
 	<animation>
 		<type>select</type>
-		<object-name>fd</object-name>
+		<!--object-name>fd</object-name-->
 		<object-name>fd_roll</object-name>
 		<condition>
 			<property>/flight-management/control/fd</property>
@@ -289,10 +292,12 @@
 		<type>select</type>
 		<object-name>a-thr_</object-name>
 		<condition>
-			<equals>
+			<!--equals>
 				<property>/flight-management/control/a-thrust</property>
 				<value>eng</value>
-			</equals>
+                
+			</equals-->
+            <property>/instrumentation/pfd-old/enabled</property>
 		</condition>
 	</animation>
 	
@@ -1184,6 +1189,30 @@
     </text>
     
     <text>
+        <name>ver-armed-fmgc</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0206226</y-m>
+            <z-m>0.0605781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/vertical/armed</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
         <name>lat-active-mode</name>
         <offsets>
             <x-m>0.00091828</x-m>
@@ -1232,10 +1261,58 @@
     </text>
     
     <text>
-        <name>ver-armed-fmgc</name>
+        <name>ils-cat</name>
         <offsets>
             <x-m>0.00091828</x-m>
-            <y-m>-0.0206226</y-m>
+            <y-m>0.0406226</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/freq/ils-cat</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>ap-engaged</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0656226</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/ap-status</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>fd-engaged</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0656226</y-m>
             <z-m>0.0605781</z-m>
         </offsets>
         <alignment>center-center</alignment>
@@ -1244,7 +1321,55 @@
         <format type="string">%s</format>
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_medium.txf</font>
-        <property>/flight-management/flight-modes/vertical/armed</property>
+        <property>/instrumentation/texts/fd-status</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>athr-armed</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0656226</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/athr-status</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>athr-engaged</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0656226</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/athr-status</property>
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
@@ -1635,6 +1760,7 @@
         <object-name>athr-armed-mode</object-name>
         <object-name>ver-armed-mode</object-name>
         <object-name>lat-armed-mode</object-name>
+        <object-name>athr-armed</object-name>
         <diffuse>
             <red>0.06</red>
             <green>0.55</green>
@@ -1691,6 +1817,10 @@
         <object-name>athr-armed-white</object-name>
         <object-name>fma-message-white</object-name>
         <object-name>fma-message-box-white</object-name>
+        <object-name>athr-engaged</object-name>
+        <object-name>fd-engaged</object-name>
+        <object-name>ap-engaged</object-name>
+        <object-name>ils-cat</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>
@@ -1783,6 +1913,61 @@
         </condition>
     </animation> 
     
+    <animation>
+        <type>select</type>
+        <object-name>ap-engaged</object-name>
+        <condition>
+            <or>
+                <equals>
+                    <property>/flight-management/control/ap1-master</property>
+                    <value>eng</value>
+                </equals>
+                <equals>
+                    <property>/flight-management/control/ap2-master</property>
+                    <value>eng</value>
+                </equals>           
+            </or>
+        </condition>
+    </animation> 
+    
+    <animation>
+        <type>select</type>
+        <object-name>fd-engaged</object-name>
+        <condition>
+            <property>/flight-management/control/fd</property>
+        </condition>
+    </animation> 
+    
+    <animation>
+        <type>select</type>
+        <object-name>athr-armed</object-name>
+        <condition>
+            <and>
+                <not>
+                    <equals>
+                        <property>/flight-management/control/a-thrust</property>
+                        <value>eng</value>
+                    </equals>
+                </not>
+                <equals>
+                    <property>controls/engines/engine/throttle</property>
+                    <value>1</value>
+                </equals>
+            </and>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>athr-engaged</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/control/a-thrust</property>
+                <value>eng</value>
+
+            </equals>
+        </condition>
+    </animation> 
 
 	<animation>
 		<type>select</type>

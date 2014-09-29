@@ -123,6 +123,7 @@ var fmgc_loop = {
         setprop(fmfd ~ "pitch-fpa", 0);
         setprop(fmfd ~ "pitch-gs", 0);
         setprop('instrumentation/pfd/fd_pitch', 0);
+        setprop(radio~ 'ils-cat', '');
     
         me.descent_started = 0;
         me.decel_point = 0;
@@ -1990,6 +1991,17 @@ var fmgc_loop = {
 
 };
 
+var update_ap_fma_msg = func(){
+    var ap1 = fmgc~ 'ap1-master';
+    var ap2 = fmgc~ 'ap2-master';
+    var msg = 'AP ';
+    if(getprop(ap1) == 'eng')
+        msg ~= '1';
+    if(getprop(ap2) == 'eng')
+        msg ~= '2';
+    setprop('/instrumentation/texts/ap-status', msg);
+};
+
 setlistener("sim/signals/fdm-initialized", func{
     fmgc_loop.init();
     print("Flight Management and Guidance Computer Initialized");
@@ -2097,3 +2109,35 @@ setlistener(fmgc~ "ver-ctrl", func(){
     if(lat_ctrl == 'man-set' and lat_mode != 'nav1' and ver_ctrl == 'fmgc')
         setprop(fmgc~ "ver-ctrl", "man-set");
 });
+
+setlistener(fmgc~ 'ap1-master', func(){
+    update_ap_fma_msg();
+});
+
+setlistener(fmgc~ 'ap2-master', func(){
+    update_ap_fma_msg();
+});
+
+var radio_props = [
+    radio~ "ils-mode",
+    'instrumentation/nav/nav-id',
+    'instrumentation/nav/nav-loc',
+    'instrumentation/nav/in-range'
+];
+
+foreach(var rprop; radio_props){
+    setlistener(rprop, func(){
+        var nav_id = getprop('instrumentation/nav/nav-id');
+        var loc = getprop('instrumentation/nav/nav-loc');
+        var in_range = getprop('instrumentation/nav/in-range');
+        var ils_mode = getprop(radio~ "ils-mode");
+        var cat = nil;
+        if(nav_id != nil and loc and in_range and ils_mode){
+            cat = mcdu.rad_nav.find_ils_cat(nav_id, 1); 
+        }
+        if(cat == nil) cat = '';
+        setprop(radio~ 'ils-cat', cat);
+    },0,0);
+}
+
+
