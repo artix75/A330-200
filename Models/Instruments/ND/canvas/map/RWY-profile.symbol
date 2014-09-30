@@ -78,3 +78,15 @@ var init = func {
 };
 
 var draw = func{}
+
+var update = func() {
+    if (me.controller != nil) {
+        if (!me.controller.update(me, me.model)) return;
+        elsif (!me.controller.isVisible(me.model)) {
+            me.element.hide();
+            return;
+        }
+    } else
+        me.element.show();
+    me.draw();
+}
