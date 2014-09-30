@@ -36,6 +36,7 @@ var fmgc_loop = {
         me.ref_crz_alt = 0;
         me.crz_fl = 0;
         me.fcu_alt = 0;
+        me.use_true_north = 1;
     
         setprop("/flight-management/current-wp", me.current_wp);
         setprop("/flight-management/control/qnh-mode", 'inhg');
@@ -458,14 +459,15 @@ var fmgc_loop = {
             if (me.active_lat_mode == "HDG") {
 
                 # Find Heading Deflection
+                var true_north = me.use_true_north;
 
                 var bug = getprop(fcu~ "hdg");
                 #print("HDG: bug -> " ~ bug);
 
-                var bank = -1 * defl(bug, 20);
+                var bank = -1 * defl(bug, 20, true_north);
                 #print("HDG: bank -> " ~ bank);
 
-                var deflection = defl(bug, 180);
+                var deflection = defl(bug, 180, true_north);
                 #print("HDG: defl -> " ~ deflection);
 
                 if(apEngaged){
@@ -788,6 +790,7 @@ var fmgc_loop = {
 
                         } else {
 
+                            var true_north = me.use_true_north;
                             if (getprop("/flight-management/hold/phase") == 5) {
 
                                 hold_pattern.entry();
@@ -802,9 +805,9 @@ var fmgc_loop = {
 
                             var bug = getprop("/flight-management/hold/fly/course");
 
-                            var bank = -1 * defl(bug, 30);
+                            var bank = -1 * defl(bug, 30, true_north);
 
-                            var deflection = defl(bug, 180);
+                            var deflection = defl(bug, 180, true_north);
 
                             if(apEngaged){
                                 setprop(servo~  "aileron", 1);
@@ -864,7 +867,7 @@ var fmgc_loop = {
 
                         var bug = getprop("/flight-management/procedures/sid/course");
 
-                        var bank = -1 * defl(bug, 25);					
+                        var bank = -1 * defl(bug, 25, me.use_true_north);					
 
                         if(apEngaged){
                             setprop(servo~  "aileron", 1);
@@ -885,7 +888,7 @@ var fmgc_loop = {
 
                         var bug = getprop("/flight-management/procedures/star/course");
 
-                        var bank = -1 * defl(bug, 25);	
+                        var bank = -1 * defl(bug, 25, me.use_true_north);	
                         if(apEngaged){
 
                             setprop(servo~  "aileron", 1);
@@ -906,7 +909,7 @@ var fmgc_loop = {
 
                         var bug = getprop("/flight-management/procedures/iap/course");
 
-                        var bank = -1 * defl(bug, 28);		
+                        var bank = -1 * defl(bug, 28, me.use_true_north);		
 
                         if(apEngaged){
 
