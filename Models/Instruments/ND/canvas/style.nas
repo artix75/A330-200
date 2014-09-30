@@ -691,18 +691,6 @@ canvas.NDStyles["Airbus"] = {
                 },
             },
             {
-                id:'trkline2',
-                impl: {
-                    init: func(nd,symbol),
-                    predicate: func(nd) (nd.get_switch('toggle_display_mode') == 'MAP' and nd.get_switch('toggle_centered') and !nd.get_switch('toggle_lnav')),
-                    is_true: func(nd) {
-                        nd.symbols.trkline2.show();
-                        nd.symbols.trkline2.setRotation((nd.aircraft_source.get_trk_mag()-nd.aircraft_source.get_hdg_mag())*D2R);
-                    },
-                    is_false: func(nd) nd.symbols.trkline2.hide(),
-                },
-            },
-            {
                 id:'trkInd2',
                 impl: {
                     init: func(nd,symbol),
@@ -712,6 +700,18 @@ canvas.NDStyles["Airbus"] = {
                         nd.symbols.trkInd2.setRotation((nd.aircraft_source.get_trk_mag()-nd.aircraft_source.get_hdg_mag())*D2R);
                     },
                     is_false: func(nd) nd.symbols.trkInd2.hide(),
+                },
+            },
+            {
+                id:'trkline2',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) (nd.get_switch('toggle_display_mode') == 'MAP' and nd.get_switch('toggle_centered') and !nd.get_switch('toggle_lnav')),
+                    is_true: func(nd) {
+                        nd.symbols.trkline2.show();
+                        #nd.symbols.trkline2.setRotation((nd.aircraft_source.get_trk_mag()-nd.aircraft_source.get_hdg_mag())*D2R);
+                    },
+                    is_false: func(nd) nd.symbols.trkline2.hide(),
                 },
             },
             {
