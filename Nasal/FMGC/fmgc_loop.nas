@@ -222,7 +222,7 @@ var fmgc_loop = {
                     var dist = getprop("/autopilot/route-manager/route/wp/distance-nm");
                     var not_tuned = (me.autotune.airport != dep_airport or 
                                      me.autotune.rwy != dep_rwy);
-                    if(dist < 10 and not_tuned){
+                    if(dist != nil and dist < 10 and not_tuned){
                         var apt_info = airportinfo(dep_airport);
                         var rwy = apt_info.runways[dep_rwy];
                         var rwy_ils = nil;
