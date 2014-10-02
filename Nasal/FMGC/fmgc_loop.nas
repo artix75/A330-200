@@ -450,6 +450,9 @@ var fmgc_loop = {
             setprop(fmfd ~ "pitch-fpa", 0);
             setprop(fmfd ~ "pitch-gs", 0);
         }
+        var max_rudder = (me.airborne ? 1 : 0.2);
+        setprop('/flight-management/settings/min-rudder', -max_rudder);
+        setprop('/flight-management/settings/max-rudder', max_rudder);
         if (apEngaged or fdEngaged) {
 
             ## LATERAL CONTROL -----------------------------------------------------
@@ -1205,6 +1208,7 @@ var fmgc_loop = {
                 me.active_lat_mode = 'RWY';
             if(me.autoland_phase == 'rollout')
                 me.active_common_mode = 'ROLLOUT'; #TODO: should this be active also without autoland?
+               
             me.armed_ver_mode = vmode;
         } else {
             
@@ -1344,6 +1348,10 @@ var fmgc_loop = {
         if(me.active_common_mode != ''){
             me.active_lat_mode = '';
             me.active_ver_mode = '';
+            if(me.active_common_mode == 'ROLLOUT'){
+                me.armed_lat_mode = '';
+                me.armed_ver_mode = '';
+            }
         }
         if(me.armed_common_mode != ''){
             me.armed_lat_mode = '';
