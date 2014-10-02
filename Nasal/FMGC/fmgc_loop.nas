@@ -7,6 +7,7 @@ var servo = "/servo-control/";
 var flight_modes = "/flight-management/flight-modes/";
 var lmodes = flight_modes ~ "lateral/";
 var vmodes = flight_modes ~ "vertical/";
+var common_modes = flight_modes ~ "common/";
 var athr_modes = flight_modes ~ "athr/";
 var radio = "/flight-management/freq/";
 var actrte = "/autopilot/route-manager/route/";
@@ -17,6 +18,7 @@ setprop(settings~ "gps-accur", "LOW");
 
 setprop("/flight-management/end-flight", 0);
 setprop('/instrumentation/texts/pfd-fmgc-empty-box', '       I');
+setprop('/instrumentation/texts/sep-string', 'I');
 
 var fmgc_loop = {
     init : func {
@@ -374,11 +376,12 @@ var fmgc_loop = {
         #me.ap_engaged = apEngaged;
         #me.fd_engaged = fdEngaged;
         var vmode = me.active_ver_mode;
+        var common_mode = me.active_common_mode;
         var prfx_v = substr(vmode,0,2);
         var app_phase = (vmode == 'G/S' or 
                          vmode == 'G/S*' or 
-                         vmode == 'LAND' or 
-                         vmode == 'FLARE');
+                         common_mode == 'LAND' or 
+                         common_mode == 'FLARE');
         
         var ver_managed = me.ver_managed;
         var vs_fpm = 0;
@@ -489,7 +492,7 @@ var fmgc_loop = {
             } elsif (me.active_lat_mode == "LOC" or 
                      me.active_lat_mode == "LOC*" or 
                      me.active_lat_mode == "RWY" or 
-                     me.active_lat_mode == "ROLLOUT"
+                     me.active_common_mode == "ROLLOUT"
                     ) {
 
                 var nav1_error = getprop("/autopilot/internal/nav1-track-error-deg");
@@ -1039,6 +1042,8 @@ var fmgc_loop = {
         me.armed_lat_mode = '';
         me.active_ver_mode = '';
         me.armed_ver_mode = '';
+        me.active_common_mode = '';
+        me.armed_common_mode = '';
         me.accel_alt = 1500;
         me.srs_spd = 0;
         var after_td = 0;
@@ -1057,7 +1062,6 @@ var fmgc_loop = {
                 lmode = 'LOC';
             }
         }
-        #TODO: support ROLLOUT lat mode
         elsif(me.lat_ctrl == "fmgc"){
             lmode = 'NAV';
         }
@@ -1200,7 +1204,7 @@ var fmgc_loop = {
             if(me.rwy_mode)
                 me.active_lat_mode = 'RWY';
             if(me.autoland_phase == 'rollout')
-                me.active_lat_mode = 'ROLLOUT'; #TODO: should this be active also without autoland?
+                me.active_common_mode = 'ROLLOUT'; #TODO: should this be active also without autoland?
             me.armed_ver_mode = vmode;
         } else {
             
@@ -1210,7 +1214,7 @@ var fmgc_loop = {
                 if(lmode == 'LOC'){
                     if(me.nav_in_range){
                         me.active_lat_mode = lmode;
-                        me.armed_lat_mode = 'ROLLOUT'; #TODO: it seems there's not VOR LOC support
+                        me.armed_lat_mode = '';#ROLLOUT'; #TODO: it seems there's not VOR LOC support
                     } else {
                         me.active_lat_mode = lat_sel_mode;
                         me.armed_lat_mode = lmode;
@@ -1246,17 +1250,17 @@ var fmgc_loop = {
                         var flare = (me.autoland_phase == 'flare');
                         var below_early_des = (me.agl < getprop('autoland/early-descent'));
                         if(flare){
-                            me.active_ver_mode = 'FLARE';
-                            me.armed_ver_mode = '';
+                            me.active_common_mode = 'FLARE';
+                            me.armed_common_mode = 'ROLLOUT';
                         }
                         elsif(below_early_des){
-                            me.active_ver_mode = 'LAND';
-                            me.armed_ver_mode = 'FLARE';
+                            me.active_common_mode = 'LAND';
+                            me.armed_common_mode = 'FLARE';
                         } else {
                             if(math.abs(me.gs_dev) > 0.05)
                                 vmode = 'G/S*';
                             me.active_ver_mode = vmode;
-                            me.armed_ver_mode = 'LAND'; 
+                            me.armed_common_mode = 'LAND'; 
                         }
                     } else {
                         me.active_ver_mode = vmode_main;
@@ -1337,12 +1341,22 @@ var fmgc_loop = {
                     setprop('/flight-management/flight-modes/message', '');
             }
         }
+        if(me.active_common_mode != ''){
+            me.active_lat_mode = '';
+            me.active_ver_mode = '';
+        }
+        if(me.armed_common_mode != ''){
+            me.armed_lat_mode = '';
+            me.armed_ver_mode = '';
+        }
         setprop(athr_modes~'active', me.active_athr_mode);
         setprop(athr_modes~'armed', me.armed_athr_mode);
         setprop(vmodes~'active', me.active_ver_mode);
         setprop(vmodes~'armed', me.armed_ver_mode);
         setprop(lmodes~'active', me.active_lat_mode);
         setprop(lmodes~'armed', me.armed_lat_mode);
+        setprop(common_modes~'active', me.active_common_mode);
+        setprop(common_modes~'armed', me.armed_common_mode);
         #setprop(fmgc ~'fixed-thrust', fixed_thrust);
         me.ver_managed = (me.ver_ctrl == 'fmgc' and 
                           me.flplan_active and 
@@ -2063,7 +2077,7 @@ setlistener(lmodes~'active', func(){
             setprop(box_node, 0);     
         }, 5);
     } else {
-        setprop(box_node, 1);
+        setprop(box_node, 0);
     }
 }, 0, 0);
 
@@ -2079,6 +2093,20 @@ setlistener(vmodes~'active', func(){
         setprop(box_node, 0);
     }
 }, 0, 0);
+
+setlistener(common_modes~'active', func(){
+    var mode = common_modes~'active';
+    var box_node = 'instrumentation/pfd/common-active-box';
+    if(getprop(mode) != ''){
+        setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 5);
+    } else {
+        setprop(box_node, 0);
+    }
+}, 0, 0);
+
 
 setlistener('/flight-management/flight-modes/message', func(){
     var msg = getprop('/flight-management/flight-modes/message');
