@@ -1042,6 +1042,80 @@
         </condition>
     </animation>
     
+    <!-- FMA separators -->
+    
+    <text>
+        <name>upper-black-separator</name>
+        <offsets>
+            <x-m>0.00090828</x-m>
+            <y-m>-0.0052</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/sep-string</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>middle-black-separator</name>
+        <offsets>
+            <x-m>0.00090828</x-m>
+            <y-m>-0.0052</y-m>
+            <z-m>0.0605781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/sep-string</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>lower-black-separator</name>
+        <offsets>
+            <x-m>0.00090828</x-m>
+            <y-m>-0.0052</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/sep-string</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
     <!-- FMGC Modes -->
     
     <text>
@@ -1261,6 +1335,54 @@
     </text>
     
     <text>
+        <name>common-active-mode</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.005</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/common/active</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>common-armed-mode</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.005</y-m>
+            <z-m>0.0605781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/common/armed</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
         <name>ils-cat</name>
         <offsets>
             <x-m>0.00091828</x-m>
@@ -1404,30 +1526,6 @@
         </font-resolution>
     </text>
     
-    <text>
-        <name>fma-message-box-white</name>
-        <offsets>
-            <x-m>0.00091828</x-m>
-            <y-m>-0.005</y-m>
-            <z-m>0.0531781</z-m>
-        </offsets>
-        <alignment>center-center</alignment>
-        <axis-alignment>yz-plane</axis-alignment>
-        <type type="string">text-value</type>
-        <format type="string">%s</format>
-        <truncate type="bool">false</truncate>
-        <font type="string">helvetica_medium.txf</font>
-        <property>/flight-management/flight-modes/message</property>
-        <draw-text type="bool">false</draw-text>
-        <draw-alignment type="bool">false</draw-alignment>
-        <draw-boundingbox type="bool">true</draw-boundingbox>
-        <character-size>0.008</character-size>
-        <font-resolution>
-            <width type="int">32</width>
-            <height type="int">32</height>
-        </font-resolution>
-    </text>
-    
     <!-- PFD Boxes -->
     
     <text>
@@ -1523,6 +1621,54 @@
         <font-resolution>
             <width type="int">36</width>
             <height type="int">36</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>common-active-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.005</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/common/active</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>fma-message-box-white</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.005</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/message</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
         </font-resolution>
     </text>
 	
@@ -1733,6 +1879,7 @@
         <object-name>athr-active-mode</object-name>
         <object-name>ver-active-mode</object-name>
         <object-name>lat-active-mode</object-name>
+        <object-name>common-active-mode</object-name>
         <diffuse>
             <red>0</red>
             <green>0.57</green>
@@ -1760,6 +1907,7 @@
         <object-name>athr-armed-mode</object-name>
         <object-name>ver-armed-mode</object-name>
         <object-name>lat-armed-mode</object-name>
+        <object-name>common-armed-mode</object-name>
         <object-name>athr-armed</object-name>
         <diffuse>
             <red>0.06</red>
@@ -1813,6 +1961,7 @@
         <object-name>athr-active-box</object-name>
         <object-name>ver-active-box</object-name>
         <object-name>lat-active-box</object-name>
+        <object-name>common-active-box</object-name>
         <object-name>athr-active-white</object-name>
         <object-name>athr-armed-white</object-name>
         <object-name>fma-message-white</object-name>
@@ -1866,6 +2015,33 @@
             <red>0.99</red>
             <green>0.6</green>
             <blue>0.04</blue>
+        </emission>
+    </animation>
+    
+    <animation>
+        <type>material</type>
+        <object-name>upper-black-separator</object-name>
+        <object-name>middle-black-separator</object-name>
+        <object-name>lower-black-separator</object-name>
+        <diffuse>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </diffuse>
+        <ambient>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </ambient>
+        <specular>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </specular>
+        <emission>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
         </emission>
     </animation>
     
@@ -2077,6 +2253,14 @@
     
     <animation>
         <type>select</type>
+        <object-name>common-active-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/common-active-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
         <object-name>ver-alert-box</object-name>
         <condition>
             <property>instrumentation/pfd/ver-alert-box</property>
@@ -2117,6 +2301,53 @@
                         <value>STD</value>
                     </equals>
                 </and>
+            </or>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>upper-black-separator</object-name>
+        <condition>
+            <not>
+                <equals>
+                    <property>/flight-management/flight-modes/common/active</property>
+                    <value></value>
+                </equals>
+            </not>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>middle-black-separator</object-name>
+        <condition>
+            <not>
+                <equals>
+                    <property>/flight-management/flight-modes/common/armed</property>
+                    <value></value>
+                </equals>
+            </not>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>lower-black-separator</object-name>
+        <condition>
+            <or>
+                <not>
+                    <equals>
+                        <property>/flight-management/flight-modes/message</property>
+                        <value></value>
+                    </equals>
+                </not>
+                <not>
+                    <equals>
+                        <property>/flight-management/flight-modes/common/armed</property>
+                        <value></value>
+                    </equals>
+                </not>
             </or>
         </condition>
     </animation>

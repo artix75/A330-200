@@ -157,6 +157,7 @@ setlistener("sim/signals/fdm-initialized", func() {
             #me.map.setTranslation(512,512);
         else
             me.map.setTranslation(512,824);
+
         # Arc is 1408.415 
         # rose is 871.755
         # Arc is 1.6156087432822295 bigger than rose
@@ -166,6 +167,12 @@ setlistener("sim/signals/fdm-initialized", func() {
             me.map._node.getNode("range",1).setDoubleValue(me.rangeNm() * 1.6156087432822295);
         else 
             me.map._node.getNode("range",1).setDoubleValue(me.rangeNm());
+
+#        if(!me.get_switch('toggle_centered'))
+#            me.map._node.getNode("range",1).setDoubleValue(me.rangeNm() * 0.676470);#0.62121);#0.551562);#
+#        else 
+#            me.map._node.getNode("range",1).setDoubleValue(me.rangeNm() * 1.6156087432822295);
+
         setprop('instrumentation/efis/nd/plan-mode-loop', 1);
     };
 
