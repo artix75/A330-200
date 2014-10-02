@@ -113,8 +113,12 @@
         <config>
             <Kp>-0.07</Kp>
             <Ki>0.0</Ki>
-            <u_min>-5.0</u_min>
-            <u_max>5.0</u_max>
+            <u_min>
+                <property>/flight-management/settings/min-rudder</property>
+            </u_min>
+            <u_max>
+                <property>/flight-management/settings/max-rudder</property>
+            </u_max>
         </config>
     </pi-simple-controller>
     

@@ -2322,12 +2322,20 @@
         <type>select</type>
         <object-name>middle-black-separator</object-name>
         <condition>
-            <not>
-                <equals>
-                    <property>/flight-management/flight-modes/common/armed</property>
-                    <value></value>
-                </equals>
-            </not>
+            <or>
+                <not>
+                    <equals>
+                        <property>/flight-management/flight-modes/common/armed</property>
+                        <value></value>
+                    </equals>
+                </not>
+                <not>
+                    <equals>
+                        <property>/flight-management/flight-modes/common/active</property>
+                        <value></value>
+                    </equals>
+                </not>
+            </or>
         </condition>
     </animation>
     
@@ -2345,6 +2353,12 @@
                 <not>
                     <equals>
                         <property>/flight-management/flight-modes/common/armed</property>
+                        <value></value>
+                    </equals>
+                </not>
+                <not>
+                    <equals>
+                        <property>/flight-management/flight-modes/common/active</property>
                         <value></value>
                     </equals>
                 </not>
