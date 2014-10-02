@@ -152,6 +152,8 @@ setlistener("sim/signals/fdm-initialized", func() {
             me.map.setTranslation(512,824);
         if(!me.get_switch('toggle_centered'))
             me.map._node.getNode("range",1).setDoubleValue(me.rangeNm() * 0.676470);#0.62121);#0.551562);#
+        else 
+            me.map._node.getNode("range",1).setDoubleValue(me.rangeNm() * 1.6156087432822295);
         setprop('instrumentation/efis/nd/plan-mode-loop', 1);
     };
 
