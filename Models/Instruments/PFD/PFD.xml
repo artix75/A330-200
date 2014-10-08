@@ -939,6 +939,30 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+    
+    <text>
+        <name>radio-alt-land</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>-0.0051</y-m>
+            <z-m>-0.0342</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%4.0f</format>
+        <property>position/altitude-agl-ft</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.007</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 	
 	<!-- Manually Set Altitude -->
 	
@@ -1048,10 +1072,28 @@
         <type>select</type>
         <object-name>radio-alt</object-name>
         <condition>
-        	<less-than>
-            	<property>position/altitude-agl-ft</property>
-            	<value>3000</value>
-            </less-than>
+        	<and>
+                <less-than>
+                    <property>position/altitude-agl-ft</property>
+                    <value>3000</value>
+                </less-than>
+                <greater-than>
+                    <property>position/altitude-agl-ft</property>
+                    <value>400</value>
+                </greater-than>
+            </and>
+        </condition>
+    </animation>
+    
+
+    <animation>
+        <type>select</type>
+        <object-name>radio-alt-land</object-name>
+        <condition>
+            <less-than-equals>
+                <property>position/altitude-agl-ft</property>
+                <value>400</value>
+            </less-than-equals>
         </condition>
     </animation>
     
@@ -1779,7 +1821,7 @@
 		<type>material</type>
 		<object-name>radio-alt</object-name>
 		<diffuse>
-			<red>1</red>
+			<red>0</red>
 			<green>0.745</green>
 			<blue>0</blue>
 		</diffuse>
@@ -1794,7 +1836,7 @@
 			<blue>0</blue>
 		</specular>
 		<emission>
-			<red>1</red>
+			<red>0</red>
 			<green>0.745</green>
 			<blue>0</blue>
 		</emission>
@@ -2022,6 +2064,7 @@
         <type>material</type>
         <object-name>ver-alert-box</object-name>
         <object-name>qnh-alert-box</object-name>
+        <object-name>radio-alt-land</object-name>
         <diffuse>
             <red>0.99</red>
             <green>0.6</green>
