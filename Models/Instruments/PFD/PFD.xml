@@ -790,7 +790,7 @@
     <!-- ONH -->
 
 	<text>
-		<name>osgtext-cyan</name>
+        <name>qnh-indicator-inhg</name>
 		<offsets>
 			<x-m>0.0010</x-m>
 			<y-m>0.05</y-m>
@@ -812,6 +812,30 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+    
+    <text>
+        <name>qnh-indicator-hpa</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>0.05</y-m>
+            <z-m>-0.049</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%2.0f</format>
+        <property>instrumentation/altimeter/setting-hpa</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.006</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 
 	<text>
 		<name>osgtext-cyan</name>
@@ -1702,6 +1726,8 @@
 	<animation>
 		<type>material</type>
 		<object-name>osgtext-cyan</object-name>
+        <object-name>qnh-indicator-inhg</object-name>
+        <object-name>qnh-indicator-hpa</object-name>
 		<diffuse>
 			<red>0</red>
 			<green>0.886</green>
@@ -2043,6 +2069,29 @@
             <green>0</green>
             <blue>0</blue>
         </emission>
+    </animation>
+    
+
+    <animation>
+        <type>select</type>
+        <object-name>qnh-indicator-inhg</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/control/qnh-mode</property>
+                <value>inhg</value>
+            </equals>
+        </condition>
+    </animation>
+
+    <animation>
+        <type>select</type>
+        <object-name>qnh-indicator-hpa</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/control/qnh-mode</property>
+                <value>hpa</value>
+            </equals>
+        </condition>
     </animation>
     
     <animation>
