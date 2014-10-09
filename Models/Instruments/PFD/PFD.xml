@@ -794,7 +794,7 @@
 		<offsets>
 			<x-m>0.0010</x-m>
 			<y-m>0.05</y-m>
-			<z-m>-0.049</z-m>
+			<z-m>-0.055</z-m>
 		</offsets>
 		<alignment>center-center</alignment>
 		<axis-alignment>yz-plane</axis-alignment>
@@ -818,7 +818,7 @@
         <offsets>
             <x-m>0.0010</x-m>
             <y-m>0.05</y-m>
-            <z-m>-0.049</z-m>
+            <z-m>-0.055</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -842,7 +842,7 @@
 		<offsets>
 			<x-m>0.0010</x-m>
 			<y-m>0.05</y-m>
-			<z-m>-0.055</z-m>
+			<z-m>-0.061</z-m>
 		</offsets>
 		<alignment>center-center</alignment>
 		<axis-alignment>yz-plane</axis-alignment>
@@ -989,6 +989,30 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+    
+    <text>
+        <name>man-alt-lower</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>0.0553</y-m>
+            <z-m>-0.0462</z-m>
+        </offsets>
+        <alignment>right-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%5.0f</format>
+        <property>flight-management/fcu-values/alt</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.006</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 
 	<!-- FMGC Target Altitude -->
 	
@@ -1015,6 +1039,30 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+    
+    <text>
+        <name>fmgc-alt-lower</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>0.0553</y-m>
+            <z-m>-0.0462</z-m>
+        </offsets>
+        <alignment>right-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%5.0f</format>
+        <property>/flight-management/fmgc-values/vnav-target-alt</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.006</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 
         <!-- VS LABELS -->
 
@@ -1845,6 +1893,7 @@
 	<animation>
 		<type>material</type>
 		<object-name>fmgc-alt</object-name>
+        <object-name>fmgc-alt-lower</object-name>
 		<diffuse>
 			<red>1</red>
 			<green>0</green>
@@ -1870,6 +1919,7 @@
 	<animation>
 		<type>material</type>
 		<object-name>man-alt</object-name>
+        <object-name>man-alt-lower</object-name>
 		<diffuse>
 			<red>0</red>
 			<green>0.886</green>
@@ -2241,24 +2291,73 @@
 		<type>select</type>
 		<object-name>man-alt</object-name>
 		<condition>
-                    <not>
-			<equals>
-				<property>/flight-management/control/ver-ctrl</property>
-				<value>fmgc</value>
-			</equals>
-                    </not>
+            <and>
+                <not>
+                    <equals>
+                        <property>/flight-management/control/ver-ctrl</property>
+                        <value>fmgc</value>
+                    </equals>
+                </not>
+                <greater-than-equals>
+                    <property>flight-management/fcu-values/alt</property>
+                    <property>/instrumentation/altimeter/indicated-altitude-ft</property>
+                </greater-than-equals>
+            </and>
 		</condition>
 	</animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>man-alt-lower</object-name>
+        <condition>
+            <and>
+                <not>
+                    <equals>
+                        <property>/flight-management/control/ver-ctrl</property>
+                        <value>fmgc</value>
+                    </equals>
+                </not>
+                <less-than>
+                    <property>flight-management/fcu-values/alt</property>
+                    <property>/instrumentation/altimeter/indicated-altitude-ft</property>
+                </less-than>
+            </and>
+        </condition>
+    </animation>
+    
 	<animation>
 		<type>select</type>
 		<object-name>fmgc-alt</object-name>
 		<condition>
-                    <equals>
-                            <property>/flight-management/control/ver-ctrl</property>
-                            <value>fmgc</value>
-                    </equals>
+            <and>
+                <equals>
+                    <property>/flight-management/control/ver-ctrl</property>
+                    <value>fmgc</value>
+                </equals>
+                <greater-than-equals>
+                    <property>/flight-management/fmgc-values/vnav-target-alt</property>
+                    <property>/instrumentation/altimeter/indicated-altitude-ft</property>
+                </greater-than-equals>
+            </and>
 		</condition>
 	</animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>fmgc-alt-lower</object-name>
+        <condition>
+            <and>
+                <equals>
+                    <property>/flight-management/control/ver-ctrl</property>
+                    <value>fmgc</value>
+                </equals>
+                <less-than>
+                    <property>/flight-management/fmgc-values/vnav-target-alt</property>
+                    <property>/instrumentation/altimeter/indicated-altitude-ft</property>
+                </less-than>
+            </and>
+        </condition>
+    </animation>
 	
 	<animation>
 		<type>select</type>
