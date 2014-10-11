@@ -747,6 +747,7 @@
 		<object-name>fpa-text</object-name>
 		<object-name>qnh-inhg</object-name>
 		<object-name>qnh-hpa</object-name>
+        <object-name>qnh-std</object-name>
 		<object-name>rudder-trim</object-name>
 		<condition>
 			<greater-than-equals>
@@ -871,10 +872,16 @@
             <type>select</type>
             <object-name>qnh-inhg</object-name>
             <condition>
-                <equals>
-                    <property>/flight-management/control/qnh-mode</property>
-                    <value>inhg</value>
-                </equals>
+                <and>
+                    <equals>
+                        <property>/flight-management/control/qnh-mode</property>
+                        <value>inhg</value>
+                    </equals>
+                    <equals>
+                        <property>/flight-management/text/qnh</property>
+                        <value>QNH</value>
+                    </equals>
+                </and>
             </condition>
         </animation>
 
@@ -882,9 +889,26 @@
             <type>select</type>
             <object-name>qnh-hpa</object-name>
             <condition>
+                <and>
+                    <equals>
+                        <property>/flight-management/control/qnh-mode</property>
+                        <value>hpa</value>
+                    </equals>
+                    <equals>
+                        <property>/flight-management/text/qnh</property>
+                        <value>QNH</value>
+                    </equals>
+                </and>
+            </condition>
+        </animation>
+    
+        <animation>
+            <type>select</type>
+            <object-name>qnh-std</object-name>
+            <condition>
                 <equals>
-                    <property>/flight-management/control/qnh-mode</property>
-                    <value>hpa</value>
+                    <property>/flight-management/text/qnh</property>
+                    <value>STD</value>
                 </equals>
             </condition>
         </animation>
@@ -925,6 +949,7 @@
 		<object-name>fpa-text</object-name>
 		<object-name>qnh-inhg</object-name>
 		<object-name>qnh-hpa</object-name>
+        <object-name>qnh-std</object-name>
 		<object-name>rudder-trim</object-name>
 		<diffuse>
 			<red>0.89</red>
@@ -1329,6 +1354,32 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+    
+    <text>
+        <name>qnh-std</name>
+        <offsets>
+            <x-m>-0.4856</x-m>
+            <y-m>-0.2589</y-m>
+            <z-m>0.1666</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>76</roll-deg>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <property>/flight-management/text/qnh</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">led.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.009</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 	
 	<text>
 		<name>qnh-inhg</name>
@@ -1381,6 +1432,32 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+    
+    <text>
+        <name>qnh-std</name>
+        <offsets>
+            <x-m>-0.4856</x-m>
+            <y-m>0.2589</y-m>
+            <z-m>0.1666</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>76</roll-deg>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <property>/flight-management/text/qnh</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">led.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.009</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 	
 	<animation>
 		<type>pick</type>
