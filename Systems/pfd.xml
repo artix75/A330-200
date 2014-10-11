@@ -13,7 +13,61 @@
             <property>/instrumentation/altimeter/indicated-altitude-ft</property>
         </reference>
         <output>instrumentation/pfd/ground-level-diff</output>
-        <!--min>-60</min>
-        <max>60</max-->
     </filter>
+    <filter>
+        <name>Target speed diff (selected)</name>
+        <type>gain</type>
+        <update-interval-secs type="double">0.05</update-interval-secs>
+        <gain>1.0</gain>
+        <input>
+            <property>/flight-management/fcu-values/ias</property>
+        </input>
+        <reference>
+            <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+        </reference>
+        <output>instrumentation/pfd/sel-speed-diff</output>
+        <enable>
+            <condition>
+                <and>
+                    <equals>
+                        <property>/flight-management/control/spd-mode</property>
+                        <value>ias</value>
+                    </equals>
+                    <equals>
+                        <property>/flight-management/control/spd-ctrl</property>
+                        <value>man-set</value>
+                    </equals>
+                </and>
+            </condition>
+        </enable>
+    </filter>
+    
+    <filter>
+        <name>Target speed diff (managed)</name>
+        <type>gain</type>
+        <update-interval-secs type="double">0.05</update-interval-secs>
+        <gain>1.0</gain>
+        <input>
+            <property>/flight-management/fmgc-values/target-spd</property>
+        </input>
+        <reference>
+            <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+        </reference>
+        <output>instrumentation/pfd/fmgc-speed-diff</output>
+        <enable>
+            <condition>
+                <and>
+                    <equals>
+                        <property>/flight-management/control/spd-mode</property>
+                        <value>ias</value>
+                    </equals>
+                    <equals>
+                        <property>/flight-management/control/spd-ctrl</property>
+                        <value>fmgc</value>
+                    </equals>
+                </and>
+            </condition>
+        </enable>
+    </filter>
+    
 </PropertyList>
