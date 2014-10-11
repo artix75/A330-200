@@ -840,9 +840,33 @@
             <height type="int">32</height>
         </font-resolution>
     </text>
+    
+    <text>
+        <name>qnh-indicator-std</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>0.05</y-m>
+            <z-m>-0.055</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <property>/flight-management/text/qnh</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.006</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 
 	<text>
-		<name>osgtext-cyan</name>
+		<name>qnh-text</name>
 		<offsets>
 			<x-m>0.0010</x-m>
 			<y-m>0.05</y-m>
@@ -2019,6 +2043,8 @@
 		<object-name>osgtext-cyan</object-name>
         <object-name>qnh-indicator-inhg</object-name>
         <object-name>qnh-indicator-hpa</object-name>
+        <object-name>qnh-indicator-std</object-name>
+        <object-name>qnh-text</object-name>
 		<diffuse>
 			<red>0</red>
 			<green>0.886</green>
@@ -2378,10 +2404,16 @@
         <type>select</type>
         <object-name>qnh-indicator-inhg</object-name>
         <condition>
-            <equals>
-                <property>/flight-management/control/qnh-mode</property>
-                <value>inhg</value>
-            </equals>
+            <and>
+                <equals>
+                    <property>/flight-management/control/qnh-mode</property>
+                    <value>inhg</value>
+                </equals>
+                <equals>
+                    <property>/flight-management/text/qnh</property>
+                    <value>QNH</value>
+                </equals>
+            </and>
         </condition>
     </animation>
 
@@ -2389,9 +2421,37 @@
         <type>select</type>
         <object-name>qnh-indicator-hpa</object-name>
         <condition>
+            <and>
+                <equals>
+                    <property>/flight-management/control/qnh-mode</property>
+                    <value>hpa</value>
+                </equals>
+                <equals>
+                    <property>/flight-management/text/qnh</property>
+                    <value>QNH</value>
+                </equals>
+            </and>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>qnh-indicator-std</object-name>
+        <condition>
             <equals>
-                <property>/flight-management/control/qnh-mode</property>
-                <value>hpa</value>
+                <property>/flight-management/text/qnh</property>
+                <value>STD</value>
+            </equals>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>qnh-text</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/text/qnh</property>
+                <value>QNH</value>
             </equals>
         </condition>
     </animation>
