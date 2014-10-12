@@ -14,6 +14,7 @@
         </reference>
         <output>instrumentation/pfd/ground-level-diff</output>
     </filter>
+    
     <filter>
         <name>Target speed diff (selected)</name>
         <type>gain</type>
@@ -66,6 +67,50 @@
                         <value>fmgc</value>
                     </equals>
                 </and>
+            </condition>
+        </enable>
+    </filter>
+    
+    <filter>
+        <name>Target alt diff (selected)</name>
+        <type>gain</type>
+        <update-interval-secs type="double">0.05</update-interval-secs>
+        <gain>1.0</gain>
+        <input>
+            <property>/flight-management/fcu-values/alt</property>
+        </input>
+        <reference>
+            <property>instrumentation/altimeter/indicated-altitude-ft</property>
+        </reference>
+        <output>instrumentation/pfd/sel-alt-diff</output>
+        <enable>
+            <condition>
+                <equals>
+                    <property>/flight-management/control/ver-ctrl</property>
+                    <value>man-set</value>
+                </equals>
+            </condition>
+        </enable>
+    </filter>
+    
+    <filter>
+        <name>Target alt diff (managed)</name>
+        <type>gain</type>
+        <update-interval-secs type="double">0.05</update-interval-secs>
+        <gain>1.0</gain>
+        <input>
+            <property>/flight-management/fmgc-values/vnav-target-alt</property>
+        </input>
+        <reference>
+            <property>instrumentation/altimeter/indicated-altitude-ft</property>
+        </reference>
+        <output>instrumentation/pfd/fmgc-alt-diff</output>
+        <enable>
+            <condition>
+                <equals>
+                    <property>/flight-management/control/ver-ctrl</property>
+                    <value>fmgc</value>
+                </equals>
             </condition>
         </enable>
     </filter>
