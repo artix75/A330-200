@@ -438,6 +438,58 @@
             </axis>
         </transform>
     </animation>
+    
+    <!-- -->
+    
+    <animation>
+        <type>texmultiple</type>
+        <object-name>target-alt-sel</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>/flight-management/fcu-values/alt</property>
+            <factor>0.000019141</factor>
+            <axis>
+                <y>-1</y>
+                <x>0</x>
+                <z>0</z>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/altimeter/indicated-altitude-ft</property>
+            <factor>0.000019141</factor>
+            <axis>
+                <y>1</y>
+                <x>0</x>
+                <z>0</z>
+            </axis>
+        </transform>
+    </animation>
+
+    <animation>
+        <type>texmultiple</type>
+        <object-name>target-alt-mng</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>/flight-management/fmgc-values/vnav-target-alt</property>
+            <factor>0.000019141</factor>
+            <axis>
+                <y>-1</y>
+                <x>0</x>
+                <z>0</z>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/altimeter/indicated-altitude-ft</property>
+            <factor>0.000019141</factor>
+            <axis>
+                <y>1</y>
+                <x>0</x>
+                <z>0</z>
+            </axis>
+        </transform>
+    </animation>
 
     <animation>
     	<type>select</type>
@@ -2567,9 +2619,13 @@
                         <value>fmgc</value>
                     </equals>
                 </not>
-                <greater-than-equals>
+                <!--greater-than-equals>
                     <property>flight-management/fcu-values/alt</property>
                     <property>/instrumentation/altimeter/indicated-altitude-ft</property>
+                </greater-than-equals-->
+                <greater-than-equals>
+                    <property>instrumentation/pfd/sel-alt-diff</property>
+                    <value>5548</value>
                 </greater-than-equals>
             </and>
 		</condition>
@@ -2586,9 +2642,13 @@
                         <value>fmgc</value>
                     </equals>
                 </not>
-                <less-than>
+                <!--less-than>
                     <property>flight-management/fcu-values/alt</property>
                     <property>/instrumentation/altimeter/indicated-altitude-ft</property>
+                </less-than-->
+                <less-than>
+                    <property>instrumentation/pfd/sel-alt-diff</property>
+                    <value>-5548</value>
                 </less-than>
             </and>
         </condition>
@@ -2603,9 +2663,13 @@
                     <property>/flight-management/control/ver-ctrl</property>
                     <value>fmgc</value>
                 </equals>
-                <greater-than-equals>
+                <!--greater-than-equals>
                     <property>/flight-management/fmgc-values/vnav-target-alt</property>
                     <property>/instrumentation/altimeter/indicated-altitude-ft</property>
+                </greater-than-equals-->
+                <greater-than-equals>
+                    <property>instrumentation/pfd/fmgc-alt-diff</property>
+                    <value>5548</value>
                 </greater-than-equals>
             </and>
 		</condition>
@@ -2620,9 +2684,13 @@
                     <property>/flight-management/control/ver-ctrl</property>
                     <value>fmgc</value>
                 </equals>
-                <less-than>
+                <!--less-than>
                     <property>/flight-management/fmgc-values/vnav-target-alt</property>
                     <property>/instrumentation/altimeter/indicated-altitude-ft</property>
+                </less-than-->
+                <less-than>
+                    <property>instrumentation/pfd/fmgc-alt-diff</property>
+                    <value>-5548</value>
                 </less-than>
             </and>
         </condition>
@@ -2792,6 +2860,34 @@
                     <property>/flight-management/fmgc-values/target-spd</property>
                     <property>velocities/mach</property>
                 </less-than>
+            </and>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>target-alt-sel</object-name>
+        <condition>
+            <and>
+                <not>
+                    <equals>
+                        <property>/flight-management/control/ver-ctrl</property>
+                        <value>fmgc</value>
+                    </equals>
+                </not>
+            </and>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>target-alt-mng</object-name>
+        <condition>
+            <and>
+                <equals>
+                    <property>/flight-management/control/ver-ctrl</property>
+                    <value>fmgc</value>
+                </equals>
             </and>
         </condition>
     </animation>

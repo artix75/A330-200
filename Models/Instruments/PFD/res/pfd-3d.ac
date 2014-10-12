@@ -1,7 +1,7 @@
 AC3Db
 MATERIAL "ac3dmat1" rgb 1 1 1  amb 0 0 0  emis 0.658824 0.670588 0.67451  spec 0 0 0  shi 128  trans 0
 OBJECT world
-kids 41
+kids 43
 OBJECT poly
 name "horizon"
 loc -0.00063943 0.000620101 0.00496066
@@ -788,6 +788,44 @@ OBJECT poly
 name "radar-alt"
 loc 0.000360576 -0.000264099 -0.0474465
 texture "radar-alt.png"
+crease 45.000000
+numvert 4
+0 0.0428304 -0.00806341
+0 0.0428304 0.00806338
+0 -0.0428304 0.00806338
+0 -0.0428304 -0.00806341
+numsurf 1
+SURF 0x30
+mat 0
+refs 4
+0 0.990386 0.217208
+1 0.022378 0.217208
+2 0.0223766 0.0507198
+3 0.990386 0.0507198
+kids 0
+OBJECT poly
+name "target-alt-sel"
+loc 0.000460576 -0.000264099 -0.0424465
+texture "trgt-alt-man.png"
+crease 45.000000
+numvert 4
+0 0.0428304 -0.00806341
+0 0.0428304 0.00806338
+0 -0.0428304 0.00806338
+0 -0.0428304 -0.00806341
+numsurf 1
+SURF 0x30
+mat 0
+refs 4
+0 0.990386 0.217208
+1 0.022378 0.217208
+2 0.0223766 0.0507198
+3 0.990386 0.0507198
+kids 0
+OBJECT poly
+name "target-alt-mng"
+loc 0.000460576 -0.000264099 -0.0424465
+texture "trgt-alt-mng.png"
 crease 45.000000
 numvert 4
 0 0.0428304 -0.00806341
