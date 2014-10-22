@@ -266,9 +266,30 @@
 		<!--object-name>fd</object-name-->
 		<object-name>fd_roll</object-name>
 		<condition>
-			<property>/flight-management/control/fd</property>
+            <and>
+                <property>/flight-management/control/fd</property>
+                <not>
+                    <property>/gear/gear/wow</property>
+                </not>
+                <not>
+                    <property>/gear/gear[3]/wow</property>
+                </not>
+            </and> 
 		</condition>
 	</animation>
+    
+    <animation>
+        <type>select</type>
+        <!--object-name>fd</object-name-->
+        <object-name>rudder_bar</object-name>
+        <condition>
+            <and>
+                <property>/flight-management/control/fd</property>
+                <property>/gear/gear[3]/wow</property>
+            </and> 
+        </condition>
+    </animation>
+
     
     <animation>
         <type>select</type>
@@ -3146,6 +3167,18 @@
     <animation>
         <type>translate</type>
         <object-name>fd_roll</object-name>
+        <property>/autopilot/internal/fd-bank</property>
+        <factor>0.0260</factor>
+        <axis>
+            <x>0</x>
+            <y>1</y>
+            <z>0</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>translate</type>
+        <object-name>rudder_bar</object-name>
         <property>/autopilot/internal/fd-bank</property>
         <factor>0.0260</factor>
         <axis>
