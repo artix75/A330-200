@@ -986,6 +986,81 @@
             <height type="int">32</height>
         </font-resolution>
     </text>
+    
+    <text>
+        <name>inner-beacon-marker</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>0.03</y-m>
+            <z-m>-0.040</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>instrumentation/texts/im-beacon</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.005
+        </character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>middle-beacon-marker</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>0.03</y-m>
+            <z-m>-0.040</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>instrumentation/texts/mm-beacon</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.005
+        </character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>outer-beacon-marker</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>0.03</y-m>
+            <z-m>-0.040</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>instrumentation/texts/om-beacon</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.005
+        </character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 	
 	<!-- Altitude -->
 	
@@ -2085,6 +2160,32 @@
     </text>
 	
 	<!-- Material Animation -->
+    
+    <animation>
+        <type>material</type>
+        <object-name>osgtext-white</object-name>
+        <object-name>inner-beacon-marker</object-name>
+        <diffuse>
+            <red>1</red>
+            <green>1</green>
+            <blue>1</blue>
+        </diffuse>
+        <ambient>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </ambient>
+        <specular>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </specular>
+        <emission>
+            <red>1</red>
+            <green>1</green>
+            <blue>1</blue>
+        </emission>
+    </animation>
 	
 	<animation>
 		<type>material</type>
@@ -2335,6 +2436,7 @@
         <object-name>lat-armed-mode</object-name>
         <object-name>common-armed-mode</object-name>
         <object-name>athr-armed</object-name>
+        <object-name>outer-beacon-marker</object-name>
         <diffuse>
             <red>0.06</red>
             <green>0.55</green>
@@ -2423,6 +2525,7 @@
         <object-name>ver-alert-box</object-name>
         <object-name>qnh-alert-box</object-name>
         <object-name>radio-alt-land</object-name>
+        <object-name>middle-beacon-marker</object-name>
         <diffuse>
             <red>0.99</red>
             <green>0.6</green>
@@ -3108,6 +3211,30 @@
                     </equals>
                 </not>
             </or>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>outer-beacon-marker</object-name>
+        <condition>
+            <property>instrumentation/marker-beacon/outer</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>middle-beacon-marker</object-name>
+        <condition>
+            <property>instrumentation/marker-beacon/middle</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>inner-beacon-marker</object-name>
+        <condition>
+            <property>instrumentation/marker-beacon/inner</property>
         </condition>
     </animation>
     
