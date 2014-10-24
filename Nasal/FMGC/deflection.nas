@@ -1,9 +1,9 @@
-var defl = func(bug = 0, limit = 0, use_true_north = 0) {
+var defl = func(bug = 0, limit = 0, use_true_north = 0, heading_type = 'heading') {
     var heading = 0;
     if(!use_true_north)
-        heading = getprop("orientation/heading-magnetic-deg");
+        heading = getprop("orientation/"~heading_type~"-magnetic-deg");
     else 
-        heading = getprop("orientation/heading-deg");
+        heading = getprop("orientation/"~heading_type~"-deg");
     var bugDeg = 0;
 
     while (bug < 0)

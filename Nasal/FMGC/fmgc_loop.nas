@@ -376,6 +376,7 @@ var fmgc_loop = {
         #me.ap_engaged = apEngaged;
         #me.fd_engaged = fdEngaged;
         var vmode = me.active_ver_mode;
+        var lmode = me.active_lat_mode;
         var common_mode = me.active_common_mode;
         var prfx_v = substr(vmode,0,2);
         var app_phase = (vmode == 'G/S' or 
@@ -462,18 +463,17 @@ var fmgc_loop = {
                 
 
             #}
-            if (me.active_lat_mode == "HDG") {
+            if (lmode == "HDG" or lmode == "TRK") {
 
                 # Find Heading Deflection
                 var true_north = me.use_true_north;
-
                 var bug = getprop(fcu~ "hdg");
                 #print("HDG: bug -> " ~ bug);
-
-                var bank = -1 * defl(bug, 20, true_north);
+                var heading_type = (lmode == 'HDG' ? 'heading' : 'track');
+                var bank = -1 * defl(bug, 20, true_north, heading_type);
                 #print("HDG: bank -> " ~ bank);
 
-                var deflection = defl(bug, 180, true_north);
+                var deflection = defl(bug, 180, true_north, heading_type);
                 #print("HDG: defl -> " ~ deflection);
 
                 if(apEngaged){
@@ -1056,7 +1056,7 @@ var fmgc_loop = {
         
         # Basic Lateral Mode
         var lmode = '';
-        var lat_sel_mode = 'HDG';#TODO: support track mode
+        var lat_sel_mode = (me.ver_sub == 'fpa' ? 'TRK' : 'HDG');
         if (me.lat_ctrl == "man-set") {
             if (me.lat_mode == "hdg") {
                 lmode = lat_sel_mode;            
