@@ -1036,6 +1036,8 @@ var fmgc_loop = {
         me.vmax = me.calc_vmax();
         me.gs_dev = getprop('instrumentation/nav/gs-needle-deflection-norm');
         me.throttle = getprop('/controls/engines/engine[0]/throttle');
+        me.fpa_angle = (getprop('velocities/glideslope') * 180) / math.pi;
+        setprop(fmgc_val ~ 'fpa-angle', me.fpa_angle);
     },
     check_flight_modes : func{
         var flplan_active = me.flplan_active;

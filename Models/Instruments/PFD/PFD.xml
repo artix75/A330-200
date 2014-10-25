@@ -3264,6 +3264,55 @@
         </axis>
     </animation>
     
+    <!-- Flight Path Vector -->
+    
+    <animation>
+        <type>select</type>
+        <object-name>fpv</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/control/ver-sub</property>
+                <value>fpa</value>
+            </equals>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>translate</type>
+        <object-name>fpv</object-name>
+        <property>instrumentation/pfd/track-diff</property>
+        <factor>0.00260</factor>
+        <axis>
+            <x>0</x>
+            <y>1</y>
+            <z>0</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>translate</type>
+        <object-name>fpv</object-name>
+        <property>orientation/pitch-deg</property>
+        <factor>0.001955078</factor>
+        <axis>
+            <x>0</x>
+            <y>0</y>
+            <z>-1</z>
+        </axis>
+    </animation>
+
+    <animation>
+        <type>translate</type>
+        <object-name>fpv</object-name>
+        <property>/flight-management/fmgc-values/fpa-angle</property>
+        <factor>0.001955078</factor>
+        <axis>
+            <x>0</x>
+            <y>0</y>
+            <z>1</z>
+        </axis>
+    </animation>
+    
     <!-- Flight Director -->
     
     <animation>
