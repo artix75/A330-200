@@ -115,4 +115,24 @@
         </enable>
     </filter>
     
+    <filter>
+        <name>Track heading diff</name>
+        <type>gain</type>
+        <update-interval-secs type="double">0.05</update-interval-secs>
+        <gain>1.0</gain>
+        <input>
+            <property>/orientation/track-deg</property>
+        </input>
+        <reference>
+            <property>/orientation/heading-deg</property>
+        </reference>
+        <output>instrumentation/pfd/track-diff</output>
+        <enable>
+            <equals>
+                <property>/flight-management/control/ver-sub</property>
+                <value>fpa</value>
+            </equals>
+        </enable>
+    </filter>
+    
 </PropertyList>

@@ -1,7 +1,7 @@
 AC3Db
 MATERIAL "ac3dmat1" rgb 1 1 1  amb 0 0 0  emis 0.658824 0.670588 0.67451  spec 0 0 0  shi 128  trans 0
 OBJECT world
-kids 43
+kids 46
 OBJECT poly
 name "horizon"
 loc -0.00063943 0.000620101 0.00496066
@@ -193,6 +193,25 @@ refs 4
 3 0.510324 0.461267
 kids 0
 OBJECT poly
+name "rudder_bar"
+loc 0.00132974 -0.008720247 0.00491576
+texture "rudder-bar.png"
+crease 45.000000
+numvert 4
+0 0.0105466 -0.004202025
+0 0.0105466 0.004202022
+0 -0.0105466 0.004202025
+0 -0.0105466 -0.004202022
+numsurf 1
+SURF 0x30
+mat 0
+refs 4
+0 1 1
+1 0 1
+2 0 0
+3 1 0
+kids 0
+OBJECT poly
 name "ap2_"
 loc 0.00091828 0.0668611 -0.0513014
 texture "symbols.png"
@@ -286,6 +305,44 @@ refs 4
 2 0.68209 0.449709
 1 0.68209 0.0104858
 0 0.791565 0.0104858
+kids 0
+OBJECT poly
+name "fpv"
+loc 0.00031928 0.000105801 0.00356866
+texture "fpv.png"
+crease 45.000000
+numvert 4
+0 0.00511882 -0.00334632
+0 -0.00301882 -0.00334632
+0 -0.00301882 0.00615088
+0 0.00511882 0.00615088
+numsurf 1
+SURF 0x30
+mat 0
+refs 4
+0 1 1
+1 0 1
+2 0 0
+3 1 0
+kids 0
+OBJECT poly
+name "flight-path-director"
+loc 0.00031928 0.001505801 -0.00886866
+texture "fpd.png"
+crease 45.000000
+numvert 4
+0 0.00054241 -0.00334632
+0 -0.00301882 -0.00334632
+0 -0.00301882 0.03111998
+0 0.00054241 0.03111998
+numsurf 1
+SURF 0x30
+mat 0
+refs 4
+0 1 1
+1 0 1
+2 0 0
+3 1 0
 kids 0
 OBJECT poly
 name "sidestick-max"
