@@ -266,15 +266,19 @@
 		<!--object-name>fd</object-name-->
 		<object-name>fd_roll</object-name>
 		<condition>
-            <and>
-                <property>/flight-management/control/fd</property>
-                <not>
-                    <property>/gear/gear/wow</property>
-                </not>
-                <not>
-                    <property>/gear/gear[3]/wow</property>
-                </not>
-            </and> 
+            <property>/flight-management/control/fd</property>
+            <not>
+                <property>/gear/gear/wow</property>
+            </not>
+            <not>
+                <property>/gear/gear[3]/wow</property>
+            </not>
+            <not>
+                <equals>
+                    <property>/flight-management/control/ver-sub</property>
+                    <value>fpa</value>
+                </equals>
+            </not>
 		</condition>
 	</animation>
     
@@ -302,6 +306,12 @@
                 </not>
                 <not>
                     <property>/gear/gear[3]/wow</property>
+                </not>
+                <not>
+                    <equals>
+                        <property>/flight-management/control/ver-sub</property>
+                        <value>fpa</value>
+                    </equals>
                 </not>
             </and> 
         </condition>
@@ -3270,10 +3280,16 @@
         <type>select</type>
         <object-name>fpv</object-name>
         <condition>
-            <equals>
-                <property>/flight-management/control/ver-sub</property>
-                <value>fpa</value>
-            </equals>
+            <and>
+                <equals>
+                    <property>/flight-management/control/ver-sub</property>
+                    <value>fpa</value>
+                </equals>
+                <greater-than>
+                    <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+                    <value>70</value>
+                </greater-than>
+            </and>
         </condition>
     </animation>
     
@@ -3363,5 +3379,80 @@
             <z>0</z>
         </axis>
     </animation>
+    
+    <!-- Flight Path Director -->
+    
+    <animation>
+        <type>select</type>
+        <object-name>flight-path-director</object-name>
+        <condition>
+            <and>
+                <property>/flight-management/control/fd</property>
+                <not>
+                    <property>/gear/gear/wow</property>
+                </not>
+                <not>
+                    <property>/gear/gear[3]/wow</property>
+                </not>
+                <equals>
+                    <property>/flight-management/control/ver-sub</property>
+                    <value>fpa</value>
+                </equals>
+            </and> 
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>translate</type>
+        <object-name>flight-path-director</object-name>
+        <property>instrumentation/pfd/track-diff</property>
+        <factor>0.00260</factor>
+        <axis>
+            <x>0</x>
+            <y>1</y>
+            <z>0</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>translate</type>
+        <object-name>flight-path-director</object-name>
+        <property>orientation/pitch-deg</property>
+        <factor>0.001955078</factor>
+        <axis>
+            <x>0</x>
+            <y>0</y>
+            <z>-1</z>
+        </axis>
+    </animation>
 
+    <animation>
+        <type>translate</type>
+        <object-name>flight-path-director</object-name>
+        <!--property>/flight-management/fcu-values/fpa</property-->
+        <property>instrumentation/pfd/fd_pitch</property><!-- It should be based on Target FPA -->
+        <factor>0.001955078</factor>
+        <axis>
+            <x>0</x>
+            <y>0</y>
+            <z>1</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>rotate</type>
+        <object-name>flight-path-director</object-name>
+        <property>/autopilot/internal/fd-bank</property>
+        <factor>100</factor>
+        <center>
+            <x>0.50</x>
+            <y>0.50</y>
+        </center>
+        <axis>
+            <x>-1</x>
+            <y>0</y>
+            <z>0</z>
+        </axis>
+    </animation>
+    
 </PropertyList>
