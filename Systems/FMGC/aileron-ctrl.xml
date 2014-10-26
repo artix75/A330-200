@@ -89,7 +89,7 @@
 	
 	<pid-controller>
 		<name>FCU/FD Aileron NAV1 Control</name>
-		<debug type="bool">true</debug>
+		<debug type="bool">false</debug>
 		<enable>
             <prop>/servo-control/fd-aileron-nav1</prop>
 		</enable>

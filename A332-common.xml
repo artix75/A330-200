@@ -862,9 +862,9 @@
 				<TRAF type="bool">true</TRAF>
 				<taxi type="bool">true</taxi>
 				<range-nm type="int">10</range-nm>
-                                <nd-centered type="bool">true</nd-centered>
-                                <wxr type="bool">true</wxr>
-                                <tfc type="bool">true</tfc>
+                <nd-centered type="bool">true</nd-centered>
+                <wxr type="bool">true</wxr>
+                <tfc type="bool">true</tfc>
 			</inputs>
 
 		</efis>
@@ -1063,6 +1063,9 @@
             <ap-status type="string"></ap-status>
             <fd-status type="string">1 FD 2</fd-status>
             <athr-status type="string">ATHR</athr-status>
+            <om-beacon>OM</om-beacon>
+            <mm-beacon>MM</mm-beacon>
+            <im-beacon>AWY</im-beacon>
         </texts>
 
 	</instrumentation>
