@@ -29,7 +29,7 @@ io.include('style.nas');
 
 var nd_display = {};
 
-canvas.NavDisplay.old_update = canvas.NavDisplay.update;
+#canvas.NavDisplay.old_update = canvas.NavDisplay.update;
 
 ###
 # entry point, this will set up all ND instances
@@ -106,8 +106,98 @@ setlistener("sim/signals/fdm-initialized", func() {
         'toggle_dest_rwy': {path: '/nd/dest_rwy', value: '', type: 'STRING'},
         # add new switches here
     };
+    
+    canvas.NavDisplay.update_sub = func()
+    {
+        # Variables:
+        var userLat = me.aircraft_source.get_lat();
+        var userLon = me.aircraft_source.get_lon();
+        var userGndSpd = me.aircraft_source.get_gnd_spd();
+        var userVSpd = me.aircraft_source.get_vspd();
+        var dispLCD = me.get_switch('toggle_display_type') == "LCD";
+        # Heading update
+        var userHdgMag = me.aircraft_source.get_hdg_mag();
+        var userHdgTru = me.aircraft_source.get_hdg_tru();
+        var userTrkMag = me.aircraft_source.get_trk_mag();
+        var userTrkTru = me.aircraft_source.get_trk_tru();
 
-    canvas.NavDisplay.update = func(){
+        if(me.get_switch('toggle_true_north')) {
+            var userHdg=userHdgTru;
+            me.userHdg=userHdgTru;
+            var userTrk=userTrkTru;
+            me.userTrk=userTrkTru;
+        } else {
+            var userHdg=userHdgMag;
+            me.userHdg=userHdgMag;
+            var userTrk=userTrkMag;
+            me.userTrk=userTrkMag;
+        }
+        # this should only ever happen when testing the experimental AI/MP ND driver hash (not critical)
+        # or when an error occurs (critical)
+        if (!userHdg or !userTrk or !userLat or !userLon) {
+            print("aircraft source invalid, returning !");
+            return;
+        }
+        if (me.aircraft_source.get_gnd_spd() < 80) {
+            userTrk = userHdg;
+            me.userTrk=userHdg;
+        }
+
+        if((me.in_mode('toggle_display_mode', ['MAP']) and me.get_switch('toggle_display_type') == "CRT")
+           or (me.get_switch('toggle_track_heading') and me.get_switch('toggle_display_type') == "LCD"))
+        {
+            userHdgTrk = userTrk;
+            me.userHdgTrk = userTrk;
+            userHdgTrkTru = userTrkTru;
+            me.symbols.hdgTrk.setText("TRK");
+        } else {
+            userHdgTrk = userHdg;
+            me.userHdgTrk = userHdg;
+            userHdgTrkTru = userHdgTru;
+            me.symbols.hdgTrk.setText("HDG");
+        }
+
+        # First, update the display position of the map
+        var pos = {
+            lat: nil, lon: nil,
+            alt: nil, hdg: nil,
+            range: nil,
+        };
+        # reposition the map, change heading & range:
+        if(me.in_mode('toggle_display_mode', ['PLAN']) and getprop(me.efis_path ~ "/inputs/plan-wpt-index") >= 0) {
+            pos.lat = getprop("/autopilot/route-manager/route/wp["~getprop(me.efis_path ~ "/inputs/plan-wpt-index")~"]/latitude-deg");
+            pos.lon = getprop("/autopilot/route-manager/route/wp["~getprop(me.efis_path ~ "/inputs/plan-wpt-index")~"]/longitude-deg");
+        } else {
+            pos.lat = userLat;
+            pos.lon = userLon;
+        }
+        if(me.get_switch('toggle_centered') or me.in_mode('toggle_display_mode', ['PLAN'])) {
+            if(me.in_mode('toggle_display_mode', ['PLAN']))
+                pos.hdg = 0;
+            else 
+                pos.hdg = userHdgTrkTru;
+            pos.range = me.rangeNm() * 1.6156087432822295
+        } else {
+            pos.range = me.rangeNm(); # avoid this  here, use a listener instead
+            pos.hdg = userHdgTrkTru;
+        }
+        var hold_init = getprop('instrumentation/efis/nd/hold_init');
+        var oldVal = nil;
+        var hdgBugRot = nil;
+        if (hold_init){
+            var vhdg_bug = getprop("autopilot/settings/heading-bug-deg");
+            hdgBugRot = (vhdg_bug-userHdgTrk)*D2R;
+            var hdgNode = me.map._node.getNode("hdg",1);
+            oldVal = hdgNode.getValue();
+        }
+        call(me.map.setPos, [pos.lat, pos.lon], me.map, pos);
+        if (hold_init){
+            if(math.abs(oldVal - hdgBugRot) >= 1)
+                setprop('instrumentation/efis/nd/hold_update', 1);
+        }
+    };
+
+    canvas.NavDisplay.update_tmp = func(){
         me.old_update();
         if(me.in_mode('toggle_display_mode', ['PLAN'])) {
             me.map._node.getNode("hdg",1).setDoubleValue(0);
