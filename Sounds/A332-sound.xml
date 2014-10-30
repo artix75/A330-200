@@ -160,7 +160,7 @@
 				<property>/velocities/airspeed-kt</property>
 				<factor>0.0020</factor>
 				<min>0.03</min>
-				<max>0.25</max>
+				<max>7.25</max>
 			</volume>
 			<pitch>
 				<property>/velocities/airspeed-kt</property>
@@ -1193,15 +1193,16 @@
         </condition>
         <volume>
             <property>velocities/groundspeed-kt</property>
-            <type>log</type>
-            <factor>0.25</factor>
+            <!--type>log</type>
+            <factor>0.25</factor-->
+            <factor>0.08</factor>
         </volume>
         <position>
             <x>-6.5</x>
             <y>0</y>
             <z>-5</z>
         </position>
-        <reference-dist>60.0</reference-dist>
+        <reference-dist>20.0</reference-dist>
         <max-dist>6000.0</max-dist>
     </rumblemain>
     

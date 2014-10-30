@@ -667,6 +667,27 @@
         </transform>
     </animation>
     
+    <animation>
+        <type>texmultiple</type>
+        <object-name>landing-elev</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/altimeter/indicated-altitude-ft</property>
+            <factor>0.000019141</factor>
+            <axis>
+                <y>1</y>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>autopilot/route-manager/destination/field-elevation-ft</property>
+            <factor>0.000019141</factor>
+            <axis>
+                <y>1</y>
+            </axis>
+        </transform>
+    </animation>
+    
     
     <animation>
     	<type>textranslate</type>
@@ -1536,6 +1557,29 @@
                 <property>position/altitude-agl-ft</property>
                 <value>3000</value>
             </less-than>
+        </condition>
+    </animation>
+    
+    
+    
+    <animation>
+        <type>select</type>
+        <object-name>landing-elev</object-name>
+        <condition>
+            <or>
+                <not>
+                    <equals>
+                        <property>autopilot/route-manager/destination/airport</property>
+                        <value></value>
+                    </equals>
+                </not>
+                <not>
+                    <equals>
+                        <property>autopilot/route-manager/destination/runway</property>
+                        <value></value>
+                    </equals>
+                </not>
+            </or>
         </condition>
     </animation>
     
