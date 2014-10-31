@@ -282,7 +282,7 @@ var fmgc_loop = {
         if (flplan_active and (!me.airborne or (me.agl > 0 and me.agl < 30)) and dep_airport != nil){
             var ils_frq = getprop(radio~ "ils");
             var dist = getprop("/autopilot/route-manager/route/wp/distance-nm");
-            if (dist < 10 and ils_frq){
+            if (dist != nil and dist < 10 and ils_frq != nil){
                 var apt_info = airportinfo(dep_airport);
                 var rwy_ils = apt_info.runways[dep_rwy].ils;
                 if(rwy_ils != nil and ils_frq != nil){
@@ -2027,6 +2027,16 @@ var update_ap_fma_msg = func(){
         msg ~= '1';
     if(getprop(ap2) == 'eng')
         msg ~= '2';
+    var ils_cat = getprop(radio~ 'ils-cat');
+    var appr_mode = '';
+    if(ils_cat != nil and ils_cat != ''){
+        if(ils_cat == 'CAT 3' and msg == 'AP 12'){
+            appr_mode = 'DUAL';
+        } else {
+            appr_mode = 'SINGLE';
+        }
+    }
+    setprop('/instrumentation/pfd/ils-appr-mode', appr_mode);
     setprop('/instrumentation/texts/ap-status', msg);
 };
 
@@ -2179,7 +2189,17 @@ foreach(var rprop; radio_props){
         }
         if(cat == nil) cat = '';
         setprop(radio~ 'ils-cat', cat);
+        update_ap_fma_msg();
     },0,0);
 }
+
+setlistener('/instrumentation/efis/minimums-mode-text', func(){
+    var mode = getprop('/instrumentation/efis/minimums-mode-text');
+    if(mode == 'RADIO')
+        mode = 'DH';
+    else
+        mode = 'MDA';
+    setprop('/instrumentation/pfd/minimums-mode', mode);
+});
 
 
