@@ -3838,7 +3838,7 @@
 	<animation>
 		<type>textranslate</type>
 		<object-name>autoland-light</object-name>
-		<property>/autoland/active</property>
+		<property>/autoland/warn</property>
 		<factor>-0.25</factor>
 		<condition>
 			<greater-than-equals>
@@ -3878,7 +3878,7 @@
 			<blue>0.5</blue>
 		</emission>
 		<condition>
-			<property>/autoland/active</property>
+			<property>/autoland/warn</property>
 			<greater-than-equals>
 				<property>/systems/electrical/outputs/efis</property>
 				<value>9</value>

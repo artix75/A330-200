@@ -122,7 +122,8 @@ var warning_system = {
             me.UPDATE_INTERVAL = 1;
             me.spdbrkcount = 0;
             me.loopid = 0;
-           
+            me.should_check_autoland = 0;
+    
             setprop("/warnings/master-warning-light", 0);
             setprop("/warnings/master-caution-light", 0);
             
@@ -659,6 +660,36 @@ var warning_system = {
         
         }
     },
+    checkAutoland: func(){
+        var actv_common_mode = getprop("/flight-management/flight-modes/common/active");
+        var ap1 = getprop("/flight-management/control/ap1-master");
+        var ap2 = getprop("/flight-management/control/ap2-master");
+        var agl = getprop("/position/altitude-agl-ft");
+        var al_wrn = 0;
+        if(actv_common_mode == "LAND" and !me.should_check_autoland){
+            if (ap1 == 'eng' or ap2 == 'eng')
+                me.should_check_autoland = 1;
+        }
+        if (me.should_check_autoland and agl < 200){
+            if (ap1 != "eng" and ap2 != "eng"){
+                al_wrn = 1;
+            } else { 
+                if (agl > 100){
+                    var gs_dev = getprop('instrumentation/nav/gs-needle-deflection-norm');
+                    al_wrn = math.abs(gs_dev > 1);
+                }
+                if(agl > 15){
+                    var loc_dev = getprop("instrumentation/nav/heading-needle-deflection-norm");
+                    al_wrn = math.abs(loc_dev > 0.3);
+                }     
+                if(getprop('/gear/gear/wow')){
+                    me.should_check_autoland = 0;
+                    al_wrn = 0;
+                }
+            }
+        }
+        setprop('/autoland/warn', al_wrn);
+    },
     update : func {
     	
                 # Speed Brake update
@@ -724,6 +755,7 @@ var warning_system = {
                 
                 me.updateECAM();
                 me.updateMEMO();
+                me.checkAutoland();
     	
 	},
 
