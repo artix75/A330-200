@@ -706,21 +706,28 @@ var fmgc_loop = {
                         spd = getprop("/autopilot/route-manager/route/wp[" ~ cur_wp ~ "]/ias-mach");
 
                     if (spd == nil or spd == 0) {
+                        var is_descending = vmode_vs_fps <= -8 or (me.phase == 'DES' and (me.fcu_alt - altitude) < -200);
                         
                         if(remaining < decel_point){
-                            spd = 180;
+                            spd = autoland.spd_manage(getprop("/fdm/jsbsim/inertia/weight-lbs"));
                         } else {
-                            if (altitude <= 10000){
+                            if (altitude <= (is_descending ? 10500 : 10000)){
                                 spd = 250;
                             }
                             else{
-                                if(vmode_vs_fps <= -8 or (me.phase == 'DES' and me.fcu_alt < altitude)){ #TODO: this fails with new fixed-thrust DES, use true ver mode instead
-                                    spd = 280; 
-                                } else{
-                                    if(altitude < 25000)
-                                        spd = 320;
+                                if(is_descending){ #TODO: this fails with new fixed-thrust DES, use true ver mode instead
+                                    if(altitude < 26000)
+                                        spd = 280;
                                     else
+                                        spd = 0.68;
+                                    #spd = 280;
+                                } else{
+                                    if(altitude < 26000)
+                                        spd = 320;
+                                    elsif(altitude < 36000)
                                         spd = 0.78;
+                                    else
+                                        spd = 0.86;
                                 }
                             }
                         }
@@ -728,9 +735,11 @@ var fmgc_loop = {
                     }
                     if(ias >= (me.vne - 20))
                         spd = me.vne - 20;
-                    if(me.vmax and spd > 1 and spd > me.vmax)
-                        spd = me.vmax;
-
+                    var vmax = me.vmax;
+                    if(vmax and spd > 1 and vmax > 1 and spd > vmax)
+                        spd = vmax;
+                    elsif(vmax and spd <=1 and vmax <= 1 and spd > vmax)
+                        spd = vmax;
                     setprop(fmgc_val~ "target-spd", spd);
 
                 }
@@ -1425,7 +1434,7 @@ var fmgc_loop = {
             var alt = me.altitude;
             if(alt < 10000)
                 vmax = 254;
-            elsif(alt < 25000)
+            elsif(alt < 26000)
                 vmax = 324;
             else 
                 vmax = 0.78;
