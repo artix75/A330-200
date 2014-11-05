@@ -593,6 +593,10 @@
 		</menubar>
 
 	</sim>
+    
+    <aircraft-config>
+        <auto-annunciator>0</auto-annunciator>
+    </aircraft-config>
 	
 	<hydraulics>
 		<control>
@@ -1418,6 +1422,7 @@
 			<file>Aircraft/A330-200/Nasal/compression.nas</file>
 			<file>Aircraft/A330-200/Nasal/tyresmoke.nas</file>
 			<file>Aircraft/A330-200/Nasal/general_loop.nas</file>
+            <file>Aircraft/A330-200/Nasal/autoannunciator.nas</file>
 		</a332>
         <canvas_nd>
                 <file>Aircraft/A330-200/Models/Instruments/ND/canvas/ND.nas</file>
