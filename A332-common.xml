@@ -544,6 +544,17 @@
 							</script>
 						</binding>
 					</item>
+                    <item>
+                        <label>Crew</label>
+                        <binding>
+                            <command>nasal</command>
+                            <script>
+                                var crw = gui.Dialog.new("sim/gui/dialogs/crew/dialog", 
+                                    "Aircraft/A330-200/Systems/crew-dlg.xml");
+                                crw.open();
+                            </script>
+                        </binding>
+                    </item>
 					<item>
       					<label>Announcements</label>
       					<binding>
@@ -555,6 +566,7 @@
        					</script>
       					</binding>
      					</item>
+                    
 				</menu>
 				<menu n="101">
 					<label>Reset Systems</label>
@@ -595,8 +607,12 @@
 	</sim>
     
     <aircraft-config>
-        <auto-annunciator>0</auto-annunciator>
+        <auto-annunciator type="bool">0</auto-annunciator>
     </aircraft-config>
+    
+    <copilot>
+        <lights type="bool">0</lights>
+    </copilot>
 	
 	<hydraulics>
 		<control>
