@@ -12,6 +12,7 @@ setlistener("/sim/signals/fdm-initialized", func {
         me.VRannounced = 0;
         me.V2announced = 0;
         me.lights = {};
+        me.seatbelts_on = getprop('controls/switches/seatbelt-sign');
         me.reset(); 
         print("Copilot ready"); 
     }, 
@@ -42,12 +43,13 @@ setlistener("/sim/signals/fdm-initialized", func {
 
         }
         
+        var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
+        var wow = getprop('gear/gear/wow');
+        var ias = getprop("/velocities/airspeed-kt");
+        var eng1_n1 = getprop('engines/engine[0]/n1');
+        var eng2_n1 = getprop('engines/engine[1]/n1');
+        var engine_started = (eng1_n1 >= 30 and eng2_n1 >= 30);
         if(getprop("copilot/lights")){
-            var wow = getprop('gear/gear/wow');
-            var ias = getprop("/velocities/airspeed-kt");
-            var eng1_n1 = getprop('engines/engine[0]/n1');
-            var eng2_n1 = getprop('engines/engine[1]/n1');
-            var engine_started = (eng1_n1 >= 30 and eng2_n1 >= 30);
             if(wow){
                 var apu = getprop("engines/apu/running");
                 var eng_starter = getprop("controls/engines/engine-start-switch");
@@ -69,7 +71,9 @@ setlistener("/sim/signals/fdm-initialized", func {
             }
         }
         if(getprop("copilot/seatbelts")){
-            
+            var seatbelts_on = ((wow and engine_started) or 
+                                (!wow and altitude < 10000));
+            me.turn_seatbelts_sign(seatbelts_on);
         }
        
        # RESET
@@ -99,6 +103,17 @@ setlistener("/sim/signals/fdm-initialized", func {
             self.announce(light ~" light " ~ (on ? "on" : "off"));
         }, 2);
         me.lights[light] = on;
+    },
+    turn_seatbelts_sign: func(on){
+        var seatbelts = 'controls/switches/seatbelt-sign';
+        if(me.seatbelts_on == on) return;
+        setprop(seatbelts, on);
+        utils.clickSound(6);
+        var self = me;
+        settimer(func(){
+            self.announce("Seat-belts sign " ~ (on ? "on" : "off"));
+        }, 2);
+        me.seatbelts_on = on;
     },
     reset : func {
         me.loopid += 1;
