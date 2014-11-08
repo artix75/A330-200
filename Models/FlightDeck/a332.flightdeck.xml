@@ -912,6 +912,17 @@
                 </equals>
             </condition>
         </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>gmt-time-text</object-name>
+        <condition>
+            <greater-than-equals>
+                <property>/systems/electrical/outputs/efis</property>
+                <value>9</value>
+            </greater-than-equals>
+        </condition>
+    </animation>
 	
 	<!-- Material Animation -->
     <animation>
