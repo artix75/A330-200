@@ -55,19 +55,33 @@ setlistener("/sim/signals/fdm-initialized", func {
                 var eng_starter = getprop("controls/engines/engine-start-switch");
                 if(eng_starter == 2)
                     me.turn_light('beacon', 1);  
-                if(engine_started and ias > 13 and ias < 50)
+                if(engine_started and ias > 13 and ias < 50){
                     me.turn_light('taxi', 1);
+                }
                 elsif(ias >= 50){
                     me.turn_light('taxi', 0);
                     settimer(func(){
                         me.turn_light('wing-lights', 1);
+                        me.turn_light('landing-lights[0]', 1);
+                        me.turn_light('landing-lights[2]', 1);
                     }, 4);
                 }  
             } else {
-                me.turn_light('nav-lights-switch', 2);
+                var agl = getprop("/position/altitude-agl-ft");
+                var phase = getprop("flight-management/phase");
+                if(phase == 'APP'){    
+                    if(agl < 600){
+                        me.turn_light('landing-lights[0]', 1);
+                        me.turn_light('landing-lights[2]', 1);
+                    }
+                } else {
+                    me.turn_light('landing-lights[0]', 0);
+                    me.turn_light('landing-lights[2]', 0);
+                }
             }
             if(engine_started){
                 me.turn_light('strobe', 1);
+                me.turn_light('nav-lights-switch', 2);
             }
         }
         if(getprop("copilot/seatbelts")){
