@@ -916,6 +916,8 @@
     <animation>
         <type>select</type>
         <object-name>gmt-time-text</object-name>
+        <object-name>comm-frq-active</object-name>
+        <object-name>comm-stby-active</object-name>
         <condition>
             <greater-than-equals>
                 <property>/systems/electrical/outputs/efis</property>
@@ -928,6 +930,8 @@
     <animation>
         <type>material</type>
         <object-name>gmt-time-text</object-name>
+        <object-name>comm-frq-active</object-name>
+        <object-name>comm-stby-active</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>
@@ -1694,6 +1698,56 @@
 			<z>0</z>
 		</axis>
 	</animation>
+    
+    <!-- Radio quadrant -->
+    
+    <animation>
+        <type>pick</type>
+        <object-name>radio-frq-knobL</object-name>
+        <!--object-name>radio-frq-knobR</object-name-->
+        <action>
+            <button>0</button>
+            <button>3</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var frq = getprop('/instrumentation/comm/frequencies/standby-mhz');
+                    frq += 0.01;
+                    setprop('/instrumentation/comm/frequencies/standby-mhz', frq);
+                </script>
+            </binding>
+        </action>
+        <action>
+            <button>1</button>
+            <button>4</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var frq = getprop('/instrumentation/comm/frequencies/standby-mhz');
+                    frq -= 0.01;
+                    setprop('/instrumentation/comm/frequencies/standby-mhz', frq);
+                </script>
+            </binding>
+        </action>
+    </animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>radio-frq-switch</object-name>
+        <action>
+            <button>0</button>
+            <button>1</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var stby = getprop('/instrumentation/comm/frequencies/standby-mhz');
+                    var actv = getprop('/instrumentation/comm/frequencies/selected-mhz');
+                    setprop('/instrumentation/comm/frequencies/standby-mhz', actv);
+                    setprop('/instrumentation/comm/frequencies/selected-mhz', stby);
+                </script>
+            </binding>
+        </action>
+    </animation>
 	
 	<!-- Throttle quadrant -->
 	<animation>
@@ -3727,6 +3781,60 @@
 			<z>1</z>
 		</axis>
 	</animation>
+    
+    <text>
+        <name>comm-frq-active</name>
+        <offsets>
+            <x-m>-0.3011</x-m>
+            <y-m>-0.1947</y-m>
+            <z-m>-0.3385</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>20</roll-deg>
+            <!--pitch-deg>2</pitch-deg-->
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%2.2f</format>
+        <property>/instrumentation/comm/frequencies/selected-mhz</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">led.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>comm-stby-active</name>
+        <offsets>
+            <x-m>-0.3011</x-m>
+            <y-m>-0.1307</y-m>
+            <z-m>-0.3385</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>20</roll-deg>
+            <!--pitch-deg>2</pitch-deg-->
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%2.2f</format>
+        <property>/instrumentation/comm/frequencies/standby-mhz</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">led.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 	
 	<text>
 		<name>rudder-trim</name>
