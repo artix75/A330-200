@@ -1027,7 +1027,8 @@ var fmgc_loop = {
         me.v2_spd = getprop('/instrumentation/fmc/vspeeds/V2');
         me.vsfpa_mode = getprop(fmgc~'vsfpa-mode');
         me.flaps = getprop("/controls/flight/flaps");
-
+        me.acc_alt = getprop('/instrumentation/fmc/acc-alt');
+        me.trans_alt = getprop('/instrumentation/fmc/trans-alt');
     },
     get_current_state : func(){
         me.flplan_active = getprop("/autopilot/route-manager/active");

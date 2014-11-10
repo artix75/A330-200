@@ -852,6 +852,10 @@
 				<wp type="string">---</wp>
 				<wp_id type="int">0</wp_id>
 			</hold>
+            <texts>
+                <MDA type="string">MDA</MDA>
+                <DH type="string">DH</DH>
+            </texts>
 		</mcdu>
 	
 		<efis n="0">
@@ -940,6 +944,8 @@
 				<VR type="double">0</VR>
 				<V2 type="double">0</V2>
 			</vspeeds>
+            <trans-alt type="int">18000</trans-alt>
+            <acc-alt type="int">1500</trans-alt>
 		</fmc>
 		<dme n="1">
 			<serviceable type="bool">true</serviceable>
