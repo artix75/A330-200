@@ -1852,6 +1852,42 @@
 			<z-m>-0.3811</z-m>
 		</center>
 	</animation>
+    
+    <animation>
+        <name>Reverse Thrust left lever</name>
+        <type>rotate</type>
+        <object-name>rev_l</object-name>
+        <property>controls/engines/engine/reverser</property>
+        <factor>60</factor>
+        <axis>
+            <x>0</x>
+            <y>1</y>
+            <z>0</z>
+        </axis>
+        <center>
+            <x-m>-0.16</x-m>
+            <y-m>0</y-m>
+            <z-m>-0.29</z-m>
+        </center>
+    </animation>
+    
+    <animation>
+        <name>Reverse Thrust right lever</name>
+        <type>rotate</type>
+        <object-name>rev_r</object-name>
+        <property>controls/engines/engine[1]/reverser</property>
+        <factor>60</factor>
+        <axis>
+            <x>0</x>
+            <y>1</y>
+            <z>0</z>
+        </axis>
+        <center>
+            <x-m>-0.16</x-m>
+            <y-m>0</y-m>
+            <z-m>-0.29</z-m>
+        </center>
+    </animation>
 
 	<!-- Engine Cut-off Switches -->
 
