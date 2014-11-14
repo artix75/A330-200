@@ -2834,18 +2834,10 @@
         <type>select</type>
         <object-name>athr-armed</object-name>
         <condition>
-            <and>
-                <not>
-                    <equals>
-                        <property>/flight-management/control/a-thrust</property>
-                        <value>eng</value>
-                    </equals>
-                </not>
-                <equals>
-                    <property>controls/engines/engine/throttle</property>
-                    <value>1</value>
-                </equals>
-            </and>
+            <equals>
+                <property>/flight-management/control/a-thrust</property>
+                <value>armed</value>
+            </equals>
         </condition>
     </animation>
     
@@ -2856,7 +2848,6 @@
             <equals>
                 <property>/flight-management/control/a-thrust</property>
                 <value>eng</value>
-
             </equals>
         </condition>
     </animation> 

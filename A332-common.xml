@@ -398,6 +398,10 @@
 				<name>PFD</name>
 				<path>Aircraft/A330-200/Systems/pfd.xml</path>
 			</autopilot>
+            <autopilot>
+                <name>Thrust Levers</name>
+                <path>Aircraft/A330-200/Systems/thrust_levers.xml</path>
+            </autopilot>
 			
 		</systems>
 
@@ -743,21 +747,24 @@
 				<cutoff-switch type="bool">true</cutoff-switch>
 				<starter type="bool">false</starter>
 				<starter-switch type="bool">false</starter-switch>
+                <max-athr-thrust type="float">0.94</max-athr-thrust>
 			</engine>
 			<engine n="1">
 				<cutoff type="bool">true</cutoff>
 				<cutoff-switch type="bool">true</cutoff-switch>
 				<starter type="bool">false</starter>
 				<starter-switch type="bool">false</starter-switch>
+                <max-athr-thrust type="float">0.94</max-athr-thrust>
 			</engine>
-                        <detents>
-                            <current type="string">none</current>
-                            <throttle type="float">0</throttle>
-                            <rev type="float">-0.35</rev>
-                            <idle type="float">0</idle>
-                            <clb type="float">0.72</clb>
-                            <toga type="float">1</toga>
-                        </detents>
+            <detents>
+                <current type="string">none</current>
+                <throttle type="float">0</throttle>
+                <rev type="float">-0.59</rev>
+                <idle type="float">0</idle>
+                <clb type="float">0.72</clb>
+                <flex type="float">0.98</flex>
+                <toga type="float">1</toga>
+            </detents>
 		</engines>
 		<flight>
 			<ground-spoilers-armed type="bool">false</ground-spoilers-armed>
@@ -1098,6 +1105,7 @@
 
 	<input>
 		<keyboard>
+            
 			<key n="357">
 				<name>Up</name>
 				<repeatable type="bool">true</repeatable>
@@ -1339,7 +1347,6 @@
                 	<command>nasal</command>
                     <script>
                         throttle_detents.set_detent('rev');
-                        utils.clickSound('6');
                     </script>
                 </binding>
             </key>
@@ -1351,7 +1358,6 @@
                     <command>nasal</command>
                     <script>
                         throttle_detents.set_detent('idle');
-                        utils.clickSound('6');
                     </script>
                 </binding>
             </key>
@@ -1363,7 +1369,6 @@
                     <command>nasal</command>
                     <script>
                         throttle_detents.set_detent('clb');
-                        utils.clickSound('6');
                     </script>
                 </binding>
             </key>
@@ -1375,7 +1380,6 @@
                     <command>nasal</command>
                     <script>
                         throttle_detents.set_detent('toga');
-                        utils.clickSound('6');
                     </script>
                 </binding>
             </key>
@@ -1461,6 +1465,9 @@
         <throttle_detents>
 			<file>Aircraft/A330-200/Nasal/throttle_detents.nas</file>
         </throttle_detents>
+        <thrust_levers>
+            <file>Aircraft/A330-200/Nasal/thrust_levers.nas</file>
+        </thrust_levers>
 		<electrical>
 			<file>Aircraft/A330-200/Nasal/electrical.nas</file>
 		</electrical>

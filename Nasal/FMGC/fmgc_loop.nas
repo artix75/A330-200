@@ -316,7 +316,7 @@ var fmgc_loop = {
             setprop("/autoland/phase", "disengaged")
         }
 
-        if ((me.spd_ctrl == "off") or (me.a_thr == "off")) {
+        if ((me.spd_ctrl == "off") or (me.a_thr != "eng")) {
 
             setprop(fmgc~ "a-thr/ias", 0);
             setprop(fmgc~ "a-thr/mach", 0);
@@ -418,7 +418,8 @@ var fmgc_loop = {
             if(me.true_vertical_phase == 'CLB'){
                 min = 0.2;
                 max = 15;
-                var thr = (me.a_thr == 'eng' ? 0.94 : 1);
+                var max_thr = getprop('controls/engines/engine[0]/max-athr-thrust');
+                var thr = (me.a_thr == 'eng' ? max_thr : 1);
             } 
             elsif(me.true_vertical_phase == 'DES'){
                 min = -15;
@@ -1064,7 +1065,10 @@ var fmgc_loop = {
         var after_td = 0;
         if(me.v2_spd > 0)
             me.srs_spd = me.v2_spd + 10; 
-        var toga = (me.throttle == 1);
+        var throttle = me.throttle;
+        var toga = (throttle == 1);
+        var flex = (throttle >= 0.98 and throttle < 1);
+        
         
         # Basic Lateral Mode
         var lmode = '';
@@ -1212,9 +1216,7 @@ var fmgc_loop = {
         }
         
         if(!me.airborne){
-            me.active_athr_mode = 'MAN';
-            me.armed_athr_mode = (toga ? 'TOGA' : '');
-            me.active_lat_mode = ''; #TODO: support RWY
+            me.active_lat_mode = '';
             me.armed_lat_mode = lmode;
             if(me.rwy_mode)
                 me.active_lat_mode = 'RWY';
@@ -1316,33 +1318,32 @@ var fmgc_loop = {
                 setprop(fmgc~ "ver-ctrl", "man-set");
                 me.active_ver_mode = me.get_vsfpa_mode(vmode);
             }
-            
-            #ATHR 
-            var fixed_thrust = 0;
-            if(me.a_thr == 'eng'){
-                var spd_mode = '';
-                if(me.spd_mode == "ias"){
-                    spd_mode = 'SPEED';
-                } else {
-                    spd_mode = 'MACH';
-                }
-                if(!me.ap_engaged and !me.fd_engaged){
-                    me.active_athr_mode = spd_mode;
-                } else {
-                    me.active_athr_mode = me.get_athr_mode(me.active_ver_mode, spd_mode);
-                    me.armed_athr_mode = ''; #me.get_athr_mode(me.armed_ver_mode, spd_mode);
-                    #if(me.active_athr_mode == me.armed_athr_mode)
-                    #    me.armed_athr_mode = '';
-                    if(me.active_athr_mode != spd_mode)
-                        fixed_thrust = 1;
-                }
-            } else {
-                me.active_athr_mode = 'MAN';
-                me.armed_athr_mode = (toga ? 'TOGA' : '');
-                fixed_thrust = toga;
-            }
-            me.fixed_thrust = fixed_thrust;
         }
+        #ATHR 
+        var fixed_thrust = 0;
+        if(me.a_thr == 'eng'){
+            var spd_mode = '';
+            if(me.spd_mode == "ias"){
+                spd_mode = 'SPEED';
+            } else {
+                spd_mode = 'MACH';
+            }
+            if(!me.ap_engaged and !me.fd_engaged){
+                me.active_athr_mode = spd_mode;
+            } else {
+                me.active_athr_mode = me.get_athr_mode(me.active_ver_mode, spd_mode);
+                me.armed_athr_mode = ''; #me.get_athr_mode(me.armed_ver_mode, spd_mode);
+                #if(me.active_athr_mode == me.armed_athr_mode)
+                #    me.armed_athr_mode = '';
+                if(me.active_athr_mode != spd_mode)
+                    fixed_thrust = 1;
+            }
+        } else {
+            me.active_athr_mode = 'MAN';
+            me.armed_athr_mode = (toga ? 'TOGA' : flex ? 'MCT' : '');#TODO: support FLX TEMP and MCT
+            fixed_thrust = toga or flex;
+        }
+        me.fixed_thrust = fixed_thrust;
         # FMA Message: displays DECELERATE after T/D until descent does not start
         if(after_td){
             vmode = me.active_ver_mode;
@@ -1507,7 +1508,7 @@ var fmgc_loop = {
         else
             setprop(fmgc~ "fcu/ils", 0);
 
-        if (me.a_thr == "eng")
+        if (me.a_thr == "eng" or me.a_thr == "armed")
             setprop(fmgc~ "fcu/a-thrust", 1);
         else
             setprop(fmgc~ "fcu/a-thrust", 0);
@@ -1912,7 +1913,7 @@ var fmgc_loop = {
         var spd_change_raw = 'instrumentation/efis/nd/spd-change-raw';
         if (!getprop("/autopilot/route-manager/active") or getprop("/gear/gear[3]/wow"))
             return 0;
-        if ((me.spd_ctrl != "fmgc") or (me.a_thr == "off")) 
+        if ((me.spd_ctrl != "fmgc") or (me.a_thr != "eng")) 
             return 0;
         var phase = getprop("/flight-management/phase");
         var trgt_alt = 0;
@@ -2053,36 +2054,6 @@ var update_ap_fma_msg = func(){
 setlistener("sim/signals/fdm-initialized", func{
     fmgc_loop.init();
     print("Flight Management and Guidance Computer Initialized");
-});
-
-setlistener('controls/engines/engine/reverser', func{
-    var rev = getprop('controls/engines/engine/reverser');
-    var rev_detent = getprop('controls/engines/detents/rev');
-    var throttle = getprop('controls/engines/engine[1]/throttle');
-    if(rev){
-        setprop('controls/engines/detents/throttle', rev_detent - throttle);
-        setprop('controls/engines/detents/current', 'rev');
-    } else {
-        var detent_thr = getprop('controls/engines/detents/throttle');
-        setprop('controls/engines/detents/throttle', 0);
-        settimer(func{setprop('controls/engines/detents/current', 'none')},0.25);
-    }
-
-});
-
-setlistener('/flight-management/control/a-thrust', func{
-    var athr = getprop('/flight-management/control/a-thrust');
-    var clb_detent = getprop('controls/engines/detents/clb');
-    var throttle = getprop('controls/engines/engine[1]/throttle');
-    if(athr == 'eng'){
-        setprop('controls/engines/detents/throttle', clb_detent - throttle);
-        setprop('controls/engines/detents/current', 'clb');
-    } else {
-        var detent_thr = getprop('controls/engines/detents/throttle');
-        setprop('controls/engines/detents/throttle', 0);
-        settimer(func{setprop('controls/engines/detents/current', 'none')},0.25);
-    }
-
 });
 
 setlistener(athr_modes~'active', func(){

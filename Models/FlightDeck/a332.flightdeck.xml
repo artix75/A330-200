@@ -726,10 +726,24 @@
 			<button>0</button>
 			<repeatable type="bool">false</repeatable>
 			<binding>
-				<command>property-cycle</command>
-				<property>/flight-management/control/a-thrust</property>
-				<value>eng</value>
-				<value>off</value>
+				<command>nasal</command>
+                <script>
+                    var athr_prop = '/flight-management/control/a-thrust';
+                    var athr = getprop(athr_prop);
+                    if (athr != 'off'){
+                        setprop(athr_prop, 'off');
+                    } else {
+                        var lever_pos = getprop('controls/engines/engine/throttle-pos');
+                        if(lever_pos == nil) lever_pos = 0;
+                        if(getprop('controls/engines/engine/reverser')) return;
+                         var clb = getprop('controls/engines/detents/clb');
+                    print(lever_pos);
+                        if(lever_pos > clb)
+                            setprop(athr_prop, 'armed');
+                        else
+                            setprop(athr_prop, 'eng');
+                    }
+                </script>
 			</binding>
 		</action>
 	</animation>
@@ -1760,7 +1774,7 @@
 			<repeatable type="bool">true</repeatable>
 			<binding>
 				<command>property-adjust</command>
-				<property>controls/engines/engine[0]/throttle</property>
+				<property>controls/engines/engine[0]/throttle-pos</property>
 				<step type="double">0.01</step>
 				<max>1</max>
 			</binding>
@@ -1771,7 +1785,7 @@
 			<repeatable type="bool">true</repeatable>
 			<binding>
 				<command>property-adjust</command>
-				<property>controls/engines/engine[0]/throttle</property>
+				<property>controls/engines/engine[0]/throttle-pos</property>
 				<step type="double">-0.01</step>
 				<min>0</min>
 			</binding>
@@ -1781,24 +1795,7 @@
 		<name>Engine 1 throttle lever</name>
 		<type>rotate</type>
 		<object-name>thr_l</object-name>
-        <condition>
-			<!--and>
-                <not>
-                    <equals>
-                        <property>/flight-management/control/a-thrust</property>
-                        <value>eng</value>
-                    </equals>
-                </not>
-                <not>
-                    <property>engines/engine/reversed</property>
-                </not>
-            </and-->
-            <equals>
-                <property>controls/engines/detents/current</property>
-                <value>none</value>
-            </equals>
-        </condition>
-		<property>controls/engines/engine[0]/throttle</property>
+		<property>controls/engines/engine[0]/throttle-pos</property>
 		<factor>40</factor>
 		<axis>
 			<x>0</x>
@@ -1811,38 +1808,6 @@
 			<z-m>-0.3811</z-m>
 		</center>
 	</animation>
-    <animation>
-        <name>Engine 1 throttle lever athr</name>
-        <type>rotate</type>
-        <object-name>thr_l</object-name>
-        <condition>
-			<!--or>
-                <equals>
-                    <property>/flight-management/control/a-thrust</property>
-                    <value>eng</value>
-                </equals>
-                <property>engines/engine/reversed</property>
-            </or-->
-            <not>
-                <equals>
-                    <property>controls/engines/detents/current</property>
-                    <value>none</value>
-                </equals>
-            </not>
-        </condition>
-        <property>controls/engines/detents/throttle</property>
-        <factor>40</factor>
-        <axis>
-            <x>0</x>
-            <y>-1</y>
-            <z>0</z>
-        </axis>
-        <center>
-            <x-m>-0.2373</x-m>
-            <y-m>0</y-m>
-            <z-m>-0.3811</z-m>
-        </center>
-    </animation>
 	<animation>
 		<name>Engine 2 throttle lever pick</name>
 		<type>pick</type>
@@ -1853,7 +1818,7 @@
 			<repeatable type="bool">true</repeatable>
 			<binding>
 				<command>property-adjust</command>
-				<property>controls/engines/engine[1]/throttle</property>
+				<property>controls/engines/engine[1]/throttle-pos</property>
 				<step type="double">0.01</step>
 				<max>1</max>
 			</binding>
@@ -1864,7 +1829,7 @@
 			<repeatable type="bool">true</repeatable>
 			<binding>
 				<command>property-adjust</command>
-				<property>controls/engines/engine[1]/throttle</property>
+				<property>controls/engines/engine[1]/throttle-pos</property>
 				<step type="double">-0.01</step>
 				<min>0</min>
 			</binding>
@@ -1874,24 +1839,7 @@
 		<name>Engine 2 throttle lever</name>
 		<type>rotate</type>
 		<object-name>thr_r</object-name>
-        <condition>
-            <!--and>
-                <not>
-                    <equals>
-                        <property>/flight-management/control/a-thrust</property>
-                        <value>eng</value>
-                    </equals>
-                </not>
-                <not>
-                    <property>engines/engine/reversed</property>
-                </not>
-            </and-->
-            <equals>
-                <property>controls/engines/detents/current</property>
-                <value>none</value>
-            </equals>
-        </condition>
-		<property>controls/engines/engine[1]/throttle</property>
+		<property>controls/engines/engine[1]/throttle-pos</property>
 		<factor>40</factor>
 		<axis>
 			<x>0</x>
@@ -1904,38 +1852,6 @@
 			<z-m>-0.3811</z-m>
 		</center>
 	</animation>
-    <animation>
-        <name>Engine 2 throttle lever athr</name>
-        <type>rotate</type>
-        <object-name>thr_r</object-name>
-        <condition>
-            <!--or>
-                <equals>
-                    <property>/flight-management/control/a-thrust</property>
-                    <value>eng</value>
-                </equals>
-                <property>engines/engine/reversed</property>
-            </or-->
-			<not>
-                <equals>
-                    <property>controls/engines/detents/current</property>
-                    <value>none</value>
-                </equals>
-            </not>
-        </condition>
-        <property>controls/engines/detents/throttle</property>
-        <factor>40</factor>
-        <axis>
-            <x>0</x>
-            <y>-1</y>
-            <z>0</z>
-        </axis>
-        <center>
-            <x-m>-0.2373</x-m>
-            <y-m>0</y-m>
-            <z-m>-0.3811</z-m>
-        </center>
-    </animation>
 
 	<!-- Engine Cut-off Switches -->
 
