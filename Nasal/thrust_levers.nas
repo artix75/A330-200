@@ -7,12 +7,23 @@ var right_lever_pos = 'controls/engines/engine[1]/throttle-pos';
 var DETENT_SOUND = 7;
 var ENGINE_COUNT = 2;
 
+var current_detent = nil;
+
+foreach(var propname; ['clb','flex']){
+    propname = detents_prop~ propname;
+    var detent_lvl = getprop(propname);
+    detent_lvl = int(detent_lvl * 100) / 100;
+    print("SETTING "~propname~" to "~detent_lvl);
+    setprop(propname, '');
+    setprop(propname, detent_lvl - 0.001);
+}
+
 var detents = {
     REV: getprop(detents_prop~ 'rev'),
     IDLE: getprop(detents_prop~ 'idle'),
     CLB: getprop(detents_prop~ 'clb'),
     FLEX: getprop(detents_prop~ 'flex'),
-    TOGA: getprop(detents_prop~ 'toga')
+    TOGA: getprop(detents_prop~ 'toga'),
 };
 
 setprop(athr_lever_pos_l, detents.CLB);
@@ -29,23 +40,35 @@ for(var idx = 0; idx < ENGINE_COUNT; idx = idx + 1){
         var self_pos = node.getValue();
         if(self_pos == nil) self_pos = 0;
         var athr_status = getprop(athr);
+        var detent = nil;
         if(max_pos >= detents.FLEX){
             if(athr_status != 'armed'){
                 setprop(athr, 'armed');
             }
+            detent = max_pos == 1 ? 'TOGA' : 'FLEX';
         }
         elsif(max_pos <= detents.IDLE){
             if(athr_status != 'off'){
                 setprop(athr, 'off');
             }
+            detent = max_pos == 0 ? 'IDLE' : 'REV';
         } 
         elsif(max_pos > 0 and max_pos <= detents.CLB) {
             if(getprop(athr) == 'armed'){
                 setprop(athr, 'eng');
             }
+            detent = 'CLB';
         }
-        foreach(var k; keys(detents)){
-            if(int(self_pos * 100) == int(detents[k] * 100)){
+        elsif(max_pos > (detents.CLB + 0.01) and athr_status == 'eng'){
+            setprop(athr, 'off');
+            detent = nil;
+        } else {
+            detent = nil;
+        }
+        current_detent = detent;
+        foreach(var detent_name; keys(detents)){
+            var detent_lvl = detents[detent_name];
+            if(int(self_pos * 100) == int(detent_lvl * 100)){
                 utils.clickSound(DETENT_SOUND);
                 break;
             }       

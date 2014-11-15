@@ -953,6 +953,7 @@
 			</vspeeds>
             <trans-alt type="int">18000</trans-alt>
             <acc-alt type="int">1500</acc-alt>
+            <flex-to-temp type="int">-999</flex-to-temp>
 		</fmc>
 		<dme n="1">
 			<serviceable type="bool">true</serviceable>
@@ -1369,6 +1370,17 @@
                     <command>nasal</command>
                     <script>
                         throttle_detents.set_detent('clb');
+                    </script>
+                </binding>
+            </key>
+            <key n="70">
+                <name>F</name>
+                <desc>Throttle Detent: Flex/MCT</desc>
+                <repeatable type="bool">false</repeatable>
+                <binding>
+                    <command>nasal</command>
+                    <script>
+                        throttle_detents.set_detent('flex');
                     </script>
                 </binding>
             </key>

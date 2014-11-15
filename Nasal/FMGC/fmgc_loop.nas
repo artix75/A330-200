@@ -299,6 +299,9 @@ var fmgc_loop = {
                 me.rwy_mode = 0;
             }
         }
+        
+        var athrEngaged = (me.a_thr == 'eng');
+        var athrArmed = (me.a_thr == 'armed');
 
         # SET OFF IF NOT USED
 
@@ -347,7 +350,7 @@ var fmgc_loop = {
 
         ## AUTO-THROTTLE -------------------------------------------------------
 
-        if ((me.spd_ctrl == "man-set") and (me.a_thr == "eng")) {
+        if ((me.spd_ctrl == "man-set") and (athrEngaged)) {
 
             if (me.spd_mode == "ias") {
 
@@ -371,6 +374,7 @@ var fmgc_loop = {
 
         var apEngaged = me.ap_engaged and me.airborne;
         var fdEngaged = me.fd_engaged;
+
         #if(!me.airborne)
         #    apEngaged = 0;
         #me.ap_engaged = apEngaged;
@@ -414,24 +418,27 @@ var fmgc_loop = {
         if(me.fixed_thrust and me.airborne){
             var min = 0;
             var max = 0;
-            var thr = 0;
+            var thr_l = 0;
+            var thr_r = 0;
             if(me.true_vertical_phase == 'CLB'){
                 min = 0.2;
                 max = 15;
-                var max_thr = getprop('controls/engines/engine[0]/max-athr-thrust');
-                var thr = (me.a_thr == 'eng' ? max_thr : 1);
+                thr_l = getprop('controls/engines/engine[0]/max-athr-thrust');
+                thr_r = getprop('controls/engines/engine[1]/max-athr-thrust');
             } 
             elsif(me.true_vertical_phase == 'DES'){
                 min = -15;
                 max = -0.05;#-0.2;
-                var thr = 0;
+                #thr_l = 0;
+                #thr_r = 0;
             };
             if(apEngaged or fdEngaged){
                 setprop('/flight-management/settings/spd-pitch-min', min);
                 setprop('/flight-management/settings/spd-pitch-max', max);
                 setprop(fmgc~ "spd-with-pitch", 1);
-                setprop('/controls/engines/engine[0]/throttle', thr);
-                setprop('/controls/engines/engine[1]/throttle', thr);
+                if(athrEngaged){
+                    me.update_throttle(thr_l, thr_r);
+                }
             } else {
                 setprop(fmgc~ "spd-with-pitch", 0);
                 setprop('/flight-management/settings/spd-pitch-min', 0);
@@ -666,8 +673,8 @@ var fmgc_loop = {
 
         # FMGC CONTROL MODE ====================================================
         var remaining = me.remaining_nm;
-        var toga_mode = (me.throttle == 1 and me.speed_with_pitch);
-        if ((me.spd_ctrl == "fmgc") and (me.a_thr == "eng" or toga_mode)) {
+        var toga_flx_mode = (athrArmed and me.speed_with_pitch);
+        if ((me.spd_ctrl == "fmgc") and (athrEngaged or toga_flx_mode)) {
 
             var cur_wp = me.current_wp;
             #var ias = getprop("/velocities/airspeed-kt");
@@ -700,7 +707,7 @@ var fmgc_loop = {
                     setprop(fmgc_val~ "target-spd", spd);
                     srs = 1;
                 }
-                elsif (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and !app_phase and flplan_active and !toga_mode) {
+                elsif (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and !app_phase and flplan_active and !toga_flx_mode) {
 
                     var spd = nil;
                     if(getprop("/autopilot/route-manager/route/num") > 0)
@@ -1030,6 +1037,7 @@ var fmgc_loop = {
         me.flaps = getprop("/controls/flight/flaps");
         me.acc_alt = getprop('/instrumentation/fmc/acc-alt');
         me.trans_alt = getprop('/instrumentation/fmc/trans-alt');
+        me.flex_to_temp = getprop('/instrumentation/fmc/flex-to-temp');
     },
     get_current_state : func(){
         me.flplan_active = getprop("/autopilot/route-manager/active");
@@ -1047,6 +1055,10 @@ var fmgc_loop = {
         me.vmax = me.calc_vmax();
         me.gs_dev = getprop('instrumentation/nav/gs-needle-deflection-norm');
         me.throttle = getprop('/controls/engines/engine[0]/throttle');
+        me.throttle_pos = getprop('/controls/engines/engine[0]/throttle-pos');
+        me.throttle_r = getprop('/controls/engines/engine[1]/throttle');
+        me.throttle_r_pos = getprop('/controls/engines/engine[1]/throttle-pos');
+        me.max_throttle_pos = (me.throttle_r_pos > me.throttle_pos ? me.throttle_r_pos : me.throttle_pos);
         me.fpa_angle = (getprop('velocities/glideslope') * 180) / math.pi;
         setprop(fmgc_val ~ 'fpa-angle', me.fpa_angle);
     },
@@ -1065,9 +1077,9 @@ var fmgc_loop = {
         var after_td = 0;
         if(me.v2_spd > 0)
             me.srs_spd = me.v2_spd + 10; 
-        var throttle = me.throttle;
+        var throttle = me.max_throttle_pos;
         var toga = (throttle == 1);
-        var flex = (throttle >= 0.98 and throttle < 1);
+        var flex_mct = (throttle >= thrust_levers.detents.FLEX and throttle < 1);
         
         
         # Basic Lateral Mode
@@ -1340,8 +1352,20 @@ var fmgc_loop = {
             }
         } else {
             me.active_athr_mode = 'MAN';
-            me.armed_athr_mode = (toga ? 'TOGA' : flex ? 'MCT' : '');#TODO: support FLX TEMP and MCT
-            fixed_thrust = toga or flex;
+            var above_clb = (throttle > thrust_levers.detents.CLB);
+            if(toga){
+                me.armed_athr_mode = 'TOGA';
+            } else {
+                if(flex_mct){
+                    if(me.flex_to_temp > -100)
+                        me.armed_athr_mode = 'FLX '~ me.flex_to_temp;
+                    else 
+                        me.armed_athr_mode = 'MCT';
+                } else {
+                    me.armed_athr_mode = (me.a_thr == 'armed' and above_clb) ? 'THR' : '';
+                }
+            }
+            fixed_thrust = toga or flex_mct or above_clb;
         }
         me.fixed_thrust = fixed_thrust;
         # FMA Message: displays DECELERATE after T/D until descent does not start
@@ -1402,11 +1426,15 @@ var fmgc_loop = {
            vmode == 'OP DES'
           ){
             var thr_mode = 'THR';
-            var vphase = me.true_vertical_phase;
-            if(vphase == 'CLB')
-                thr_mode = thr_mode~ ' CLB';
-            else 
-                thr_mode = thr_mode~ ' IDLE';
+            if(me.max_throttle_pos < 0.6){
+                thr_mode = 'THR LVR';
+            } else {
+                var vphase = me.true_vertical_phase;
+                if(vphase == 'CLB')
+                    thr_mode = thr_mode~ ' CLB';
+                else 
+                    thr_mode = thr_mode~ ' IDLE';
+            }
             return thr_mode;
         }
         return spd_mode;
@@ -2017,6 +2045,24 @@ var fmgc_loop = {
             bearing = getprop(wp~'/leg-bearing-true-deg');
         }
         return bearing;
+    },
+    update_throttle: func(thr_l, thr_r){
+        var cur_thr_l = me.throttle;
+        var cur_thr_r = me.throttle_r;
+        if(thr_l != cur_thr_l){
+            var d = math.abs(thr_l - cur_thr_l);
+            if(d > 0.3)
+                interpolate('controls/engines/engine/throttle', thr_l, 3);
+            else 
+                setprop('controls/engines/engine/throttle', thr_l);
+        }
+        if(thr_r != cur_thr_r){
+            var d = math.abs(thr_r - cur_thr_r);
+            if(d > 0.3)
+                interpolate('controls/engines/engine[1]/throttle', thr_r, 3);
+            else 
+                setprop('controls/engines/engine[1]/throttle', thr_r);
+        }
     },
     reset : func {
         me.loopid += 1;
