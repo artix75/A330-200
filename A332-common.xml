@@ -659,6 +659,8 @@
 				<flare-spd type="int">125</flare-spd>
 			</approach>
 		</spd-manager>
+        <thrust-lock type="float">0</thrust-lock>
+        <thrust-lock-reason type="string"></thrust-lock-reason>
 	</flight-management>
 
 	<services>

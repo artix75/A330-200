@@ -90,6 +90,7 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
                 break;
             }       
         }
+        setprop('flight-management/thrust-lock', 0);
     }, 0, 0);
 }
 
