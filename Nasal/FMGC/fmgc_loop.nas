@@ -1060,6 +1060,9 @@ var fmgc_loop = {
         me.throttle_r_pos = getprop('/controls/engines/engine[1]/throttle-pos');
         me.max_throttle_pos = (me.throttle_r_pos > me.throttle_pos ? me.throttle_r_pos : me.throttle_pos);
         me.fpa_angle = (getprop('velocities/glideslope') * 180) / math.pi;
+        me.eng1_running = getprop('engines/engine/running');
+        me.eng2_running = getprop('engines/engine/running');
+        me.engines_running = (me.eng1_running and me.eng2_running);
         setprop(fmgc_val ~ 'fpa-angle', me.fpa_angle);
     },
     check_flight_modes : func{
@@ -1365,8 +1368,11 @@ var fmgc_loop = {
                     me.armed_athr_mode = (me.a_thr == 'armed' and above_clb) ? 'THR' : '';
                 }
             }
+            setprop(athr_modes~ 'msg', '');
             fixed_thrust = toga or flex_mct or above_clb;
         }
+        if(!fixed_thrust)
+            setprop(athr_modes~ 'msg', '');
         me.fixed_thrust = fixed_thrust;
         # FMA Message: displays DECELERATE after T/D until descent does not start
         if(after_td){
@@ -1428,12 +1434,17 @@ var fmgc_loop = {
             var thr_mode = 'THR';
             if(me.max_throttle_pos < 0.6){
                 thr_mode = 'THR LVR';
+                var msg = 'LVR CLB';
+                if(!me.engines_running)
+                    msg = 'LVR MCT';
+                setprop(athr_modes~ 'msg', msg);
             } else {
                 var vphase = me.true_vertical_phase;
                 if(vphase == 'CLB')
                     thr_mode = thr_mode~ ' CLB';
                 else 
                     thr_mode = thr_mode~ ' IDLE';
+                setprop(athr_modes~ 'msg', '');
             }
             return thr_mode;
         }

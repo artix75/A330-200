@@ -1756,6 +1756,30 @@
     </text>
     
     <text>
+        <name>athr-fma-msg</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0606226</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/athr/msg</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
         <name>ver-active-mode</name>
         <offsets>
             <x-m>0.00091828</x-m>
@@ -2627,6 +2651,7 @@
         <object-name>fd-engaged</object-name>
         <object-name>ap-engaged</object-name>
         <object-name>ils-cat</object-name>
+        <object-name>athr-fma-msg</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>

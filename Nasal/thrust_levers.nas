@@ -31,9 +31,31 @@ setprop(athr_lever_pos_r, detents.CLB);
 setprop(left_lever_pos, 0);
 setprop(right_lever_pos, 0);
 
-for(var idx = 0; idx < ENGINE_COUNT; idx = idx + 1){
-    var i = idx;
+var running_engines = [];
+
+for(var i = 0; i < ENGINE_COUNT; i = i + 1){
+
+    append(running_engines, 0);
+    
+    setlistener('engines/engine['~i~']/running', func(node){
+        var running = node.getBoolValue();
+        var idx = node.getParent().getIndex();
+        running_engines[idx] = running;
+    }, 0, 0);
+    
     setlistener('controls/engines/engine['~i~']/throttle-pos', func(node){
+        var idx = node.getParent().getIndex();
+        var eng_running = running_engines[idx];
+        if(!eng_running) return;
+        var all_running = 1;
+        for(var e = 0; e < ENGINE_COUNT; e = e + 1){
+            if(e == idx) continue;
+            var other_running = running_engines[e];
+            if(!other_running){
+                all_running = 0;
+                break;
+            }
+        }
         var left_pos = getprop(left_lever_pos);
         var right_pos = getprop(right_lever_pos);
         var max_pos = (right_pos > left_pos ? right_pos : left_pos);
@@ -41,31 +63,26 @@ for(var idx = 0; idx < ENGINE_COUNT; idx = idx + 1){
         if(self_pos == nil) self_pos = 0;
         var athr_status = getprop(athr);
         var detent = nil;
-        if(max_pos >= detents.FLEX){
+        var arming_pos = all_running ? detents.FLEX : detents.TOGA;
+        var max_athr_pos = all_running ? detents.CLB : detents.FLEX;
+        if(max_pos >= arming_pos){
             if(athr_status != 'armed'){
                 setprop(athr, 'armed');
             }
-            detent = max_pos == 1 ? 'TOGA' : 'FLEX';
         }
         elsif(max_pos <= detents.IDLE){
             if(athr_status != 'off'){
                 setprop(athr, 'off');
             }
-            detent = max_pos == 0 ? 'IDLE' : 'REV';
         } 
-        elsif(max_pos > 0 and max_pos <= detents.CLB) {
+        elsif(max_pos > 0 and max_pos <= max_athr_pos) {
             if(getprop(athr) == 'armed'){
                 setprop(athr, 'eng');
             }
-            detent = 'CLB';
         }
-        elsif(max_pos > (detents.CLB + 0.01) and athr_status == 'eng'){
-            setprop(athr, 'off');
-            detent = nil;
-        } else {
-            detent = nil;
+        elsif(max_pos > (max_athr_pos + 0.01) and athr_status == 'eng'){
+            setprop(athr, 'armed');
         }
-        current_detent = detent;
         foreach(var detent_name; keys(detents)){
             var detent_lvl = detents[detent_name];
             if(int(self_pos * 100) == int(detent_lvl * 100)){

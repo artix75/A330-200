@@ -370,12 +370,17 @@ var warning_system = {
             
             var athr_off = warning.new("A/THR OFF", "chime", "caution", "athr-off");
             athr_off.condition = func() {
-                    return ((getprop("/flight-management/a-thrust") == "off") and (getprop("/position/altitude-agl-ft") > 400));
-            };			
+                    return ((getprop("/flight-management/control/a-thrust") == "off") and (getprop("/position/altitude-agl-ft") > 400));
+            };	
+
+            var athr_limited = warning.new("A/THR LIMITED", 'chime', 'caution', 'athr-limited');
+            athr_limited.condition = func(){
+                return ((getprop("/flight-management/control/a-thrust") == "eng") and (fmgc.fmgc_loop.max_throttle_pos < 0.6));
+            };
 
             # All warnings into a hash for easier use
             
-            me.warnings = [stall, spdbrk_stillout, apu_emer, to_cfg_pbrk, to_cfg_flaps, to_cfg_spdbrk, to_cfg_ptrim, to_cfg_rtrim, elv_fault, ail_fault, rud_fault, spdbrk_fault, flaps_fault, direct_law, altn_law, abn_law , engd_fail, eng1_fail, eng2_fail, engd_oilp, eng1_oilp, eng2_oilp, engd_shut, eng1_shut, eng2_shut, hydall, hydby, hydbg, hydgy, hydb_lopr, hydy_lopr, hydg_lopr, ptu_fault, fuel_1lo, fuel_2lo, fuel_clo, fuel_wlo, fuel_bal, apugen_fault, gen1_fault, gen2_fault, emer_conf, ap_off, athr_off];
+            me.warnings = [stall, spdbrk_stillout, apu_emer, to_cfg_pbrk, to_cfg_flaps, to_cfg_spdbrk, to_cfg_ptrim, to_cfg_rtrim, elv_fault, ail_fault, rud_fault, spdbrk_fault, flaps_fault, direct_law, altn_law, abn_law , engd_fail, eng1_fail, eng2_fail, engd_oilp, eng1_oilp, eng2_oilp, engd_shut, eng1_shut, eng2_shut, hydall, hydby, hydbg, hydgy, hydb_lopr, hydy_lopr, hydg_lopr, ptu_fault, fuel_1lo, fuel_2lo, fuel_clo, fuel_wlo, fuel_bal, apugen_fault, gen1_fault, gen2_fault, emer_conf, ap_off, athr_off, athr_limited];
 
             #TO CONFIG
 
