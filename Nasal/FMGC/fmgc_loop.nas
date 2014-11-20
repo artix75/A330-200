@@ -447,7 +447,7 @@ var fmgc_loop = {
                     setprop(fmgc~ "spd-with-pitch", 0);
                     setprop('/flight-management/settings/spd-pitch-min', 0);
                     setprop('/flight-management/settings/spd-pitch-max', 0);
-                    if(thr_lock)
+                    if(thr_lock and athrEngaged) 
                         me.update_throttle(thr_lock, thr_lock);
                 }
             } else {
@@ -485,7 +485,7 @@ var fmgc_loop = {
                 
 
             #}
-            if (lmode == "HDG" or lmode == "TRK") {
+            if (lmode == "HDG" or lmode == "TRK") {#TODO: support GA TRK
 
                 # Find Heading Deflection
                 var true_north = me.use_true_north;
@@ -1088,7 +1088,7 @@ var fmgc_loop = {
         me.max_throttle_pos = (me.throttle_r_pos > me.throttle_pos ? me.throttle_r_pos : me.throttle_pos);
         me.fpa_angle = (getprop('velocities/glideslope') * 180) / math.pi;
         me.eng1_running = getprop('engines/engine/running');
-        me.eng2_running = getprop('engines/engine/running');
+        me.eng2_running = getprop('engines/engine[1]/running');
         me.engines_running = (me.eng1_running and me.eng2_running);
         me.calc_stall_speed();
         me.is_stalling = (me.ias < me.stall_spd and 
@@ -1108,6 +1108,7 @@ var fmgc_loop = {
         me.armed_ver_mode = '';
         me.active_common_mode = '';
         me.armed_common_mode = '';
+        me.athr_msg = '';
         me.accel_alt = 1500;
         me.srs_spd = 0;
         if(me.alpha_floor_mode){
@@ -1410,12 +1411,8 @@ var fmgc_loop = {
                     me.armed_athr_mode = (me.a_thr == 'armed' and above_clb) ? 'THR' : '';
                 }
             }
-            if(!me.thrust_lock)
-                setprop(athr_modes~ 'msg', '');
             fixed_thrust = toga or flex_mct or above_clb;
         }
-        if(!fixed_thrust and !me.thrust_lock)
-            setprop(athr_modes~ 'msg', '');
         if(me.is_stalling or me.alpha_floor_mode){
             fixed_thrust = 1;
             me.active_athr_mode = 'A. FLOOR';
@@ -1423,7 +1420,12 @@ var fmgc_loop = {
         } 
         elsif(me.thrust_lock){
             fixed_thrust = 1;
-            setprop(athr_modes~ 'msg', me.thrust_lock_reason~ ' LK');
+            var lock_reason = me.thrust_lock_reason;
+            if(lock_reason == 'TOGA'){
+                me.active_athr_mode = 'TOGA LK';
+            } else {
+                me.athr_msg =  me.thrust_lock_reason~ ' LK';   
+            }
         }
         me.fixed_thrust = fixed_thrust;
         # FMA Message: displays DECELERATE after T/D until descent does not start
@@ -1460,6 +1462,7 @@ var fmgc_loop = {
         setprop(lmodes~'armed', me.armed_lat_mode);
         setprop(common_modes~'active', me.active_common_mode);
         setprop(common_modes~'armed', me.armed_common_mode);
+        setprop(athr_modes~ 'msg', me.athr_msg);
         #setprop(fmgc ~'fixed-thrust', fixed_thrust);
         me.ver_managed = (me.ver_ctrl == 'fmgc' and 
                           me.flplan_active and 
@@ -1489,14 +1492,13 @@ var fmgc_loop = {
                 var msg = 'LVR CLB';
                 if(!me.engines_running)
                     msg = 'LVR MCT';
-                setprop(athr_modes~ 'msg', msg);
+                me.athr_msg = msg;
             } else {
                 var vphase = me.true_vertical_phase;
                 if(vphase == 'CLB')
                     thr_mode = thr_mode~ ' CLB';
                 else 
                     thr_mode = thr_mode~ ' IDLE';
-                setprop(athr_modes~ 'msg', '');
             }
             return thr_mode;
         }

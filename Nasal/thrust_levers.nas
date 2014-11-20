@@ -7,16 +7,14 @@ var right_lever_pos = 'controls/engines/engine[1]/throttle-pos';
 var DETENT_SOUND = 7;
 var ENGINE_COUNT = 2;
 
-var current_detent = nil;
-
-foreach(var propname; ['clb','flex']){
-    propname = detents_prop~ propname;
-    var detent_lvl = getprop(propname);
-    detent_lvl = int(detent_lvl * 100) / 100;
-    print("SETTING "~propname~" to "~detent_lvl);
-    setprop(propname, '');
-    setprop(propname, detent_lvl - 0.001);
-}
+#foreach(var propname; ['clb','flex']){
+#    propname = detents_prop~ propname;
+#    var detent_lvl = getprop(propname);
+#    detent_lvl = int(detent_lvl * 100) / 100;
+#    print("SETTING "~propname~" to "~detent_lvl);
+#    setprop(propname, '');
+#    setprop(propname, detent_lvl - 0.001);
+#}
 
 var detents = {
     REV: getprop(detents_prop~ 'rev'),
@@ -32,10 +30,12 @@ setprop(left_lever_pos, 0);
 setprop(right_lever_pos, 0);
 
 var running_engines = [];
+#var current_detent = [];
 
 for(var i = 0; i < ENGINE_COUNT; i = i + 1){
 
     append(running_engines, 0);
+    #append(current_detent, '');
     
     setlistener('engines/engine['~i~']/running', func(node){
         var running = node.getBoolValue();
@@ -90,7 +90,8 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
                 break;
             }       
         }
-        setprop('flight-management/thrust-lock', 0);
+        
+        #setprop('flight-management/thrust-lock', 0);
     }, 0, 0);
 }
 
@@ -109,3 +110,21 @@ controls.incThrottle = func {
     }
 }
 
+
+controls.throttleAxis = func(invert = 0){
+    var val = cmdarg().getNode("setting").getValue();
+    var rev = getprop('controls/engines/engine/reverser');
+    var div = 2;
+    if(invert) val = -val;
+    if(rev) {
+        #val = val * -1;
+        div = -2;
+    }
+    val = (1 - val) / div;
+    if(val < -0.63)
+        val = -0.63;
+    print('AXIS: '~ val);
+    for(i = 0; i < ENGINE_COUNT; i = i + 1){
+        setprop('controls/engines/engine['~i~']/throttle-pos', val);
+    }
+}

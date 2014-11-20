@@ -732,12 +732,13 @@
                     var athr = getprop(athr_prop);
                     if (athr != 'off'){
                         setprop(athr_prop, 'off');
+                        setprop('flight-management/thrust-lock', 0);
                     } else {
                         var lever_pos = getprop('controls/engines/engine/throttle-pos');
                         if(lever_pos == nil) lever_pos = 0;
                         if(getprop('controls/engines/engine/reverser')) return;
-                         var clb = getprop('controls/engines/detents/clb');
-                    print(lever_pos);
+                        var clb = getprop('controls/engines/detents/clb');
+                        #print(lever_pos);
                         if(lever_pos > clb)
                             setprop(athr_prop, 'armed');
                         else
