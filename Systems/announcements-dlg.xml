@@ -170,6 +170,18 @@
         <property>sim/sound/music2</property>
       </binding>
     </checkbox>
+    
+    <hrule/>
+    
+    <checkbox>
+        <halign>left</halign>
+        <label>Auto-annunciator</label>
+        <property>aircraft-config/auto-annunciator</property>
+        <binding>
+            <command>property-toggle</command>
+            <property>aircraft-config/auto-annunciator</property>
+        </binding>
+    </checkbox>
 
 
   </group>

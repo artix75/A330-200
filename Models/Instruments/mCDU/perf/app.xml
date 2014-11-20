@@ -9,6 +9,7 @@
 	<animation>
 		<type>material</type>
 		<object-name>perf</object-name>
+        <object-name>white</object-name>
 		<emission>
 			<red>1</red>
 			<green>1</green>
@@ -129,6 +130,146 @@
             </binding>
         </action>
 	</animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>r2</object-name>
+        <action>
+            <button>0</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var input = getprop("/instrumentation/mcdu/input");
+                    if(typeof(num(input)) != nil){
+                        setprop('/instrumentation/mk-viii/inputs/arinc429/decision-height', input);
+                    }
+                    setprop("/instrumentation/mcdu/input", "");
+
+                </script>
+            </binding>
+        </action>
+    </animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>r3</object-name>
+        <action>
+            <button>0</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var input = getprop("/instrumentation/mcdu/input");
+                    if(typeof(num(input)) != nil){
+                    setprop('/instrumentation/mk-viii/inputs/arinc429/decision-height', input);
+                    }
+                    setprop("/instrumentation/mcdu/input", "");
+
+                </script>
+            </binding>
+        </action>
+    </animation>
+    
+    <text>
+        <name>white</name>
+        <offsets>
+            <x-m>-0.0661</x-m>
+            <y-m>0.0432</y-m>
+            <z-m>-0.0006</z-m>
+            <heading-deg>90</heading-deg>
+        </offsets>
+        <alignment>right-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <property>/instrumentation/mcdu/texts/MDA</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">courier-bold.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.002</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>cyan</name>
+        <offsets>
+            <x-m>-0.0609</x-m>
+            <y-m>0.0432</y-m>
+            <z-m>-0.0006</z-m>
+            <heading-deg>90</heading-deg>
+        </offsets>
+        <alignment>right-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">[ %3.0f ]</format>
+        <property>/instrumentation/mk-viii/inputs/arinc429/decision-height</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">courier-bold.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.003</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>white</name>
+        <offsets>
+            <x-m>-0.0573</x-m>
+            <y-m>0.0432</y-m>
+            <z-m>-0.0006</z-m>
+            <heading-deg>90</heading-deg>
+        </offsets>
+        <alignment>right-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <property>/instrumentation/mcdu/texts/DH</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">courier-bold.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.002</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>cyan</name>
+        <offsets>
+            <x-m>-0.0521</x-m>
+            <y-m>0.0432</y-m>
+            <z-m>-0.0006</z-m>
+            <heading-deg>90</heading-deg>
+        </offsets>
+        <alignment>right-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">[ %3.0f ]</format>
+        <property>/instrumentation/mk-viii/inputs/arinc429/decision-height</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">courier-bold.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.003</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 	
 	<text>
 		<name>cyan</name>

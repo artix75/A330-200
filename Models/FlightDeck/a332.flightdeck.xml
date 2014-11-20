@@ -726,10 +726,25 @@
 			<button>0</button>
 			<repeatable type="bool">false</repeatable>
 			<binding>
-				<command>property-cycle</command>
-				<property>/flight-management/control/a-thrust</property>
-				<value>eng</value>
-				<value>off</value>
+				<command>nasal</command>
+                <script>
+                    var athr_prop = '/flight-management/control/a-thrust';
+                    var athr = getprop(athr_prop);
+                    if (athr != 'off'){
+                        setprop(athr_prop, 'off');
+                        setprop('flight-management/thrust-lock', 0);
+                    } else {
+                        var lever_pos = getprop('controls/engines/engine/throttle-pos');
+                        if(lever_pos == nil) lever_pos = 0;
+                        if(getprop('controls/engines/engine/reverser')) return;
+                        var clb = getprop('controls/engines/detents/clb');
+                        #print(lever_pos);
+                        if(lever_pos > clb)
+                            setprop(athr_prop, 'armed');
+                        else
+                            setprop(athr_prop, 'eng');
+                    }
+                </script>
 			</binding>
 		</action>
 	</animation>
@@ -912,11 +927,26 @@
                 </equals>
             </condition>
         </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>gmt-time-text</object-name>
+        <object-name>comm-frq-active</object-name>
+        <object-name>comm-stby-active</object-name>
+        <condition>
+            <greater-than-equals>
+                <property>/systems/electrical/outputs/efis</property>
+                <value>9</value>
+            </greater-than-equals>
+        </condition>
+    </animation>
 	
 	<!-- Material Animation -->
     <animation>
         <type>material</type>
         <object-name>gmt-time-text</object-name>
+        <object-name>comm-frq-active</object-name>
+        <object-name>comm-stby-active</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>
@@ -1683,6 +1713,56 @@
 			<z>0</z>
 		</axis>
 	</animation>
+    
+    <!-- Radio quadrant -->
+    
+    <animation>
+        <type>pick</type>
+        <object-name>radio-frq-knobL</object-name>
+        <!--object-name>radio-frq-knobR</object-name-->
+        <action>
+            <button>0</button>
+            <button>3</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var frq = getprop('/instrumentation/comm/frequencies/standby-mhz');
+                    frq += 0.01;
+                    setprop('/instrumentation/comm/frequencies/standby-mhz', frq);
+                </script>
+            </binding>
+        </action>
+        <action>
+            <button>1</button>
+            <button>4</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var frq = getprop('/instrumentation/comm/frequencies/standby-mhz');
+                    frq -= 0.01;
+                    setprop('/instrumentation/comm/frequencies/standby-mhz', frq);
+                </script>
+            </binding>
+        </action>
+    </animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>radio-frq-switch</object-name>
+        <action>
+            <button>0</button>
+            <button>1</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var stby = getprop('/instrumentation/comm/frequencies/standby-mhz');
+                    var actv = getprop('/instrumentation/comm/frequencies/selected-mhz');
+                    setprop('/instrumentation/comm/frequencies/standby-mhz', actv);
+                    setprop('/instrumentation/comm/frequencies/selected-mhz', stby);
+                </script>
+            </binding>
+        </action>
+    </animation>
 	
 	<!-- Throttle quadrant -->
 	<animation>
@@ -1695,7 +1775,7 @@
 			<repeatable type="bool">true</repeatable>
 			<binding>
 				<command>property-adjust</command>
-				<property>controls/engines/engine[0]/throttle</property>
+				<property>controls/engines/engine[0]/throttle-pos</property>
 				<step type="double">0.01</step>
 				<max>1</max>
 			</binding>
@@ -1706,7 +1786,7 @@
 			<repeatable type="bool">true</repeatable>
 			<binding>
 				<command>property-adjust</command>
-				<property>controls/engines/engine[0]/throttle</property>
+				<property>controls/engines/engine[0]/throttle-pos</property>
 				<step type="double">-0.01</step>
 				<min>0</min>
 			</binding>
@@ -1716,24 +1796,7 @@
 		<name>Engine 1 throttle lever</name>
 		<type>rotate</type>
 		<object-name>thr_l</object-name>
-        <condition>
-			<!--and>
-                <not>
-                    <equals>
-                        <property>/flight-management/control/a-thrust</property>
-                        <value>eng</value>
-                    </equals>
-                </not>
-                <not>
-                    <property>engines/engine/reversed</property>
-                </not>
-            </and-->
-            <equals>
-                <property>controls/engines/detents/current</property>
-                <value>none</value>
-            </equals>
-        </condition>
-		<property>controls/engines/engine[0]/throttle</property>
+		<property>controls/engines/engine[0]/throttle-pos</property>
 		<factor>40</factor>
 		<axis>
 			<x>0</x>
@@ -1746,38 +1809,6 @@
 			<z-m>-0.3811</z-m>
 		</center>
 	</animation>
-    <animation>
-        <name>Engine 1 throttle lever athr</name>
-        <type>rotate</type>
-        <object-name>thr_l</object-name>
-        <condition>
-			<!--or>
-                <equals>
-                    <property>/flight-management/control/a-thrust</property>
-                    <value>eng</value>
-                </equals>
-                <property>engines/engine/reversed</property>
-            </or-->
-            <not>
-                <equals>
-                    <property>controls/engines/detents/current</property>
-                    <value>none</value>
-                </equals>
-            </not>
-        </condition>
-        <property>controls/engines/detents/throttle</property>
-        <factor>40</factor>
-        <axis>
-            <x>0</x>
-            <y>-1</y>
-            <z>0</z>
-        </axis>
-        <center>
-            <x-m>-0.2373</x-m>
-            <y-m>0</y-m>
-            <z-m>-0.3811</z-m>
-        </center>
-    </animation>
 	<animation>
 		<name>Engine 2 throttle lever pick</name>
 		<type>pick</type>
@@ -1788,7 +1819,7 @@
 			<repeatable type="bool">true</repeatable>
 			<binding>
 				<command>property-adjust</command>
-				<property>controls/engines/engine[1]/throttle</property>
+				<property>controls/engines/engine[1]/throttle-pos</property>
 				<step type="double">0.01</step>
 				<max>1</max>
 			</binding>
@@ -1799,7 +1830,7 @@
 			<repeatable type="bool">true</repeatable>
 			<binding>
 				<command>property-adjust</command>
-				<property>controls/engines/engine[1]/throttle</property>
+				<property>controls/engines/engine[1]/throttle-pos</property>
 				<step type="double">-0.01</step>
 				<min>0</min>
 			</binding>
@@ -1809,24 +1840,7 @@
 		<name>Engine 2 throttle lever</name>
 		<type>rotate</type>
 		<object-name>thr_r</object-name>
-        <condition>
-            <!--and>
-                <not>
-                    <equals>
-                        <property>/flight-management/control/a-thrust</property>
-                        <value>eng</value>
-                    </equals>
-                </not>
-                <not>
-                    <property>engines/engine/reversed</property>
-                </not>
-            </and-->
-            <equals>
-                <property>controls/engines/detents/current</property>
-                <value>none</value>
-            </equals>
-        </condition>
-		<property>controls/engines/engine[1]/throttle</property>
+		<property>controls/engines/engine[1]/throttle-pos</property>
 		<factor>40</factor>
 		<axis>
 			<x>0</x>
@@ -1839,36 +1853,40 @@
 			<z-m>-0.3811</z-m>
 		</center>
 	</animation>
+    
     <animation>
-        <name>Engine 2 throttle lever athr</name>
+        <name>Reverse Thrust left lever</name>
         <type>rotate</type>
-        <object-name>thr_r</object-name>
-        <condition>
-            <!--or>
-                <equals>
-                    <property>/flight-management/control/a-thrust</property>
-                    <value>eng</value>
-                </equals>
-                <property>engines/engine/reversed</property>
-            </or-->
-			<not>
-                <equals>
-                    <property>controls/engines/detents/current</property>
-                    <value>none</value>
-                </equals>
-            </not>
-        </condition>
-        <property>controls/engines/detents/throttle</property>
-        <factor>40</factor>
+        <object-name>rev_l</object-name>
+        <property>controls/engines/engine/reverser</property>
+        <factor>60</factor>
         <axis>
             <x>0</x>
-            <y>-1</y>
+            <y>1</y>
             <z>0</z>
         </axis>
         <center>
-            <x-m>-0.2373</x-m>
+            <x-m>-0.16</x-m>
             <y-m>0</y-m>
-            <z-m>-0.3811</z-m>
+            <z-m>-0.29</z-m>
+        </center>
+    </animation>
+    
+    <animation>
+        <name>Reverse Thrust right lever</name>
+        <type>rotate</type>
+        <object-name>rev_r</object-name>
+        <property>controls/engines/engine[1]/reverser</property>
+        <factor>60</factor>
+        <axis>
+            <x>0</x>
+            <y>1</y>
+            <z>0</z>
+        </axis>
+        <center>
+            <x-m>-0.16</x-m>
+            <y-m>0</y-m>
+            <z-m>-0.29</z-m>
         </center>
     </animation>
 
@@ -3716,6 +3734,60 @@
 			<z>1</z>
 		</axis>
 	</animation>
+    
+    <text>
+        <name>comm-frq-active</name>
+        <offsets>
+            <x-m>-0.3011</x-m>
+            <y-m>-0.1947</y-m>
+            <z-m>-0.3385</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>20</roll-deg>
+            <!--pitch-deg>2</pitch-deg-->
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%2.2f</format>
+        <property>/instrumentation/comm/frequencies/selected-mhz</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">led.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>comm-stby-active</name>
+        <offsets>
+            <x-m>-0.3011</x-m>
+            <y-m>-0.1307</y-m>
+            <z-m>-0.3385</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>20</roll-deg>
+            <!--pitch-deg>2</pitch-deg-->
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%2.2f</format>
+        <property>/instrumentation/comm/frequencies/standby-mhz</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">led.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 	
 	<text>
 		<name>rudder-trim</name>
@@ -3838,7 +3910,7 @@
 	<animation>
 		<type>textranslate</type>
 		<object-name>autoland-light</object-name>
-		<property>/autoland/active</property>
+		<property>/autoland/warn</property>
 		<factor>-0.25</factor>
 		<condition>
 			<greater-than-equals>
@@ -3878,7 +3950,7 @@
 			<blue>0.5</blue>
 		</emission>
 		<condition>
-			<property>/autoland/active</property>
+			<property>/autoland/warn</property>
 			<greater-than-equals>
 				<property>/systems/electrical/outputs/efis</property>
 				<value>9</value>

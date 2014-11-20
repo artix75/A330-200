@@ -667,6 +667,27 @@
         </transform>
     </animation>
     
+    <animation>
+        <type>texmultiple</type>
+        <object-name>landing-elev</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/altimeter/indicated-altitude-ft</property>
+            <factor>0.000019141</factor>
+            <axis>
+                <y>1</y>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>autopilot/route-manager/destination/field-elevation-ft</property>
+            <factor>0.000019141</factor>
+            <axis>
+                <y>1</y>
+            </axis>
+        </transform>
+    </animation>
+    
     
     <animation>
     	<type>textranslate</type>
@@ -1539,6 +1560,29 @@
         </condition>
     </animation>
     
+    
+    
+    <animation>
+        <type>select</type>
+        <object-name>landing-elev</object-name>
+        <condition>
+            <or>
+                <not>
+                    <equals>
+                        <property>autopilot/route-manager/destination/airport</property>
+                        <value></value>
+                    </equals>
+                </not>
+                <not>
+                    <equals>
+                        <property>autopilot/route-manager/destination/runway</property>
+                        <value></value>
+                    </equals>
+                </not>
+            </or>
+        </condition>
+    </animation>
+    
     <!-- FMA separators -->
     
     <text>
@@ -1701,6 +1745,30 @@
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_medium.txf</font>
         <property>/flight-management/flight-modes/athr/armed</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>athr-fma-msg</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0606226</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/athr/msg</property>
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
@@ -1893,6 +1961,78 @@
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_medium.txf</font>
         <property>/flight-management/freq/ils-cat</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>dh-label</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0326226</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/pfd/minimums-mode</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>decision-height</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0436226</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%4.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/mk-viii/inputs/arinc429/decision-height</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0051</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>ils-appr-mode</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0406226</y-m>
+            <z-m>0.0605781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/pfd/ils-appr-mode</property>
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
@@ -2175,6 +2315,8 @@
         <type>material</type>
         <object-name>osgtext-white</object-name>
         <object-name>inner-beacon-marker</object-name>
+        <object-name>dh-label</object-name>
+        <object-name>ils-appr-mode</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>
@@ -2339,6 +2481,7 @@
         <object-name>man-spd-lower</object-name>
         <object-name>man-mach</object-name>
         <object-name>man-mach-lower</object-name>
+        <object-name>decision-height</object-name>
 		<diffuse>
 			<red>0</red>
 			<green>0.886</green>
@@ -2508,6 +2651,7 @@
         <object-name>fd-engaged</object-name>
         <object-name>ap-engaged</object-name>
         <object-name>ils-cat</object-name>
+        <object-name>athr-fma-msg</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>
@@ -2715,18 +2859,10 @@
         <type>select</type>
         <object-name>athr-armed</object-name>
         <condition>
-            <and>
-                <not>
-                    <equals>
-                        <property>/flight-management/control/a-thrust</property>
-                        <value>eng</value>
-                    </equals>
-                </not>
-                <equals>
-                    <property>controls/engines/engine/throttle</property>
-                    <value>1</value>
-                </equals>
-            </and>
+            <equals>
+                <property>/flight-management/control/a-thrust</property>
+                <value>armed</value>
+            </equals>
         </condition>
     </animation>
     
@@ -2737,10 +2873,24 @@
             <equals>
                 <property>/flight-management/control/a-thrust</property>
                 <value>eng</value>
-
             </equals>
         </condition>
     </animation> 
+    
+    <animation>
+        <type>select</type>
+        <object-name>ils-appr-mode</object-name>
+        <object-name>dh-label</object-name>
+        <object-name>decision-height</object-name>
+        <condition>
+            <not>
+                <equals>
+                    <property>/flight-management/freq/ils-cat</property>
+                    <value></value>
+                </equals>
+            </not>
+        </condition>
+    </animation>
 
 	<animation>
 		<type>select</type>
@@ -3142,7 +3292,7 @@
                 <and>
                     <greater-than-equals>
                         <property>/instrumentation/altimeter/indicated-altitude-ft</property>
-                        <value>18000</value>
+                        <property>/instrumentation/fmc/trans-alt</property>
                     </greater-than-equals>
                     <equals>
                         <property>flight-management/text/qnh</property>
@@ -3152,7 +3302,7 @@
                 <and>
                     <less-than>
                         <property>/instrumentation/altimeter/indicated-altitude-ft</property>
-                        <value>18000</value>
+                        <property>/instrumentation/fmc/trans-alt</property>
                     </less-than>
                     <equals>
                         <property>flight-management/text/qnh</property>

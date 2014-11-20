@@ -398,6 +398,10 @@
 				<name>PFD</name>
 				<path>Aircraft/A330-200/Systems/pfd.xml</path>
 			</autopilot>
+            <autopilot>
+                <name>Thrust Levers</name>
+                <path>Aircraft/A330-200/Systems/thrust_levers.xml</path>
+            </autopilot>
 			
 		</systems>
 
@@ -544,6 +548,17 @@
 							</script>
 						</binding>
 					</item>
+                    <item>
+                        <label>Crew</label>
+                        <binding>
+                            <command>nasal</command>
+                            <script>
+                                var crw = gui.Dialog.new("sim/gui/dialogs/crew/dialog", 
+                                    "Aircraft/A330-200/Systems/crew-dlg.xml");
+                                crw.open();
+                            </script>
+                        </binding>
+                    </item>
 					<item>
       					<label>Announcements</label>
       					<binding>
@@ -555,6 +570,7 @@
        					</script>
       					</binding>
      					</item>
+                    
 				</menu>
 				<menu n="101">
 					<label>Reset Systems</label>
@@ -593,6 +609,14 @@
 		</menubar>
 
 	</sim>
+    
+    <aircraft-config>
+        <auto-annunciator type="bool">0</auto-annunciator>
+    </aircraft-config>
+    
+    <copilot>
+        <lights type="bool">0</lights>
+    </copilot>
 	
 	<hydraulics>
 		<control>
@@ -635,6 +659,8 @@
 				<flare-spd type="int">125</flare-spd>
 			</approach>
 		</spd-manager>
+        <thrust-lock type="float">0</thrust-lock>
+        <thrust-lock-reason type="string"></thrust-lock-reason>
 	</flight-management>
 
 	<services>
@@ -723,21 +749,24 @@
 				<cutoff-switch type="bool">true</cutoff-switch>
 				<starter type="bool">false</starter>
 				<starter-switch type="bool">false</starter-switch>
+                <max-athr-thrust type="float">0.94</max-athr-thrust>
 			</engine>
 			<engine n="1">
 				<cutoff type="bool">true</cutoff>
 				<cutoff-switch type="bool">true</cutoff-switch>
 				<starter type="bool">false</starter>
 				<starter-switch type="bool">false</starter-switch>
+                <max-athr-thrust type="float">0.94</max-athr-thrust>
 			</engine>
-                        <detents>
-                            <current type="string">none</current>
-                            <throttle type="float">0</throttle>
-                            <rev type="float">-0.35</rev>
-                            <idle type="float">0</idle>
-                            <clb type="float">0.72</clb>
-                            <toga type="float">1</toga>
-                        </detents>
+            <detents>
+                <current type="string">none</current>
+                <throttle type="float">0</throttle>
+                <rev type="float">-0.59</rev>
+                <idle type="float">0</idle>
+                <clb type="float">0.72</clb>
+                <flex type="float">0.98</flex>
+                <toga type="float">1</toga>
+            </detents>
 		</engines>
 		<flight>
 			<ground-spoilers-armed type="bool">false</ground-spoilers-armed>
@@ -832,6 +861,10 @@
 				<wp type="string">---</wp>
 				<wp_id type="int">0</wp_id>
 			</hold>
+            <texts>
+                <MDA type="string">MDA</MDA>
+                <DH type="string">DH</DH>
+            </texts>
 		</mcdu>
 	
 		<efis n="0">
@@ -920,6 +953,9 @@
 				<VR type="double">0</VR>
 				<V2 type="double">0</V2>
 			</vspeeds>
+            <trans-alt type="int">18000</trans-alt>
+            <acc-alt type="int">1500</acc-alt>
+            <flex-to-temp type="int">-999</flex-to-temp>
 		</fmc>
 		<dme n="1">
 			<serviceable type="bool">true</serviceable>
@@ -1072,6 +1108,7 @@
 
 	<input>
 		<keyboard>
+            
 			<key n="357">
 				<name>Up</name>
 				<repeatable type="bool">true</repeatable>
@@ -1313,7 +1350,6 @@
                 	<command>nasal</command>
                     <script>
                         throttle_detents.set_detent('rev');
-                        utils.clickSound('6');
                     </script>
                 </binding>
             </key>
@@ -1325,7 +1361,6 @@
                     <command>nasal</command>
                     <script>
                         throttle_detents.set_detent('idle');
-                        utils.clickSound('6');
                     </script>
                 </binding>
             </key>
@@ -1337,7 +1372,17 @@
                     <command>nasal</command>
                     <script>
                         throttle_detents.set_detent('clb');
-                        utils.clickSound('6');
+                    </script>
+                </binding>
+            </key>
+            <key n="70">
+                <name>F</name>
+                <desc>Throttle Detent: Flex/MCT</desc>
+                <repeatable type="bool">false</repeatable>
+                <binding>
+                    <command>nasal</command>
+                    <script>
+                        throttle_detents.set_detent('flex');
                     </script>
                 </binding>
             </key>
@@ -1349,7 +1394,6 @@
                     <command>nasal</command>
                     <script>
                         throttle_detents.set_detent('toga');
-                        utils.clickSound('6');
                     </script>
                 </binding>
             </key>
@@ -1418,6 +1462,7 @@
 			<file>Aircraft/A330-200/Nasal/compression.nas</file>
 			<file>Aircraft/A330-200/Nasal/tyresmoke.nas</file>
 			<file>Aircraft/A330-200/Nasal/general_loop.nas</file>
+            <file>Aircraft/A330-200/Nasal/autoannunciator.nas</file>
 		</a332>
         <canvas_nd>
                 <file>Aircraft/A330-200/Models/Instruments/ND/canvas/ND.nas</file>
@@ -1434,6 +1479,9 @@
         <throttle_detents>
 			<file>Aircraft/A330-200/Nasal/throttle_detents.nas</file>
         </throttle_detents>
+        <thrust_levers>
+            <file>Aircraft/A330-200/Nasal/thrust_levers.nas</file>
+        </thrust_levers>
 		<electrical>
 			<file>Aircraft/A330-200/Nasal/electrical.nas</file>
 		</electrical>

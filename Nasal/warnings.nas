@@ -122,7 +122,8 @@ var warning_system = {
             me.UPDATE_INTERVAL = 1;
             me.spdbrkcount = 0;
             me.loopid = 0;
-           
+            me.should_check_autoland = 0;
+    
             setprop("/warnings/master-warning-light", 0);
             setprop("/warnings/master-caution-light", 0);
             
@@ -369,12 +370,17 @@ var warning_system = {
             
             var athr_off = warning.new("A/THR OFF", "chime", "caution", "athr-off");
             athr_off.condition = func() {
-                    return ((getprop("/flight-management/a-thrust") == "off") and (getprop("/position/altitude-agl-ft") > 400));
-            };			
+                    return ((getprop("/flight-management/control/a-thrust") == "off") and (getprop("/position/altitude-agl-ft") > 400));
+            };	
+
+            var athr_limited = warning.new("A/THR LIMITED", 'chime', 'caution', 'athr-limited');
+            athr_limited.condition = func(){
+                return ((getprop("/flight-management/control/a-thrust") == "eng") and (fmgc.fmgc_loop.max_throttle_pos < 0.6));
+            };
 
             # All warnings into a hash for easier use
             
-            me.warnings = [stall, spdbrk_stillout, apu_emer, to_cfg_pbrk, to_cfg_flaps, to_cfg_spdbrk, to_cfg_ptrim, to_cfg_rtrim, elv_fault, ail_fault, rud_fault, spdbrk_fault, flaps_fault, direct_law, altn_law, abn_law , engd_fail, eng1_fail, eng2_fail, engd_oilp, eng1_oilp, eng2_oilp, engd_shut, eng1_shut, eng2_shut, hydall, hydby, hydbg, hydgy, hydb_lopr, hydy_lopr, hydg_lopr, ptu_fault, fuel_1lo, fuel_2lo, fuel_clo, fuel_wlo, fuel_bal, apugen_fault, gen1_fault, gen2_fault, emer_conf, ap_off, athr_off];
+            me.warnings = [stall, spdbrk_stillout, apu_emer, to_cfg_pbrk, to_cfg_flaps, to_cfg_spdbrk, to_cfg_ptrim, to_cfg_rtrim, elv_fault, ail_fault, rud_fault, spdbrk_fault, flaps_fault, direct_law, altn_law, abn_law , engd_fail, eng1_fail, eng2_fail, engd_oilp, eng1_oilp, eng2_oilp, engd_shut, eng1_shut, eng2_shut, hydall, hydby, hydbg, hydgy, hydb_lopr, hydy_lopr, hydg_lopr, ptu_fault, fuel_1lo, fuel_2lo, fuel_clo, fuel_wlo, fuel_bal, apugen_fault, gen1_fault, gen2_fault, emer_conf, ap_off, athr_off, athr_limited];
 
             #TO CONFIG
 
@@ -659,6 +665,36 @@ var warning_system = {
         
         }
     },
+    checkAutoland: func(){
+        var actv_common_mode = getprop("/flight-management/flight-modes/common/active");
+        var ap1 = getprop("/flight-management/control/ap1-master");
+        var ap2 = getprop("/flight-management/control/ap2-master");
+        var agl = getprop("/position/altitude-agl-ft");
+        var al_wrn = 0;
+        if(actv_common_mode == "LAND" and !me.should_check_autoland){
+            if (ap1 == 'eng' or ap2 == 'eng')
+                me.should_check_autoland = 1;
+        }
+        if (me.should_check_autoland and agl < 200){
+            if (ap1 != "eng" and ap2 != "eng"){
+                al_wrn = 1;
+            } else { 
+                if (agl > 100){
+                    var gs_dev = getprop('instrumentation/nav/gs-needle-deflection-norm');
+                    al_wrn = math.abs(gs_dev > 1);
+                }
+                if(agl > 15){
+                    var loc_dev = getprop("instrumentation/nav/heading-needle-deflection-norm");
+                    al_wrn = math.abs(loc_dev > 0.3);
+                }     
+                if(getprop('/gear/gear/wow')){
+                    me.should_check_autoland = 0;
+                    al_wrn = 0;
+                }
+            }
+        }
+        setprop('/autoland/warn', al_wrn);
+    },
     update : func {
     	
                 # Speed Brake update
@@ -724,6 +760,7 @@ var warning_system = {
                 
                 me.updateECAM();
                 me.updateMEMO();
+                me.checkAutoland();
     	
 	},
 

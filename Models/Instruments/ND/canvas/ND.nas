@@ -235,6 +235,4 @@ if(!ND_AIRBUS_SUPPORT){
         dlg.setCanvas( nd_display["main"] );
     }
 
-
-
 }

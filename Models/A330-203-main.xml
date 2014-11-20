@@ -198,6 +198,72 @@
 		</equals>
 	</condition>
 </model>
+    
+    <model>
+        <name>Landing light (nose)</name>
+        <path>Aircraft/A330-200/Models/Lights/light-cone.xml</path>
+        <offsets>
+            <x-m>-16.08</x-m>
+            <y-m>0</y-m>
+            <z-m>-2.98</z-m>
+        </offsets>
+        <condition>
+            <and>
+                <greater-than-equals>
+                    <property>/systems/electrical/outputs/efis</property>
+                    <value>9</value>
+                </greater-than-equals>
+                <equals>
+                    <property>controls/lighting/landing-lights[1]</property>
+                    <value>1</value>
+                </equals>
+            </and>
+        </condition>
+    </model>
+    
+    <model>
+        <name>Landing light (left)</name>
+        <path>Aircraft/A330-200/Models/Lights/light-cone.xml</path>
+        <offsets>
+            <x-m>1.09</x-m>
+            <y-m>-6</y-m>
+            <z-m>-1.2</z-m>
+        </offsets>
+        <condition>
+            <and>
+                <greater-than-equals>
+                    <property>/systems/electrical/outputs/efis</property>
+                    <value>9</value>
+                </greater-than-equals>
+                <equals>
+                    <property>controls/lighting/landing-lights[0]</property>
+                    <value>1</value>
+                </equals>
+            </and>
+        </condition>
+    </model>
+    
+    <model>
+        <name>Landing light (right)</name>
+        <path>Aircraft/A330-200/Models/Lights/light-cone.xml</path>
+        <offsets>
+            <x-m>1.09</x-m>
+            <y-m>6</y-m>
+            <z-m>-1.2</z-m>
+        </offsets>
+        <condition>
+            <and>
+                <greater-than-equals>
+                    <property>/systems/electrical/outputs/efis</property>
+                    <value>9</value>
+                </greater-than-equals>
+                <equals>
+                    <property>controls/lighting/landing-lights[2]</property>
+                    <value>1</value>
+                </equals>
+            </and>
+        </condition>
+    </model>
 
 	<model>
 		<name>Left nav light</name>
