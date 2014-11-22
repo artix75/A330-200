@@ -136,6 +136,7 @@ var fmgc_loop = {
         me.alpha_floor_mode = 0;
         me.thrust_lock = 0;
         me.thrust_lock_reason = '';
+        me.toga_trk = nil;
         # Radio
     
         setprop(radio~ 'autotuned', 0);
@@ -485,13 +486,13 @@ var fmgc_loop = {
                 
 
             #}
-            if (lmode == "HDG" or lmode == "TRK") {#TODO: support GA TRK
+            if (lmode == "HDG" or lmode == "TRK" or me.toga_trk != nil) {#TODO: support GA TRK
 
                 # Find Heading Deflection
                 var true_north = me.use_true_north;
-                var bug = getprop(fcu~ "hdg");
+                var bug = me.toga_trk != nil ? me.toga_trk : getprop(fcu~ "hdg");
                 #print("HDG: bug -> " ~ bug);
-                var heading_type = (lmode == 'HDG' ? 'heading' : 'track');
+                var heading_type = (lmode == 'HDG' and me.toga_trk == nil ? 'heading' : 'track');
                 var bank = -1 * defl(bug, 20, true_north, heading_type);
                 #print("HDG: bank -> " ~ bank);
 
@@ -1281,6 +1282,8 @@ var fmgc_loop = {
             if(me.autoland_phase == 'rollout')
                 me.active_common_mode = 'ROLLOUT'; #TODO: should this be active also without autoland?
                
+            if(me.srs_spd > 0 and (toga or flex_mct))
+                me.active_ver_mode = 'SRS';
             me.armed_ver_mode = vmode;
         } else {
             
@@ -1312,10 +1315,35 @@ var fmgc_loop = {
                 me.active_lat_mode = (me.rwy_mode? 'RWY' : '');  #TODO: support RWY TRK
                 me.armed_lat_mode = lmode;
             }
+            if(toga and me.flaps > 0 and me.agl < me.acc_alt and 
+               (phase == 'APP' or me.toga_trk != nil)){
+                me.active_lat_mode = 'GA TRK';
+                me.armed_lat_mode = '';
+                if(me.toga_trk == nil){
+                    if(!me.use_true_north)
+                        me.toga_trk = getprop("orientation/track-magnetic-deg");
+                    else 
+                        me.toga_trk = getprop("orientation/track-deg");
+                }
+                me.lat_mode = 'hdg';
+                setprop(fmgc~ "lat-mode", 'hdg');
+                me.lat_ctrl = 'man-set';
+                setprop(fmgc~ "lat-ctrl", 'man-set');
+
+                me.ver_mode = 'alt';
+                setprop(fmgc~ "ver-mode", 'alt');
+                me.ver_ctrl = 'man-set';
+                getprop(fmgc~ "ver-ctrl", 'man-set');
+            } else {
+                if(me.toga_trk != nil)
+                    me.set_current_vsfpa();
+                me.toga_trk = nil;
+            }
             
             #VERTICAL
             
-            if(me.agl < 1500 and me.agl > 0 and me.srs_spd > 0 and me.phase == 'CLB'){
+            if((me.agl < me.acc_alt and me.agl > 0 and 
+                me.srs_spd > 0 and me.phase == 'CLB') or me.toga_trk != nil){
                 me.active_ver_mode = 'SRS';
                 me.armed_ver_mode = vmode;
                 if(me.vmax > me.srs_spd)
@@ -1374,6 +1402,7 @@ var fmgc_loop = {
                 me.vsfpa_mode = 1;
                 setprop(fmgc~'vsfpa-mode', 1);
                 setprop(fmgc~ "ver-ctrl", "man-set");
+                me.set_current_vsfpa();
                 me.active_ver_mode = me.get_vsfpa_mode(vmode);
             }
         }
@@ -1454,6 +1483,16 @@ var fmgc_loop = {
             me.armed_lat_mode = '';
             me.armed_ver_mode = '';
         }
+        
+        if(!me.ap_engaged and !me.fd_engaged){
+            me.active_lat_mode = '';
+            me.active_ver_mode = '';
+            me.armed_lat_mode = '';
+            me.armed_ver_mode = '';
+            me.active_common_mode = '';
+            me.armed_common_mode = '';
+        }
+        
         setprop(athr_modes~'active', me.active_athr_mode);
         setprop(athr_modes~'armed', me.armed_athr_mode);
         setprop(vmodes~'active', me.active_ver_mode);
@@ -2128,6 +2167,19 @@ var fmgc_loop = {
             else 
                 setprop('controls/engines/engine[1]/throttle', thr_r);
         }
+    },
+    set_current_vsfpa: func(){
+        var sub = me.ver_sub;
+        var prop = '';
+        var current = 0;
+        if(sub == 'vs'){
+            prop = 'vs';
+            current = me.vs_fpm;
+        } else {
+            prop = 'fpa';
+            current = int(me.fpa_angle);
+        }
+        setprop(fcu~ prop, current);
     },
     reset : func {
         me.loopid += 1;
