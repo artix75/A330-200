@@ -932,7 +932,10 @@
         <type>select</type>
         <object-name>gmt-time-text</object-name>
         <object-name>comm-frq-active</object-name>
-        <object-name>comm-stby-active</object-name>
+        <object-name>comm-frq-stby</object-name>
+        <object-name>comm2-frq-active</object-name>
+        <object-name>comm2-frq-stby</object-name>
+        <object-name>transponder-code</object-name>
         <condition>
             <greater-than-equals>
                 <property>/systems/electrical/outputs/efis</property>
@@ -946,7 +949,10 @@
         <type>material</type>
         <object-name>gmt-time-text</object-name>
         <object-name>comm-frq-active</object-name>
-        <object-name>comm-stby-active</object-name>
+        <object-name>comm-frq-stby</object-name>
+        <object-name>comm2-frq-active</object-name>
+        <object-name>comm2-frq-stby</object-name>
+        <object-name>transponder-code</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>
@@ -1748,6 +1754,35 @@
     
     <animation>
         <type>pick</type>
+        <object-name>radio-frq-knobR</object-name>
+        <action>
+            <button>0</button>
+            <button>3</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var frq = getprop('/instrumentation/comm[1]/frequencies/standby-mhz');
+                    frq += 0.01;
+                    setprop('/instrumentation/comm[1]/frequencies/standby-mhz', frq);
+                </script>
+            </binding>
+        </action>
+        <action>
+            <button>1</button>
+            <button>4</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var frq = getprop('/instrumentation/comm[1]/frequencies/standby-mhz');
+                    frq -= 0.01;
+                    setprop('/instrumentation/comm[1]/frequencies/standby-mhz', frq);
+                </script>
+            </binding>
+        </action>
+    </animation>
+    
+    <animation>
+        <type>pick</type>
         <object-name>radio-frq-switch</object-name>
         <action>
             <button>0</button>
@@ -1763,6 +1798,86 @@
             </binding>
         </action>
     </animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>radio-frq-switchR</object-name>
+        <action>
+            <button>0</button>
+            <button>1</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var stby = getprop('/instrumentation/comm[1]/frequencies/standby-mhz');
+                    var actv = getprop('/instrumentation/comm[1]/frequencies/selected-mhz');
+                    setprop('/instrumentation/comm[1]/frequencies/standby-mhz', actv);
+                    setprop('/instrumentation/comm[1]/frequencies/selected-mhz', stby);
+                </script>
+            </binding>
+        </action>
+    </animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>transponder-knobL</object-name>
+        <action>
+            <button>3</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var frq = getprop('/instrumentation/transponder/id-code');
+                    frq += 1;
+                    setprop('/instrumentation/transponder/id-code', frq);
+                </script>
+            </binding>
+        </action>
+        <action>
+            <button>4</button>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var frq = getprop('/instrumentation/transponder/id-code');
+                    frq += 1;
+                    setprop('/instrumentation/transponder/id-code', frq);
+                </script>
+            </binding>
+        </action>
+    </animation>
+    
+    
+    
+    <!-- WX quadrant -->
+    
+    <animation>
+        <type>rotate</type>
+        <object-name>wx-switch</object-name>
+        <property>/instrumentation/efis/inputs/wxr</property>
+        <!--offset-deg>-5</offset-deg-->
+        <factor>10</factor>
+        <center>
+            <x-m>-0.11</x-m><!-- -0.11 -->
+            <y-m>-0.20</y-m><!-- 0.19 -->
+            <z-m>-0.38</z-m><!-- -0.37 -->
+        </center>
+        <axis>
+            <x>-1</x>
+            <y>0</y>
+            <z>0</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>wx-switch</object-name>
+        <action>
+            <button>0</button>
+            <binding>
+                <command>property-toggle</command>
+                <property>/instrumentation/efis/inputs/wxr</property>
+            </binding>
+        </action>
+    </animation>
+    
 	
 	<!-- Throttle quadrant -->
 	<animation>
@@ -2122,6 +2237,42 @@
             <y>0</y>
             <z>0</z>
         </axis>
+    </animation>
+    
+    <animation>
+        <type>rotate</type>
+        <object-name>LRudderPedalL</object-name>
+        <object-name>LRudderPedalR</object-name>
+        <property>controls/gear/brake-left</property>
+        <factor>4.5</factor>
+        <axis>
+            <x>0</x>
+            <y>-1</y>
+            <z>0</z>
+        </axis>
+        <center>
+            <x-m>-0.73</x-m>
+            <y-m>0.0</y-m>
+            <z-m>-0.59</z-m>
+        </center>
+    </animation>
+    
+    <animation>
+        <type>rotate</type>
+        <object-name>RRudderPedalL</object-name>
+        <object-name>RRudderPedalR</object-name>
+        <property>controls/gear/brake-right</property>
+        <factor>4.5</factor>
+        <axis>
+            <x>0</x>
+            <y>-1</y>
+            <z>0</z>
+        </axis>
+        <center>
+            <x-m>-0.73</x-m>
+            <y-m>0.0</y-m>
+            <z-m>-0.59</z-m>
+        </center>
     </animation>
     
     <!-- Flight Director -->
@@ -3763,7 +3914,7 @@
     </text>
     
     <text>
-        <name>comm-stby-active</name>
+        <name>comm-frq-stby</name>
         <offsets>
             <x-m>-0.3011</x-m>
             <y-m>-0.1307</y-m>
@@ -3777,6 +3928,84 @@
         <type type="string">number-value</type>
         <format type="string">%2.2f</format>
         <property>/instrumentation/comm/frequencies/standby-mhz</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">led.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>comm2-frq-active</name>
+        <offsets>
+            <x-m>-0.3011</x-m>
+            <y-m>0.1307</y-m>
+            <z-m>-0.3385</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>20</roll-deg>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%2.2f</format>
+        <property>/instrumentation/comm[1]/frequencies/selected-mhz</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">led.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>comm2-frq-stby</name>
+        <offsets>
+            <x-m>-0.3011</x-m>
+            <y-m>0.1947</y-m>
+            <z-m>-0.3385</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>20</roll-deg>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%2.2f</format>
+        <property>/instrumentation/comm[1]/frequencies/standby-mhz</property>
+        <truncate type="bool">false</truncate>
+        <font type="string">led.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>transponder-code</name>
+        <offsets>
+            <x-m>-0.1000</x-m>
+            <y-m>0.1487</y-m>
+            <z-m>-0.3645</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>5</roll-deg>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%4.0f</format>
+        <property>/instrumentation/transponder/id-code</property>
         <truncate type="bool">false</truncate>
         <font type="string">led.txf</font>
         <draw-text type="bool">true</draw-text>
