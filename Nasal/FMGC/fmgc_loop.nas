@@ -692,7 +692,8 @@ var fmgc_loop = {
         # FMGC CONTROL MODE ====================================================
         var remaining = me.remaining_nm;
         var toga_flx_mode = (athrArmed and me.speed_with_pitch);
-        if ((me.spd_ctrl == "fmgc") and (athrEngaged or toga_flx_mode)) {
+        if ((me.spd_ctrl == "fmgc") and (athrEngaged or toga_flx_mode or 
+                                         !me.airborne)) {
 
             var cur_wp = me.current_wp;
             #var ias = getprop("/velocities/airspeed-kt");
@@ -717,11 +718,17 @@ var fmgc_loop = {
                         setprop("instrumentation/pfd/target-spd", spd);
                     }
                 }
-
+            }
+            elsif(!me.airborne){
+                var spd = me.v2_spd;
+                if(spd){
+                    setprop(fmgc_val~ "target-spd", spd);
+                    setprop("instrumentation/pfd/target-spd", spd);
+                }
             } else {
                 var srs = 0;
                 if(vmode == 'SRS' and me.srs_spd > 0){
-                    var spd = me.airborne ? me.srs_spd : me.v2_spd;
+                    var spd = me.srs_spd;
                     setprop(fmgc_val~ "target-spd", spd);
                     srs = 1;
                 }
