@@ -721,7 +721,7 @@ var fmgc_loop = {
             } else {
                 var srs = 0;
                 if(vmode == 'SRS' and me.srs_spd > 0){
-                    var spd = me.srs_spd;
+                    var spd = me.airborne ? me.srs_spd : me.v2_spd;
                     setprop(fmgc_val~ "target-spd", spd);
                     srs = 1;
                 }
