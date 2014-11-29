@@ -470,6 +470,31 @@
         </transform>
     </animation>
     
+    <animation>
+        <type>texmultiple</type>
+        <object-name>green-dot-spd</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/pfd/green-dot-speed</property>
+            <factor>0.002001953</factor>
+            <axis>
+                <y>-1</y>
+                <x>0</x>
+                <z>0</z>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+            <factor>0.002001953</factor>
+            <axis>
+                <y>1</y>
+                <x>0</x>
+                <z>0</z>
+            </axis>
+        </transform>
+    </animation>
+    
     <!-- -->
     
     <animation>
@@ -557,6 +582,23 @@
                 <equals>
                     <property>/flight-management/control/spd-mode</property>
                     <value>ias</value>
+                </equals>
+            </and>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>green-dot-spd</object-name>
+        <condition>
+            <and>
+                <greater-than>
+                    <property>instrumentation/pfd/green-dot-speed</property>
+                    <value>100</value>
+                </greater-than>
+                <equals>
+                    <property>controls/flight/flaps</property>
+                    <value>0</value>
                 </equals>
             </and>
         </condition>

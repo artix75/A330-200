@@ -661,6 +661,12 @@
 		</spd-manager>
         <thrust-lock type="float">0</thrust-lock>
         <thrust-lock-reason type="string"></thrust-lock-reason>
+        <control>
+            <exped-mode type="bool">false</exped-mode>
+        </control>
+        <settings>
+            <min-elevator-ctrl type="double">-0.15</min-elevator-ctrl>
+        </settings>
 	</flight-management>
 
 	<services>
