@@ -2070,6 +2070,23 @@
     
     <!-- Side Stick Animations -->
     
+    <animation>
+        <type>select</type>
+        <object-name>Rsidestick</object-name>
+        <object-name>Lsidestick</object-name>
+        <object-name>sphere0001.stick</object-name>
+        <object-name>sphere0002.stick</object-name>
+        <object-name>sphere0004.stick</object-name>
+        <object-name>sphere0005.stick</object-name>
+        <object-name>sphere0006.stick</object-name>
+        <object-name>sphere0007.stick</object-name>
+        <object-name>sphere0009.stick</object-name>
+        <object-name>sphere0010.stick</object-name>
+        <condition>
+            <property>sim/model/old-sidesticks</property>
+        </condition>
+    </animation>
+    
     <!--animation>
         <type>rotate</type>
         <object-name>Rsidestick</object-name>
