@@ -2070,7 +2070,7 @@
     
     <!-- Side Stick Animations -->
     
-    <animation>
+    <!--animation>
         <type>rotate</type>
         <object-name>Rsidestick</object-name>
         <property>controls/flight/aileron</property>
@@ -2136,7 +2136,173 @@
             <y>1</y>
             <z>0</z>
         </axis>
+    </animation-->
+    
+    <animation>
+        <type>rotate</type>
+        <object-name>sidestick_1</object-name>
+        <object-name>sidestick_3</object-name>
+        <object-name>sidestick_button1</object-name>
+        <property>controls/flight/elevator</property>
+        <factor>10</factor>
+        <center>
+            <x-m>-0.18</x-m>
+            <y-m>0</y-m>
+            <z-m>-0.21</z-m>
+        </center>
+        <axis>
+            <x>0.0</x>
+            <y>-1.0</y>
+            <z>0.0</z>
+        </axis>
     </animation>
+    
+    <animation>
+        <type>rotate</type>
+        <object-name>sidestick_1</object-name>
+        <object-name>sidestick_3</object-name>
+        <object-name>sidestick_button1</object-name>
+        <property>controls/flight/aileron</property>
+        <factor>10</factor>
+        <center>
+            <x-m>-0.19</x-m>
+            <y-m>-0.9</y-m>
+            <z-m>-0.21</z-m>
+        </center>
+        <axis>
+            <x>-1.0</x>
+            <y>0.0</y>
+            <z>0.0</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>rotate</type>
+        <object-name>sidestick_1</object-name>
+        <object-name>sidestick_3</object-name>
+        <object-name>sidestick_button1</object-name>
+        <object-name>level3</object-name>
+        <property>controls/flight/elevator</property>
+        <factor>3</factor>
+        <center>
+            <x-m>-0.1903</x-m>
+            <y-m>-0.91</y-m>
+            <z-m>-0.22</z-m>
+        </center>
+        <axis>
+            <x>0.0</x>
+            <y>-1.0</y>
+            <z>0.0</z>
+        </axis>
+    </animation>
+
+    <animation>
+        <type>rotate</type>
+        <object-name>sidestick_1</object-name>
+        <object-name>sidestick_3</object-name>
+        <object-name>sidestick_button1</object-name>
+        <object-name>level3</object-name>
+        <property>controls/flight/aileron</property>
+        <factor>3</factor>
+        <center>
+            <x-m>-0.1903</x-m>
+            <y-m>-0.91</y-m>
+            <z-m>-0.22</z-m>
+        </center>
+        <axis>
+            <x>-1.0</x>
+            <y>0.0</y>
+            <z>0.0</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>rotate</type>
+        <object-name>sidestick_1</object-name>
+        <object-name>sidestick_3</object-name>
+        <object-name>sidestick_button1</object-name>
+        <object-name>level3</object-name>
+        <object-name>level2</object-name>
+        <property>controls/flight/elevator</property>
+        <factor>3</factor>
+        <center>
+            <x-m>-0.1903</x-m>
+            <y-m>-0.91</y-m>
+            <z-m>-0.21</z-m>
+        </center>
+        <axis>
+            <x>0.0</x>
+            <y>-1.0</y>
+            <z>0.0</z>
+        </axis>
+    </animation>
+
+    <animation>
+        <type>rotate</type>
+        <object-name>sidestick_1</object-name>
+        <object-name>sidestick_3</object-name>
+        <object-name>sidestick_button1</object-name>
+        <object-name>level3</object-name>
+        <object-name>level2</object-name>
+        <property>controls/flight/aileron</property>
+        <factor>3</factor>
+        <center>
+            <x-m>-0.1903</x-m>
+            <y-m>-0.91</y-m>
+            <z-m>-0.21</z-m>
+        </center>
+        <axis>
+            <x>-1.0</x>
+            <y>0.0</y>
+            <z>0.0</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>rotate</type>
+        <object-name>sidestick_1</object-name>
+        <object-name>sidestick_3</object-name>
+        <object-name>sidestick_button1</object-name>
+        <object-name>level3</object-name>
+        <object-name>level2</object-name>
+        <object-name>level1</object-name>
+        <property>controls/flight/elevator</property>
+        <factor>3</factor>
+        <center>
+            <x-m>-0.1903</x-m>
+            <y-m>-0.91</y-m>
+            <z-m>-0.19</z-m>
+        </center>
+        <axis>
+            <x>0.0</x>
+            <y>-1.0</y>
+            <z>0.0</z>
+        </axis>
+    </animation>
+
+    <animation>
+        <type>rotate</type>
+        <object-name>sidestick_1</object-name>
+        <object-name>sidestick_3</object-name>
+        <object-name>sidestick_button1</object-name>
+        <object-name>level3</object-name>
+        <object-name>level2</object-name>
+        <object-name>level1</object-name>
+        <property>controls/flight/aileron</property>
+        <factor>3</factor>
+        <center>
+            <x-m>-0.1903</x-m>
+            <y-m>-0.91</y-m>
+            <z-m>-0.19</z-m>
+        </center>
+        <axis>
+            <x>-1.0</x>
+            <y>0.0</y>
+            <z>0.0</z>
+        </axis>
+    </animation>
+    
+    
 
     <!-- Tiller Animation -->
 
