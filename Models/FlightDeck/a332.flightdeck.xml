@@ -620,26 +620,8 @@
 			<button>0</button>
 			<repeatable type="bool">false</repeatable>
 			<binding>
-				<command>nasal</command>
-				<script>
-				
-					var vs_fps = getprop("/velocities/vertical-speed-fps");
-				
-					if (vs_fps >= 0) {
-				
-						setprop("/flight-management/fcu-values/vs", 2800);
-					
-						setprop("/flight-management/fcu-values/fpa", 10);
-					
-					} else {
-					
-						setprop("/flight-management/fcu-values/vs", -2500);
-					
-						setprop("/flight-management/fcu-values/fpa", -10);
-					
-					}
-					
-				</script>
+				<command>property-toggle</command>
+                <property>/flight-management/control/exped-mode</property>
 			</binding>
 		</action>
 	</animation>
@@ -1274,7 +1256,7 @@
 		</axis>
 	</animation>
 	
-	<!-- AP1, AP2, LOC, APPR and A-THR Indicator Textranslate -->
+	<!-- AP1, AP2, LOC, APPR, EXPED and A-THR Indicator Textranslate -->
 	
 	<animation>
 		<type>textranslate</type>
@@ -1335,6 +1317,18 @@
 			<z>0</z>
 		</axis>
 	</animation>
+    
+    <animation>
+        <type>textranslate</type>
+        <object-name>exped</object-name>
+        <property>/flight-management/control/exped-mode</property>
+        <factor>0.0625</factor>
+        <axis>
+            <x>0</x>
+            <y>1</y>
+            <z>0</z>
+        </axis>
+    </animation>
 	
 	<!-- QNH -->
 	
