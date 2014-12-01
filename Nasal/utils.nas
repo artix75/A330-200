@@ -5,6 +5,7 @@ var posToTower = func (){
     var lon = twr.lon;
     setprop('position/latitude-deg', lat);
     setprop('position/longitude-deg', lon);
+    setprop('position/altitude-agl-ft', i.elevation);
 }
 
 var printTowerPos = func (){

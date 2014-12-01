@@ -1102,19 +1102,20 @@ var fmgc_loop = {
         var flaps = me.flaps;
         var stall_spd = 0;
         var retract_flaps_spd = 0;
-        if(flaps <= 0.29)
+        if(flaps <= 0.29){
             stall_spd = 150;
+        }
         elsif(flaps == 0.596){
-            retract_flaps_spd = 150;
+            retract_flaps_spd = 155;
             stall_spd = 135;
         }
         elsif(flaps >= 0.74){
-            retract_flaps_spd = 135;
+            retract_flaps_spd = 140;
             stall_spd = 120;   
         }
         setprop(fmgc_val ~ 'stall-speed', stall_spd);
         setprop(fmgc_val ~ 'ind-stall-speed', stall_spd - 125);
-        setprop('instrumentation/pfd/min-retract-flaps-speed', 
+        setprop('instrumentation/pfd/min-flaps-retract-speed', 
                 retract_flaps_spd);
         me.stall_spd = stall_spd;
     },
@@ -1636,15 +1637,21 @@ var fmgc_loop = {
         var vmax = 0;
         var exp_mode = me.exped_mode;
         var flaps = me.flaps;
+        var extend_flaps_spd = 0;
         if(flaps > 0.74)
             vmax = 184;
-        elsif(flaps == 0.74)
+        elsif(flaps == 0.74){
+            extend_flaps_spd = 184;
             vmax = 190;
-        elsif(flaps == 0.596)
+        }
+        elsif(flaps == 0.596){
+            extend_flaps_spd = 190;
             vmax = 200;
-        elsif(flaps == 0.29)
+        }
+        elsif(flaps == 0.29){
+            extend_flaps_spd = 200;
             vmax = 215;
-        else{
+        } else {
             var alt = me.altitude;
             if(!exp_mode){
                 if(alt < 10000)
@@ -1657,9 +1664,8 @@ var fmgc_loop = {
                 vmax = 340;
             }
         }
-        var retract_flaps_spd = (flaps and !exp_mode? vmax - 4 : 0);
-        setprop('instrumentation/pfd/max-flaps-retract-speed',
-                retract_flaps_spd);
+        setprop('instrumentation/pfd/max-flaps-extend-speed',
+                extend_flaps_spd);
         return vmax;
     },
     calc_exped_spd: func(){
