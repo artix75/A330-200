@@ -182,6 +182,8 @@ var fmgc_loop = {
         me.hdg_disp();
 
         me.fcu_lights();
+        
+        me.update_fcu();
 
         setprop("flight-management/procedures/active", procedure.check());
 
@@ -213,94 +215,7 @@ var fmgc_loop = {
         
         # NAV1 Auto-tuning
         
-        me.autotuned_nav = getprop(radio~'autotuned');
-        var dest_airport = me.dest_airport;
-        var dest_rwy = me.dest_rwy;
-        var dep_airport = me.dep_airport;
-        var dep_rwy = me.dep_rwy;
-        var ils_frq = me.ils_frq;
-        if (flplan_active and (!ils_frq or me.autotuned_nav)){
-            #var nav = 'instrumentation/nav/';
-            if(!me.airborne){
-                if (dep_airport != nil and 
-                    dep_rwy != nil){
-                    var dist = getprop("/autopilot/route-manager/route/wp/distance-nm");
-                    var not_tuned = (me.autotune.airport != dep_airport or 
-                                     me.autotune.rwy != dep_rwy);
-                    if(dist != nil and dist < 10 and not_tuned){
-                        var apt_info = airportinfo(dep_airport);
-                        var rwy = apt_info.runways[dep_rwy];
-                        var rwy_ils = nil;
-                        if(rwy != nil)
-                            rwy_ils = rwy.ils;
-                        if(rwy_ils != nil){
-                            var frq = rwy_ils.frequency / 100;
-                            var crs = rwy_ils.course;
-                            setprop(radio~ "ils", frq);
-                            setprop(radio~ "ils-crs", int(crs));
-                            me.autotune.airport = dep_airport;
-                            me.autotune.rwy = dep_rwy;
-                            me.autotune.frq = frq;
-                            setprop(radio~'autotuned', 1);
-                        }
-                    }
-                }
-            } 
-            elsif (dest_airport != '' and dest_rwy != ''){
-                #me.rwy_mode = 0;
-                var not_tuned = (me.autotune.airport != dest_airport or 
-                                 me.autotune.rwy != dest_rwy);
-                if(not_tuned){
-                    var apt_info = airportinfo(dest_airport);
-                    var rwy = apt_info.runways[dest_rwy];
-                    var rwy_ils = nil;
-                    if(rwy != nil)
-                        rwy_ils = rwy.ils;
-                    if(rwy_ils != nil){
-                        var frq = rwy_ils.frequency / 100;
-                        var crs = rwy_ils.course;
-                        var dist = getprop("/autopilot/route-manager/wp-last/dist");
-                        if(dist <= 50){
-                            setprop("/flight-management/freq/ils", frq);
-                            setprop("/flight-management/freq/ils-crs", int(crs));
-                            if (getprop(radio~ "ils-mode")) {
-                                mcdu.rad_nav.switch_nav1(1);
-                            }
-                            me.autotune.airport = dest_airport;
-                            me.autotune.rwy = dest_rwy;
-                            me.autotune.frq = frq;
-                            setprop(radio~'autotuned', 1);
-                        }
-                    }
-                }
-            }
-        }
-        if(!me.autotuned_nav){
-            me.autotune.airport = '';
-            me.autotune.rwy = '';
-            me.autotune.frq = '';
-            me.autotune.vor = '';
-        }
-        
-        if (flplan_active and (!me.airborne or (me.agl > 0 and me.agl < 30)) and dep_airport != nil){
-            var dist = getprop("/autopilot/route-manager/route/wp/distance-nm");
-            if (dist != nil and dist < 10 and ils_frq != nil){
-                var apt_info = airportinfo(dep_airport);
-                var rwy_ils = apt_info.runways[dep_rwy].ils;
-                if(rwy_ils != nil and ils_frq != nil){
-                    var frq = rwy_ils.frequency / 100;
-                    #print('RWY ILS: ' ~ rfq ~ ', ILS: ' ~ ils_frq);
-                    if (frq == ils_frq){
-                        setprop(radio~ "ils-mode", 1);
-                        mcdu.rad_nav.switch_nav1(1);
-                        var in_range = getprop('instrumentation/nav/in-range');
-                        if (in_range) me.rwy_mode = 1;
-                    }
-                }
-            } else {
-                me.rwy_mode = 0;
-            }
-        }
+        me.autotune_ils();
         
         var athrEngaged = (me.a_thr == 'eng');
         var athrArmed = (me.a_thr == 'armed');
@@ -753,10 +668,10 @@ var fmgc_loop = {
                 elsif (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and !app_phase and flplan_active and !toga_flx_mode) {
 
                     var spd = nil;
-                    if(getprop("/autopilot/route-manager/route/num") > 0)
-                        spd = getprop("/autopilot/route-manager/route/wp[" ~ cur_wp ~ "]/ias-mach");
+                    if(me.wp != nil)
+                        spd = me.wp.speed_cstr;
 
-                    if (spd == nil or spd == 0) {
+                    if (spd == nil or spd <= 0) {
                         var is_descending = vmode_vs_fps <= -8 or ((me.fcu_alt - altitude) < -200); #(me.phase == 'DES' and (me.fcu_alt - altitude) < -200);
                         
                         if(remaining < decel_point){
@@ -1152,6 +1067,10 @@ var fmgc_loop = {
         me.green_dot_spd = me.stall_spd + 15;
         setprop(fmgc_val ~ 'fpa-angle', me.fpa_angle);
         setprop('instrumentation/pfd/green-dot-speed', me.green_dot_spd);
+        me.flightplan = flightplan();
+        if(me.flplan_active and me.wp_count > 0){
+            me.wp = me.flightplan.getWP();
+        }
     },
     check_flight_modes : func{
         var flplan_active = me.flplan_active;
@@ -1707,12 +1626,14 @@ var fmgc_loop = {
     },
 
     knob_sum : func {
+        var disp_hdg = getprop('/flight-management/fcu/display-hdg');
+        if(me.spd_ctrl != 'fmgc' and !disp_hdg){
+           var ias = getprop(fcu~ "ias");
 
-        var ias = getprop(fcu~ "ias");
+            var mach = getprop(fcu~ "mach");
 
-        var mach = getprop(fcu~ "mach");
-
-        setprop(fcu~ "spd-knob", ias + (100 * mach));
+            setprop(fcu~ "spd-knob", ias + (100 * mach));
+        }
 
         var vs = getprop(fcu~ "vs");
 
@@ -1723,7 +1644,7 @@ var fmgc_loop = {
     },
     hdg_disp : func {
 
-        var hdg = getprop(fcu~ "hdg");
+        var hdg = int(getprop(fcu~ "hdg"));
 
         if (hdg < 10)
             setprop(fcu~ "hdg-disp", "00" ~ hdg);
@@ -1733,7 +1654,16 @@ var fmgc_loop = {
             setprop(fcu~ "hdg-disp", "" ~ hdg);
 
     },
-
+    update_fcu: func(){
+        if(me.lat_ctrl == 'fmgc'){
+            if(!getprop('/flight-management/fcu/display-hdg'))
+                me.set_current_hdgtrk();
+        }
+        if(me.spd_ctrl == 'fmgc'){
+            if(!getprop('/flight-management/fcu/display-spd'))
+                me.set_current_spd();
+        }
+    },
     fcu_lights : func {
 
         if (me.lat_mode == "nav1")
@@ -1876,7 +1806,7 @@ var fmgc_loop = {
             }
 
             #print("TD: " ~ top_of_descent);
-            var f= flightplan(); 
+            var f= me.flightplan; 
             #                   var topClimb = f.pathGeod(0, 100);
             var topDescent = f.pathGeod(-1, -top_of_descent);
             setprop(tdNode ~ "/latitude-deg", topDescent.lat); 
@@ -1944,7 +1874,7 @@ var fmgc_loop = {
                     #var bearing = me.calc_point_bearing(nm);
                     #setprop(tcNode~'/bearing-deg', bearing);
                 } 
-                var f= flightplan(); 
+                var f= me.flightplan; 
                 #print("TC: " ~ nm);
                 var topClimb = f.pathGeod(0, nm);
                 setprop(tcNode ~ "/latitude-deg", topClimb.lat); 
@@ -1973,7 +1903,7 @@ var fmgc_loop = {
         var trgt_alt = 0;
         var fcu_alt = me.fcu_alt;
         if (me.flplan_active and me.airborne and me.ver_mode != 'ils'){
-            var f= flightplan(); 
+            var f= me.flightplan; 
             var vs_fpm = me.vs_fpm;
             if(vs_fpm == 0) return;
             var vnav_actv = 0;
@@ -2115,7 +2045,7 @@ var fmgc_loop = {
     calc_decel_point: func{
         var decelNode = "/instrumentation/nd/symbols/decel";
         if (getprop("/autopilot/route-manager/active")){
-            var f= flightplan(); 
+            var f= me.flightplan; 
             var numwp = me.wp_count;
             var i = 0;
             var first_approach_wp = nil;
@@ -2214,7 +2144,7 @@ var fmgc_loop = {
                     if(math.abs(nm - cur_raw) >= 1){
                         setprop(node_raw_path, nm);
                     } 
-                    var f= flightplan(); 
+                    var f= me.flightplan; 
                     #print("TC: " ~ nm);
                     var point = f.pathGeod(0, nm);
                     setprop(node_path ~ "/latitude-deg", point.lat); 
@@ -2274,8 +2204,97 @@ var fmgc_loop = {
                 setprop('controls/engines/engine[1]/throttle', thr_r);
         }
     },
+    autotune_ils: func(){
+        me.autotuned_nav = getprop(radio~'autotuned');
+        var dest_airport = me.dest_airport;
+        var dest_rwy = me.dest_rwy;
+        var dep_airport = me.dep_airport;
+        var dep_rwy = me.dep_rwy;
+        var ils_frq = me.ils_frq;
+        var flplan_active = me.flplan_active;
+        var airborne = me.airborne;
+        if (flplan_active and (!ils_frq or me.autotuned_nav)){
+            if(!airborne){
+                if (dep_airport != '' and dep_rwy != ''){
+                    var dist = getprop("/autopilot/route-manager/route/wp/distance-nm");
+                    var not_tuned = (me.autotune.airport != dep_airport or 
+                                     me.autotune.rwy != dep_rwy);
+                    if(dist != nil and dist < 10 and not_tuned){
+                        var apt_info = airportinfo(dep_airport);
+                        var rwy = apt_info.runways[dep_rwy];
+                        var rwy_ils = nil;
+                        if(rwy != nil)
+                            rwy_ils = rwy.ils;
+                        if(rwy_ils != nil){
+                            var frq = rwy_ils.frequency / 100;
+                            var crs = rwy_ils.course;
+                            setprop(radio~ "ils", frq);
+                            setprop(radio~ "ils-crs", int(crs));
+                            me.autotune.airport = dep_airport;
+                            me.autotune.rwy = dep_rwy;
+                            me.autotune.frq = frq;
+                            setprop(radio~'autotuned', 1);
+                        }
+                    }
+                }
+            } 
+            elsif (dest_airport != '' and dest_rwy != ''){
+                var not_tuned = (me.autotune.airport != dest_airport or 
+                                 me.autotune.rwy != dest_rwy);
+                if(not_tuned){
+                    var apt_info = airportinfo(dest_airport);
+                    var rwy = apt_info.runways[dest_rwy];
+                    var rwy_ils = nil;
+                    if(rwy != nil)
+                        rwy_ils = rwy.ils;
+                    if(rwy_ils != nil){
+                        var frq = rwy_ils.frequency / 100;
+                        var crs = rwy_ils.course;
+                        var dist = getprop("/autopilot/route-manager/wp-last/dist");
+                        if(dist <= 50){
+                            setprop("/flight-management/freq/ils", frq);
+                            setprop("/flight-management/freq/ils-crs", int(crs));
+                            if (getprop(radio~ "ils-mode")) {
+                                mcdu.rad_nav.switch_nav1(1);
+                            }
+                            me.autotune.airport = dest_airport;
+                            me.autotune.rwy = dest_rwy;
+                            me.autotune.frq = frq;
+                            setprop(radio~'autotuned', 1);
+                        }
+                    }
+                }
+            }
+        }
+        if(!me.autotuned_nav){
+            me.autotune.airport = '';
+            me.autotune.rwy = '';
+            me.autotune.frq = '';
+            me.autotune.vor = '';
+        }
+
+        if (flplan_active and (!airborne or (me.agl > 0 and me.agl < 30)) and dep_airport != ''){
+            var dist = getprop("/autopilot/route-manager/route/wp/distance-nm");
+            if (dist != nil and dist < 10 and ils_frq != nil){
+                var apt_info = airportinfo(dep_airport);
+                var rwy_ils = apt_info.runways[dep_rwy].ils;
+                if(rwy_ils != nil and ils_frq != nil){
+                    var frq = rwy_ils.frequency / 100;
+                    #print('RWY ILS: ' ~ rfq ~ ', ILS: ' ~ ils_frq);
+                    if (frq == ils_frq){
+                        setprop(radio~ "ils-mode", 1);
+                        mcdu.rad_nav.switch_nav1(1);
+                        var in_range = getprop('instrumentation/nav/in-range');
+                        if (in_range) me.rwy_mode = 1;
+                    }
+                }
+            } else {
+                me.rwy_mode = 0;
+            }
+        }
+    },
     get_destination_wp: func(){
-        var f= flightplan(); 
+        var f= me.flightplan; 
         var numwp = me.wp_count;
         var lastidx = numwp - 1;
         var wp_info = nil;
@@ -2305,6 +2324,20 @@ var fmgc_loop = {
             return vs_fps;
         }
         return nil;
+    },
+    set_current_hdgtrk: func(){
+        var sub = me.ver_sub;
+        var heading = 0;
+        var heading_type = (sub == 'hdg' ? 'heading' : 'track'); 
+        if(!me.use_true_north)
+            heading = getprop("orientation/"~heading_type~"-magnetic-deg");
+        else 
+            heading = getprop("orientation/"~heading_type~"-deg");
+        setprop(fcu~ 'hdg', int(heading));
+    },
+    set_current_spd: func(){
+        setprop(fcu~ 'ias', me.ias);
+        setprop(fcu~ 'mach', me.mach);
     },
     set_current_vsfpa: func(){
         var sub = me.ver_sub;

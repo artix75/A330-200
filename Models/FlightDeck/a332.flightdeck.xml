@@ -1182,6 +1182,19 @@
 		<type>rotate</type>
 		<object-name>hdg-sel</object-name>
 		<property>/flight-management/fcu-values/hdg</property>
+        <condition>
+            <and>
+                <not>
+                    <equals>
+                        <property>/flight-management/control/lat-ctrl</property>
+                        <value>fmgc</value>
+                    </equals>
+                </not>
+                <not>
+                    <property>/flight-management/fcu/display-hdg</property>
+                </not>
+            </and>
+        </condition>
 		<factor>11.25</factor>
 		<axis>
 			<x1-m>-0.4608</x1-m>

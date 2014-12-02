@@ -27,9 +27,9 @@ var fcu = {
         if(name == 'hdg')
             type = 'lat';
         elsif(name == 'spd')
-        type = name;
+            type = name;
         elsif(name == 'alt')
-        type = 'ver';
+            type = 'ver';
         if(type == '') return;
         var mode = getprop('/flight-management/control/' ~ type ~ '-ctrl');
         if(mode == 'fmgc'){
