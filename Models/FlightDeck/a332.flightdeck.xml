@@ -435,10 +435,10 @@
 					var step = getprop("/flight-management/control/alt-sel-mode");
 				
 					var alt_prop = "/flight-management/fcu-values/alt";
-				
+                    var new_alt = getprop(alt_prop) + step;
 					if (41000 > getprop(alt_prop))
-						setprop(alt_prop, getprop(alt_prop) + step);
-                    #flightdeck.fcu.knob_rotated('alt');
+						setprop(alt_prop, new_alt);
+                    flightdeck.fcu.alt_changed(new_alt);
 				</script>
 			</binding>
 		</action>

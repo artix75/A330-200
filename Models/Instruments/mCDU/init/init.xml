@@ -158,8 +158,8 @@
 						if (getprop("/flight-management/active-rte/id") != "----------")
 					
 							mcdu.mCDU_init.co_rte(0, getprop("/flight-management/active-rte/id"));
-                                                var fl_lvl = int(crz_fl) * 100;
-                                                setprop("autopilot/route-manager/cruise/altitude-ft", fl_lvl);
+                        var fl_lvl = int(crz_fl) * 100;
+                        setprop("autopilot/route-manager/cruise/altitude-ft", fl_lvl);
 						
 						mcdu.clear_inp();
 					

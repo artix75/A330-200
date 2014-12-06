@@ -38,6 +38,14 @@ var fcu = {
         } else {
             setprop('/flight-management/fcu/'~name~'-rotation-time', -1);
         }
+    },
+    alt_changed: func(new_alt){
+        var crz_fl = getprop("/flight-management/crz_fl");
+        var crz_alt = int(crz_fl * 100);
+        if(new_alt > crz_alt){
+            setprop("/flight-management/crz_fl", int(new_alt / 100));
+            setprop("autopilot/route-manager/cruise/altitude-ft", new_alt);
+        }
     }
 };
 
