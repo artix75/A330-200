@@ -275,6 +275,18 @@
             </not>
             <not>
                 <equals>
+                    <property>/flight-management/flight-modes/lateral/active</property>
+                    <value>RWY</value>
+                </equals>
+            </not>
+            <not>
+                <equals>
+                    <property>/flight-management/flight-modes/common/active</property>
+                    <value>ROLLOUT</value>
+                </equals>
+            </not>
+            <not>
+                <equals>
                     <property>/flight-management/control/ver-sub</property>
                     <value>fpa</value>
                 </equals>
@@ -290,6 +302,16 @@
             <and>
                 <property>/flight-management/control/fd</property>
                 <property>/gear/gear[3]/wow</property>
+                <or>
+                    <equals>
+                        <property>/flight-management/flight-modes/lateral/active</property>
+                        <value>RWY</value>
+                    </equals>
+                    <equals>
+                        <property>/flight-management/flight-modes/common/active</property>
+                        <value>ROLLOUT</value>
+                    </equals>
+                </or>
             </and> 
         </condition>
     </animation>
