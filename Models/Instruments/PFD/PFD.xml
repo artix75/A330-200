@@ -3034,8 +3034,8 @@
     <animation>
         <type>select</type>
         <object-name>ils-appr-mode</object-name>
-        <object-name>dh-label</object-name>
-        <object-name>decision-height</object-name>
+        <!--object-name>dh-label</object-name>
+        <object-name>decision-height</object-name-->
         <condition>
             <not>
                 <equals>
