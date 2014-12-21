@@ -369,7 +369,7 @@
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
 		 		
 					if (first != 0)
-						setprop("/instrumentation/mcdu/f-pln/disp/first", first - 5);
+						setprop("/instrumentation/mcdu/f-pln/disp/first", first - 1);
 						
 					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
 		
@@ -416,8 +416,8 @@
 		 		
 		 			var max = getprop("/autopilot/route-manager/route/num");
 		 		
-					if (max - 5 > first)
-						setprop("/instrumentation/mcdu/f-pln/disp/first", first + 5);
+					if (max - 1 > first)
+						setprop("/instrumentation/mcdu/f-pln/disp/first", first + 1);
 						
 					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
 		
