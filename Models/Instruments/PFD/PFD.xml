@@ -2635,7 +2635,6 @@
         <object-name>man-spd-lower</object-name>
         <object-name>man-mach</object-name>
         <object-name>man-mach-lower</object-name>
-        <object-name>decision-height</object-name>
 		<diffuse>
 			<red>0</red>
 			<green>0.886</green>
@@ -2744,6 +2743,7 @@
         <object-name>common-armed-mode</object-name>
         <object-name>athr-armed</object-name>
         <object-name>outer-beacon-marker</object-name>
+        <object-name>decision-height</object-name>
         <diffuse>
             <red>0.06</red>
             <green>0.55</green>
