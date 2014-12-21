@@ -123,8 +123,33 @@ controls.throttleAxis = func(invert = 0){
     val = (1 - val) / div;
     if(val < -0.63)
         val = -0.63;
-    print('AXIS: '~ val);
+    #print('AXIS: '~ val);
     for(i = 0; i < ENGINE_COUNT; i = i + 1){
         setprop('controls/engines/engine['~i~']/throttle-pos', val);
     }
+}
+
+controls.perEngineSelectedAxisHandler = func(n) {
+    return
+    func(index, invert = 0) {
+        var val = cmdarg().getNode("setting").getValue();
+        var rev = getprop('controls/engines/engine/reverser');
+        var div = 2;
+        if(invert) val = -val;
+        if(rev) {
+            div = -2;
+        }
+        val = (1 - val) / div;
+        if(val < -0.63)
+            val = -0.63;
+        var pre = 'controls/engines/engine[';
+        var post = ']/throttle-pos';
+        if (typeof(index) == "scalar") {
+            setprop(pre ~ index ~ post, val);
+        } else {
+            foreach (var e; index) {
+                setprop(pre ~ e ~ post, val);
+            }
+        }
+    };
 }
