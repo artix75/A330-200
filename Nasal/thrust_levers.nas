@@ -90,7 +90,14 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
                 break;
             }       
         }
-        
+        var thr_lock = getprop('flight-management/thrust-lock');
+        if (thr_lock) {
+            var reason = getprop('flight-management/thrust-lock-reason');
+            if (reason == 'THR') {
+                setprop('flight-management/thrust-lock', 0);
+                setprop('flight-management/thrust-lock-reason', '');
+            }
+        }
         #setprop('flight-management/thrust-lock', 0);
     }, 0, 0);
 }
