@@ -3051,12 +3051,17 @@
 		<object-name>man-alt</object-name>
 		<condition>
             <and>
-                <not>
-                    <equals>
-                        <property>/flight-management/control/ver-ctrl</property>
-                        <value>fmgc</value>
-                    </equals>
-                </not>
+                <or>
+                    <not>
+                        <equals>
+                            <property>/flight-management/control/ver-ctrl</property>
+                            <value>fmgc</value>
+                        </equals>
+                    </not>
+                    <not>
+                        <property>/flight-management/control/is-alt-constraint</property>
+                    </not>
+                </or>
                 <!--greater-than-equals>
                     <property>flight-management/fcu-values/alt</property>
                     <property>/instrumentation/altimeter/indicated-altitude-ft</property>
@@ -3074,12 +3079,17 @@
         <object-name>man-alt-lower</object-name>
         <condition>
             <and>
-                <not>
-                    <equals>
-                        <property>/flight-management/control/ver-ctrl</property>
-                        <value>fmgc</value>
-                    </equals>
-                </not>
+                <or>
+                    <not>
+                        <equals>
+                            <property>/flight-management/control/ver-ctrl</property>
+                            <value>fmgc</value>
+                        </equals>
+                    </not>
+                    <not>
+                        <property>/flight-management/control/is-alt-constraint</property>
+                    </not>
+                </or>
                 <!--less-than>
                     <property>flight-management/fcu-values/alt</property>
                     <property>/instrumentation/altimeter/indicated-altitude-ft</property>
@@ -3101,6 +3111,7 @@
                     <property>/flight-management/control/ver-ctrl</property>
                     <value>fmgc</value>
                 </equals>
+                <property>/flight-management/control/is-alt-constraint</property>
                 <!--greater-than-equals>
                     <property>/flight-management/fmgc-values/vnav-target-alt</property>
                     <property>/instrumentation/altimeter/indicated-altitude-ft</property>
@@ -3122,6 +3133,7 @@
                     <property>/flight-management/control/ver-ctrl</property>
                     <value>fmgc</value>
                 </equals>
+                <property>/flight-management/control/is-alt-constraint</property>
                 <!--less-than>
                     <property>/flight-management/fmgc-values/vnav-target-alt</property>
                     <property>/instrumentation/altimeter/indicated-altitude-ft</property>
@@ -3306,14 +3318,17 @@
         <type>select</type>
         <object-name>target-alt-sel</object-name>
         <condition>
-            <and>
+            <or>
                 <not>
                     <equals>
                         <property>/flight-management/control/ver-ctrl</property>
                         <value>fmgc</value>
                     </equals>
                 </not>
-            </and>
+                <not>
+                    <property>/flight-management/control/is-alt-constraint</property>
+                </not>
+            </or>
         </condition>
     </animation>
     
@@ -3326,6 +3341,7 @@
                     <property>/flight-management/control/ver-ctrl</property>
                     <value>fmgc</value>
                 </equals>
+                <property>/flight-management/control/is-alt-constraint</property>
             </and>
         </condition>
     </animation>

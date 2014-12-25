@@ -85,10 +85,15 @@
         <output>instrumentation/pfd/sel-alt-diff</output>
         <enable>
             <condition>
-                <equals>
-                    <property>/flight-management/control/ver-ctrl</property>
-                    <value>man-set</value>
-                </equals>
+                <or>
+                    <not>
+                        <property>/flight-management/control/is-alt-constraint</property>
+                    </not>
+                    <equals>
+                        <property>/flight-management/control/ver-ctrl</property>
+                        <value>man-set</value>
+                    </equals>
+                </or>
             </condition>
         </enable>
     </filter>
@@ -107,10 +112,13 @@
         <output>instrumentation/pfd/fmgc-alt-diff</output>
         <enable>
             <condition>
-                <equals>
-                    <property>/flight-management/control/ver-ctrl</property>
-                    <value>fmgc</value>
-                </equals>
+                <and>
+                    <equals>
+                        <property>/flight-management/control/ver-ctrl</property>
+                        <value>fmgc</value>
+                    </equals>
+                    <property>/flight-management/control/is-alt-constraint</property>
+                </and>
             </condition>
         </enable>
     </filter>

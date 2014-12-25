@@ -16,6 +16,9 @@
                     <not>
                         <property>/flight-management/control/spd-with-pitch</property>
                     </not>
+                    <not>
+                        <property>/autoland/retard</property>
+                    </not>
                 </and>
             </condition>
 		</enable>
@@ -53,6 +56,9 @@
                     <not>
                         <property>/flight-management/control/spd-with-pitch</property>
                     </not>
+                    <not>
+                        <property>/autoland/retard</property>
+                    </not>
                 </and>
             </condition>
 		</enable>
@@ -83,7 +89,7 @@
 	<!-- IAS hold -->
 
 	<pid-controller>
-		<name>IAS hold</name>
+		<name>IAS hold FMGC</name>
 		<debug type="bool">false</debug>
 		<enable>
             <condition>
@@ -91,6 +97,9 @@
                     <property>/flight-management/control/fmgc/ias</property>
                     <not>
                         <property>/flight-management/control/spd-with-pitch</property>
+                    </not>
+                    <not>
+                        <property>/autoland/retard</property>
                     </not>
                 </and>
             </condition>
@@ -120,7 +129,7 @@
 	<!-- Mach hold -->
 
 	<pid-controller>
-		<name>Mach hold</name>
+        <name>Mach hold FMGC</name>
 		<debug type="bool">false</debug>
 		<enable>
             <condition>
@@ -128,6 +137,9 @@
                     <property>/flight-management/control/fmgc/mach</property>
                     <not>
                         <property>/flight-management/control/spd-with-pitch</property>
+                    </not>
+                    <not>
+                        <property>/autoland/retard</property>
                     </not>
                 </and>
             </condition>

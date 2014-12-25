@@ -25,7 +25,7 @@ var autoland = {
             if (nose_wow or main_wow) { 
                 print("Autoland: Touch down, retard...");
 		
-				me.retard();
+                me.retard();
 		
 			#} elsif (main_wow) {
 		
@@ -80,6 +80,7 @@ var autoland = {
 			setprop("/autoland/phase", "rollout");
 			
 			setprop("/autoland/rudder", 1);
+            #setprop("/autoland/retard", 0);
 		
 		} elsif (main_wow) {
             #print("Autoland: main touch down, target-vs -10 and rollout");
@@ -169,18 +170,18 @@ var autoland = {
 	
 	retard: func() {
 	
-		setprop("/flight-management/control/a-thrust", "off");
-        setprop("/flight-management/control/a-thr/ias", 0);
-        setprop("/flight-management/control/a-thr/mach", 0);
-        setprop("/flight-management/control/fmgc/ias", 0);
-        setprop("/flight-management/control/fmgc/mach", 0);
-		setprop("/controls/engines/engine[0]/throttle", 0);
-		setprop("/controls/engines/engine[1]/throttle", 0);
+		#setprop("/flight-management/control/a-thrust", "off");
+        #setprop("/flight-management/control/a-thr/ias", 0);
+        #setprop("/flight-management/control/a-thr/mach", 0);
+        #setprop("/flight-management/control/fmgc/ias", 0);
+        #setprop("/flight-management/control/fmgc/mach", 0);
+		#setprop("/controls/engines/engine[0]/throttle", 0);
+		#setprop("/controls/engines/engine[1]/throttle", 0);
         setprop("/autoland/retard", 1);
-        settimer(func(){ # WORKAROUND FOR IDLE
-            setprop("/controls/engines/engine[0]/throttle", 0);
-            setprop("/controls/engines/engine[1]/throttle", 0);
-        }, 0.35);
+        #settimer(func(){ # WORKAROUND FOR IDLE
+        #    setprop("/controls/engines/engine[0]/throttle", 0);
+        #    setprop("/controls/engines/engine[1]/throttle", 0);
+        #}, 0.35);
 	
 	},
 	

@@ -20,6 +20,9 @@
                     <not>
                         <property>controls/engines/engine/reverser</property>
                     </not>
+                    <not>
+                        <property>flight-management/thrust-lock</property>
+                    </not>
                 </and>
             </condition>
         </enable>
@@ -64,6 +67,9 @@
                     </not>
                     <not>
                         <property>controls/engines/engine/reverser</property>
+                    </not>
+                    <not>
+                        <property>flight-management/thrust-lock</property>
                     </not>
                 </and>
             </condition>

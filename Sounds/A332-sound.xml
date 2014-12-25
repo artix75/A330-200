@@ -508,20 +508,20 @@
 					</less-than>
 
 					<greater-than>
-						<property>controls/engines/engine[0]/throttle</property>
+						<property>controls/engines/engine[0]/throttle-pos</property>
 						<value>0.0</value>
 					</greater-than>
 					<greater-than>
-						<property>controls/engines/engine[1]/throttle</property>
+						<property>controls/engines/engine[1]/throttle-pos</property>
 						<value>0.0</value>
 					</greater-than>
 					<less-than>
-						<property>controls/engines/engine[0]/throttle</property>
-						<value>0.6</value>
+						<property>controls/engines/engine[0]/throttle-pos</property>
+						<value>1</value>
 					</less-than>
 					<less-than>
-						<property>controls/engines/engine[1]/throttle</property>
-						<value>0.6</value>
+						<property>controls/engines/engine[1]/throttle-pos</property>
+						<value>1</value>
 					</less-than>
 					<not>
 						<property>/gear/gear[0]/wow</property>
@@ -532,6 +532,10 @@
 						<property>velocities/airspeed-kt</property>
 						<value>150</value>
 					</less-than>
+                    <equals>
+                        <property>flight-management/phase</property>
+                        <value>APP</value>
+                    </equals>
 				</and>
 			</condition>
 			<volume>

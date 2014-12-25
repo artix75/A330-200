@@ -79,6 +79,8 @@ var fmgc_loop = {
         setprop(fmgc~ "ap1-master", "off");
         setprop(fmgc~ "ap2-master", "off");
         setprop(fmgc~ "a-thrust", "off");
+        me.a_thr = 'off';
+        me.last_thrust = 0;
 
         # Rate/Load Factor Configuration
 
@@ -136,6 +138,7 @@ var fmgc_loop = {
         me.alpha_floor_mode = 0;
         me.thrust_lock = 0;
         me.thrust_lock_reason = '';
+        me.thrust_lock_value = 0;
         me.toga_trk = nil;
         me.green_dot_spd = 155;
         me.non_precision_app = 0;
@@ -191,6 +194,7 @@ var fmgc_loop = {
         setprop(fcu~ "alt-100", me.alt_100());
         setprop(fmgc~ "follow-alt-cstr", 
                 me.follow_alt_cstr and me.armed_ver_mode == 'ALT');
+        setprop(fmgc~ "is-alt-constraint", me.follow_alt_cstr);
         setprop(settings~ 'min-elevator-ctrl', 
                 (ias >= 300 and vmode_vs_fps < -1 ? -0.05 : -0.15));
         var flaps = me.flaps;
@@ -327,13 +331,15 @@ var fmgc_loop = {
             setprop(fmfd ~ "pitch-gs", 0);
         }
         var thr_lock = me.thrust_lock;
+        var thr_lock_val = me.thrust_lock_value;
         if(me.fixed_thrust and me.airborne){
             var min = 0;
             var max = 0;
             var thr_l = 0;
             var thr_r = 0;
+            var retard = getprop("/autoland/retard");
             if(!me.alpha_floor_mode){
-                if(me.true_vertical_phase == 'CLB'){
+                if(me.true_vertical_phase == 'CLB' and !retard){
                     min = 0.2;
                     max = 15;
                     thr_l = getprop('controls/engines/engine[0]/max-athr-thrust');
@@ -346,24 +352,32 @@ var fmgc_loop = {
                     #thr_r = 0;
                 };
                 if(apEngaged or fdEngaged){
-                    setprop(settings~ 'spd-pitch-min', min);
-                    setprop(settings~ 'spd-pitch-max', max);
-                    setprop(fmgc~ "spd-with-pitch", 1);
+                    if (!retard){
+                        setprop(settings~ 'spd-pitch-min', min);
+                        setprop(settings~ 'spd-pitch-max', max);
+                        setprop(fmgc~ "spd-with-pitch", 1);
+                    } else {
+                        #print("Retard...");
+                        setprop(fmgc~ "spd-with-pitch", 0);
+                        setprop(settings~ 'spd-pitch-min', 0);
+                        setprop(settings~ 'spd-pitch-max', 0);
+                    }
                     if(athrEngaged){
                         if(thr_lock){
-                            thr_l = thr_lock;
-                            thr_r = thr_lock;
+                            thr_l = thr_lock_val;
+                            thr_r = thr_lock_val;
                         }
+                        #print("Throttle: " ~ thr_l);
                         me.update_throttle(thr_l, thr_r);
                     } elsif(thr_lock){
-                        me.update_throttle(thr_lock, thr_lock);
+                        me.update_throttle(thr_lock_val, thr_lock_val);
                     }
                 } else {
                     setprop(fmgc~ "spd-with-pitch", 0);
                     setprop(settings~ 'spd-pitch-min', 0);
                     setprop(settings~ 'spd-pitch-max', 0);
                     if(thr_lock and athrEngaged) 
-                        me.update_throttle(thr_lock, thr_lock);
+                        me.update_throttle(thr_lock_val, thr_lock_val);
                 }
             } else {
                 setprop(settings~ 'spd-pitch-min', 0);
@@ -986,6 +1000,7 @@ var fmgc_loop = {
     },
     get_settings : func {
 
+        var last_athr = me.a_thr;
         me.spd_mode = getprop(fmgc~ "spd-mode");
         me.spd_ctrl = getprop(fmgc~ "spd-ctrl");
 
@@ -1000,6 +1015,9 @@ var fmgc_loop = {
         me.ap1 = getprop(fmgc~ "ap1-master");
         me.ap2 = getprop(fmgc~ "ap2-master");
         me.a_thr = getprop(fmgc~ "a-thrust");
+        me.throttle = getprop('/controls/engines/engine[0]/throttle');
+        me.throttle_r = getprop('/controls/engines/engine[1]/throttle');
+        me.max_throttle = (me.throttle_r > me.throttle ? me.throttle_r : me.throttle);
         
         me.vs_setting = getprop(fcu~ "vs");
 
@@ -1019,6 +1037,20 @@ var fmgc_loop = {
         me.dep_airport = getprop("/autopilot/route-manager/departure/airport");
         me.dep_rwy = getprop("/autopilot/route-manager/departure/runway");
         me.dh = getprop('/instrumentation/mk-viii/inputs/arinc429/decision-height') or 200;
+        
+        if (me.a_thr == 'eng') {
+            me.last_thrust = me.max_throttle;
+            if (me.thrust_lock and me.thrust_lock_reason == 'THR'){
+                setprop('flight-management/thrust-lock', 0);
+                setprop('flight-management/thrust-lock-reason', '');
+            }
+        } else {
+            if (last_athr == 'eng' and !me.thrust_lock){
+                me.thrust_lock_value = me.last_thrust;
+                setprop('flight-management/thrust-lock', 1);
+                setprop('flight-management/thrust-lock-reason', 'THR');
+            }
+        }
     },
     calc_stall_speed: func(){
         var flaps = me.flaps;
@@ -1056,9 +1088,8 @@ var fmgc_loop = {
         me.fd_engaged = getprop("flight-management/control/fd");
         me.vmax = me.calc_vmax();
         me.gs_dev = getprop('instrumentation/nav/gs-needle-deflection-norm');
-        me.throttle = getprop('/controls/engines/engine[0]/throttle');
+        
         me.throttle_pos = getprop('/controls/engines/engine[0]/throttle-pos');
-        me.throttle_r = getprop('/controls/engines/engine[1]/throttle');
         me.throttle_r_pos = getprop('/controls/engines/engine[1]/throttle-pos');
         me.max_throttle_pos = (me.throttle_r_pos > me.throttle_pos ? me.throttle_r_pos : me.throttle_pos);
         me.fpa_angle = (getprop('velocities/glideslope') * 180) / math.pi;
@@ -1077,6 +1108,9 @@ var fmgc_loop = {
         me.flightplan = flightplan();
         if(me.flplan_active and me.wp_count > 0){
             me.wp = me.flightplan.getWP();
+        } else {
+            me.wp = nil;
+            
         }
     },
     check_flight_modes : func{
@@ -1098,6 +1132,7 @@ var fmgc_loop = {
             me.alpha_floor_mode = (me.ias < me.stall_spd + 20);
             if(!me.alpha_floor_mode){
                 me.thrust_lock = 1;
+                me.thrust_lock_value = 1;
                 me.thrust_lock_reason = 'TOGA';
                 setprop('flight-management/thrust-lock', 1);
                 setprop('flight-management/thrust-lock-reason', 'TOGA');
@@ -1184,7 +1219,7 @@ var fmgc_loop = {
         
         var vphase = '';
         var vmode_main = '';
-        var crz_alt = me.crz_fl * 100;
+        var crz_alt = me.crz_fl * 100; # TODO: maybe it's better to use route-manager crz alt
         me.true_vertical_phase = '';
         if(raw_alt_diff > 0)
             me.true_vertical_phase = 'CLB';
@@ -1282,7 +1317,7 @@ var fmgc_loop = {
             #LATERAL
             var no_terrain_loaded = (me.agl == 0 and phase != 'T/O'); # FIX AGL 0 WHEN TERRAIN IS NOT LOADED
             if(me.agl > 30 or no_terrain_loaded){
-                if(lmode == 'LOC'){
+                if(lmode == 'LOC'){ #TODO: LOC * (capture) 
                     if(me.nav_in_range){
                         me.active_lat_mode = lmode;
                         me.armed_lat_mode = '';#ROLLOUT'; #TODO: it seems there's not VOR LOC support
@@ -1363,7 +1398,7 @@ var fmgc_loop = {
                         me.armed_ver_mode = vmode;
                     }
                 }
-                elsif(vmode == 'FINAL') {
+                elsif(vmode == 'FINAL') { #TODO: final disarms at DH - 50
                     var dest_wp = me.get_destination_wp();
                     if(dest_wp != nil){
                         var dest_idx = dest_wp.index;
@@ -1380,9 +1415,10 @@ var fmgc_loop = {
                     }
                 } else {
                     me.active_ver_mode = vmode;
-                    if(substr(vmode, 0, 3) == 'ALT' and !is_capturing_alt){
+                    var is_alt_mode = (substr(vmode, 0, 3) == 'ALT');
+                    if(is_alt_mode and !is_capturing_alt){
                         if(vmode == 'ALT CRZ')
-                            me.armed_ver_mode = 'DES';
+                            me.armed_ver_mode = 'DES'; #TODO: armed by pushing knob? also check for arming OP §DES
                         else {
                             if(vmode == 'ALT CST'){
                                 if(fcu_alt > alt_cstr)
@@ -1393,6 +1429,8 @@ var fmgc_loop = {
                                 me.armed_ver_mode = '';
                             }
                         } 
+                    } elsif (is_alt_mode and is_capturing_alt) {
+                        me.armed_ver_mode = '';
                     } else {
                         me.armed_ver_mode = me.get_alt_mode(trgt_alt, alt_cstr, crz_alt, 0); 
                         if(me.armed_ver_mode != 'ALT CRZ'){
@@ -1523,16 +1561,18 @@ var fmgc_loop = {
                 (me.vmax > 1 and me.ias > me.vmax)))
                 return spd_mode;
         }
+        var retard = getprop("/autoland/retard");
         if(vmode == 'SRS' or 
            vmode == 'CLB' or 
            vmode == 'DES' or 
            vmode == 'OP CLB' or 
            vmode == 'OP DES' or 
            vmode == 'EXP CLB' or 
-           vmode == 'EXP DES'
+           vmode == 'EXP DES' or 
+           retard
           ){
             var thr_mode = 'THR';
-            if(me.max_throttle_pos < 0.6 and !me.thrust_lock){
+            if(me.max_throttle_pos < 0.6 and !me.thrust_lock and !retard){
                 thr_mode = 'THR LVR';
                 var msg = 'LVR CLB';
                 if(!me.engines_running)
@@ -1540,7 +1580,7 @@ var fmgc_loop = {
                 me.athr_msg = msg;
             } else {
                 var vphase = me.true_vertical_phase;
-                if(vphase == 'CLB')
+                if(vphase == 'CLB' and !retard)
                     thr_mode = thr_mode~ ' CLB';
                 else 
                     thr_mode = thr_mode~ ' IDLE';
