@@ -74,6 +74,7 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
             if(athr_status != 'off'){
                 setprop(athr, 'off');
             }
+            disableThrustLock();
         } 
         elsif(max_pos > 0 and max_pos <= max_athr_pos) {
             if(getprop(athr) == 'armed'){
@@ -83,6 +84,9 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
         elsif(max_pos > (max_athr_pos + 0.01) and athr_status == 'eng'){
             setprop(athr, 'armed');
         }
+        elsif(max_pos > (max_athr_pos + 0.01)){
+            disableThrustLock();
+        }
         foreach(var detent_name; keys(detents)){
             var detent_lvl = detents[detent_name];
             if(int(self_pos * 100) == int(detent_lvl * 100)){
@@ -90,16 +94,20 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
                 break;
             }       
         }
-        var thr_lock = getprop('flight-management/thrust-lock');
-        if (thr_lock) {
-            var reason = getprop('flight-management/thrust-lock-reason');
-            if (reason == 'THR') {
-                setprop('flight-management/thrust-lock', 0);
-                setprop('flight-management/thrust-lock-reason', '');
-            }
-        }
+
         #setprop('flight-management/thrust-lock', 0);
     }, 0, 0);
+}
+
+var disableThrustLock = func(){
+    var thr_lock = getprop('flight-management/thrust-lock');
+    if (thr_lock) {
+        var reason = getprop('flight-management/thrust-lock-reason');
+        if (reason == 'THR') {
+            setprop('flight-management/thrust-lock', 0);
+            setprop('flight-management/thrust-lock-reason', '');
+        }
+    }
 }
 
 controls.incThrottle = func {
