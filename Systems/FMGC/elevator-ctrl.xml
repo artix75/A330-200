@@ -87,13 +87,22 @@
 	
 	<pid-controller>
 		<name>FCU/AP Elevator Control GS</name>
-		<debug type="bool">false</debug>
+		<debug type="bool">true</debug>
 		<enable>
 			<prop>/servo-control/elevator-gs</prop>
 		</enable>
 		<input>
 			<prop>/velocities/vertical-speed-fps</prop>
 		</input>
+        <reference><!-- When the aircraft is below glideslope keep level -->
+            <condition>
+                <greater-than>
+                    <property>instrumentation/nav/gs-needle-deflection-norm</property>
+                    <value>0.15</value>
+                </greater-than>
+            </condition>
+            <value>0</value>
+        </reference>
 		<reference>
 			<prop>/instrumentation/nav[0]/gs-rate-of-climb</prop>
 		</reference>

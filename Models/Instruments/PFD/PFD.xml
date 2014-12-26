@@ -282,7 +282,7 @@
             <not>
                 <equals>
                     <property>/flight-management/flight-modes/common/active</property>
-                    <value>ROLLOUT</value>
+                    <value>ROLL OUT</value>
                 </equals>
             </not>
             <not>
@@ -309,7 +309,7 @@
                     </equals>
                     <equals>
                         <property>/flight-management/flight-modes/common/active</property>
-                        <value>ROLLOUT</value>
+                        <value>ROLL OUT</value>
                     </equals>
                 </or>
             </and> 

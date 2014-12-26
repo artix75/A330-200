@@ -29,7 +29,7 @@ var clickSound = func(n){
 var fastStartUp = func(){
     systems.startup();
     setprop('controls/flight/flaps',0.596);
-    while (getprop("consumables/fuel/total-fuel-kg") < 45812) {
+    while (getprop("consumables/fuel/total-fuel-kg") < 30812) {
         setprop("/consumables/fuel/tank[1]/level-kg", getprop("/consumables/fuel/tank[1]/level-kg") + 5);
         setprop("/consumables/fuel/tank[2]/level-kg", getprop("/consumables/fuel/tank[2]/level-kg") + 20);
         setprop("/consumables/fuel/tank[3]/level-kg", getprop("/consumables/fuel/tank[3]/level-kg") + 35);
@@ -43,12 +43,100 @@ var fastStartUp = func(){
     setprop('/controls/gear/tiller-enabled', 1);
 }
 
+var flyApproach = func(dest_arpt, dest_rwy, dist = 20){
+    var fmgct = "/flight-management/control/";
+    var fcu = "/flight-management/fcu-values/";
+    
+    var apt = airportinfo(dest_arpt);
+    if (apt == nil){
+        print('Airport not found!');
+        return;
+    }
+    var rwy = apt.runways[dest_rwy];
+    if (rwy == nil){
+        print('Runway not found!');
+        return;
+    }
+    var rwy_ils = rwy.ils;
+    var crs = num(dest_rwy) * 10;
+    if (rwy_ils != nil){
+        var radio = "/flight-management/freq/";
+        var frq = rwy_ils.frequency / 100;
+        var crs = rwy_ils.course;
+        print ('Tuning NAV to ' ~ frq ~ 'mhz, crs: '~ crs);
+        setprop(radio~ "ils", frq);
+        setprop(radio~ "ils-crs", int(crs));
+        setprop(radio~ "ils-mode", 1);
+        mcdu.rad_nav.switch_nav1(1);
+    }
+    var alt = apt.elevation + (dist * 125);
+    var spd = 250;
+    var lat = -9999;
+    var lng = -9999;
+    var pos_on_flightplan = 0;
+    var fp_active = getprop("/autopilot/route-manager/active");
+    if (fp_active){
+        var fp = flightplan();
+        var wp_count = getprop("/autopilot/route-manager/route/num");
+        var lastidx = wp_count - 1;
+        var wp = nil;
+        var i = 0;
+        var tot_dist = getprop('/autopilot/route-manager/total-distance');
+        var dist_offset = tot_dist - dist;
+        for(var i = lastidx; i >= 0; i = i - 1){
+            var wp = fp.getWP(i);
+            var wp_dist = wp.distance_along_route;
+            if (wp_dist < dist_offset) break;
+        }
+        if (wp != nil){
+            var id = wp.id;
+            print("T.O. Waypoint: "~ id);
+            var point = fp.pathGeod(-1, -dist);
+            lat = point.lat;
+            lng = point.lon;
+            dest_arpt = '';
+            dest_rwy = '';
+            crs = getprop('/autopilot/route-manager/route/wp['~i~']/leg-bearing-true-deg');
+            setprop("/autopilot/route-manager/input", "@JUMP" ~ i);
+            setprop("/flight-management/current-wp", i);
+            pos_on_flightplan = 1;
+        }
+    }
+    setprop('controls/flight/flaps',0);
+    setlistener("sim/signals/fdm-initialized", func{
+        settimer(func(){
+            setprop(fcu~ 'alt', alt);
+            setprop(fcu~ 'hdg', crs);
+            setprop(fcu~ 'ias', spd);
+            setprop(fmgct~ 'lat-ctrl', 'man-set');
+            setprop(fmgct~ 'ver-ctrl', 'man-set');
+            setprop(fmgct~ 'ver-mode', 'alt');
+            setprop(fmgct~ 'spd-mode', 'ias');
+            setprop(fmgct~ 'spd-ctrl', 'man-set');
+            setprop(fmgct~ "a-thrust", "eng");
+            setprop(fmgct~ "ap1-master", "eng");
+        },5);
+    });
+    setprop('/sim/presets/airport-id', dest_arpt);
+    setprop('/sim/presets/runway', dest_rwy);
+    setprop("/sim/presets/longitude-deg", lng);
+    setprop("/sim/presets/latitude-deg", lat);
+    if (pos_on_flightplan){
+        setprop('/sim/presets/heading-deg', crs);
+    } else {
+        setprop('/sim/presets/offset-distance-nm', dist);
+    }
+    setprop('/sim/presets/altitude-ft', alt + 300);
+    setprop('/sim/presets/airspeed-kt', spd);
+    fgcommand('reposition');
+}
+
 var test_nd_symbol = func(symbol, dist_nm){
     var prop = "autopilot/route-manager/vnav/"~symbol;
     var node = props.globals.getNode(prop);
     if(dist_nm == 0){
         if(node != nil)
-            node.remove();;
+            node.remove();
     } else {
         if (getprop("/autopilot/route-manager/active")){
             var f= flightplan(); 

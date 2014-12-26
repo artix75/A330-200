@@ -41,6 +41,11 @@ var fmgc_loop = {
         me.fcu_alt = 0;
         me.use_true_north = 1;
     
+        if (getprop('/flight-management/skip-init')){
+            setprop('/flight-management/skip-init', 0);
+            me.reset();
+        }
+    
         setprop("/flight-management/current-wp", me.current_wp);
         setprop("/flight-management/control/qnh-mode", 'inhg');
 
@@ -309,7 +314,8 @@ var fmgc_loop = {
                          vmode == 'G/S*' or 
                          vmode == 'FINAL' or 
                          common_mode == 'LAND' or 
-                         common_mode == 'FLARE');
+                         common_mode == 'FLARE' or 
+                         common_mode == 'FINAL APP');
         
         var ver_managed = me.ver_managed;
         #print("FMGC Loop: AP Eng -> " ~ apEngaged);
@@ -446,7 +452,7 @@ var fmgc_loop = {
             } elsif (me.active_lat_mode == "LOC" or 
                      me.active_lat_mode == "LOC*" or 
                      me.active_lat_mode == "RWY" or 
-                     me.active_common_mode == "ROLLOUT"
+                     me.active_common_mode == "ROLL OUT"
                     ) {
 
                 var nav1_error = getprop("/autopilot/internal/nav1-track-error-deg");
@@ -782,7 +788,7 @@ var fmgc_loop = {
 
             ## LATERAL CONTROL -----------------------------------------------------
 
-            if (lmode == 'NAV' or lmode == 'APP NAV') {
+            if (lmode == 'NAV' or lmode == 'APP NAV' or common_mode == 'FINAL APP') {
 
                 # If A procedure's NOT being flown, we'll fly the active F-PLN (unless it's a hold pattern)
 
@@ -1307,7 +1313,7 @@ var fmgc_loop = {
             if(me.rwy_mode)
                 me.active_lat_mode = 'RWY';
             if(me.autoland_phase == 'rollout')
-                me.active_common_mode = 'ROLLOUT'; #TODO: should this be active also without autoland?
+                me.active_common_mode = 'ROLL OUT'; #TODO: should this be active also without autoland?
                
             if(me.srs_spd > 0 and (toga or flex_mct))
                 me.active_ver_mode = 'SRS';
@@ -1320,7 +1326,7 @@ var fmgc_loop = {
                 if(lmode == 'LOC'){ #TODO: LOC * (capture) 
                     if(me.nav_in_range){
                         me.active_lat_mode = lmode;
-                        me.armed_lat_mode = '';#ROLLOUT'; #TODO: it seems there's not VOR LOC support
+                        me.armed_lat_mode = '';#ROLL OUT'; #TODO: it seems there's not VOR LOC support
                     } else {
                         me.active_lat_mode = lat_sel_mode;
                         me.armed_lat_mode = lmode;
@@ -1382,7 +1388,7 @@ var fmgc_loop = {
                         var below_early_des = (me.agl < getprop('autoland/early-descent'));
                         if(flare){
                             me.active_common_mode = 'FLARE';
-                            me.armed_common_mode = 'ROLLOUT';
+                            me.armed_common_mode = 'ROLL OUT';
                         }
                         elsif(below_early_des){
                             me.active_common_mode = 'LAND';
@@ -1513,10 +1519,14 @@ var fmgc_loop = {
                     setprop('/flight-management/flight-modes/message', '');
             }
         }
+        if (me.active_lat_mode == 'APP NAV' and 
+            me.active_ver_mode == 'FINAL'){
+            me.active_common_mode = 'FINAL APP';
+        }
         if(me.active_common_mode != ''){
             me.active_lat_mode = '';
             me.active_ver_mode = '';
-            if(me.active_common_mode == 'ROLLOUT'){
+            if(me.active_common_mode == 'ROLL OUT'){
                 me.armed_lat_mode = '';
                 me.armed_ver_mode = '';
             }
