@@ -3290,11 +3290,20 @@
 				<value>ARC</value>
 				<value>PLAN</value>
 			</binding>
-                        <binding>
-                            <command>nasal</command>
-                            <script>utils.clickSound(4)</script>
-                        </binding>
-			<binding>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis/nd/display-mode-num</property>
+                <value>0</value>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+                <value>4</value>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(4)</script>
+            </binding>
+			<!--binding>
 				<command>nasal</command>
 				<script>
 					var nd_disp = getprop("/instrumentation/efis/nd/display-mode");
@@ -3358,8 +3367,60 @@
                         }
 					}
 				</script>
-			</binding>
+			</binding-->
 		</action>
+        <action>
+            <button>4</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis/nd/display-mode</property>
+                <value>PLAN</value>
+                <value>ARC</value>
+                <value>NAV</value>
+                <value>VOR</value>
+                <value>ILS</value>
+            </binding>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis/nd/display-mode-num</property>
+                <value>4</value>
+                <value>3</value>
+                <value>2</value>
+                <value>1</value>
+                <value>0</value>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(4)</script>
+            </binding>
+        </action>
+        <action>
+            <button>3</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis/nd/display-mode</property>
+                <value>ILS</value>
+                <value>VOR</value>
+                <value>NAV</value>
+                <value>ARC</value>
+                <value>PLAN</value>
+            </binding>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis/nd/display-mode-num</property>
+                <value>0</value>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+                <value>4</value>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(4)</script>
+            </binding>
+        </action>
 	</animation>
 	
 	<animation>
@@ -3400,10 +3461,10 @@
 				<value>160</value>
 				<value>320</value>
 			</binding>
-                        <binding>
-                            <command>nasal</command>
-                            <script>utils.clickSound(4)</script>
-                        </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(4)</script>
+            </binding>
 		</action>
 		<action>
 			<button>1</button>
@@ -3439,10 +3500,10 @@
 				<value>20</value>
 				<value>10</value>
 			</binding>
-                        <binding>
-                            <command>nasal</command>
-                            <script>utils.clickSound(4)</script>
-                        </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(4)</script>
+            </binding>
 		</action>
 	</animation>
 	
@@ -4353,9 +4414,9 @@
     <text>
         <name>transponder-code</name>
         <offsets>
-            <x-m>-0.1000</x-m>
-            <y-m>0.1487</y-m>
-            <z-m>-0.3645</z-m>
+            <x-m>-0.1090</x-m>
+            <y-m>0.1577</y-m>
+            <z-m>-0.3785</z-m>
             <heading-deg>90</heading-deg>
             <roll-deg>5</roll-deg>
         </offsets>
