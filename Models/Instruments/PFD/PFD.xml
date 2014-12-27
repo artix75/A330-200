@@ -978,7 +978,7 @@
 	</text>
     
     <text>
-		<name>osgtext-magenta</name>
+		<name>nav-id</name>
 		<offsets>
 			<x-m>0.0010</x-m>
 			<y-m>-0.069</y-m>
@@ -1002,7 +1002,7 @@
 	</text>
 	
 	<text>
-		<name>osgtext-magenta</name>
+		<name>nav-frq</name>
 		<offsets>
 			<x-m>0.0010</x-m>
 			<y-m>-0.069</y-m>
@@ -1026,7 +1026,7 @@
 	</text>
 	
 	<text>
-		<name>osgtext-magenta</name>
+		<name>nav-hdg</name>
 		<offsets>
 			<x-m>0.0010</x-m>
 			<y-m>-0.069</y-m>
@@ -2496,6 +2496,9 @@
 	<animation>
 		<type>material</type>
 		<object-name>osgtext-magenta</object-name>
+        <object-name>nav-id</object-name>
+        <object-name>nav-frq</object-name>
+        <object-name>nav-hdg</object-name>
 		<diffuse>
 			<red>1</red>
 			<green>0</green>
@@ -3343,6 +3346,19 @@
                 </equals>
                 <property>/flight-management/control/is-alt-constraint</property>
             </and>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>nav-id</object-name>
+        <object-name>nav-frq</object-name>
+        <object-name>nav-hdg</object-name>
+        <condition>
+            <greater-than>
+                <property>instrumentation/nav/frequencies/selected-mhz</property>
+                <value>0</value>
+            </greater-than>
         </condition>
     </animation>
 	
