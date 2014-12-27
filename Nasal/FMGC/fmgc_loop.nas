@@ -22,6 +22,11 @@ setprop('/instrumentation/texts/sep-string', 'I');
 
 var fmgc_loop = {
     alpha_floor_mode: 0,
+    spd_profile: {
+        CLB: [290, 0.68],
+        CRZ: [320, 0.78],
+        DES: [280, 0.68]
+    },
     init : func {
         me.UPDATE_INTERVAL = 0.1;
         me.loopid = 0;
@@ -678,6 +683,7 @@ var fmgc_loop = {
                 }
             } else {
                 var srs = 0;
+                var phase = me.phase;
                 if(vmode == 'SRS' and me.srs_spd > 0){
                     var spd = me.srs_spd;
                     setprop(fmgc_val~ "target-spd", spd);
@@ -686,16 +692,18 @@ var fmgc_loop = {
                 elsif(me.exped_mode){
                     setprop(fmgc_val~ "target-spd", me.calc_exped_spd());
                 }
-                elsif (((getprop("/flight-management/phase") == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or ((getprop("/flight-management/phase") == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and !app_phase and flplan_active and !toga_flx_mode) {
+                elsif (((phase == "CLB") and (getprop("/flight-management/spd-manager/climb/mode") == "MANAGED (F-PLN)")) or 
+                       ((phase == "CRZ") and (getprop("/flight-management/spd-manager/cruise/mode") == "MANAGED (F-PLN)")) or 
+                       ((phase == "DES") and (getprop("/flight-management/spd-manager/descent/mode") == "MANAGED (F-PLN)")) and 
+                       !app_phase and flplan_active and !toga_flx_mode) {
 
                     var spd = nil;
                     if(me.wp != nil)
                         spd = me.wp.speed_cstr;
 
                     if (spd == nil or spd <= 0) {
-                        var is_descending = vmode_vs_fps <= -8 or ((me.fcu_alt - altitude) < -200); #(me.phase == 'DES' and (me.fcu_alt - altitude) < -200);
-                        
-                        if(remaining < decel_point){
+                        var is_descending = vmode_vs_fps <= -8 or ((me.fcu_alt - altitude) < -200); #((phase == 'DES' and (me.fcu_alt - altitude) < -200);
+                        if(remaining < decel_point or phase == 'APP'){
                             spd = autoland.spd_manage(getprop("/fdm/jsbsim/inertia/weight-lbs"));
                         } else {
                             if (altitude <= (is_descending ? 10500 : 10000)){
@@ -710,9 +718,9 @@ var fmgc_loop = {
                                     #spd = 280;
                                 } else{
                                     if(altitude < 26000)
-                                        spd = 320;
+                                        spd = me.spd_profile[phase][0];
                                     elsif(altitude < 36000)
-                                        spd = 0.78;
+                                        spd = me.spd_profile[phase][1];
                                     else
                                         spd = 0.86;
                                 }
@@ -1188,10 +1196,10 @@ var fmgc_loop = {
             #    phase = 'APP';
             #}
             if(remaining <= me.top_desc){
-                if(me.ver_mode != 'ils'){
-                    setprop("/flight-management/phase", "DES");
-                    phase = 'DES';
-                }
+                #if(me.ver_mode != 'ils'){
+                #    setprop("/flight-management/phase", "DES");
+                #    phase = 'DES';
+                #}
                 after_td = 1;
             }
             me.phase = phase;
@@ -1269,6 +1277,8 @@ var fmgc_loop = {
                 }
             }  
         }
+        if (is_capturing_alt and crz_alt == trgt_alt and phase != 'CRZ')
+            setprop('flight-management/phase', 'CRZ');
         if(vmode_main == 'ALT'){
             vmode_main = me.get_alt_mode(trgt_alt, alt_cstr, crz_alt, is_capturing_alt);
             setprop(fmgc~ 'exped-mode', 0);
@@ -1790,13 +1800,13 @@ var fmgc_loop = {
 
             if (crz_fl != 0) {
 
-                if (getprop("/position/altitude-ft") < ((crz_fl * 100) - 500))
+                if (fcu_alt < ((crz_fl * 100) - 500))
                     setprop("/flight-management/phase", "DES");
 
             } else {
                 var ref_alt = me.ref_crz_alt;
-                if(ref_alt) ref_alt = 26000;
-                if (getprop("/position/altitude-ft") < ref_alt)
+                if(!ref_alt) ref_alt = 26000;
+                if (fcu_alt < ref_alt)
                     setprop("/flight-management/phase", "DES");
 
             }
