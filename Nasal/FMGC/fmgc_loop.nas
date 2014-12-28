@@ -107,6 +107,7 @@ var fmgc_loop = {
         setprop(fcu~ "mach", 0.78);
 
         setprop(fcu~ "alt", 10000);
+        setprop(fcu~ "fcu-alt", 10000);
         setprop(fcu~ "vs", 1800);
         setprop(fcu~ "fpa", 5);
 
@@ -202,6 +203,7 @@ var fmgc_loop = {
         setprop("flight-management/procedures/active", procedure.check());
 
         setprop(fcu~ "alt-100", me.alt_100());
+        setprop(fcu~ "alt-disp", me.target_alt_disp());
         setprop(fmgc~ "follow-alt-cstr", 
                 me.follow_alt_cstr and me.armed_ver_mode == 'ALT');
         setprop(fmgc~ "is-alt-constraint", me.follow_alt_cstr);
@@ -457,6 +459,8 @@ var fmgc_loop = {
             } elsif (me.active_lat_mode == "LOC" or 
                      me.active_lat_mode == "LOC*" or 
                      me.active_lat_mode == "RWY" or 
+                     me.active_common_mode == "LAND" or 
+                     me.active_common_mode == "FLARE" or 
                      me.active_common_mode == "ROLL OUT"
                     ) {
 
@@ -466,7 +470,7 @@ var fmgc_loop = {
 
                 var bank = limit(nav1_error, 30);
 
-                if (agl < 100) {
+                if (agl < 55) {
 
                     bank = 0; # Level the wings for AUTOLAND
 
@@ -1191,15 +1195,7 @@ var fmgc_loop = {
         var alt_cstr = -9999;
         var remaining = me.remaining_nm;
         if(flplan_active){ 
-            #if(remaining <= me.decel_point){
-            #    setprop("/flight-management/phase", "APP");
-            #    phase = 'APP';
-            #}
             if(remaining <= me.top_desc){
-                #if(me.ver_mode != 'ils'){
-                #    setprop("/flight-management/phase", "DES");
-                #    phase = 'DES';
-                #}
                 after_td = 1;
             }
             me.phase = phase;
@@ -1433,21 +1429,32 @@ var fmgc_loop = {
                     me.active_ver_mode = vmode;
                     var is_alt_mode = (substr(vmode, 0, 3) == 'ALT');
                     if(is_alt_mode and !is_capturing_alt){
-                        if(vmode == 'ALT CRZ')
-                            me.armed_ver_mode = 'DES'; #TODO: armed by pushing knob? also check for arming OP §DES
-                        else {
-                            if(vmode == 'ALT CST'){
-                                if(fcu_alt > alt_cstr)
-                                    me.armed_ver_mode = 'CLB';
-                                else 
-                                    me.armed_ver_mode = 'DES';
-                            } else {
-                                me.armed_ver_mode = '';
+                        if(vmode == 'ALT CST'){ # ALT CST automatically arms DES/CLB
+                            if(fcu_alt > alt_cstr)
+                                me.armed_ver_mode = 'CLB';
+                            else 
+                                me.armed_ver_mode = 'DES';
+                        } else {
+                            var tmp_fcu_alt = getprop(fcu~ 'fcu-alt');
+                            var ver_armed = '';
+                            var clbdes_armed = 0;
+                            if ((tmp_fcu_alt - fcu_alt) < -250){
+                                ver_armed = 'DES';
+                                clbdes_armed = 1;
                             }
-                        } 
+                            elsif ((tmp_fcu_alt - fcu_alt) >250){
+                                ver_armed = 'CLB';
+                                clbdes_armed = 1;
+                            }
+                            if (!ver_fmgc and clbdes_armed)
+                                ver_armed = 'OP '~ ver_armed;
+                            me.armed_ver_mode = ver_armed;
+                            if (clbdes_armed)
+                                me.revert_to_vsfpa(vmode);
+                        }
                     } elsif (is_alt_mode and is_capturing_alt) {
                         me.armed_ver_mode = '';
-                    } else {
+                    } else { #NO ALT MODE: armed mode is ALT
                         me.armed_ver_mode = me.get_alt_mode(trgt_alt, alt_cstr, crz_alt, 0); 
                         if(me.armed_ver_mode != 'ALT CRZ'){
                             me.armed_ver_mode = 'ALT';
@@ -1694,19 +1701,21 @@ var fmgc_loop = {
 
     knob_sum : func {
         var disp_hdg = getprop('/flight-management/fcu/display-hdg');
-        if(me.spd_ctrl != 'fmgc' and !disp_hdg){
+        var disp_vs = getprop('/flight-management/fcu/display-vs');
+        if(me.spd_ctrl != 'fmgc' or disp_hdg){
            var ias = getprop(fcu~ "ias");
 
             var mach = getprop(fcu~ "mach");
 
             setprop(fcu~ "spd-knob", ias + (100 * mach));
         }
+        if (me.vsfpa_mode or disp_vs){
+            var vs = getprop(fcu~ "vs");
 
-        var vs = getprop(fcu~ "vs");
+            var fpa = getprop(fcu~ "fpa");
 
-        var fpa = getprop(fcu~ "fpa");
-
-        setprop(fcu~ "vs-knob", fpa + (vs/100));
+            setprop(fcu~ "vs-knob", fpa + (vs/100));
+        }
 
     },
     hdg_disp : func {
@@ -1759,7 +1768,13 @@ var fmgc_loop = {
             setprop(fmgc~ "fcu/ap2", 0);
 
     },
-
+    target_alt_disp: func(){
+        var alt = getprop(fcu~ 'fcu-alt');
+        var is_std = (getprop('flight-management/text/qnh') == 'STD');
+        if (is_std)
+            return 'FL'~ int(alt/100);
+        return ''~ alt;
+    },
     alt_100 : func {
 
         var alt = me.altitude;
@@ -2395,7 +2410,7 @@ var fmgc_loop = {
     set_current_hdgtrk: func(){
         var sub = me.ver_sub;
         var heading = 0;
-        var heading_type = (sub == 'hdg' ? 'heading' : 'track'); 
+        var heading_type = (sub == 'vs' ? 'heading' : 'track'); 
         if(!me.use_true_north)
             heading = getprop("orientation/"~heading_type~"-magnetic-deg");
         else 

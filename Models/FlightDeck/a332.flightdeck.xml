@@ -299,264 +299,345 @@
 	<!-- Knobs' Pick Animations -->
 	
 	<!-- IMPORTANT - USE SCROLL WHEEL ON MOUSE OF TOUCH PAD EDGE TO SCROLL, AND CLICK TO SELECT -->
-	
-	<animation>
-		<type>pick</type>
-		<object-name>spd-sel</object-name>
-		<action>
-			<button>3</button>
-			<repeatable type="bool">true</repeatable>
-			<binding>
-				<command>nasal</command>
-				<script>
-					var spd_mode = getprop("/flight-management/control/spd-mode");
-					
-					if (spd_mode == "ias") {
-					
-						var ias = getprop("/flight-management/fcu-values/ias");
-						
-						if (350 > ias)
-							setprop("/flight-management/fcu-values/ias", ias + 1);
-					
-					} else {
-					
-						var mach = getprop("/flight-management/fcu-values/mach");
-						
-						if (0.82 > mach)
-							setprop("/flight-management/fcu-values/mach", mach + 0.01);
-					
-					}
-                    flightdeck.fcu.knob_rotated('spd');
-				</script>
-			</binding>
-		</action>
-		<action>
-			<button>4</button>
-			<repeatable type="bool">true</repeatable>
-			<binding>
-				<command>nasal</command>
-				<script>
-					var spd_mode = getprop("/flight-management/control/spd-mode");
-					
-					if (spd_mode == "ias") {
-					
-						var ias = getprop("/flight-management/fcu-values/ias");
-						
-						if (ias > 0)
-							setprop("/flight-management/fcu-values/ias", ias - 1);
-					
-					} else {
-					
-						var mach = getprop("/flight-management/fcu-values/mach");
-						
-						if (mach > 0)
-							setprop("/flight-management/fcu-values/mach", mach - 0.01);
-					
-					}
-                    flightdeck.fcu.knob_rotated('spd');
-				</script>
-			</binding>
-		</action>
-		<action>
-			<button>0</button>
-			<repeatable type="bool">false</repeatable>
-			<binding>
-				<command>property-cycle</command>
-				<property>/flight-management/control/spd-ctrl</property>
-				<value>man-set</value>
-				<value>fmgc</value>
-			</binding>
-		</action>
-	</animation>
-	
-	<animation>
-		<type>pick</type>
-		<object-name>hdg-sel</object-name>
-		<action>
-			<button>3</button>
-			<repeatable type="bool">true</repeatable>
-			<binding>
-				<command>nasal</command>
-				<script>
-				
-					var hdg_prop = "/flight-management/fcu-values/hdg";
-				
-					if (359 > getprop(hdg_prop))
-						setprop(hdg_prop, getprop(hdg_prop) + 1);
-					else
-						setprop(hdg_prop, 0);
-					
-                    setprop('autopilot/settings/heading-bug-deg', getprop(hdg_prop));
-                    flightdeck.fcu.knob_rotated('hdg');
-				</script>
-			</binding>
-		</action>
-		<action>
-			<button>4</button>
-			<repeatable type="bool">true</repeatable>
-			<binding>
-				<command>nasal</command>
-				<script>
-					
-					var hdg_prop = "/flight-management/fcu-values/hdg";
-				
-					if (getprop(hdg_prop) > 0)
-						setprop(hdg_prop, getprop(hdg_prop) - 1);
-					else
-						setprop(hdg_prop, 359);
-					
-                    setprop('autopilot/settings/heading-bug-deg', getprop(hdg_prop));
-                    flightdeck.fcu.knob_rotated('hdg');
-				</script>
-			</binding>
-		</action>
-		<action>
-			<button>0</button>
-			<repeatable type="bool">false</repeatable>
-			<binding>
-				<command>property-cycle</command>
-				<property>/flight-management/control/lat-ctrl</property>
-				<value>man-set</value>
-				<value>fmgc</value>
-			</binding>
-		</action>
-	</animation>
-	
-	<animation>
-		<type>pick</type>
-		<object-name>alt-sel</object-name>
-		<action>
-			<button>3</button>
-			<repeatable type="bool">true</repeatable>
-			<binding>
-				<command>nasal</command>
-				<script>
-				
-					var step = getprop("/flight-management/control/alt-sel-mode");
-				
-					var alt_prop = "/flight-management/fcu-values/alt";
-                    var new_alt = getprop(alt_prop) + step;
-					if (41000 > getprop(alt_prop))
-						setprop(alt_prop, new_alt);
-                    flightdeck.fcu.alt_changed(new_alt);
-				</script>
-			</binding>
-		</action>
-		<action>
-			<button>4</button>
-			<repeatable type="bool">true</repeatable>
-			<binding>
-				<command>nasal</command>
-				<script>
-					
-					var step = getprop("/flight-management/control/alt-sel-mode");
-					
-					var alt_prop = "/flight-management/fcu-values/alt";
-				
-					if (getprop(alt_prop) > 0)
-						setprop(alt_prop, getprop(alt_prop) - step);
-                    #flightdeck.fcu.knob_rotated('alt');
-				</script>
-			</binding>
-		</action>
-		<action>
-			<button>0</button>
-			<repeatable type="bool">false</repeatable>
-			<binding>
-				<command>property-cycle</command>
-				<property>/flight-management/control/ver-ctrl</property>
-				<value>man-set</value>
-				<value>fmgc</value>
-			</binding>
+    
+    <animation>
+        <type>knob</type>
+        <object-name>spd-sel</object-name>
+        <drag-direction>vertical</drag-direction>
+        <action>
+            <binding>
+                <command>property-adjust</command>
+                <property>/flight-management/fcu-values/ias</property>
+                <factor>-1</factor>
+                <min>90</min>
+                <max>350</max>
+                <wrap>false</wrap>
+                <condition>
+                    <equals>
+                        <property>/flight-management/control/spd-mode</property>
+                        <value>ias</value>
+                    </equals>
+                </condition>
+            </binding>
+            <binding>
+                <command>property-adjust</command>
+                <property>/flight-management/fcu-values/mach</property>
+                <factor>-0.01</factor>
+                <min>0.1</min>
+                <max>0.86</max>
+                <wrap>false</wrap>
+                <condition>
+                    <equals>
+                        <property>/flight-management/control/spd-mode</property>
+                        <value>mach</value>
+                    </equals>
+                </condition>
+            </binding>
             <binding>
                 <command>nasal</command>
-                <script>setprop('/flight-management/control/vsfpa-mode', 0)</script>
+                <script>
+                    flightdeck.fcu.knob_rotated('spd');
+                </script>
             </binding>
-		</action>
-	</animation>
-	
-	<animation>
-		<type>pick</type>
-		<object-name>vs-sel</object-name>
-		<action>
-			<button>3</button>
-			<repeatable type="bool">true</repeatable>
-			<binding>
-				<command>nasal</command>
-				<script>
-				
-					var sub_mode = getprop("/flight-management/control/ver-sub");
-				
-					var vs_prop = "/flight-management/fcu-values/vs";
-					
-					var fpa_prop = "/flight-management/fcu-values/fpa";
-				
-					if (sub_mode == "vs") {
-					
-						if (3000 > getprop(vs_prop))
-							setprop(vs_prop, getprop(vs_prop) + 100);
-					
-					} else {
-					
-						if (15 > getprop(fpa_prop))
-							setprop(fpa_prop, getprop(fpa_prop) + 1);
-					
-					}
-                    setprop('/flight-management/control/vsfpa-mode', 1);
-                    setprop('/flight-management/control/ver-ctrl', 'man-set');
-				</script>
-			</binding>
-		</action>
-		<action>
-			<button>4</button>
-			<repeatable type="bool">true</repeatable>
-			<binding>
-				<command>nasal</command>
-				<script>
-					
-					var sub_mode = getprop("/flight-management/control/ver-sub");
-				
-					var vs_prop = "/flight-management/fcu-values/vs";
-					
-					var fpa_prop = "/flight-management/fcu-values/fpa";
-				
-					if (sub_mode == "vs") {
-					
-						if (getprop(vs_prop) > -2500)
-							setprop(vs_prop, getprop(vs_prop) - 100);
-					
-					} else {
-					
-						if (getprop(fpa_prop) > -10)
-							setprop(fpa_prop, getprop(fpa_prop) - 1);
-					
-					}
-                    setprop('/flight-management/control/vsfpa-mode', 1);
-                    setprop('/flight-management/control/ver-ctrl', 'man-set');
-				</script>
-			</binding>
-		</action>
-		<action>
-			<button>0</button>
-			<repeatable type="bool">false</repeatable>
-			<binding>
-				<command>nasal</command>
-				<script>
-				
-					#setprop("/flight-management/fcu-values/alt", getprop("/instrumentation/altimeter/indicated-altitude-ft"));
-					
-					setprop("/flight-management/fcu-values/vs", 0);
-					
-					setprop("/flight-management/fcu-values/fpa", 0);
-				
-					setprop("/flight-management/control/ver-ctrl", "man-set");
-                    setprop('/flight-management/control/vsfpa-mode', 1);
-                    setprop('/flight-management/control/ver-ctrl', 'man-set');
-					
-				</script>
-			</binding>
-		</action>
-	</animation>
+        </action>
+        <shift-action>
+            <binding>
+                <command>property-adjust</command>
+                <property>flightdeck/fcu/spd-knob-pos</property>
+                <factor>0.5</factor>
+                <wrap>false</wrap>
+                <min>-1</min>
+                <max>1</max>
+            </binding>
+        </shift-action>
+        <shift-increase>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.knob_pushed('spd');
+                </script>
+            </binding>
+        </shift-increase>
+        <shift-decrease>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.knob_pulled('spd');
+                </script>
+            </binding>
+        </shift-decrease>
+        <release>
+            <binding>
+                <command>property-assign</command>
+                <property>flightdeck/fcu/spd-knob-pos</property>
+                <value>0</value>
+            </binding>
+        </release>
+        <hovered>
+            <binding>
+                <command>set-tooltip</command>
+                <label>Scroll/Drag to rotate, Shift+Scroll/Drag to push/pull</label>
+                <tooltip-id>spd-knob-tooltip</tooltip-id>
+            </binding>
+        </hovered>
+    </animation>
+    
+    <animation>
+        <type>translate</type>
+        <object-name>spd-sel</object-name>
+        <property>flightdeck/fcu/spd-knob-pos</property>
+        <factor>-0.0005</factor>
+        <axis>
+            <x>1</x>
+            <y>0</y>
+            <z>0</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>knob</type>
+        <object-name>hdg-sel</object-name>
+        <drag-direction>vertical</drag-direction>
+        <action>
+            <binding>
+                <command>property-adjust</command>
+                <property>/flight-management/fcu-values/hdg</property>
+                <factor>-1</factor>
+                <min>0</min>
+                <max>359</max>
+                <wrap>true</wrap>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    var hdg = getprop('/flight-management/fcu-values/hdg');
+                    setprop('autopilot/settings/heading-bug-deg', hdg);
+                    flightdeck.fcu.knob_rotated('hdg');
+                </script>
+            </binding>
+        </action>
+        <shift-action>
+            <binding>
+                <command>property-adjust</command>
+                <property>flightdeck/fcu/hdg-knob-pos</property>
+                <factor>0.5</factor>
+                <wrap>false</wrap>
+                <min>-1</min>
+                <max>1</max>
+            </binding>
+        </shift-action>
+        <shift-increase>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.knob_pushed('hdg');
+                </script>
+            </binding>
+        </shift-increase>
+        <shift-decrease>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.knob_pulled('hdg');
+                </script>
+            </binding>
+        </shift-decrease>
+        <release>
+            <binding>
+                <command>property-assign</command>
+                <property>flightdeck/fcu/hdg-knob-pos</property>
+                <value>0</value>
+            </binding>
+        </release>
+        <hovered>
+            <binding>
+                <command>set-tooltip</command>
+                <label>Scroll/Drag to rotate, Shift+Scroll/Drag to push/pull</label>
+                <tooltip-id>hdg-knob-tooltip</tooltip-id>
+            </binding>
+        </hovered>
+    </animation>
+    
+    <animation>
+        <type>translate</type>
+        <object-name>hdg-sel</object-name>
+        <property>flightdeck/fcu/hdg-knob-pos</property>
+        <factor>-0.0005</factor>
+        <axis>
+            <x>1</x>
+            <y>0</y>
+            <z>0</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>knob</type>
+        <object-name>alt-sel</object-name>
+        <drag-direction>vertical</drag-direction>
+        <increase>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.alt_rotated('decr');
+                </script>
+            </binding>
+        </increase>
+        <decrease>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.alt_rotated('incr');
+                </script>
+            </binding>
+        </decrease>
+        <shift-action>
+            <binding>
+                <command>property-adjust</command>
+                <property>flightdeck/fcu/alt-knob-pos</property>
+                <factor>0.5</factor>
+                <wrap>false</wrap>
+                <min>-1</min>
+                <max>1</max>
+            </binding>
+        </shift-action>
+        <shift-increase>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.knob_pushed('alt');
+                </script>
+            </binding>
+        </shift-increase>
+        <shift-decrease>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.knob_pulled('alt');
+                </script>
+            </binding>
+        </shift-decrease>
+        <release>
+            <binding>
+                <command>property-assign</command>
+                <property>flightdeck/fcu/alt-knob-pos</property>
+                <value>0</value>
+            </binding>
+        </release>
+        <hovered>
+            <binding>
+                <command>set-tooltip</command>
+                <label>Scroll/Drag to rotate, Shift+Scroll/Drag to push/pull</label>
+                <tooltip-id>alt-knob-tooltip</tooltip-id>
+            </binding>
+        </hovered>
+    </animation>
+
+    <animation>
+        <type>translate</type>
+        <object-name>alt-sel</object-name>
+        <property>flightdeck/fcu/alt-knob-pos</property>
+        <factor>-0.0005</factor>
+        <axis>
+            <x>1</x>
+            <y>0</y>
+            <z>0</z>
+        </axis>
+    </animation>
+    
+    <animation>
+        <type>knob</type>
+        <object-name>vs-sel</object-name>
+        <drag-direction>vertical</drag-direction>
+        <action>
+            <binding>
+                <command>property-adjust</command>
+                <property>/flight-management/fcu-values/vs</property>
+                <factor>-100</factor>
+                <min>-2500</min>
+                <max>3000</max>
+                <wrap>false</wrap>
+                <condition>
+                    <equals>
+                        <property>/flight-management/control/ver-sub</property>
+                        <value>vs</value>
+                    </equals>
+                </condition>
+            </binding>
+            <binding>
+                <command>property-adjust</command>
+                <property>/flight-management/fcu-values/fpa</property>
+                <factor>-1</factor>
+                <min>-10</min>
+                <max>15</max>
+                <wrap>false</wrap>
+                <condition>
+                    <equals>
+                        <property>/flight-management/control/ver-sub</property>
+                        <value>fpa</value>
+                    </equals>
+                </condition>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.vsfpa_rotated();
+                </script>
+            </binding>
+        </action>
+        <shift-action>
+            <binding>
+                <command>property-adjust</command>
+                <property>flightdeck/fcu/vs-knob-pos</property>
+                <factor>0.5</factor>
+                <wrap>false</wrap>
+                <min>-1</min>
+                <max>1</max>
+            </binding>
+        </shift-action>
+        <shift-increase>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.vsfpa_pushed();
+                </script>
+            </binding>
+        </shift-increase>
+        <shift-decrease>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.vsfpa_pulled();
+                </script>
+            </binding>
+        </shift-decrease>
+        <release>
+            <binding>
+                <command>property-assign</command>
+                <property>flightdeck/fcu/vs-knob-pos</property>
+                <value>0</value>
+            </binding>
+        </release>
+        <hovered>
+            <binding>
+                <command>set-tooltip</command>
+                <label>Scroll/Drag to rotate, Shift+Scroll/Drag to push/pull</label>
+                <tooltip-id>vs-knob-tooltip</tooltip-id>
+            </binding>
+        </hovered>
+    </animation>
+
+    <animation>
+        <type>translate</type>
+        <object-name>vs-sel</object-name>
+        <property>flightdeck/fcu/vs-knob-pos</property>
+        <factor>-0.0005</factor>
+        <axis>
+            <x>1</x>
+            <y>0</y>
+            <z>0</z>
+        </axis>
+    </animation>
+
 	
 	<!-- Button Pick Animations -->
 	
@@ -836,10 +917,10 @@
 					<property>/flight-management/control/ver-sub</property>
 					<value>vs</value>
 				</equals>
-                <equals>
+                <or>
                     <property>/flight-management/control/vsfpa-mode</property>
-                    <value>1</value>
-                </equals>
+                    <property>/flight-management/fcu/display-vs</property>
+                </or>
 			</and>
 		</condition>
 	</animation>
@@ -857,10 +938,10 @@
 					<property>/flight-management/control/ver-sub</property>
 					<value>fpa</value>
 				</equals>
-                <equals>
+                <or>
                     <property>/flight-management/control/vsfpa-mode</property>
-                    <value>1</value>
-                </equals>
+                    <property>/flight-management/fcu/display-vs</property>
+                </or>
 			</and>
 		</condition>
 	</animation>
@@ -1109,9 +1190,9 @@
 		</offsets>
 		<alignment>center-center</alignment>
 		<axis-alignment>xy-plane</axis-alignment>
-		<type type="string">number-value</type>
-		<format type="string">%5.0f</format>
-		<property>/flight-management/fcu-values/alt</property>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/flight-management/fcu-values/fcu-alt</property>
 		<truncate type="bool">false</truncate>
 		<font type="string">led.txf</font>
 		<draw-text type="bool">true</draw-text>

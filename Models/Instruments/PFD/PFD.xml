@@ -574,7 +574,7 @@
         <object-name>target-alt-sel</object-name>
         <transform>
             <subtype>textranslate</subtype>
-            <property>/flight-management/fcu-values/alt</property>
+            <property>/flight-management/fcu-values/fcu-alt</property>
             <factor>0.000019141</factor>
             <axis>
                 <y>-1</y>
@@ -1336,9 +1336,9 @@
 		</offsets>
 		<alignment>right-center</alignment>
 		<axis-alignment>yz-plane</axis-alignment>
-		<type type="string">number-value</type>
-		<format type="string">%5.0f</format>
-		<property>flight-management/fcu-values/alt</property>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>flight-management/fcu-values/alt-disp</property>
 		<truncate type="bool">false</truncate>
 		<font type="string">helvetica_bold.txf</font>
 		<draw-text type="bool">true</draw-text>
@@ -1360,9 +1360,9 @@
         </offsets>
         <alignment>right-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
-        <type type="string">number-value</type>
-        <format type="string">%5.0f</format>
-        <property>flight-management/fcu-values/alt</property>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <property>flight-management/fcu-values/alt-disp</property>
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_bold.txf</font>
         <draw-text type="bool">true</draw-text>
@@ -3065,10 +3065,6 @@
                         <property>/flight-management/control/is-alt-constraint</property>
                     </not>
                 </or>
-                <!--greater-than-equals>
-                    <property>flight-management/fcu-values/alt</property>
-                    <property>/instrumentation/altimeter/indicated-altitude-ft</property>
-                </greater-than-equals-->
                 <greater-than-equals>
                     <property>instrumentation/pfd/sel-alt-diff</property>
                     <value>5548</value>
@@ -3093,10 +3089,6 @@
                         <property>/flight-management/control/is-alt-constraint</property>
                     </not>
                 </or>
-                <!--less-than>
-                    <property>flight-management/fcu-values/alt</property>
-                    <property>/instrumentation/altimeter/indicated-altitude-ft</property>
-                </less-than-->
                 <less-than>
                     <property>instrumentation/pfd/sel-alt-diff</property>
                     <value>-5548</value>
