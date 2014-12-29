@@ -44,9 +44,7 @@ var WPTModel = {
         m.wp_id = wp.id;
         m.type = wp.wp_type;
 
-        if (idx) var n = wp.path()[-1];
-        else var n = fp.getWP(1).path()[0];
-        (m.lat,m.lon) = (n.lat,n.lon);
+        (m.lat,m.lon) = (wp.wp_lat,wp.wp_lon);
         m.wp = wp;
         m.is_departure = (idx == 0);
         m.is_destination = (idx == (fp.getPlanSize() - 1));

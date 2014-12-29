@@ -74,6 +74,7 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
             if(athr_status != 'off'){
                 setprop(athr, 'off');
             }
+            disableThrustLock();
         } 
         elsif(max_pos > 0 and max_pos <= max_athr_pos) {
             if(getprop(athr) == 'armed'){
@@ -83,6 +84,9 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
         elsif(max_pos > (max_athr_pos + 0.01) and athr_status == 'eng'){
             setprop(athr, 'armed');
         }
+        elsif(max_pos > (max_athr_pos + 0.01)){
+            disableThrustLock();
+        }
         foreach(var detent_name; keys(detents)){
             var detent_lvl = detents[detent_name];
             if(int(self_pos * 100) == int(detent_lvl * 100)){
@@ -90,9 +94,20 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
                 break;
             }       
         }
-        
+
         #setprop('flight-management/thrust-lock', 0);
     }, 0, 0);
+}
+
+var disableThrustLock = func(){
+    var thr_lock = getprop('flight-management/thrust-lock');
+    if (thr_lock) {
+        var reason = getprop('flight-management/thrust-lock-reason');
+        if (reason == 'THR') {
+            setprop('flight-management/thrust-lock', 0);
+            setprop('flight-management/thrust-lock-reason', '');
+        }
+    }
 }
 
 controls.incThrottle = func {
@@ -123,8 +138,33 @@ controls.throttleAxis = func(invert = 0){
     val = (1 - val) / div;
     if(val < -0.63)
         val = -0.63;
-    print('AXIS: '~ val);
+    #print('AXIS: '~ val);
     for(i = 0; i < ENGINE_COUNT; i = i + 1){
         setprop('controls/engines/engine['~i~']/throttle-pos', val);
     }
+}
+
+controls.perEngineSelectedAxisHandler = func(n) {
+    return
+    func(index, invert = 0) {
+        var val = cmdarg().getNode("setting").getValue();
+        var rev = getprop('controls/engines/engine/reverser');
+        var div = 2;
+        if(invert) val = -val;
+        if(rev) {
+            div = -2;
+        }
+        val = (1 - val) / div;
+        if(val < -0.63)
+            val = -0.63;
+        var pre = 'controls/engines/engine[';
+        var post = ']/throttle-pos';
+        if (typeof(index) == "scalar") {
+            setprop(pre ~ index ~ post, val);
+        } else {
+            foreach (var e; index) {
+                setprop(pre ~ e ~ post, val);
+            }
+        }
+    };
 }

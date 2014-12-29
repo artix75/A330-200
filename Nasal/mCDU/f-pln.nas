@@ -263,7 +263,7 @@ var f_pln = {
 			}
 		
 			# Set Airborne to get distance to last waypoint
-                        var old_actv = getprop(rm_route~ "active");
+            var old_actv = getprop(rm_route~ "active");
 		
 			setprop(rm_route~ "active", 1);
 		
@@ -302,15 +302,15 @@ var f_pln = {
 			
 			if (dep != nil) {
 			
-			var time_dep = "0000";
-			
-			var spd_alt = "---/-----";
-			
-			setprop(f_pln_disp~ "l1/id", dep);
-			
-			setprop(f_pln_disp~ "l1/time", time_dep);
-			
-			setprop(f_pln_disp~ "l1/spd_alt", spd_alt);
+                var time_dep = "0000";
+
+                var spd_alt = "---/-----";
+
+                setprop(f_pln_disp~ "l1/id", dep);
+
+                setprop(f_pln_disp~ "l1/time", time_dep);
+
+                setprop(f_pln_disp~ "l1/spd_alt", spd_alt);
 			
 			}
 			
@@ -406,7 +406,7 @@ var f_pln = {
 		
 			for (var l = 1; l <= 5; l += 1) {
 			
-				var wp = first - 2 + l;
+				var wp = first - 1 + l;
 				
 				var id = getprop(rm_route~ "route/wp[" ~ wp ~ "]/id");				
 				

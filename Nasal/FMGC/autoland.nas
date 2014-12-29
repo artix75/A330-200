@@ -15,38 +15,18 @@ var autoland = {
 		var nose_wow = getprop("/gear/gear/wow");
 		
 		var main_wow = getprop("/gear/gear[3]/wow");
+        var athr = getprop("/flight-management/control/a-thrust");
         
         #print("Autoland phase check");
 		
 		# LAND > FLARE1 > FLARE2 > MAIN_TOUCH (SLOWLY REDUCE PITCH) > NOSE TOUCH (RETARD)
 		
-		if ((getprop("/flight-management/control/a-thrust") != "off") and (getprop("/flight-management/control/spd-ctrl") == "fmgc") and (getprop("/flight-management/spd-manager/approach/mode") == "MANAGED (AUTO)")) {
+		if ((athr == "eng") and 
+            (getprop("/flight-management/control/spd-ctrl") == "fmgc") and 
+            (getprop("/flight-management/spd-manager/approach/mode") == "MANAGED (AUTO)")) {
 		    #print("Autoland speed management");
-            if (nose_wow or main_wow) { 
-                print("Autoland: Touch down, retard...");
-		
-				me.retard();
-		
-			#} elsif (main_wow) {
-		
-				#me.slow(spd);
-
-			} elsif (agl <= 50) {
-                #print("Autoland: AGL <= 50, retard...");
-			
-				#setprop("/flight-management/fmgc-values/target-spd", 60);
-				
-				#setprop("/flight-management/control/a-thrust", "off");
+            if (nose_wow or main_wow or agl <= 50) { 
                 me.retard();
-				
-				##var throttle_l = getprop("/controls/engines/engine[0]/throttle");
-				
-				##var throttle_r = getprop("/controls/engines/engine[1]/throttle");
-				
-				##setprop("/controls/engines/engine[0]/throttle", throttle_l / 2);
-				
-				##setprop("/controls/engines/engine[1]/throttle", throttle_r / 2);
-
 			} elsif (agl <= 100) {
                 #print("Autoland: AGL <= 100, regulating speed and activating autoland");
 
@@ -75,11 +55,12 @@ var autoland = {
 		
 		} elsif (nose_wow) {
             #print("Autoland: nose touch down, deactivating ATHR, activating rollout");
-			setprop("/flight-management/control/a-thrust", "off");
+			#setprop("/flight-management/control/a-thrust", "off");
 			
 			setprop("/autoland/phase", "rollout");
 			
 			setprop("/autoland/rudder", 1);
+            #setprop("/autoland/retard", 0);
 		
 		} elsif (main_wow) {
             #print("Autoland: main touch down, target-vs -10 and rollout");
@@ -105,6 +86,8 @@ var autoland = {
 			setprop("/autoland/phase", "flare");
 			
 			setprop("/autoland/rudder", 1);
+            if (athr == "eng")
+                me.retard();
 			
 		} 
 		
@@ -114,6 +97,7 @@ var autoland = {
             #print("Autoland: early descent");
 		
 			me.early_descent(spd);
+            setprop("/autoland/retard", 0);
 		
 		} else {
             #print("Autoland: no rudder");
@@ -121,6 +105,7 @@ var autoland = {
 			setprop("/autoland/phase", "land");
 			
 			setprop("/autoland/rudder", 0);
+            setprop("/autoland/retard", 0);
 		
 		}
 	
@@ -168,28 +153,10 @@ var autoland = {
 	},
 	
 	retard: func() {
-	
-		setprop("/flight-management/control/a-thrust", "off");
-        setprop("/flight-management/control/a-thr/ias", 0);
-        setprop("/flight-management/control/a-thr/mach", 0);
-        setprop("/flight-management/control/fmgc/ias", 0);
-        setprop("/flight-management/control/fmgc/mach", 0);
-		setprop("/controls/engines/engine[0]/throttle", 0);
-		setprop("/controls/engines/engine[1]/throttle", 0);
         setprop("/autoland/retard", 1);
-        settimer(func(){ # WORKAROUND FOR IDLE
-            setprop("/controls/engines/engine[0]/throttle", 0);
-            setprop("/controls/engines/engine[1]/throttle", 0);
-        }, 0.35);
-	
 	},
 	
 	slow: func(spd) {
-		
-		#setprop("/controls/engines/engine[0]/throttle", 0.1);
-				
-		#setprop("/controls/engines/engine[1]/throttle", 0.1);
-                
 		setprop("/flight-management/fmgc-values/target-spd", 60);
 	
 	}

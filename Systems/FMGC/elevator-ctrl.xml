@@ -42,7 +42,9 @@
 			<gamma>0</gamma>
 			<Ti>10</Ti>
 			<Td>0.00001</Td>
-			<u_min>-0.15</u_min>
+			<u_min>
+                <property>/flight-management/settings/min-elevator-ctrl</property>
+            </u_min>
 			<u_max>0.1</u_max>
 		</config>
 	</pid-controller>
@@ -76,20 +78,31 @@
 			<gamma>0</gamma>
 			<Ti>10</Ti>
 			<Td>0.00001</Td>
-			<u_min>-0.15</u_min>
+			<u_min>
+                <property>/flight-management/settings/min-elevator-ctrl</property>
+            </u_min>
 			<u_max>0.1</u_max>
 		</config>
 	</pid-controller>
 	
 	<pid-controller>
 		<name>FCU/AP Elevator Control GS</name>
-		<debug type="bool">false</debug>
+		<debug type="bool">true</debug>
 		<enable>
 			<prop>/servo-control/elevator-gs</prop>
 		</enable>
 		<input>
 			<prop>/velocities/vertical-speed-fps</prop>
 		</input>
+        <reference><!-- When the aircraft is below glideslope keep level -->
+            <condition>
+                <greater-than>
+                    <property>instrumentation/nav/gs-needle-deflection-norm</property>
+                    <value>0.15</value>
+                </greater-than>
+            </condition>
+            <value>0</value>
+        </reference>
 		<reference>
 			<prop>/instrumentation/nav[0]/gs-rate-of-climb</prop>
 		</reference>
@@ -103,7 +116,9 @@
 			<gamma>0</gamma>
 			<Ti>10</Ti>
 			<Td>0.00001</Td>
-			<u_min>-0.15</u_min>
+			<u_min>
+                <property>/flight-management/settings/min-elevator-ctrl</property>
+            </u_min>
 			<u_max>0.1</u_max>
 		</config>
 	</pid-controller>
@@ -406,7 +421,9 @@
             <!-- unfiltered derivative error -->
             <Ti>20.0</Ti>        <!-- integrator time -->
             <Td>0.00001</Td>    <!-- derivator time -->
-            <u_min>-0.15</u_min> <!-- minimum output clamp -->
+            <u_min>
+                <property>/flight-management/settings/min-elevator-ctrl</property>
+            </u_min> <!-- minimum output clamp -->
             <u_max>0.1</u_max>  <!-- maximum output clamp -->
         </config>
     </pid-controller>

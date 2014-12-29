@@ -661,6 +661,12 @@
 		</spd-manager>
         <thrust-lock type="float">0</thrust-lock>
         <thrust-lock-reason type="string"></thrust-lock-reason>
+        <control>
+            <exped-mode type="bool">false</exped-mode>
+        </control>
+        <settings>
+            <min-elevator-ctrl type="double">-0.15</min-elevator-ctrl>
+        </settings>
 	</flight-management>
 
 	<services>
@@ -870,14 +876,15 @@
 		<efis n="0">
 
 			<ecam>
-					<display-mode type="string">FUEL</display-mode>
+                <display-mode type="string">FUEL</display-mode>
 			</ecam>
 			<nd>
-					<display-mode type="string">ILS</display-mode>
-					<display-mode-knob type="int">0</display-mode-knob>
-					<display-range type="int">40</display-range>
-					<terrain-on-nd type="int">0</terrain-on-nd>
-					<canvas-display-mode type="string">APP</canvas-display-mode>
+                <display-mode type="string">ILS</display-mode>
+                <display-mode-knob type="int">0</display-mode-knob>
+                <display-mode-num type="int">0</display-mode-num>
+                <display-range type="int">40</display-range>
+                <terrain-on-nd type="int">0</terrain-on-nd>
+                <canvas-display-mode type="string">APP</canvas-display-mode>
 				
 			</nd>
 			<input>
@@ -908,9 +915,10 @@
 					<display-mode type="string">FUEL</display-mode>
 			</ecam>
 			<nd>
-					<display-mode type="string">VOR</display-mode>
-					<display-mode-knob type="int">2</display-mode-knob>
-					<display-range type="int">40</display-range>
+                <display-mode type="string">ILS</display-mode>
+                <display-mode-knob type="int">0</display-mode-knob>
+                <display-mode-num type="int">0</display-mode-num>
+				<display-range type="int">40</display-range>
 				
 			</nd>
 			<input>

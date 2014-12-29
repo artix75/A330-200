@@ -423,7 +423,7 @@ canvas.NDStyles["Airbus"] = {
                         etaSec=etaSec-60*m;
                         var s = etaSec/10;
                         if (h>24) h=h-24;
-                        nd.symbols.eta.setText(sprintf("%02.0f:%02.0f:%02.0f",h,m,s));
+                        nd.symbols.eta.setText(sprintf("%02.0f:%02.0f",h,m));
                         nd.symbols.eta.show();
                     },
                     is_false: func(nd) nd.symbols.eta.hide(),
@@ -1025,6 +1025,39 @@ canvas.NDStyles["Airbus"] = {
                     },
                     is_false: func(nd){
                         nd.symbols.dmeR.hide();
+                    }
+                }
+            },
+            {
+                id: 'vorL',
+                impl: {
+                    init: func(nd,symbol),
+                    predicate: func(nd) (nd.get_switch('toggle_lh_vor_adf') != 0),
+                    is_true: func(nd) {
+                        nd.symbols.vorL.show();
+                        nd.symbols.vorLId.show();
+                        nd.symbols.dmeLDist.show();
+                        if(nd.get_switch('toggle_rh_vor_adf') < 0){
+                            if((var navident=getprop("instrumentation/adf/ident")) != "")
+                                nd.symbols.vorLId.setText(navident);
+                            else 
+                                nd.symbols.vorLId.setText(sprintf("%3d",getprop("instrumentation/adf/frequencies/selected-khz")));
+                            nd.symbols.dmeLDist.setText("");
+                        } else {
+                            if(getprop("instrumentation/nav/in-range"))
+                                nd.symbols.vorLId.setText(getprop("instrumentation/nav/nav-id"));
+                            else
+                                nd.symbols.vorLId.setText(getprop("instrumentation/nav/frequencies/selected-mhz-fmt"));
+                            if(getprop("instrumentation/dme/in-range"))
+                                nd.symbols.dmeLDist.setText(sprintf("%3.1f",
+                                                            getprop("instrumentation/dme/indicated-distance-nm")));
+                            else nd.symbols.dmeLDist.setText(" ---");
+                        }
+                    },
+                    is_false: func(nd){
+                        nd.symbols.vorL.hide();
+                        nd.symbols.vorLId.hide();
+                        nd.symbols.dmeLDist.hide();
                     }
                 }
             },
