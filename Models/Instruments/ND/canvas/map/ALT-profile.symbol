@@ -41,7 +41,7 @@ var draw = func{
         else
             grp.setColor(1,1,1);
     }
-    elsif(name == 'ed'){
+    elsif(name == 'ed' or name == 'ec'){
         var is_cstr = me.model.getValue('alt-cstr');
         if(is_cstr)
             grp.setColor(0.68, 0, 0.38);
