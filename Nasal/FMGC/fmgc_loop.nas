@@ -1989,7 +1989,7 @@ var fmgc_loop = {
             var vs_fpm = me.vs_fpm;
             if(vs_fpm == 0) return;
             var vnav_actv = 0;
-            if(me.ver_ctrl == "fmgc"){
+            if(me.follow_alt_cstr){
                 trgt_alt = getprop(fmgc_val ~ 'vnav-target-alt');
                 vnav_actv = 1;
             } else {
@@ -2056,7 +2056,7 @@ var fmgc_loop = {
                 var deact_node = "/autopilot/route-manager/vnav/" ~ deact_prop;
                 setprop(node ~ "/latitude-deg", point.lat); 
                 setprop(node ~ "/longitude-deg", point.lon);
-                if(prop == 'ed')
+                if(prop == 'ed' or prop == 'ec')
                     setprop(node ~ "/alt-cstr", me.follow_alt_cstr);
                 remnode(deact_node); 
             } else {
@@ -2567,7 +2567,7 @@ setlistener('/flight-management/flight-modes/message', func(){
 setlistener(fmgc~ "lat-ctrl", func(){
     var lat_ctrl = getprop(fmgc~ "lat-ctrl");
     if(lat_ctrl == 'fmgc'){
-        var fp_actv = getprop("flight-management/procedures/active");
+        var fp_actv = getprop("/autopilot/route-manager/active");
         if(!fp_actv){
             lat_ctrl = 'man-set';#TODO: set?
         }
