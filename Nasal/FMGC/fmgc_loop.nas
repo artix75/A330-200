@@ -2552,7 +2552,7 @@ setlistener('/flight-management/flight-modes/message', func(){
 setlistener(fmgc~ "lat-ctrl", func(){
     var lat_ctrl = getprop(fmgc~ "lat-ctrl");
     if(lat_ctrl == 'fmgc'){
-        var fp_actv = getprop("flight-management/procedures/active");
+        var fp_actv = getprop("/autopilot/route-manager/active");
         if(!fp_actv){
             lat_ctrl = 'man-set';#TODO: set?
         }
