@@ -13,25 +13,38 @@ var star = {
 		me.ArrICAO = procedures.fmsDB.new(icao);
 		
 		# Get a list of all available runways on the departure airport
-		
-		setprop(gps~ "scratch/query", icao);
-		setprop(gps~ "scratch/type", "airport");
-		setprop(gps~ "command", "search");
-		
-		for(var rwy_index = 0; getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/id") != nil; rwy_index += 1) {
-		
-			setprop(arr~ "runway[" ~ rwy_index ~ "]/id", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/id"));
-			
-			setprop(arr~ "runway[" ~ rwy_index ~ "]/crs", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/heading-deg"));
-			
-			setprop(arr~ "runway[" ~ rwy_index ~ "]/length-m", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/length-ft") * 0.3048);
-			
-			setprop(arr~ "runway[" ~ rwy_index ~ "]/width-ft", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/width-ft"));
-                        
-                        var ils_frq = getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/ils-frequency-mhz");
-                        if(ils_frq == nil) ils_frq = 0;
 
-                        setprop(arr~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", ils_frq);
+        var info = airportinfo(icao);
+        if (info == nil){
+            setprop(arr~ "runway", '');
+            me.update_rwys();
+            return;
+        }
+        
+        var runways = keys(info.runways);
+        var rwy_count = size(runways);
+		
+		for(var rwy_index = 0; rwy_index < rwy_count; rwy_index += 1) {
+            var rwy_name = runways[rwy_index];
+            var rwy = info.runways[rwy_name];
+		
+			setprop(arr~ "runway[" ~ rwy_index ~ "]/id", rwy.id);
+			
+			setprop(arr~ "runway[" ~ rwy_index ~ "]/crs", int(rwy.heading));
+			
+			setprop(arr~ "runway[" ~ rwy_index ~ "]/length-m", int(rwy.length));
+			
+			setprop(arr~ "runway[" ~ rwy_index ~ "]/width-ft", rwy.width * globals.M2FT);
+            
+            var ils = rwy.ils;
+            if (ils != nil){
+                var ils_frq = ils.frequency;
+                if(ils_frq == nil) ils_frq = 0; 
+                ils_frq = ils_frq / 100;
+                setprop(arr~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", ils_frq);
+            } else {
+                setprop(arr~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", 0);
+            }
 		
 		}
 		
@@ -123,6 +136,7 @@ var star = {
 	},
 	
 	confirm_iap : func(id) {
+        if(size(me.ApproachList) == 0) return;
 	
 		setprop(iap~ "selected-iap", me.ApproachList[0].wp_name);
 	
