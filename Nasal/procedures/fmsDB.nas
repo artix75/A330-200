@@ -23,10 +23,10 @@
 
 var fmsDB = {
     new : func(icao) {
-        var me = {parents:[fmsDB]};
+      var me = {parents:[fmsDB]};
 
-        me.airport = icao;
-        me.wptps   = [];
+      me.airport = icao;
+      me.wptps   = [];
         
 
       var tp = fmsTP.new();
@@ -43,7 +43,7 @@ var fmsDB = {
               tp.wp_name=attr[a];
             }
             if (a == "Runways") {
-               tp.runways = split(",",attr[a])
+              tp.runways = split(",",attr[a])
             }
           }
           ##print("- Parse STAR: "~tp.wp_name);

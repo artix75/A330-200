@@ -12,26 +12,39 @@ var sid = {
 		
 		# Get a list of all available runways on the departure airport
 		
-		setprop(gps~ "scratch/query", icao);
-		setprop(gps~ "scratch/type", "airport");
-		setprop(gps~ "command", "search");
-		
-		for(var rwy_index = 0; getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/id") != nil; rwy_index += 1) {
-		
-			setprop(dep~ "runway[" ~ rwy_index ~ "]/id", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/id"));
-			
-			setprop(dep~ "runway[" ~ rwy_index ~ "]/crs", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/heading-deg"));
-			
-			setprop(dep~ "runway[" ~ rwy_index ~ "]/length-m", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/length-ft") * 0.3048);
-			
-			setprop(dep~ "runway[" ~ rwy_index ~ "]/width-ft", getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/width-ft"));
+        var info = airportinfo(icao);
+        if (info == nil){
+            setprop(dep~ "runway", '');
+            me.update_rwys();
+            return;
+        }
 
-                        var ils_frq = getprop(gps~ "scratch/runways[" ~ rwy_index ~ "]/ils-frequency-mhz");
-                        if(ils_frq == nil) ils_frq = 0;
+        var runways = keys(info.runways);
+        var rwy_count = size(runways);
 
-			setprop(dep~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", ils_frq);
-		
-		}
+        for(var rwy_index = 0; rwy_index < rwy_count; rwy_index += 1) {
+            var rwy_name = runways[rwy_index];
+            var rwy = info.runways[rwy_name];
+
+            setprop(dep~ "runway[" ~ rwy_index ~ "]/id", rwy.id);
+
+            setprop(dep~ "runway[" ~ rwy_index ~ "]/crs", int(rwy.heading));
+
+            setprop(dep~ "runway[" ~ rwy_index ~ "]/length-m", int(rwy.length));
+
+            setprop(dep~ "runway[" ~ rwy_index ~ "]/width-ft", rwy.width * globals.M2FT);
+
+            var ils = rwy.ils;
+            if (ils != nil){
+                var ils_frq = ils.frequency;
+                if(ils_frq == nil) ils_frq = 0; 
+                ils_frq = ils_frq / 100;
+                setprop(dep~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", ils_frq);
+            } else {
+                setprop(dep~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", 0);
+            }
+
+        }
 		
 		setprop(dep~ "runways", rwy_index);
 		
@@ -104,13 +117,12 @@ var sid = {
 			#	setprop("/autopilot/route-manager/input", "@INSERT" ~ (wp + 1) ~ ":" ~ me.SIDList[n].wpts[wp].wp_lon ~ "," ~ me.SIDList[n].wpts[wp].wp_lat ~ "@" ~ me.SIDList[n].wpts[wp].alt_cstr);
 		
 		}
-                if(me.SIDList[n].wp_name == 'DEFAULT'){
-                    setprop('/autopilot/route-manager/departure/sid', 'DEFAULT'); 
-		    setprop(dep~ "active-sid/name", 'DEFAULT');
-                } else {
-                
-		    setprop(dep~ "active-sid/name", me.SIDList[n].wp_name);
-                }
+        if (me.SIDList[n].wp_name == 'DEFAULT'){
+            setprop('/autopilot/route-manager/departure/sid', 'DEFAULT'); 
+            setprop(dep~ "active-sid/name", 'DEFAULT');
+        } else {
+            setprop(dep~ "active-sid/name", me.SIDList[n].wp_name);
+        }
 		
 		
 		setprop("/flight-management/procedures/sid-current", 0);

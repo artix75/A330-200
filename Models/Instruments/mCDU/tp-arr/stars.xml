@@ -153,7 +153,7 @@
 				<command>nasal</command>
 		 		<script>
 		 		
-		 			mcdu.star.select_arpt(getprop("/autopilot/route-manager/departure/airport"));
+		 			mcdu.star.select_arpt(getprop("/autopilot/route-manager/destination/airport"));
 		 			
 				</script>
             </binding>
@@ -224,7 +224,7 @@
 		<axis-alignment>xy-plane</axis-alignment>
 		<type type="string">text-value</type>
 		<format type="string">%s</format>
-		<property>autopilot/route-manager/departure/airport</property>
+		<property>autopilot/route-manager/destination/airport</property>
 		<truncate type="bool">false</truncate>
 		<font type="string">courier-bold.txf</font>
 		<draw-text type="bool">true</draw-text>
