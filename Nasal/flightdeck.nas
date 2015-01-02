@@ -45,7 +45,7 @@ var fcu = {
     },
     knob_pushed: func(name){
         utils.clickSound(4);
-        if (fmgc.fmgc_loop.active_lat_mode == 'LAND')
+        if (fmgc.fmgc_loop.active_common_mode == 'LAND')
             return;
         var type = me.get_type(name);
         if(type == '') return;
@@ -63,7 +63,7 @@ var fcu = {
     },
     knob_pulled: func(name){
         utils.clickSound(4);
-        if (fmgc.fmgc_loop.active_lat_mode == 'LAND')
+        if (fmgc.fmgc_loop.active_common_mode == 'LAND')
             return;
         var type = me.get_type(name);
         if(type == '') return;
@@ -90,7 +90,7 @@ var fcu = {
     },
     vsfpa_pushed: func(){
         utils.clickSound(4);
-        if (fmgc.fmgc_loop.active_lat_mode == 'LAND')
+        if (fmgc.fmgc_loop.active_common_mode == 'LAND')
             return;
         setprop("/flight-management/fcu-values/vs", 0);
         setprop("/flight-management/fcu-values/fpa", 0);
@@ -99,7 +99,7 @@ var fcu = {
     },
     vsfpa_pulled: func(){
         utils.clickSound(4);
-        if (fmgc.fmgc_loop.active_lat_mode == 'LAND')
+        if (fmgc.fmgc_loop.active_common_mode == 'LAND')
             return;
         setprop("/flight-management/control/ver-ctrl", "man-set");
         setprop('/flight-management/control/vsfpa-mode', 1);
