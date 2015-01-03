@@ -309,7 +309,7 @@
                 <command>property-adjust</command>
                 <property>/flight-management/fcu-values/ias</property>
                 <factor>-1</factor>
-                <min>90</min>
+                <min>100</min>
                 <max>350</max>
                 <wrap>false</wrap>
                 <condition>
@@ -376,7 +376,7 @@
         <hovered>
             <binding>
                 <command>set-tooltip</command>
-                <label>Scroll/Drag to rotate, Shift+Scroll/Drag to push/pull</label>
+                <label>Drag: rotate, Shift+Drag: push/pull, Shift-Click: push, Shift-Alt-Click: pull</label>
                 <tooltip-id>spd-knob-tooltip</tooltip-id>
             </binding>
         </hovered>
@@ -452,7 +452,7 @@
         <hovered>
             <binding>
                 <command>set-tooltip</command>
-                <label>Scroll/Drag to rotate, Shift+Scroll/Drag to push/pull</label>
+                <label>Drag: rotate, Shift+Drag: push/pull, Shift-Click: push, Shift-Alt-Click: pull</label>
                 <tooltip-id>hdg-knob-tooltip</tooltip-id>
             </binding>
         </hovered>
@@ -526,7 +526,7 @@
         <hovered>
             <binding>
                 <command>set-tooltip</command>
-                <label>Scroll/Drag to rotate, Shift+Scroll/Drag to push/pull</label>
+                <label>Drag: rotate, Shift+Drag: push/pull, Shift-Click: push, Shift-Alt-Click: pull</label>
                 <tooltip-id>alt-knob-tooltip</tooltip-id>
             </binding>
         </hovered>
@@ -620,7 +620,7 @@
         <hovered>
             <binding>
                 <command>set-tooltip</command>
-                <label>Scroll/Drag to rotate, Shift+Scroll/Drag to push/pull</label>
+                <label>Drag: rotate, Shift+Drag: push/pull, Shift-Click: push, Shift-Alt-Click: pull</label>
                 <tooltip-id>vs-knob-tooltip</tooltip-id>
             </binding>
         </hovered>
