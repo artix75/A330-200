@@ -1726,7 +1726,7 @@ var fmgc_loop = {
             if(!getprop('/flight-management/fcu/display-hdg'))
                 me.set_current_hdgtrk();
         }
-        if(me.spd_ctrl == 'fmgc'){
+        if(me.spd_ctrl == 'fmgc' and me.airborne){
             if(!getprop('/flight-management/fcu/display-spd'))
                 me.set_current_spd();
         }
