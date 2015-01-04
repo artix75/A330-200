@@ -903,25 +903,52 @@
 			</equals>
 		</condition>
 	</animation-->
+    
+    <animation>
+        <type>select</type>
+        <object-name>vs.dash</object-name>
+        <condition>
+            <and>
+                <or>
+                    <equals>
+                        <property>/flight-management/control/ver-ctrl</property>
+                        <value>fmgc</value>
+                    </equals>
+                    <not>
+                        <equals>
+                            <property>/flight-management/control/ver-sub</property>
+                            <value>vs</value>
+                        </equals>
+                    </not>
+                    <not>
+                        <property>/flight-management/control/vsfpa-mode</property>
+                    </not>
+                </or>
+                <not>
+                    <property>/flight-management/fcu/display-vs</property>
+                </not>
+            </and>
+        </condition>
+    </animation>
 	
 	<animation>
 		<type>select</type>
 		<object-name>vs-text</object-name>
 		<condition>
-			<and>
-				<equals>
-					<property>/flight-management/control/ver-ctrl</property>
-					<value>man-set</value>
-				</equals>
-				<equals>
-					<property>/flight-management/control/ver-sub</property>
-					<value>vs</value>
-				</equals>
-                <or>
+            <or>
+                <and>
+                    <equals>
+                        <property>/flight-management/control/ver-ctrl</property>
+                        <value>man-set</value>
+                    </equals>
+                    <equals>
+                        <property>/flight-management/control/ver-sub</property>
+                        <value>vs</value>
+                    </equals>
                     <property>/flight-management/control/vsfpa-mode</property>
-                    <property>/flight-management/fcu/display-vs</property>
-                </or>
-			</and>
+                </and>
+                <property>/flight-management/fcu/display-vs</property>
+            </or>
 		</condition>
 	</animation>
 	
