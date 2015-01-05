@@ -239,6 +239,17 @@
 		<type>select</type>
 		<object-name>lat.fmgc</object-name>
 		<condition>
+            <equals>
+                <property>/flight-management/control/lat-ctrl</property>
+                <value>fmgc</value>
+            </equals>
+		</condition>
+	</animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>lat.dash</object-name>
+        <condition>
             <and>
                 <equals>
                     <property>/flight-management/control/lat-ctrl</property>
@@ -248,8 +259,8 @@
                     <property>/flight-management/fcu/display-hdg</property>
                 </not>
             </and>
-		</condition>
-	</animation>
+        </condition>
+    </animation>
 	
 	<animation>
 		<type>select</type>

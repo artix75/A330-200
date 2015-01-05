@@ -78,6 +78,10 @@ var fcu = {
             setprop('/flight-management/control/vsfpa-mode', 0);
             setprop('/flight-management/fcu/display-vs', 0);
         }
+        elsif(name == 'hdg'){
+            setprop('autopilot/settings/heading-bug-deg', 
+                    getprop("/flight-management/fcu-values/hdg"));
+        }
     },
     vsfpa_rotated: func(){
         var vs_mode = getprop('/flight-management/control/vsfpa-mode');
