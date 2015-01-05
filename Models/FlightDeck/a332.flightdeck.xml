@@ -223,6 +223,17 @@
 		<type>select</type>
 		<object-name>spd.fmgc</object-name>
 		<condition>
+            <equals>
+                <property>/flight-management/control/spd-ctrl</property>
+                <value>fmgc</value>
+            </equals>
+		</condition>
+	</animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>spd.dash</object-name>
+        <condition>
             <and>
                 <equals>
                     <property>/flight-management/control/spd-ctrl</property>
@@ -232,8 +243,8 @@
                     <property>/flight-management/fcu/display-spd</property>
                 </not>
             </and>
-		</condition>
-	</animation>
+        </condition>
+    </animation>
 	
 	<animation>
 		<type>select</type>
