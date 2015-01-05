@@ -288,6 +288,7 @@
 	<animation>
 		<type>select</type>
 		<object-name>vs.ind</object-name>
+        <object-name>hdg.ind</object-name>
 		<condition>
 			<equals>
 				<property>/flight-management/control/ver-sub</property>
@@ -299,6 +300,8 @@
 	<animation>
 		<type>select</type>
 		<object-name>fpa.ind</object-name>
+        <object-name>trk.ind</object-name>
+        <object-name>trk.ind2</object-name>
 		<condition>
 			<equals>
 				<property>/flight-management/control/ver-sub</property>
@@ -1099,6 +1102,8 @@
 		<object-name>qnh-hpa</object-name>
         <object-name>qnh-std</object-name>
 		<object-name>rudder-trim</object-name>
+        <object-name>trk.ind</object-name>
+        <object-name>trk.ind2</object-name>
 		<diffuse>
 			<red>0.89</red>
 			<green>0.37</green>
@@ -1305,6 +1310,56 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+    
+    <text>
+        <name>trk.ind</name>
+        <offsets>
+            <x-m>-0.4868</x-m>
+            <y-m>-0.008</y-m>
+            <z-m>0.1721</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>76</roll-deg>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">literal</type>
+        <text type="string">TRK</text>
+        <truncate type="bool">false</truncate>
+        <font type="string">Helvetica.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.005</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>trk.ind2</name>
+        <offsets>
+            <x-m>-0.4868</x-m>
+            <y-m>-0.0469</y-m>
+            <z-m>0.1824</z-m>
+            <heading-deg>90</heading-deg>
+            <roll-deg>76</roll-deg>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>xy-plane</axis-alignment>
+        <type type="string">literal</type>
+        <text type="string">TRK</text>
+        <truncate type="bool">false</truncate>
+        <font type="string">Helvetica.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.005</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 	
 	<!-- Knobs Rotate -->
 	
