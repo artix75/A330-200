@@ -124,31 +124,6 @@ if(!ND_AIRBUS_SUPPORT){
         setprop(nd_centered, centered);
     });
 
-    setlistener(nd_props.fplan_active, func{
-        var actv = getprop(nd_props.fplan_active);
-        setprop('instrumentation/efis/nd/route-manager-active', actv);
-    });
-
-    setlistener(nd_props.athr, func{
-        var athr = getprop(nd_props.athr);
-        setprop('instrumentation/efis/nd/athr', (athr == 'eng'));
-    });
-
-    setlistener('flight-management/control/ver-ctrl', func{
-        var verctrl = getprop("flight-management/control/ver-ctrl");
-        setprop('instrumentation/efis/nd/vnav', (verctrl == 'fmgc'));
-    });
-
-    setlistener("/flight-management/control/spd-ctrl", func{
-        var spdctrl = getprop("/flight-management/control/spd-ctrl");
-        setprop('instrumentation/efis/nd/managed-spd', (spdctrl == 'fmgc'));
-    });
-
-    setlistener('flight-management/control/lat-ctrl', func{
-        var latctrl = getprop("flight-management/control/lat-ctrl");
-        setprop('instrumentation/efis/nd/lnav', (latctrl == 'fmgc'));
-    });
-
     setlistener("/instrumentation/mcdu/f-pln/disp/first", func{
         var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
         if(typeof(first) == 'nil') first = -1;
@@ -161,72 +136,6 @@ if(!ND_AIRBUS_SUPPORT){
         var alpha = 1;
         if(terr_on_hd) alpha = 0.5;
         nd_display.main.setColorBackground(0,0,0,alpha);
-    });
-
-    setlistener('instrumentation/nav/frequencies/selected-mhz', func{
-        var mhz = getprop('instrumentation/nav/frequencies/selected-mhz');
-        if(mhz == nil) mhz = 0;
-        setprop('/instrumentation/efis/nd/nav1_frq', mhz);
-    });
-
-    setlistener('instrumentation/nav[1]/frequencies/selected-mhz', func{
-        var mhz = getprop('instrumentation/nav[1]/frequencies/selected-mhz');
-        if(mhz == nil) mhz = 0;
-        setprop('/instrumentation/efis/nd/nav2_frq', mhz);
-    });
-
-    setlistener('instrumentation/adf/frequencies/selected-khz', func{
-        var khz = getprop('instrumentation/adf/frequencies/selected-khz');
-        if(khz == nil) khz = 0;
-        setprop('/instrumentation/efis/nd/adf1_frq', khz);
-    });
-
-    setlistener('instrumentation/adf[1]/frequencies/selected-khz', func{
-        var khz = getprop('instrumentation/adf[1]/frequencies/selected-khz');
-        if(khz == nil) khz = 0;
-        setprop('/instrumentation/efis/nd/adf2_frq', khz);
-    });
-
-    setlistener('flight-management/hold/init', func{
-        var init = getprop('flight-management/hold/init');
-        if(init == nil) init = 0;
-        setprop('/instrumentation/efis/nd/hold_init', init);
-    });
-
-    setlistener("/flight-management/hold/wp", func{
-        var wpid = getprop("/flight-management/hold/wp");
-        if(wpid == nil) wpid = '';
-            setprop('/instrumentation/efis/nd/hold_wp', wpid);
-    });
-
-    setlistener('autopilot/route-manager/route/num', func{
-        var num = getprop('autopilot/route-manager/route/num');
-        setprop('/instrumentation/efis/nd/route_num', num);
-    });
-
-    setlistener(nd_props.cur_wp, func(){
-        var curwp = getprop(nd_props.cur_wp);
-        setprop('/instrumentation/efis/nd/cur_wp',curwp);
-    });
-
-    setlistener("/flight-management/control/ap1-master", func(){
-        var ap1 = getprop("/flight-management/control/ap1-master");
-        setprop('/instrumentation/efis/nd/ap1',ap1);
-    });
-
-    setlistener("/flight-management/control/ap2-master", func(){
-        var ap2 = getprop("/flight-management/control/ap2-master");
-        setprop('/instrumentation/efis/nd/ap2',ap2);
-    });
-
-    setlistener("/autopilot/route-manager/departure/runway", func(){
-        var rwy = getprop("/autopilot/route-manager/departure/runway");
-        setprop('/instrumentation/efis/nd/dep_rwy',rwy);
-    });
-
-    setlistener("/autopilot/route-manager/destination/runway", func(){
-        var rwy = getprop("/autopilot/route-manager/destination/runway");
-        setprop('/instrumentation/efis/nd/dest_rwy',rwy);
     });
 
     var showNd = func() {
