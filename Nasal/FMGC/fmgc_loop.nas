@@ -316,7 +316,6 @@ var fmgc_loop = {
         var vmode = me.active_ver_mode;
         var lmode = me.active_lat_mode;
         var common_mode = me.active_common_mode;
-        var prfx_v = substr(vmode,0,2);
         var app_phase = (vmode == 'G/S' or 
                          vmode == 'G/S*' or 
                          vmode == 'FINAL' or 
@@ -569,7 +568,7 @@ var fmgc_loop = {
                     var vs_ref = 3000; 
                     #TODO: FPA standard settings
                     var vsfpa_mode = 0; 
-                    if(prfx_v == 'VS' or prfx_v == 'FP'){
+                    if(vmode == 'VS' or vmode == 'FPA'){
                         vs_ref = vs_setting; 
                         vsfpa_mode = 1; 
                     } else {
@@ -1144,6 +1143,7 @@ var fmgc_loop = {
         me.active_common_mode = '';
         me.armed_common_mode = '';
         me.athr_msg = '';
+        me.athr_alert = '';
         me.accel_alt = 1500;
         me.srs_spd = 0;
         if(me.alpha_floor_mode){
@@ -1484,25 +1484,23 @@ var fmgc_loop = {
                 me.active_athr_mode = spd_mode;
             } else {
                 me.active_athr_mode = me.get_athr_mode(me.active_ver_mode, spd_mode);
-                me.armed_athr_mode = ''; #me.get_athr_mode(me.armed_ver_mode, spd_mode);
-                #if(me.active_athr_mode == me.armed_athr_mode)
-                #    me.armed_athr_mode = '';
                 if(me.active_athr_mode != spd_mode)
                     fixed_thrust = 1;
             }
+            me.armed_athr_mode = '';
         } else {
-            me.active_athr_mode = 'MAN';
+            me.active_athr_mode = '';
             var above_clb = (throttle > thrust_levers.detents.CLB);
             if(toga){
-                me.armed_athr_mode = 'TOGA';
+                me.armed_athr_mode = "MAN\nTOGA";
             } else {
                 if(flex_mct){
                     if(me.flex_to_temp > -100)
-                        me.armed_athr_mode = 'FLX '~ me.flex_to_temp;
+                        me.armed_athr_mode = "MAN\nFLX";
                     else 
-                        me.armed_athr_mode = 'MCT';
+                        me.armed_athr_mode = "MAN\nMCT";
                 } else {
-                    me.armed_athr_mode = (me.a_thr == 'armed' and above_clb) ? 'THR' : '';
+                    me.armed_athr_mode = (me.a_thr == 'armed' and above_clb) ? "MAN\nTHR" : '';
                 }
             }
             fixed_thrust = toga or flex_mct or above_clb;
@@ -1518,7 +1516,7 @@ var fmgc_loop = {
             if(lock_reason == 'TOGA'){
                 me.active_athr_mode = 'TOGA LK';
             } else {
-                me.athr_msg =  me.thrust_lock_reason~ ' LK';   
+                me.athr_alert =  me.thrust_lock_reason~ ' LK';   
             }
         }
         me.fixed_thrust = fixed_thrust;
@@ -1571,6 +1569,7 @@ var fmgc_loop = {
         setprop(common_modes~'active', me.active_common_mode);
         setprop(common_modes~'armed', me.armed_common_mode);
         setprop(athr_modes~ 'msg', me.athr_msg);
+        setprop(athr_modes~ 'alert', me.athr_alert);
         #setprop(fmgc ~'fixed-thrust', fixed_thrust);
         me.ver_managed = (me.ver_ctrl == 'fmgc' and 
                           me.flplan_active and 
@@ -1677,9 +1676,9 @@ var fmgc_loop = {
     get_vsfpa_mode: func(vmode){
         var sub = me.ver_sub;
         if(sub == 'vs'){
-            vmode = 'VS '~me.vs_setting;
+            vmode = 'VS';#~me.vs_setting;
         } else {
-            vmode = 'FPA '~me.fpa_setting;
+            vmode = 'FPA';#~me.fpa_setting;
         }
         return vmode;
     },
@@ -2507,8 +2506,23 @@ setlistener(athr_modes~'active', func(){
             setprop(box_node, 0);     
         }, 5);
     } else {
-        setprop(box_node, 1);
+        setprop(box_node, 0);
     }
+}, 0, 0);
+
+setlistener(athr_modes~'armed', func(){
+    var mode = athr_modes~'armed';
+    var box_node = 'instrumentation/pfd/athr-armed-box';
+    var current = getprop(mode);
+    if(current != ''){
+        setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 5);
+    } else {
+        setprop(box_node, 0);
+    }
+    setprop('instrumentation/pfd/flx-indication', (current == "MAN\nFLX"));
 }, 0, 0);
 
 setlistener(lmodes~'active', func(){

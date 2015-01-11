@@ -1226,12 +1226,6 @@
                         <value>fmgc</value>
                     </equals>
                     <not>
-                        <equals>
-                            <property>/flight-management/control/ver-sub</property>
-                            <value>vs</value>
-                        </equals>
-                    </not>
-                    <not>
                         <property>/flight-management/control/vsfpa-mode</property>
                     </not>
                 </or>
