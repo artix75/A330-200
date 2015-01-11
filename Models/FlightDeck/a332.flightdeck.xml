@@ -338,10 +338,15 @@
                 <max>350</max>
                 <wrap>false</wrap>
                 <condition>
-                    <equals>
-                        <property>/flight-management/control/spd-mode</property>
-                        <value>ias</value>
-                    </equals>
+					<and>
+						<equals>
+							<property>/flight-management/control/spd-mode</property>
+							<value>ias</value>
+						</equals>
+						<not>
+							<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+						</not>
+					</and>
                 </condition>
             </binding>
             <binding>
@@ -352,10 +357,15 @@
                 <max>0.86</max>
                 <wrap>false</wrap>
                 <condition>
-                    <equals>
-                        <property>/flight-management/control/spd-mode</property>
-                        <value>mach</value>
-                    </equals>
+					<and>
+						<equals>
+							<property>/flight-management/control/spd-mode</property>
+							<value>mach</value>
+						</equals>
+						<not>
+							<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+						</not>
+					</and>
                 </condition>
             </binding>
             <binding>
@@ -363,17 +373,57 @@
                 <script>
                     flightdeck.fcu.knob_rotated('spd');
                 </script>
+				<condition>
+					<not>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+					</not>
+				</condition>
             </binding>
         </action>
         <shift-action>
-            <binding>
-                <command>property-adjust</command>
-                <property>flightdeck/fcu/spd-knob-pos</property>
-                <factor>0.5</factor>
-                <wrap>false</wrap>
-                <min>-1</min>
-                <max>1</max>
-            </binding>
+			<binding>
+				<command>property-adjust</command>
+				<property>/flight-management/fcu-values/ias</property>
+				<factor>-1</factor>
+				<min>100</min>
+				<max>350</max>
+				<wrap>false</wrap>
+				<condition>
+					<and>
+						<equals>
+							<property>/flight-management/control/spd-mode</property>
+							<value>ias</value>
+						</equals>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+					</and>
+				</condition>
+			</binding>
+			<binding>
+				<command>property-adjust</command>
+				<property>/flight-management/fcu-values/mach</property>
+				<factor>-0.01</factor>
+				<min>0.1</min>
+				<max>0.86</max>
+				<wrap>false</wrap>
+				<condition>
+					<and>
+						<equals>
+							<property>/flight-management/control/spd-mode</property>
+							<value>mach</value>
+						</equals>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+					</and>
+				</condition>
+			</binding>
+			<binding>
+				<command>nasal</command>
+				<script>
+					flightdeck.fcu.knob_rotated('spd');
+				</script>
+				<condition>
+					<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+				</condition>
+			</binding>
         </shift-action>
         <shift-increase>
             <binding>
@@ -381,6 +431,11 @@
                 <script>
                     flightdeck.fcu.knob_pushed('spd');
                 </script>
+				<condition>
+					<not>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+					</not>
+				</condition>
             </binding>
         </shift-increase>
         <shift-decrease>
@@ -389,22 +444,65 @@
                 <script>
                     flightdeck.fcu.knob_pulled('spd');
                 </script>
+				<condition>
+					<not>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+					</not>
+				</condition>
             </binding>
         </shift-decrease>
-        <release>
-            <binding>
-                <command>property-assign</command>
-                <property>flightdeck/fcu/spd-knob-pos</property>
-                <value>0</value>
-            </binding>
-        </release>
-        <hovered>
-            <binding>
-                <command>set-tooltip</command>
-                <label>Drag: rotate, Shift+Drag: push/pull, Shift-Click: push, Shift-Alt-Click: pull</label>
-                <tooltip-id>spd-knob-tooltip</tooltip-id>
-            </binding>
-        </hovered>
+		<increase>
+			<binding>
+				<command>nasal</command>
+				<script>
+					flightdeck.fcu.knob_pushed('spd');
+				</script>
+				<condition>
+					<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+				</condition>
+			</binding>
+		</increase>
+		<decrease>
+			<binding>
+				<command>nasal</command>
+				<script>
+					flightdeck.fcu.knob_pulled('spd');
+				</script>
+				<condition>
+					<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+				</condition>
+			</binding>
+		</decrease>
+		<hovered>
+			<binding>
+				<command>set-tooltip</command>
+				<label>Drag: rotate, Shift+Drag: push/pull, Shift-Click: push, Shift-Alt-Click: pull</label>
+				<tooltip-id>hdg-knob-tooltip</tooltip-id>
+				<condition>
+					<and>
+						<not>
+							<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+						</not>
+						<not>
+							<property>aircraft-config/saved/fcu/disable-tooltips</property>
+						</not>
+					</and>
+				</condition>
+			</binding>
+			<binding>
+				<command>set-tooltip</command>
+				<label>Shift-Drag: rotate, Click: push, Alt-Click: pull</label>
+				<tooltip-id>hdg-knob-tooltip</tooltip-id>
+				<condition>
+					<and>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+						<not>
+							<property>aircraft-config/saved/fcu/disable-tooltips</property>
+						</not>
+					</and>
+				</condition>
+			</binding>
+		</hovered>
     </animation>
     
     <animation>
@@ -431,6 +529,11 @@
                 <min>0</min>
                 <max>359</max>
                 <wrap>true</wrap>
+				<condition>
+					<not>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+					</not>
+				</condition>
             </binding>
             <binding>
                 <command>nasal</command>
@@ -439,17 +542,36 @@
                     setprop('autopilot/settings/heading-bug-deg', hdg);
                     flightdeck.fcu.knob_rotated('hdg');
                 </script>
+				<condition>
+					<not>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+					</not>
+				</condition>
             </binding>
         </action>
         <shift-action>
-            <binding>
-                <command>property-adjust</command>
-                <property>flightdeck/fcu/hdg-knob-pos</property>
-                <factor>0.5</factor>
-                <wrap>false</wrap>
-                <min>-1</min>
-                <max>1</max>
-            </binding>
+			<binding>
+				<command>property-adjust</command>
+				<property>/flight-management/fcu-values/hdg</property>
+				<factor>-1</factor>
+				<min>0</min>
+				<max>359</max>
+				<wrap>true</wrap>
+				<condition>
+					<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+				</condition>
+			</binding>
+			<binding>
+				<command>nasal</command>
+				<script>
+					var hdg = getprop('/flight-management/fcu-values/hdg');
+					setprop('autopilot/settings/heading-bug-deg', hdg);
+					flightdeck.fcu.knob_rotated('hdg');
+				</script>
+				<condition>
+					<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+				</condition>
+			</binding>
         </shift-action>
         <shift-increase>
             <binding>
@@ -457,6 +579,11 @@
                 <script>
                     flightdeck.fcu.knob_pushed('hdg');
                 </script>
+				<condition>
+					<not>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+					</not>
+				</condition>
             </binding>
         </shift-increase>
         <shift-decrease>
@@ -465,21 +592,64 @@
                 <script>
                     flightdeck.fcu.knob_pulled('hdg');
                 </script>
+				<condition>
+					<not>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+					</not>
+				</condition>
             </binding>
         </shift-decrease>
-        <release>
-            <binding>
-                <command>property-assign</command>
-                <property>flightdeck/fcu/hdg-knob-pos</property>
-                <value>0</value>
-            </binding>
-        </release>
+		<increase>
+			<binding>
+				<command>nasal</command>
+				<script>
+					flightdeck.fcu.knob_pushed('hdg');
+				</script>
+				<condition>
+					<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+				</condition>
+			</binding>
+		</increase>
+		<decrease>
+			<binding>
+				<command>nasal</command>
+				<script>
+					flightdeck.fcu.knob_pulled('hdg');
+				</script>
+				<condition>
+					<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+				</condition>
+			</binding>
+		</decrease>
         <hovered>
             <binding>
                 <command>set-tooltip</command>
                 <label>Drag: rotate, Shift+Drag: push/pull, Shift-Click: push, Shift-Alt-Click: pull</label>
                 <tooltip-id>hdg-knob-tooltip</tooltip-id>
+				<condition>
+					<and>
+						<not>
+							<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+						</not>
+						<not>
+							<property>aircraft-config/saved/fcu/disable-tooltips</property>
+						</not>
+					</and>
+				</condition>
             </binding>
+			<binding>
+				<command>set-tooltip</command>
+				<label>Shift-Drag: rotate, Click: push, Alt-Click: pull</label>
+				<tooltip-id>hdg-knob-tooltip</tooltip-id>
+				<condition>
+					<and>
+						<property>aircraft-config/saved/fcu/shift-to-rotate</property>
+						<not>
+							<property>aircraft-config/saved/fcu/disable-tooltips</property>
+						</not>
+					</and>
+				</condition>
+			</binding>
         </hovered>
     </animation>
     
@@ -503,7 +673,10 @@
             <binding>
                 <command>nasal</command>
                 <script>
-                    flightdeck.fcu.alt_rotated('decr');
+					if(getprop('aircraft-config/saved/fcu/shift-to-rotate'))
+                        flightdeck.fcu.knob_pushed('alt');
+					else
+                        flightdeck.fcu.alt_rotated('decr');
                 </script>
             </binding>
         </increase>
@@ -511,25 +684,21 @@
             <binding>
                 <command>nasal</command>
                 <script>
-                    flightdeck.fcu.alt_rotated('incr');
+                    if(getprop('aircraft-config/saved/fcu/shift-to-rotate'))
+                        flightdeck.fcu.knob_pulled('alt');
+                    else
+                        flightdeck.fcu.alt_rotated('incr');
                 </script>
             </binding>
         </decrease>
-        <shift-action>
-            <binding>
-                <command>property-adjust</command>
-                <property>flightdeck/fcu/alt-knob-pos</property>
-                <factor>0.5</factor>
-                <wrap>false</wrap>
-                <min>-1</min>
-                <max>1</max>
-            </binding>
-        </shift-action>
         <shift-increase>
             <binding>
                 <command>nasal</command>
                 <script>
-                    flightdeck.fcu.knob_pushed('alt');
+                    if(getprop('aircraft-config/saved/fcu/shift-to-rotate'))
+                        flightdeck.fcu.alt_rotated('decr');
+                    else
+                        flightdeck.fcu.knob_pushed('alt');
                 </script>
             </binding>
         </shift-increase>
@@ -537,22 +706,41 @@
             <binding>
                 <command>nasal</command>
                 <script>
-                    flightdeck.fcu.knob_pulled('alt');
+                    if(getprop('aircraft-config/saved/fcu/shift-to-rotate'))
+                        flightdeck.fcu.alt_rotated('incr');
+                    else
+                        flightdeck.fcu.knob_pulled('alt');
                 </script>
             </binding>
         </shift-decrease>
-        <release>
-            <binding>
-                <command>property-assign</command>
-                <property>flightdeck/fcu/alt-knob-pos</property>
-                <value>0</value>
-            </binding>
-        </release>
         <hovered>
             <binding>
                 <command>set-tooltip</command>
                 <label>Drag: rotate, Shift+Drag: push/pull, Shift-Click: push, Shift-Alt-Click: pull</label>
-                <tooltip-id>alt-knob-tooltip</tooltip-id>
+                <tooltip-id>hdg-knob-tooltip</tooltip-id>
+                <condition>
+                    <and>
+                        <not>
+                            <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                        </not>
+                        <not>
+                            <property>aircraft-config/saved/fcu/disable-tooltips</property>
+                        </not>
+                    </and>
+                </condition>
+            </binding>
+            <binding>
+                <command>set-tooltip</command>
+                <label>Shift-Drag: rotate, Click: push, Alt-Click: pull</label>
+                <tooltip-id>hdg-knob-tooltip</tooltip-id>
+                <condition>
+                    <and>
+                        <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                        <not>
+                            <property>aircraft-config/saved/fcu/disable-tooltips</property>
+                        </not>
+                    </and>
+                </condition>
             </binding>
         </hovered>
     </animation>
@@ -582,10 +770,15 @@
                 <max>3000</max>
                 <wrap>false</wrap>
                 <condition>
-                    <equals>
-                        <property>/flight-management/control/ver-sub</property>
-                        <value>vs</value>
-                    </equals>
+                    <and>
+                        <equals>
+                            <property>/flight-management/control/ver-sub</property>
+                            <value>vs</value>
+                        </equals>
+                        <not>
+                            <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                        </not>
+                    </and>
                 </condition>
             </binding>
             <binding>
@@ -596,10 +789,15 @@
                 <max>15</max>
                 <wrap>false</wrap>
                 <condition>
-                    <equals>
-                        <property>/flight-management/control/ver-sub</property>
-                        <value>fpa</value>
-                    </equals>
+                    <and>
+                        <equals>
+                            <property>/flight-management/control/ver-sub</property>
+                            <value>fpa</value>
+                        </equals>
+                        <not>
+                            <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                        </not>
+                    </and>
                 </condition>
             </binding>
             <binding>
@@ -607,16 +805,56 @@
                 <script>
                     flightdeck.fcu.vsfpa_rotated();
                 </script>
+                <condition>
+                    <not>
+                        <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                    </not>
+                </condition>
             </binding>
         </action>
         <shift-action>
             <binding>
                 <command>property-adjust</command>
-                <property>flightdeck/fcu/vs-knob-pos</property>
-                <factor>0.5</factor>
+                <property>/flight-management/fcu-values/vs</property>
+                <factor>-100</factor>
+                <min>-2500</min>
+                <max>3000</max>
                 <wrap>false</wrap>
-                <min>-1</min>
-                <max>1</max>
+                <condition>
+                    <and>
+                        <equals>
+                            <property>/flight-management/control/ver-sub</property>
+                            <value>vs</value>
+                        </equals>
+                        <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                    </and>
+                </condition>
+            </binding>
+            <binding>
+                <command>property-adjust</command>
+                <property>/flight-management/fcu-values/fpa</property>
+                <factor>-1</factor>
+                <min>-10</min>
+                <max>15</max>
+                <wrap>false</wrap>
+                <condition>
+                    <and>
+                        <equals>
+                            <property>/flight-management/control/ver-sub</property>
+                            <value>fpa</value>
+                        </equals>
+                        <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                    </and>
+                </condition>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.vsfpa_rotated();
+                </script>
+                <condition>
+                    <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                </condition>
             </binding>
         </shift-action>
         <shift-increase>
@@ -625,6 +863,11 @@
                 <script>
                     flightdeck.fcu.vsfpa_pushed();
                 </script>
+                <condition>
+                    <not>
+                        <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                    </not>
+                </condition>
             </binding>
         </shift-increase>
         <shift-decrease>
@@ -633,20 +876,63 @@
                 <script>
                     flightdeck.fcu.vsfpa_pulled();
                 </script>
+                <condition>
+                    <not>
+                        <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                    </not>
+                </condition>
             </binding>
         </shift-decrease>
-        <release>
+        <increase>
             <binding>
-                <command>property-assign</command>
-                <property>flightdeck/fcu/vs-knob-pos</property>
-                <value>0</value>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.vsfpa_pushed();
+                </script>
+                <condition>
+                    <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                </condition>
             </binding>
-        </release>
+        </increase>
+        <decrease>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    flightdeck.fcu.vsfpa_pulled();
+                </script>
+                <condition>
+                    <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                </condition>
+            </binding>
+        </decrease>
         <hovered>
             <binding>
                 <command>set-tooltip</command>
                 <label>Drag: rotate, Shift+Drag: push/pull, Shift-Click: push, Shift-Alt-Click: pull</label>
-                <tooltip-id>vs-knob-tooltip</tooltip-id>
+                <tooltip-id>hdg-knob-tooltip</tooltip-id>
+                <condition>
+                    <and>
+                        <not>
+                            <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                        </not>
+                        <not>
+                            <property>aircraft-config/saved/fcu/disable-tooltips</property>
+                        </not>
+                    </and>
+                </condition>
+            </binding>
+            <binding>
+                <command>set-tooltip</command>
+                <label>Shift-Drag: rotate, Click: push, Alt-Click: pull</label>
+                <tooltip-id>hdg-knob-tooltip</tooltip-id>
+                <condition>
+                    <and>
+                        <property>aircraft-config/saved/fcu/shift-to-rotate</property>
+                        <not>
+                            <property>aircraft-config/saved/fcu/disable-tooltips</property>
+                        </not>
+                    </and>
+                </condition>
             </binding>
         </hovered>
     </animation>

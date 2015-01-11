@@ -45,6 +45,7 @@ var fcu = {
     },
     knob_pushed: func(name){
         utils.clickSound(4);
+		me.push_animation(name);
         if (fmgc.fmgc_loop.active_common_mode == 'LAND')
             return;
         var type = me.get_type(name);
@@ -63,6 +64,7 @@ var fcu = {
     },
     knob_pulled: func(name){
         utils.clickSound(4);
+		me.pull_animation(name);
         if (fmgc.fmgc_loop.active_common_mode == 'LAND')
             return;
         var type = me.get_type(name);
@@ -83,6 +85,24 @@ var fcu = {
                     getprop("/flight-management/fcu-values/hdg"));
         }
     },
+	push_animation: func(name){
+		var pos_prop = 'flightdeck/fcu/'~name~'-knob-pos';
+		var knob_pos = getprop(pos_prop);
+		if(knob_pos == nil) knob_pos = 0;
+		if(knob_pos <= 0){
+			interpolate(pos_prop, 1, 0.1);
+			settimer(func setprop(pos_prop, 0), 0.11);
+		}
+	},
+	pull_animation: func(name){
+		var pos_prop = 'flightdeck/fcu/'~name~'-knob-pos';
+		var knob_pos = getprop(pos_prop);
+		if(knob_pos == nil) knob_pos = 0;
+		if(knob_pos >= 0){
+			interpolate(pos_prop, -1, 0.1);
+			settimer(func setprop(pos_prop, 0), 0.11);
+		}
+	},
     vsfpa_rotated: func(){
         var vs_mode = getprop('/flight-management/control/vsfpa-mode');
         if (!vs_mode){
