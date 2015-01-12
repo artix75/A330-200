@@ -1504,6 +1504,8 @@ var fmgc_loop = {
                 }
             }
             fixed_thrust = toga or flex_mct or above_clb;
+            if(above_clb and me.agl > me.acc_alt)
+                me.thrust_levers_alert();
         }
         if(me.is_stalling or me.alpha_floor_mode){
             fixed_thrust = 1;
@@ -1600,10 +1602,7 @@ var fmgc_loop = {
             var thr_mode = 'THR';
             if(me.max_throttle_pos < 0.6 and !me.thrust_lock and !retard){
                 thr_mode = 'THR LVR';
-                var msg = 'LVR CLB';
-                if(!me.engines_running)
-                    msg = 'LVR MCT';
-                me.athr_msg = msg;
+                me.thrust_levers_alert();
             } else {
                 var vphase = me.true_vertical_phase;
                 if(vphase == 'CLB' and !retard)
@@ -1624,6 +1623,12 @@ var fmgc_loop = {
         if(capturing)
             mode ~= '*';
         return mode;
+    },
+    thrust_levers_alert: func(){
+        var msg = 'LVR CLB';
+        if(!me.engines_running)
+            msg = 'LVR MCT';
+        me.athr_msg = msg;
     },
     calc_vmax: func(){
         var vmax = 0;

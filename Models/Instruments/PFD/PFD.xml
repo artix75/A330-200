@@ -1864,9 +1864,9 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0686226</y-m>
-            <z-m>0.0680781</z-m>
+            <z-m>0.0703781</z-m>
         </offsets>
-        <alignment>left-center</alignment>
+        <alignment>left-top</alignment>
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">text-value</type>
         <format type="string">%s</format>
@@ -1888,9 +1888,9 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0566226</y-m>
-            <z-m>0.0653781</z-m>
+            <z-m>0.0645781</z-m>
         </offsets>
-        <alignment>left-center</alignment>
+        <alignment>left-top</alignment>
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">text-value</type>
         <format type="string">%s</format>
@@ -1912,7 +1912,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0606226</y-m>
-            <z-m>0.0605781</z-m>
+            <z-m>0.0531781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -1936,7 +1936,7 @@
         <offsets>
             <x-m>0.00091828</x-m>
             <y-m>-0.0606226</y-m>
-            <z-m>0.0531781</z-m>
+            <z-m>0.0680781</z-m>
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
@@ -2442,10 +2442,10 @@
         <name>athr-armed-box</name>
         <offsets>
             <x-m>0.00091828</x-m>
-            <y-m>-0.0696226</y-m>
-            <z-m>0.0680781</z-m>
+            <y-m>-0.0606226</y-m>
+            <z-m>0.0723781</z-m>
         </offsets>
-        <alignment>left-center</alignment>
+        <alignment>center-top</alignment>
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">text-value</type>
         <format type="string">%s 5</format>
