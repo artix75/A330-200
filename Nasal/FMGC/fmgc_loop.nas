@@ -220,14 +220,14 @@ var fmgc_loop = {
         me.calc_speed_change();
         me.calc_level_off();
         var decel_point = me.decel_point;
-        var plan_mode = getprop("/instrumentation/nd/plan-mode");
-        if(plan_mode != nil and plan_mode){
-            setprop("/instrumentation/nd/symbols/aircraft/latitude-deg", getprop('position/latitude-deg'));
-            setprop("/instrumentation/nd/symbols/aircraft/longitude-deg", getprop('position/longitude-deg'));
-            setprop("/instrumentation/nd/symbols/aircraft/true-heading-deg", getprop('orientation/heading-magnetic-deg'));   
-        } else {
-            setprop("/instrumentation/nd/symbols/aircraft", '');
-        }
+        #var plan_mode = getprop("/instrumentation/nd/plan-mode");
+        #if(plan_mode != nil and plan_mode){
+        #    setprop("/instrumentation/nd/symbols/aircraft/latitude-deg", getprop('position/latitude-deg'));
+        #    setprop("/instrumentation/nd/symbols/aircraft/longitude-deg", getprop('position/longitude-deg'));
+        #    setprop("/instrumentation/nd/symbols/aircraft/true-heading-deg", getprop('orientation/heading-magnetic-deg'));   
+        #} else {
+        #    setprop("/instrumentation/nd/symbols/aircraft", '');
+        #}
         var flplan_active = me.flplan_active;	
         
         # NAV1 Auto-tuning
@@ -1105,6 +1105,7 @@ var fmgc_loop = {
         me.fd_engaged = getprop("flight-management/control/fd");
         me.vmax = me.calc_vmax();
         me.gs_dev = getprop('instrumentation/nav/gs-needle-deflection-norm');
+        me.loc_dev = getprop('instrumentation/nav/heading-needle-deflection-norm');
         
         me.throttle_pos = getprop('/controls/engines/engine[0]/throttle-pos');
         me.throttle_r_pos = getprop('/controls/engines/engine[1]/throttle-pos');
@@ -1166,12 +1167,13 @@ var fmgc_loop = {
         
         # Basic Lateral Mode
         var lmode = '';
+        var loc_mode = (me.lat_mode == "nav1");
         var lat_sel_mode = (me.ver_sub == 'fpa' ? 'TRK' : 'HDG');
         if (me.lat_ctrl == "man-set") {
             if (me.lat_mode == "hdg") {
                 lmode = lat_sel_mode;            
             } 
-            elsif(me.lat_mode == "nav1"){
+            elsif(loc_mode){
                 lmode = 'LOC';
             }
         }
@@ -1280,26 +1282,16 @@ var fmgc_loop = {
             setprop(fmgc~ 'exped-mode', 0);
             me.exped_mode = 0;
         }
-        
-        if(me.ver_ctrl == "man-set" or !flplan_active){
+        var appr_pressed = (me.ver_mode == 'ils');
+        if(me.ver_ctrl == "man-set" or !flplan_active or appr_pressed){
             if(me.ver_mode == 'alt'){
-                vmode = vmode_main;
-                if(vmode == vphase){
-                    if(me.vsfpa_mode){
-                        vmode = me.get_vsfpa_mode(vmode);
-                    } 
-                    else {
-                        if(raw_alt_diff < -10)
-                            vmode = 'DES';
-                        if(vmode == '') vmode = me.true_vertical_phase;
-                        if(!me.exped_mode)
-                            vmode = 'OP '~vmode;
-                        else
-                            vmode = 'EXP '~vmode;
-                    } 
-                }
+                #vmode = vmode_main;
+                vmode = me.get_selected_vmode(vmode_main, 
+                                              vphase, 
+                                              raw_alt_diff);
+                    
             }
-            elsif(me.ver_mode == 'ils'){
+            elsif(appr_pressed){
                 if(me.ils_frq and getprop(radio~ 'ils-mode')){
                     vmode = 'G/S';
                 } elsif(flplan_active and me.dest_rwy != '') {
@@ -1309,7 +1301,7 @@ var fmgc_loop = {
                 }                    
             }
         }
-        elsif(me.ver_ctrl == "fmgc"){
+        elsif(ver_fmgc){
             vmode = vmode_main;
         }
         
@@ -1332,7 +1324,9 @@ var fmgc_loop = {
                 if(lmode == 'LOC'){ #TODO: LOC * (capture) 
                     if(me.nav_in_range){
                         me.active_lat_mode = lmode;
-                        me.armed_lat_mode = '';#ROLL OUT'; #TODO: it seems there's not VOR LOC support
+                        me.armed_lat_mode = ''; #TODO: it seems there's not VOR LOC support
+                        if(math.abs(me.loc_dev) > 0.05) 
+                            me.active_lat_mode = 'LOC*';
                     } else {
                         me.active_lat_mode = lat_sel_mode;
                         me.armed_lat_mode = lmode;
@@ -1341,7 +1335,7 @@ var fmgc_loop = {
                 elsif(lmode == 'NAV'){
                     if(flplan_active){
                         me.active_lat_mode = lmode;
-                        me.armed_lat_mode = '';
+                        me.armed_lat_mode = (loc_mode ? 'LOC' : '');
                     } else {
                         me.active_lat_mode = lat_sel_mode;
                         me.armed_lat_mode = lmode;
@@ -1349,6 +1343,14 @@ var fmgc_loop = {
                 } else {
                     me.active_lat_mode = lmode;
                     me.armed_lat_mode = '';
+                }
+                if(loc_mode){
+                    if(me.active_lat_mode != 'LOC' and me.nav_in_range){
+                        me.active_lat_mode = 'LOC';
+                        me.armed_lat_mode = '';
+                        setprop(fmgc~ 'lat-ctrl', 'man-set');
+                        me.lat_ctrl = 'man-set';
+                    }
                 }
             } else {
                 me.active_lat_mode = (me.rwy_mode? 'RWY' : '');  #TODO: support RWY TRK
@@ -1390,6 +1392,10 @@ var fmgc_loop = {
             } else {
                 if(vmode == 'G/S'){
                     if(me.gs_in_range){
+                        if(me.ver_ctrl != 'man-set'){
+                            setprop(fmgc~ "ver-ctrl", 'man-set');
+                            me.ver_ctrl = 'man-set';
+                        }      
                         var flare = (me.autoland_phase == 'flare');
                         var below_early_des = (me.agl < getprop('autoland/early-descent'));
                         if(flare){
@@ -1406,7 +1412,12 @@ var fmgc_loop = {
                             me.armed_common_mode = 'LAND'; 
                         }
                     } else {
-                        me.active_ver_mode = vmode_main;
+                        if(ver_fmgc) 
+                            me.active_ver_mode = vmode_main;
+                        else 
+                            me.active_ver_mode = me.get_selected_vmode(vmode_main, 
+                                                                       vphase,
+                                                                       raw_alt_diff);
                         me.armed_ver_mode = vmode;
                     }
                 }
@@ -1446,8 +1457,8 @@ var fmgc_loop = {
                                 ver_armed = 'CLB';
                                 clbdes_armed = 1;
                             }
-                            if (!ver_fmgc and clbdes_armed)
-                                ver_armed = 'OP '~ ver_armed;
+                            #if (!ver_fmgc and clbdes_armed)
+                            #    ver_armed = 'OP '~ ver_armed;
                             me.armed_ver_mode = ver_armed;
                             if (clbdes_armed)
                                 me.revert_to_vsfpa(vmode);
@@ -1684,6 +1695,23 @@ var fmgc_loop = {
             vmode = 'VS';#~me.vs_setting;
         } else {
             vmode = 'FPA';#~me.fpa_setting;
+        }
+        return vmode;
+    },
+    get_selected_vmode: func(vmode, vphase, raw_alt_diff){
+        if(vmode == vphase){
+            if(me.vsfpa_mode){
+                vmode = me.get_vsfpa_mode(vmode);
+            } 
+            else {
+                if(raw_alt_diff < -10)
+                    vmode = 'DES';
+                if(vmode == '') vmode = me.true_vertical_phase;
+                if(!me.exped_mode)
+                    vmode = 'OP '~vmode;
+                else
+                    vmode = 'EXP '~vmode;
+            } 
         }
         return vmode;
     },
