@@ -530,3 +530,11 @@ var triggerDoor = func(door, doorName, doorDesc)
         }, 90);
     }
  });
+
+setlistener("sim/signals/fdm-initialized", func(){
+	var home = getprop('sim/fg-home');
+	var aircraft = getprop('sim/aircraft');
+	var fname = home ~ '/Export/' ~ aircraft ~ '-config.xml';
+	var target = props.globals.getNode("aircraft-config/saved");
+	io.read_properties(fname, target);
+});

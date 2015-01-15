@@ -110,8 +110,31 @@ var terrain_loop = {
 
 };
 
-setlistener("sim/signals/fdm-initialized", func
- {
- general_loop_1.init();
- terrain_loop.init();
+var pfd_flashing_loop = {
+    init: func(){
+        me.UPDATE_INTERVAL = 0.8;
+        me.loopid = 0;
+        me.reset();
+    },
+    update: func(){
+        var flashing_prop = 'instrumentation/pfd/flashing/show';
+        var show = getprop(flashing_prop);
+        if(show == nil or show == '') show = 0;
+        setprop(flashing_prop, !show);
+    },
+    reset : func {
+        me.loopid += 1;
+        me._loop_(me.loopid);
+    },
+    _loop_ : func(id) {
+        id == me.loopid or return;
+        me.update();
+        settimer(func { me._loop_(id); }, me.UPDATE_INTERVAL);
+    }
+};
+
+setlistener("sim/signals/fdm-initialized", func{
+    general_loop_1.init();
+    terrain_loop.init();
+    pfd_flashing_loop.init();
  });

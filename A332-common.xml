@@ -570,6 +570,17 @@
        					</script>
       					</binding>
      					</item>
+					<item>
+						<label>Configuration</label>
+						<binding>
+							<command>nasal</command>
+							<script>
+								var cfg = gui.Dialog.new("sim/gui/dialogs/aircraft-config/dialog", 
+								"Aircraft/A330-200/Systems/config-dlg.xml");
+								cfg.open();
+							</script>
+						</binding>
+					</item>
                     
 				</menu>
 				<menu n="101">
@@ -612,6 +623,12 @@
     
     <aircraft-config>
         <auto-annunciator type="bool">0</auto-annunciator>
+		<saved>
+			<fcu>
+				<shift-to-rotate type="bool">0</shift-to-rotate>
+				<disable-tooltips type="bool">0</disable-tooltips>
+			</fcu>
+		</saved>
     </aircraft-config>
     
     <copilot>

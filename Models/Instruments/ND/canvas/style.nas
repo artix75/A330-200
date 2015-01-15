@@ -1091,10 +1091,11 @@ canvas.NDStyles["Airbus"] = {
                 id:'appMode',
                 impl: {
                     init: func(nd,symbol),
-                        predicate: func(nd) (nd.get_switch('toggle_app_mode') != ''),
+                    predicate: func(nd) (nd.get_switch('toggle_app_mode') != ''),
                     is_true: func(nd) {
-                        nd.symbols.appMode.show(nd.get_switch('toggle_app_mode'));
-                        #nd.setText();
+                        var mode = nd.get_switch('toggle_app_mode');
+                        nd.symbols.appMode.show();
+                        nd.symbols.appMode.setText(mode);
                     },
                     is_false: func(nd){
                         nd.symbols.appMode.hide();
