@@ -83,6 +83,7 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
         }
         elsif(max_pos > (max_athr_pos + 0.01) and athr_status == 'eng'){
             setprop(athr, 'armed');
+            disableThrustLock();
         }
         elsif(max_pos > (max_athr_pos + 0.01)){
             disableThrustLock();

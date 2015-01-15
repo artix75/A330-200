@@ -154,6 +154,24 @@ var fmgc_loop = {
         me.green_dot_spd = 155;
         me.non_precision_app = 0;
         me.app_cat = 0;
+
+        me.dest_airport = '';
+        me.dest_rwy = '';
+        me.destination = nil;
+        me.approach_runway = nil;
+        me.approach_ils = nil;
+
+        me.active_athr_mode = '';
+        me.armed_athr_mode = '';
+        me.active_lat_mode = '';
+        me.armed_lat_mode = '';
+        me.active_ver_mode = '';
+        me.armed_ver_mode = '';
+        me.active_common_mode = '';
+        me.armed_common_mode = '';
+        me.max_throttle = 0;
+        me.airborne = 0;
+        me.toga_on_ground = 0;
         # Radio
     
         setprop(radio~ 'autotuned', 0);
@@ -1018,6 +1036,9 @@ var fmgc_loop = {
     get_settings : func {
 
         var last_athr = me.a_thr;
+        var last_dest_arpt = me.dest_airport;
+        var last_dest_rwy = me.dest_rwy;
+        var last_throttle = me.max_throttle;
         me.spd_mode = getprop(fmgc~ "spd-mode");
         me.spd_ctrl = getprop(fmgc~ "spd-ctrl");
 
@@ -1068,6 +1089,30 @@ var fmgc_loop = {
                 setprop('flight-management/thrust-lock-reason', 'THR');
             }
         }
+        var dest_changed = 0;
+        if(last_dest_arpt != me.dest_airport){
+            var apt = airportinfo(me.dest_airport);
+            me.destination = apt;
+            dest_changed = 1;
+        }
+        if(dest_changed or last_dest_rwy != me.dest_rwy){
+            if(me.destination != nil){
+                var rwy = me.destination.runways[me.dest_rwy];
+                me.approach_runway = rwy;
+                if(rwy != nil)
+                    me.approach_ils = rwy.ils;
+                else
+                    me.approach_ils = nil;
+            } else {
+                me.approach_runway = nil;
+                me.approach_ils = nil;
+            }
+        }
+        if(last_throttle < 1 and me.max_throttle == 1){
+            me.toga_on_ground = !me.airborne;
+        }
+        elsif(me.max_throttle < 1)
+            me.toga_on_ground = 0;
     },
     calc_stall_speed: func(){
         var flaps = me.flaps;
@@ -1325,7 +1370,7 @@ var fmgc_loop = {
                     if(me.nav_in_range){
                         me.active_lat_mode = lmode;
                         me.armed_lat_mode = ''; #TODO: it seems there's not VOR LOC support
-                        if(math.abs(me.loc_dev) > 0.05) 
+                        if(math.abs(me.loc_dev) > 0.085) 
                             me.active_lat_mode = 'LOC*';
                     } else {
                         me.active_lat_mode = lat_sel_mode;
@@ -1345,7 +1390,9 @@ var fmgc_loop = {
                     me.armed_lat_mode = '';
                 }
                 if(loc_mode){
-                    if(me.active_lat_mode != 'LOC' and me.nav_in_range){
+                    if(me.active_lat_mode != 'LOC' and 
+                       me.active_lat_mode != 'LOC*' and 
+                       me.nav_in_range){
                         me.active_lat_mode = 'LOC';
                         me.armed_lat_mode = '';
                         setprop(fmgc~ 'lat-ctrl', 'man-set');
@@ -1357,7 +1404,7 @@ var fmgc_loop = {
                 me.armed_lat_mode = lmode;
             }
             if(toga and me.flaps > 0 and me.agl < me.acc_alt and 
-               (phase == 'APP' or me.toga_trk != nil)){
+               (!me.toga_on_ground or me.toga_trk != nil)){
                 me.active_lat_mode = 'GA TRK';
                 me.armed_lat_mode = '';
                 if(me.toga_trk == nil){
@@ -1861,7 +1908,13 @@ var fmgc_loop = {
         } elsif ((phase == "DES") and (getprop("/flight-management/control/ver-mode") == "ils")) {
 
             setprop("/flight-management/phase", "APP");
-            setprop('/instrumentation/efis/nd/app-mode', 'ILS APP');
+            var app_type = '';
+            if(me.approach_ils != nil)
+                app_type = 'ILS APP';
+            elsif(me.flplan_active)
+                app_type = 'RNAV APP';
+                
+            setprop('/instrumentation/efis/nd/app-mode', app_type);
 
         } elsif ((phase == "APP") and (getprop("/gear/gear/wow"))) {
 
@@ -2358,14 +2411,12 @@ var fmgc_loop = {
                 if(not_tuned){
                     var apt_info = airportinfo(dest_airport);
                     var rwy = apt_info.runways[dest_rwy];
-                    var rwy_ils = nil;
-                    if(rwy != nil)
-                        rwy_ils = rwy.ils;
+                    var rwy_ils = me.approach_ils;
                     if(rwy_ils != nil){
-                        var frq = rwy_ils.frequency / 100;
-                        var crs = rwy_ils.course;
                         var dist = getprop("/autopilot/route-manager/wp-last/dist");
                         if(dist <= 50){
+                            var frq = rwy_ils.frequency / 100;
+                            var crs = rwy_ils.course;
                             setprop("/flight-management/freq/ils", frq);
                             setprop("/flight-management/freq/ils-crs", int(crs));
                             if (getprop(radio~ "ils-mode")) {
@@ -2525,6 +2576,19 @@ var update_ap_fma_msg = func(){
     setprop('/instrumentation/texts/ap-status', msg);
 };
 
+var turn_off_ap = func(ap){
+    var lmode = fmgc_loop.active_lat_mode;
+    var vmode = fmgc_loop.active_lat_mode;
+    var cmode = fmgc_loop.active_common_mode;
+    if(lmode == 'LOC' or lmode == 'LOC*' or 
+       vmode == 'G/S' or vmode == 'G/S*' or 
+       cmode == 'LAND' or cmode == 'ROLL OUT' or cmode == 'FLARE'){
+        return;
+    }
+    ap = fmgc~ 'ap'~ap~'-master';
+    setprop(ap, 'off');
+} 
+
 setlistener("sim/signals/fdm-initialized", func{
     fmgc_loop.init();
     print("Flight Management and Guidance Computer Initialized");
@@ -2650,12 +2714,16 @@ setlistener(fmgc~ "vsfpa-mode", func(n){
     }
 }, 0, 0);
 
-setlistener(fmgc~ 'ap1-master', func(){
+setlistener(fmgc~ 'ap1-master', func(ap){
     update_ap_fma_msg();
+    if(ap.getValue() == 'eng')
+        turn_off_ap(2);
 }, 0, 0);
 
-setlistener(fmgc~ 'ap2-master', func(){
+setlistener(fmgc~ 'ap2-master', func(ap){
     update_ap_fma_msg();
+    if(ap.getValue() == 'eng')
+        turn_off_ap(1);
 }, 0, 0);
 
 setlistener(fmgc~ "a-thrust", func(){
@@ -2673,29 +2741,6 @@ setlistener('instrumentation/nav/nav-id', func(){
 setlistener('/flight-management/phase',func(){
     update_ap_fma_msg();
 },0,0);
-
-#var radio_props = [
-#    radio~ "ils-mode",
-#    'instrumentation/nav/nav-id',
-#    'instrumentation/nav/nav-loc',
-#    'instrumentation/nav/in-range'
-#];
-
-#foreach(var rprop; radio_props){
-#    setlistener(rprop, func(){
-#        var nav_id = getprop();
-#        var loc = getprop('instrumentation/nav/nav-loc');
-#        var in_range = getprop('instrumentation/nav/in-range');
-#        var ils_mode = getprop(radio~ "ils-mode");
-#        var cat = nil;
-        #if(nav_id != nil and loc and in_range and ils_mode){
-        #    cat = mcdu.rad_nav.find_ils_cat(nav_id, 1); 
-        #}
-        #if(cat == nil) cat = '';
-        #setprop(radio~ 'ils-cat', cat);
-#        update_ap_fma_msg();
-#    },0,0);
-#}
 
 setlistener('/instrumentation/efis/minimums-mode-text', func(){
     var mode = getprop('/instrumentation/efis/minimums-mode-text');

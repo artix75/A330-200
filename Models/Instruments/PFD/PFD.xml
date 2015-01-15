@@ -1742,20 +1742,26 @@
         <type>select</type>
         <object-name>landing-elev</object-name>
         <condition>
-            <or>
-                <not>
-                    <equals>
-                        <property>autopilot/route-manager/destination/airport</property>
-                        <value></value>
-                    </equals>
-                </not>
-                <not>
-                    <equals>
-                        <property>autopilot/route-manager/destination/runway</property>
-                        <value></value>
-                    </equals>
-                </not>
-            </or>
+            <and>
+                <equals>
+                    <property>flight-management/phase</property>
+                    <value>APP</value>
+                </equals>
+                <or>
+                    <not>
+                        <equals>
+                            <property>autopilot/route-manager/destination/airport</property>
+                            <value></value>
+                        </equals>
+                    </not>
+                    <not>
+                        <equals>
+                            <property>autopilot/route-manager/destination/runway</property>
+                            <value></value>
+                        </equals>
+                    </not>
+                </or>
+            </and>
         </condition>
     </animation>
     
