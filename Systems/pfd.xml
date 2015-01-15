@@ -77,7 +77,7 @@
         <update-interval-secs type="double">0.05</update-interval-secs>
         <gain>1.0</gain>
         <input>
-            <property>/flight-management/fcu-values/alt</property>
+            <property>/flight-management/fcu-values/fcu-alt</property>
         </input>
         <reference>
             <property>instrumentation/altimeter/indicated-altitude-ft</property>

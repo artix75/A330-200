@@ -574,7 +574,7 @@
         <object-name>target-alt-sel</object-name>
         <transform>
             <subtype>textranslate</subtype>
-            <property>/flight-management/fcu-values/alt</property>
+            <property>/flight-management/fcu-values/fcu-alt</property>
             <factor>0.000019141</factor>
             <axis>
                 <y>-1</y>
@@ -1336,9 +1336,9 @@
 		</offsets>
 		<alignment>right-center</alignment>
 		<axis-alignment>yz-plane</axis-alignment>
-		<type type="string">number-value</type>
-		<format type="string">%5.0f</format>
-		<property>flight-management/fcu-values/alt</property>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>flight-management/fcu-values/alt-disp</property>
 		<truncate type="bool">false</truncate>
 		<font type="string">helvetica_bold.txf</font>
 		<draw-text type="bool">true</draw-text>
@@ -1360,9 +1360,9 @@
         </offsets>
         <alignment>right-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
-        <type type="string">number-value</type>
-        <format type="string">%5.0f</format>
-        <property>flight-management/fcu-values/alt</property>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <property>flight-management/fcu-values/alt-disp</property>
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_bold.txf</font>
         <draw-text type="bool">true</draw-text>
@@ -1620,6 +1620,28 @@
             <height type="int">32</height>
         </font-resolution>
     </text>
+    
+    <text>
+        <name>spd-sel-alert</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>-0.056</y-m>
+            <z-m>0.0462</z-m>
+        </offsets>
+        <alignment>right-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">literal</type>
+        <text type="string">SPD SEL</text>
+        <font type="string">helvetica_bold.txf</font>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.005</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
 
 
     <!-- VS LABELS -->
@@ -1720,20 +1742,26 @@
         <type>select</type>
         <object-name>landing-elev</object-name>
         <condition>
-            <or>
-                <not>
-                    <equals>
-                        <property>autopilot/route-manager/destination/airport</property>
-                        <value></value>
-                    </equals>
-                </not>
-                <not>
-                    <equals>
-                        <property>autopilot/route-manager/destination/runway</property>
-                        <value></value>
-                    </equals>
-                </not>
-            </or>
+            <and>
+                <equals>
+                    <property>flight-management/phase</property>
+                    <value>APP</value>
+                </equals>
+                <or>
+                    <not>
+                        <equals>
+                            <property>autopilot/route-manager/destination/airport</property>
+                            <value></value>
+                        </equals>
+                    </not>
+                    <not>
+                        <equals>
+                            <property>autopilot/route-manager/destination/runway</property>
+                            <value></value>
+                        </equals>
+                    </not>
+                </or>
+            </and>
         </condition>
     </animation>
     
@@ -1841,10 +1869,10 @@
         <name>athr-armed-mode</name>
         <offsets>
             <x-m>0.00091828</x-m>
-            <y-m>-0.0606226</y-m>
-            <z-m>0.0605781</z-m>
+            <y-m>-0.0686226</y-m>
+            <z-m>0.0703781</z-m>
         </offsets>
-        <alignment>center-center</alignment>
+        <alignment>left-top</alignment>
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">text-value</type>
         <format type="string">%s</format>
@@ -1862,43 +1890,19 @@
     </text>
     
     <text>
-        <name>athr-active-white</name>
+        <name>athr-flx-to-temp</name>
         <offsets>
             <x-m>0.00091828</x-m>
-            <y-m>-0.0606226</y-m>
-            <z-m>0.0680781</z-m>
+            <y-m>-0.0566226</y-m>
+            <z-m>0.0645781</z-m>
         </offsets>
-        <alignment>center-center</alignment>
+        <alignment>left-top</alignment>
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">text-value</type>
         <format type="string">%s</format>
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_medium.txf</font>
-        <property>/flight-management/flight-modes/athr/active</property>
-        <draw-text type="bool">true</draw-text>
-        <draw-alignment type="bool">false</draw-alignment>
-        <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.0055</character-size>
-        <font-resolution>
-            <width type="int">32</width>
-            <height type="int">32</height>
-        </font-resolution>
-    </text>
-
-    <text>
-        <name>athr-armed-white</name>
-        <offsets>
-            <x-m>0.00091828</x-m>
-            <y-m>-0.0606226</y-m>
-            <z-m>0.0605781</z-m>
-        </offsets>
-        <alignment>center-center</alignment>
-        <axis-alignment>yz-plane</axis-alignment>
-        <type type="string">text-value</type>
-        <format type="string">%s</format>
-        <truncate type="bool">false</truncate>
-        <font type="string">helvetica_medium.txf</font>
-        <property>/flight-management/flight-modes/athr/armed</property>
+        <property>/instrumentation/fmc/flex-to-temp</property>
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
@@ -1934,6 +1938,30 @@
     </text>
     
     <text>
+        <name>athr-fma-alert</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0606226</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/athr/alert</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
         <name>ver-active-mode</name>
         <offsets>
             <x-m>0.00091828</x-m>
@@ -1941,6 +1969,30 @@
             <z-m>0.0680781</z-m>
         </offsets>
         <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/vertical/active</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>ver-active-mode-left</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0218226</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>right-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">text-value</type>
         <format type="string">%s</format>
@@ -2317,6 +2369,54 @@
         </font-resolution>
     </text>
     
+    <text>
+        <name>fma-vs</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0206226</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>left-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%4.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/fcu-values/vs</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>fma-fpa</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0206226</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>left-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%4.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/fcu-values/fpa</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
     <!-- PFD Boxes -->
     
     <text>
@@ -2340,6 +2440,31 @@
         <font-resolution>
             <width type="int">36</width>
             <height type="int">36</height>
+        </font-resolution>
+    </text>
+    
+
+    <text>
+        <name>athr-armed-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0606226</y-m>
+            <z-m>0.0723781</z-m>
+        </offsets>
+        <alignment>center-top</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s 5</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/flight-modes/athr/armed</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
         </font-resolution>
     </text>
     
@@ -2716,6 +2841,7 @@
         <object-name>ver-active-mode</object-name>
         <object-name>lat-active-mode</object-name>
         <object-name>common-active-mode</object-name>
+        <object-name>ver-active-mode-left</object-name>
         <diffuse>
             <red>0</red>
             <green>0.57</green>
@@ -2740,13 +2866,15 @@
     
     <animation>
         <type>material</type>
-        <object-name>athr-armed-mode</object-name>
         <object-name>ver-armed-mode</object-name>
         <object-name>lat-armed-mode</object-name>
         <object-name>common-armed-mode</object-name>
         <object-name>athr-armed</object-name>
         <object-name>outer-beacon-marker</object-name>
         <object-name>decision-height</object-name>
+        <object-name>athr-flx-to-temp</object-name>
+        <object-name>fma-vs</object-name>
+        <object-name>fma-fpa</object-name>
         <diffuse>
             <red>0.06</red>
             <green>0.55</green>
@@ -2797,18 +2925,18 @@
     <animation>
         <type>material</type>
         <object-name>athr-active-box</object-name>
+        <object-name>athr-armed-box</object-name>
         <object-name>ver-active-box</object-name>
         <object-name>lat-active-box</object-name>
         <object-name>common-active-box</object-name>
-        <object-name>athr-active-white</object-name>
-        <object-name>athr-armed-white</object-name>
+        <object-name>athr-armed-mode</object-name>
+        <object-name>athr-fma-msg</object-name>
         <object-name>fma-message-white</object-name>
         <object-name>fma-message-box-white</object-name>
         <object-name>athr-engaged</object-name>
         <object-name>fd-engaged</object-name>
         <object-name>ap-engaged</object-name>
         <object-name>ils-cat</object-name>
-        <object-name>athr-fma-msg</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>
@@ -2837,6 +2965,7 @@
         <object-name>qnh-alert-box</object-name>
         <object-name>radio-alt-land</object-name>
         <object-name>middle-beacon-marker</object-name>
+        <object-name>athr-fma-alert</object-name>
         <diffuse>
             <red>0.99</red>
             <green>0.6</green>
@@ -2881,6 +3010,31 @@
         </specular>
         <emission>
             <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </emission>
+    </animation>
+    
+    <animation>
+        <type>material</type>
+        <object-name>spd-sel-alert</object-name>
+        <diffuse>
+            <red>1</red>
+            <green>0</green>
+            <blue>0</blue>
+        </diffuse>
+        <ambient>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </ambient>
+        <specular>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </specular>
+        <emission>
+            <red>1</red>
             <green>0</green>
             <blue>0</blue>
         </emission>
@@ -2939,32 +3093,6 @@
             <equals>
                 <property>/flight-management/text/qnh</property>
                 <value>QNH</value>
-            </equals>
-        </condition>
-    </animation>
-    
-    <animation>
-        <type>select</type>
-        <object-name>athr-active-mode</object-name>
-        <object-name>athr-armed-mode</object-name>
-        <condition>
-            <not>
-                <equals>
-                    <property>/flight-management/flight-modes/athr/active</property>
-                    <value>MAN</value>
-                </equals>
-            </not>
-        </condition>
-    </animation>
-    
-    <animation>
-        <type>select</type>
-        <object-name>athr-active-white</object-name>
-        <object-name>athr-armed-white</object-name>
-        <condition>
-            <equals>
-                <property>/flight-management/flight-modes/athr/active</property>
-                <value>MAN</value>
             </equals>
         </condition>
     </animation>
@@ -3065,10 +3193,6 @@
                         <property>/flight-management/control/is-alt-constraint</property>
                     </not>
                 </or>
-                <!--greater-than-equals>
-                    <property>flight-management/fcu-values/alt</property>
-                    <property>/instrumentation/altimeter/indicated-altitude-ft</property>
-                </greater-than-equals-->
                 <greater-than-equals>
                     <property>instrumentation/pfd/sel-alt-diff</property>
                     <value>5548</value>
@@ -3093,10 +3217,6 @@
                         <property>/flight-management/control/is-alt-constraint</property>
                     </not>
                 </or>
-                <!--less-than>
-                    <property>flight-management/fcu-values/alt</property>
-                    <property>/instrumentation/altimeter/indicated-altitude-ft</property>
-                </less-than-->
                 <less-than>
                     <property>instrumentation/pfd/sel-alt-diff</property>
                     <value>-5548</value>
@@ -3319,6 +3439,25 @@
     
     <animation>
         <type>select</type>
+        <object-name>spd-sel-alert</object-name>
+        <condition>
+            <and>
+                <property>gear/gear/wow</property>
+                <not>
+                    <property>/instrumentation/fmc/vspeeds/V1</property>
+                </not>
+                <not>
+                    <property>/instrumentation/fmc/vspeeds/VR</property>
+                </not>
+                <not>
+                    <property>/instrumentation/fmc/vspeeds/V2</property>
+                </not>
+            </and>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
         <object-name>target-alt-sel</object-name>
         <condition>
             <or>
@@ -3419,6 +3558,109 @@
 		</condition>
 	</animation>
     
+    <!-- FMA announciators visibility -->
+    
+    <animation>
+        <type>select</type>
+        <object-name>athr-active-mode</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/control/a-thrust</property>
+                <value>eng</value>
+            </equals>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>ver-active-mode</object-name>
+        <condition>
+            <and>
+                <not>
+                    <equals>
+                        <property>/flight-management/flight-modes/vertical/active</property>
+                        <value>VS</value>
+                    </equals>
+                </not>
+                <not>
+                    <equals>
+                        <property>/flight-management/flight-modes/vertical/active</property>
+                        <value>FPA</value>
+                    </equals>
+                </not>
+            </and>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>ver-active-mode-left</object-name>
+        <condition>
+            <or>
+                <equals>
+                    <property>/flight-management/flight-modes/vertical/active</property>
+                    <value>VS</value>
+                </equals>
+                <equals>
+                    <property>/flight-management/flight-modes/vertical/active</property>
+                    <value>FPA</value>
+                </equals>
+            </or>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>fma-vs</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/flight-modes/vertical/active</property>
+                <value>VS</value>
+            </equals>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>fma-fpa</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/flight-modes/vertical/active</property>
+                <value>FPA</value>
+            </equals>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>athr-fma-msg</object-name>
+        <condition>
+            <property>instrumentation/pfd/flashing/show</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>athr-fma-alert</object-name>
+        <condition>
+            <or>
+                <equals>
+                    <property>/flight-management/flight-modes/athr/alert</property>
+                    <value>LVR ASYM</value>
+                </equals>
+                <property>instrumentation/pfd/flashing/show</property>
+            </or>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>athr-flx-to-temp</object-name>
+        <condition>
+            <property>instrumentation/pfd/flx-indication</property>
+        </condition>
+    </animation>
+    
     <!-- FMGC Modes Boxes -->
 	
     <animation>
@@ -3426,6 +3668,14 @@
         <object-name>athr-active-box</object-name>
         <condition>
             <property>instrumentation/pfd/athr-active-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>athr-armed-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/athr-armed-box</property>
         </condition>
     </animation>
     
