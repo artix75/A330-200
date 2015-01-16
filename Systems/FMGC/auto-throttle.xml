@@ -19,6 +19,9 @@
                     <not>
                         <property>/autoland/retard</property>
                     </not>
+                    <not>
+                        <property>flight-management/thrust-lock</property>
+                    </not>
                 </and>
             </condition>
 		</enable>
@@ -58,6 +61,9 @@
                     </not>
                     <not>
                         <property>/autoland/retard</property>
+                    </not>
+                    <not>
+                        <property>flight-management/thrust-lock</property>
                     </not>
                 </and>
             </condition>
@@ -101,6 +107,9 @@
                     <not>
                         <property>/autoland/retard</property>
                     </not>
+                    <not>
+                        <property>flight-management/thrust-lock</property>
+                    </not>
                 </and>
             </condition>
 		</enable>
@@ -140,6 +149,9 @@
                     </not>
                     <not>
                         <property>/autoland/retard</property>
+                    </not>
+                    <not>
+                        <property>flight-management/thrust-lock</property>
                     </not>
                 </and>
             </condition>

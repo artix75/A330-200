@@ -2469,6 +2469,30 @@
     </text>
     
     <text>
+        <name>athr-alert-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0606226</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/texts/pfd-fmgc-empty-box</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">36</width>
+            <height type="int">36</height>
+        </font-resolution>
+    </text>
+    
+    <text>
         <name>ver-active-box</name>
         <offsets>
             <x-m>0.00091828</x-m>
@@ -2962,6 +2986,7 @@
     <animation>
         <type>material</type>
         <object-name>ver-alert-box</object-name>
+        <object-name>athr-alert-box</object-name>
         <object-name>qnh-alert-box</object-name>
         <object-name>radio-alt-land</object-name>
         <object-name>middle-beacon-marker</object-name>
@@ -3667,7 +3692,12 @@
         <type>select</type>
         <object-name>athr-active-box</object-name>
         <condition>
-            <property>instrumentation/pfd/athr-active-box</property>
+            <and>
+                <property>instrumentation/pfd/athr-active-box</property>
+                <not>
+                    <property>instrumentation/pfd/athr-alert-box</property>
+                </not>
+            </and>
         </condition>
     </animation>
     
@@ -3711,6 +3741,13 @@
         </condition>
     </animation>
     
+    <animation>
+        <type>select</type>
+        <object-name>athr-alert-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/athr-alert-box</property>
+        </condition>
+    </animation>
     
     <animation>
         <type>select</type>

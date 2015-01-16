@@ -141,6 +141,7 @@ var fmgc_loop = {
         setprop(fmfd ~ "pitch-gs", 0);
         setprop('instrumentation/pfd/fd_pitch', 0);
         setprop(radio~ 'ils-cat', '');
+        setprop('instrumentation/pfd/athr-alert-box', 0);
     
         me.descent_started = 0;
         me.decel_point = 0;
@@ -406,14 +407,15 @@ var fmgc_loop = {
                     setprop(fmgc~ "spd-with-pitch", 0);
                     setprop(settings~ 'spd-pitch-min', 0);
                     setprop(settings~ 'spd-pitch-max', 0);
-                    if(thr_lock and athrEngaged) 
+                    if(thr_lock or athrEngaged){
                         me.update_throttle(thr_lock_val, thr_lock_val);
+                    }
                 }
             } else {
                 setprop(settings~ 'spd-pitch-min', 0);
                 setprop(settings~ 'spd-pitch-max', 0);
                 setprop(fmgc~ "spd-with-pitch", 1);
-                athrEngaged = 'eng';
+                athrEngaged = 1;
                 setprop(fmgc~ "a-thrust", 'eng');
                 me.update_throttle(1, 1);
             }
@@ -1083,10 +1085,18 @@ var fmgc_loop = {
                 setprop('flight-management/thrust-lock-reason', '');
             }
         } else {
-            if (last_athr == 'eng' and !me.thrust_lock){
+            if (last_athr == 'eng' and !me.thrust_lock and me.a_thr != 'armed'){
                 me.thrust_lock_value = me.last_thrust;
                 setprop('flight-management/thrust-lock', 1);
                 setprop('flight-management/thrust-lock-reason', 'THR');
+            }
+            elsif(last_athr == 'eng' and me.thrust_lock){
+                if(me.thrust_lock_reason == 'TOGA'){
+                    setprop('flight-management/thrust-lock', 0);
+                    setprop('flight-management/thrust-lock-reason', '');
+                    me.thrust_lock = 0;
+                    me.thrust_lock_reason = '';
+                }
             }
         }
         var dest_changed = 0;
@@ -2597,7 +2607,8 @@ setlistener("sim/signals/fdm-initialized", func{
 setlistener(athr_modes~'active', func(){
     var mode = athr_modes~'active';
     var box_node = 'instrumentation/pfd/athr-active-box';
-    if(getprop(mode) != ''){
+    var athr_mode = getprop(mode);
+    if(athr_mode != ''){
         setprop(box_node, 1);
         settimer(func(){
             setprop(box_node, 0);     
@@ -2605,6 +2616,8 @@ setlistener(athr_modes~'active', func(){
     } else {
         setprop(box_node, 0);
     }
+    var alert = (athr_mode == 'TOGA LK' or athr_mode == 'A. FLOOR');
+    setprop('instrumentation/pfd/athr-alert-box', alert);
 }, 0, 0);
 
 setlistener(athr_modes~'armed', func(){
@@ -2613,9 +2626,9 @@ setlistener(athr_modes~'armed', func(){
     var current = getprop(mode);
     if(current != ''){
         setprop(box_node, 1);
-        settimer(func(){
-            setprop(box_node, 0);     
-        }, 5);
+        #settimer(func(){
+        #    setprop(box_node, 0);     
+        #}, 5);
     } else {
         setprop(box_node, 0);
     }
@@ -2728,6 +2741,10 @@ setlistener(fmgc~ 'ap2-master', func(ap){
 
 setlistener(fmgc~ "a-thrust", func(){
     update_ap_fma_msg();
+    if(getprop(fmgc~ "a-thrust") == 'eng'){
+        setprop('instrumentation/pfd/flx-indication', 0);
+        setprop('instrumentation/pfd/athr-armed-box', 0);
+    }
 }, 0, 0);
 
 setlistener(radio~ "ils-mode", func(){

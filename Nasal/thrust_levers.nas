@@ -68,6 +68,7 @@ for(var i = 0; i < ENGINE_COUNT; i = i + 1){
         if(max_pos >= arming_pos){
             if(athr_status != 'armed'){
                 setprop(athr, 'armed');
+                disableThrustLock();
             }
         }
         elsif(max_pos <= detents.IDLE){
