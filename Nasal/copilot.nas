@@ -56,10 +56,10 @@ setlistener("/sim/signals/fdm-initialized", func {
                 if(eng_starter == 2)
                     me.turn_light('beacon', 1);  
                 if(engine_started and ias > 13 and ias < 50){
-                    me.turn_light('taxi', 1);
+                    me.turn_light('landing-lights[1]', 1);
                 }
                 elsif(ias >= 50){
-                    me.turn_light('taxi', 0);
+                    me.turn_light('landing-lights[1]', 0);
                     settimer(func(){
                         me.turn_light('wing-lights', 1);
                         me.turn_light('landing-lights[0]', 1);
@@ -75,8 +75,10 @@ setlistener("/sim/signals/fdm-initialized", func {
                         me.turn_light('landing-lights[2]', 1);
                     }
                 } else {
-                    me.turn_light('landing-lights[0]', 0);
-                    me.turn_light('landing-lights[2]', 0);
+                    if(agl > 500){
+                        me.turn_light('landing-lights[0]', 0);
+                        me.turn_light('landing-lights[2]', 0);
+                    }
                 }
             }
             if(engine_started){
@@ -114,7 +116,21 @@ setlistener("/sim/signals/fdm-initialized", func {
         utils.clickSound(7);
         var self = me;
         settimer(func(){
-            self.announce(light ~" light " ~ (on ? "on" : "off"));
+            var light_name = '';
+            if(light == 'landing-lights[1]'){
+                light_name = 'taxi';
+            }
+            elsif(light == 'landing-lights[0]'){
+                light_name = 'left landing';
+            }
+            elsif(light == 'landing-lights[2]'){
+                light_name = 'right landing';
+            } else {
+                light_name = string.replace(light, '[', '');
+                light_name = string.replace(light, ']', '');
+                light_name = string.replace(light, '-', ' ');   
+            }
+            self.announce(light_name ~" light " ~ (on ? "on" : "off"));
         }, 2);
         me.lights[light] = on;
     },
