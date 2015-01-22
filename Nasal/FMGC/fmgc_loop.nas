@@ -2132,7 +2132,7 @@ var fmgc_loop = {
                 if(cur_lo == nil) cur_lo = 0;
                 if(math.abs(nm - cur_lo) > 0.5){
                     setprop(lo_raw_prop, nm);
-                    setprop('instrumentation/efis/nd/level-off-at', nm);
+                    setprop('/autopilot/route-manager/vnav/level-off-alt',nm);
                 }
                 
                 #print("TC: " ~ nm);
