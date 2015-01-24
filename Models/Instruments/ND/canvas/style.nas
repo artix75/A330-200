@@ -76,6 +76,7 @@ canvas.NDStyles["Airbus"] = {
 			wp_count: 'autopilot/route-manager/route/num',
 			level_off_alt: '/autopilot/route-manager/vnav/level-off-alt',
 			athr: '/flight-management/control/a-thrust',
+			app_mode: 'instrumentation/nd/app-mode',
 			active_route_color: [0.4,0.7,0.4],
 			inactive_route_color: [0.95,0.95,0.21]
 		}
@@ -1362,9 +1363,12 @@ canvas.NDStyles["Airbus"] = {
 			id:'appMode',
 			impl: {
 				init: func(nd,symbol),
-				predicate: func(nd) (nd.get_switch('toggle_app_mode') != ''),
+				predicate: func(nd) {
+					var mode = getprop(nd.options.defaults.app_mode);
+					return (mode != '' and mode != nil);
+				},
 				is_true: func(nd) {
-					var mode = nd.get_switch('toggle_app_mode');
+					var mode = getprop(nd.options.defaults.app_mode);
 					nd.symbols.appMode.show();
 					nd.symbols.appMode.setText(mode);
 				},
