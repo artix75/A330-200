@@ -1,4 +1,4 @@
-var ND_AIRBUS_SUPPORT = contains(canvas.NDStyles, 'Airbuss');
+var ND_AIRBUS_SUPPORT = contains(canvas.NDStyles, 'Airbus');
 
 if(!ND_AIRBUS_SUPPORT){
     io.include('A330_ND.nas');
@@ -29,38 +29,11 @@ if(!ND_AIRBUS_SUPPORT){
             'toggle_display_type': 	{path: '/mfd/display-type', value:'LCD', type:'STRING'},
             'toggle_true_north': 	{path: '/mfd/true-north', value:1, type:'BOOL'},
             'toggle_track_heading': 	{path: '/trk-selected', value:0, type:'BOOL'},
-            'toggle_fplan': {path: '/nd/route-manager-active', value:0, type: 'BOOL'},
-            'toggle_lnav': {path: '/nd/lnav', value:0, type: 'BOOL'},
-            'toggle_vnav': {path: '/nd/vnav', value:0, type: 'BOOL'},
             'toggle_wpt_idx': {path: '/inputs/plan-wpt-index', value: -1, type: 'INT'},
             'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'},
             'toggle_app_mode': {path: '/nd/app-mode', value:'', type: 'STRING'},
-            'toggle_cur_td': {path: '/nd/current-td', value: 0, type: 'INT'},
-            'toggle_cur_tc': {path: '/nd/current-tc', value: 0, type: 'INT'},
-            'toggle_cur_sc': {path: '/nd/current-sc', value: 0, type: 'INT'},
-            'toggle_cur_ed': {path: '/nd/current-ed', value: 0, type: 'INT'},
-            'toggle_cur_sd': {path: '/nd/current-sd', value: 0, type: 'INT'},
-            'toggle_cur_ec': {path: '/nd/current-ec', value: 0, type: 'INT'},
-            'toggle_lvl_off_at': {path: '/nd/level-off-at', value: 0, type: 'INT'},
-            'toggle_man_spd': {path: '/nd/managed-spd', value: 0, type: 'INT'},
-            'toggle_athr': {path: '/nd/athr', value: 0, type: 'INT'},
-            'toggle_spd_point_100': {path: '/nd/spd-change-raw-100', value: 0, type: 'INT'},
-            'toggle_spd_point_140': {path: '/nd/spd-change-raw-140', value: 0, type: 'INT'},
-            'toggle_spd_point_250': {path: '/nd/spd-change-raw-250', value: 0, type: 'INT'},
-            'toggle_spd_point_260': {path: '/nd/spd-change-raw-260', value: 0, type: 'INT'},
-            'toggle_nav1_frq': {path: '/nd/nav1_frq', value: 0, type: 'INT'},
-            'toggle_nav2_frq': {path: '/nd/nav2_frq', value: 0, type: 'INT'},
-            'toggle_adf1_frq': {path: '/nd/adf1_frq', value: 0, type: 'INT'},
-            'toggle_adf2_frq': {path: '/nd/adf2_frq', value: 0, type: 'INT'},
-            'toggle_hold_init': {path: '/nd/hold_init', value: 0, type: 'INT'},
             'toggle_hold_update': {path: '/nd/hold_update', value: 0, type: 'INT'},
             'toggle_hold_wp': {path: '/nd/hold_wp', value: '', type: 'STRING'},
-            'toggle_route_num': {path: '/nd/route_num', value: 0, type: 'INT'},
-            'toggle_cur_wp': {path: '/nd/cur_wp', value: 0, type: 'INT'},
-            'toggle_ap1': {path: '/nd/ap1', value: '', type: 'STRING'},
-            'toggle_ap2': {path: '/nd/ap2', value: '', type: 'STRING'},
-            'toggle_dep_rwy': {path: '/nd/dep_rwy', value: '', type: 'STRING'},
-            'toggle_dest_rwy': {path: '/nd/dest_rwy', value: '', type: 'STRING'},
             # add new switches here
         };
 
