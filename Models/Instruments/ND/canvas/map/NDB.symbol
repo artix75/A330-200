@@ -1,39 +1,7 @@
-# Class things:
-var name = 'NDB';
-var parents = [DotSym];
-var __self__ = caller(0)[0];
-
-DotSym.makeinstance( name, __self__ );
-
-var element_type = "group"; # we want a group, becomes "me.element", which we parse a SVG onto
-#var svg_path = "/gui/dialogs/images/ndb_symbol.svg"; # speaking of path, this is our path to use
-#var local_svg_path = nil; # track changes in the SVG's path
-
-var icon_ndb = nil;
-
-var nd_props = canvas.NDConfig.properties;
-
-var draw = func{
-    if (me.icon_ndb == nil) {
-        # the fix symbol
-        me.icon_ndb = SymbolPainter.drawNDB(me.element);
-        me.text_ndb = me.element.createChild("text")
-        .setDrawMode( canvas.Text.TEXT )
-        .setText(me.model.id)
-        .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-        .setFontSize(28)
-        .setTranslation(25,10);
-    };
-    var frq = me.model.frequency;
-    if(frq != nil and me.icon_ndb != nil){
-        frq = frq / 100;
-        var adf1_frq = getprop(nd_props.adf1_frq);
-        var adf2_frq = getprop(nd_props.adf2_frq);
-        if(adf1_frq == frq or adf2_frq == frq){
-            me.icon_ndb.setColor(0,0.62,0.84);
-        } else {
-            me.icon_ndb.setColor(0.9,0,0.47);
-        }
-    }
-};
+# See: http://wiki.flightgear.org/MapStructure
+DotSym.makeinstance('NDB', {
+	parents: [SVGSymbol],
+	svg_path: "/gui/dialogs/images/ndb_symbol.svg",
+	#cacheable: 1,
+});
 

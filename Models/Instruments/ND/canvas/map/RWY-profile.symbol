@@ -16,22 +16,22 @@ var style = { # style to use by default
 };
 
 SymbolLayer.get(name).df_style = style;
-var already_drawn = 0;
+#var already_drawn = 0;
 
 var init = func {
-    if(me.already_drawn) return;
-    var style = SymbolLayer.get(name).df_style;
+    #if(me.already_drawn) return;
     var lat = me.model.lat;
     var lon = me.model.lon;
     var rwyhdg = me.model.heading;
     var width = me.model.width;
     var length = me.model.length;
     var group = me.element;
-    var ctr_len = length * style.center_line_len;
+    var ctr_len = length * me.getStyle('center_line_len', 0.75);
     var crds = [];
     var coord = geo.Coord.new();
-    width=width*style.zoom; # Else rwy is too thin to be visible
-
+    width = width * me.getStyle('zoom', 20); # Else rwy is too thin to be visible
+    var line_w = me.getStyle('line_width', 3);
+    var color = me.getStyle('color', [1,1,1]);
     coord.set_latlon(lat, lon);
     coord.apply_course_distance(rwyhdg, -(ctr_len / 2));
     append(crds,"N"~coord.lat());
@@ -40,9 +40,9 @@ var init = func {
     append(crds,"N"~coord.lat());
     append(crds,"E"~coord.lon());
     icon_rwy = group.createChild("path", "rwy-cl")
-    .setStrokeLineWidth(style.line_width)
+    .setStrokeLineWidth(line_w)
     .setDataGeo([2,4],crds)
-    .setColor(style.color);
+    .setColor(color);
     #.setStrokeDashArray([10, 20, 10, 20, 10]);
     #icon_rwy.hide();
     var crds = [];
@@ -56,9 +56,9 @@ var init = func {
     append(crds,"N"~coord.lat());
     append(crds,"E"~coord.lon());
     icon_rwy = group.createChild("path", "rwy")
-    .setStrokeLineWidth(style.line_width)
+    .setStrokeLineWidth(line_w)
     .setDataGeo([2,4,4],crds)
-    .setColor(style.color);
+    .setColor(color);
     var crds = [];
     append(crds,"N"~coord.lat());
     append(crds,"E"~coord.lon());
@@ -72,21 +72,22 @@ var init = func {
     append(crds,"N"~coord.lat());
     append(crds,"E"~coord.lon());
     icon_rwy = group.createChild("path", "rwy")
-    .setStrokeLineWidth(style.line_width)
+    .setStrokeLineWidth(line_w)
     .setDataGeo([2,4,4,4],crds)
-    .setColor(style.color);
+    .setColor(color);
 };
 
 var draw = func{}
 
-var update = func() {
-    if (me.controller != nil) {
-        if (!me.controller.update(me, me.model)) return;
-        elsif (!me.controller.isVisible(me.model)) {
-            me.element.hide();
-            return;
-        }
-    } else
-        me.element.show();
-    me.draw();
-}
+
+#var update = func() {
+#    if (me.controller != nil) {
+#        if (!me.controller.update(me, me.model)) return;
+#        elsif (!me.controller.isVisible(me.model)) {
+#            me.element.hide();
+#            return;
+#        }
+#    } else
+#        me.element.show();
+#    me.draw();
+#}

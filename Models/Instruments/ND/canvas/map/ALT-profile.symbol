@@ -1,51 +1,51 @@
 # See: http://wiki.flightgear.org/MapStructure
 # Class things:
 var name = 'ALT-profile';
-var parents = [canvas.DotSym];
+var parents = [DotSym];
 var __self__ = caller(0)[0];
-canvas.DotSym.makeinstance( name, __self__ );
- 
-#canvas.SymbolLayer.get(name).df_style = {
-#    radius: 13,
-#};
- 
+DotSym.makeinstance( name, __self__ );
+
+SymbolLayer.get(name).df_style = {
+	radius: 13,
+};
+
 var element_type = "group";
 
 var init = func {
-    var name = me.model.getName();
-    #var radius = me.style.radius;
-    var sym_group = me.element.createChild("group", name);
-    var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-    canvas.parsesvg(sym_group, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/canvas/res/airbus_"~name~".svg");
-    sym_group.set("z-index",6);
-    var grp = sym_group.getElementById(name~'_symbol');
-    print('Init: -> '~name);
-    if(name != 'td' and name != 'sd' and name != 'sc'){
-        grp.setTranslation(-50,0);
-    }
+	var name = me.model.getName();
+	var svg_path = me.getOption('svg_path');
+	if(svg_path != nil){
+		var grp = me.element.createChild("group", name);
+		if(typeof(svg_path) == 'scalar'){
+			canvas.parsesvg(me.element, svg_path);
+		}
+		else{ #need hash
+			if(!contains(svg_path, name))
+				die('ALT-Profile: no SVG Path for '~ name);
+			var path = svg_path[name];
+			canvas.parsesvg(me.element, path);
+		}
+	} else {
+		var disptext = chr(string.toupper(name[0]))~"/"~chr(string.toupper(name[1]));
+		var radius = me.style.radius;
+		me.element.createChild("path")
+		.setStrokeLineWidth(5)
+		.moveTo(-radius, 0)
+		.arcLargeCW(radius, radius, 0,  2 * radius, 0)
+		.arcLargeCW(radius, radius, 0,  -2 * radius, 0)
+		.setColor(0.195,0.96,0.097);
+		me.element.createChild("text")
+		.setDrawMode( canvas.Text.TEXT )
+		.setText(disptext)
+		.setFont("LiberationFonts/LiberationSans-Regular.ttf")
+		.setFontSize(28)
+		.setTranslation(25,35)
+		.setColor(0.195,0.96,0.097);
+	}
+	me.callback('init_after');
 }
 
 var draw = func{
-    var name = me.model.getName();
-    #var bearing = getprop("autopilot/route-manager/vnav/"~name~"/bearing-deg");
-    var sym_group = me.element.getElementById(name);
-    if(sym_group == nil) return;
-    var grp = sym_group.getElementById(name~'_symbol');
-    if(grp == nil) return;
-    
-    #print('Draw: -> ' ~ name);
-    if(name == 'td' or name == 'sd' or name == 'sc'){
-        var vnav_armed = me.model.getValue('vnav-armed');
-        if(vnav_armed)
-            grp.setColor(0.06,0.55,1);
-        else
-            grp.setColor(1,1,1);
-    }
-    elsif(name == 'ed' or name == 'ec'){
-        var is_cstr = me.model.getValue('alt-cstr');
-        if(is_cstr)
-            grp.setColor(0.68, 0, 0.38);
-        else
-            grp.setColor(0.06,0.55,1);
-    }
+	me.callback('draw');
 }
+

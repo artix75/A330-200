@@ -1,27 +1,41 @@
 # A330-200 ND Implementation
 
+print('Loading local canvas ND...');
+
+
+var get_local_path = func(file){
+    var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
+    return "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/canvas/"~ file;
+};
+
 var version = getprop('sim/version/flightgear');
 var v = split('.', version);
 version = num(v[0]~'.'~v[1]);
 
 var SymbolLayer = canvas.SymbolLayer;
+var SingleSymbolLayer = canvas.SingleSymbolLayer;
+var MultiSymbolLayer = canvas.MultiSymbolLayer;
+var NavaidSymbolLayer = canvas.NavaidSymbolLayer;
 var Symbol = canvas.Symbol;
 var Group = canvas.Group;
 var Path = canvas.Path;
 var DotSym = canvas.DotSym;
 var Map = canvas.Map;
+var SVGSymbol = canvas.SVGSymbol;
+var LineSymbol = canvas.LineSymbol;
+var StyleableCacheable = canvas.StyleableCacheable;
+var SymbolCache32x32 = canvas.SymbolCache32x32;
+var SymbolCache = canvas.SymbolCache;
+var Text = canvas.Text;
+
 
 if(version < 3.2){
     io.include('canvas_compat.nas');
 }
 
-var LineSymbol = canvas.LineSymbol;
-var SingleSymbolLayer = canvas.SingleSymbolLayer;
-var MultiSymbolLayer = canvas.MultiSymbolLayer;
-var NavaidSymbolLayer = canvas.NavaidSymbolLayer;
-
-
 io.include('ND_config.nas');
+io.include('framework/canvas.nas');
+io.include('framework/navdisplay.nas');
 io.include('loaders.nas');
 io.include('helpers.nas');
 io.include('style.nas');
@@ -105,96 +119,6 @@ setlistener("sim/signals/fdm-initialized", func() {
         'toggle_dest_rwy': {path: '/nd/dest_rwy', value: '', type: 'STRING'},
         # add new switches here
     };
-    
-    canvas.NavDisplay.update_sub = func()
-    {
-        # Variables:
-        var userLat = me.aircraft_source.get_lat();
-        var userLon = me.aircraft_source.get_lon();
-        var userGndSpd = me.aircraft_source.get_gnd_spd();
-        var userVSpd = me.aircraft_source.get_vspd();
-        var dispLCD = me.get_switch('toggle_display_type') == "LCD";
-        # Heading update
-        var userHdgMag = me.aircraft_source.get_hdg_mag();
-        var userHdgTru = me.aircraft_source.get_hdg_tru();
-        var userTrkMag = me.aircraft_source.get_trk_mag();
-        var userTrkTru = me.aircraft_source.get_trk_tru();
-
-        if(me.get_switch('toggle_true_north')) {
-            var userHdg=userHdgTru;
-            me.userHdg=userHdgTru;
-            var userTrk=userTrkTru;
-            me.userTrk=userTrkTru;
-        } else {
-            var userHdg=userHdgMag;
-            me.userHdg=userHdgMag;
-            var userTrk=userTrkMag;
-            me.userTrk=userTrkMag;
-        }
-        # this should only ever happen when testing the experimental AI/MP ND driver hash (not critical)
-        # or when an error occurs (critical)
-        if (!userHdg or !userTrk or !userLat or !userLon) {
-            print("aircraft source invalid, returning !");
-            return;
-        }
-        if (me.aircraft_source.get_gnd_spd() < 80) {
-            userTrk = userHdg;
-            me.userTrk=userHdg;
-        }
-
-        if((me.in_mode('toggle_display_mode', ['MAP']) and me.get_switch('toggle_display_type') == "CRT")
-           or (me.get_switch('toggle_track_heading') and me.get_switch('toggle_display_type') == "LCD"))
-        {
-            userHdgTrk = userTrk;
-            me.userHdgTrk = userTrk;
-            userHdgTrkTru = userTrkTru;
-            me.symbols.hdgTrk.setText("TRK");
-        } else {
-            userHdgTrk = userHdg;
-            me.userHdgTrk = userHdg;
-            userHdgTrkTru = userHdgTru;
-            me.symbols.hdgTrk.setText("HDG");
-        }
-
-        # First, update the display position of the map
-        var pos = {
-            lat: nil, lon: nil,
-            alt: nil, hdg: nil,
-            range: nil,
-        };
-        # reposition the map, change heading & range:
-        if(me.in_mode('toggle_display_mode', ['PLAN']) and getprop(me.efis_path ~ "/inputs/plan-wpt-index") >= 0) {
-            pos.lat = getprop("/autopilot/route-manager/route/wp["~getprop(me.efis_path ~ "/inputs/plan-wpt-index")~"]/latitude-deg");
-            pos.lon = getprop("/autopilot/route-manager/route/wp["~getprop(me.efis_path ~ "/inputs/plan-wpt-index")~"]/longitude-deg");
-        } else {
-            pos.lat = userLat;
-            pos.lon = userLon;
-        }
-        if(me.get_switch('toggle_centered') or me.in_mode('toggle_display_mode', ['PLAN'])) {
-            if(me.in_mode('toggle_display_mode', ['PLAN']))
-                pos.hdg = 0;
-            else 
-                pos.hdg = userHdgTrkTru;
-            pos.range = me.rangeNm() * 1.6156087432822295
-        } else {
-            pos.range = me.rangeNm(); # avoid this  here, use a listener instead
-            pos.hdg = userHdgTrkTru;
-        }
-        var hold_init = getprop('instrumentation/efis/nd/hold_init');
-        var oldVal = nil;
-        var hdgBugRot = nil;
-        if (hold_init){
-            var vhdg_bug = getprop("autopilot/settings/heading-bug-deg");
-            hdgBugRot = (vhdg_bug-userHdgTrk)*D2R;
-            var hdgNode = me.map._node.getNode("hdg",1);
-            oldVal = hdgNode.getValue();
-        }
-        call(me.map.setPos, [pos.lat, pos.lon], me.map, pos);
-        if (hold_init){
-            if(math.abs(oldVal - hdgBugRot) >= 1)
-            setprop('instrumentation/efis/nd/hold_update', 1);
-        }
-    };
 
     # get a handle to the NavDisplay in canvas namespace (for now), see $FG_ROOT/Nasal/canvas/map/navdisplay.mfd
     var ND = canvas.NavDisplay;
@@ -219,13 +143,13 @@ setlistener("sim/signals/fdm-initialized", func() {
     nd_display.main.addPlacement({"node": "ND.screen"});
     var group = nd_display.main.createGroup();
 
-    
+
     NDCpt.newMFD(group);
     var layer_names = keys(NDCpt.layers);
-    
+
     foreach(var layer_name; layer_names){
         var the_layer = NDCpt.layers[layer_name];
-        if(the_layer != nil) 
+        if(the_layer != nil)
             the_layer.map = NDCpt.map;
     }
     NDCpt.update();
@@ -263,31 +187,6 @@ setlistener("instrumentation/efis/nd/display-mode", func{
     setprop(nd_centered, centered);
 });
 
-setlistener(nd_props.fplan_active, func{
-    var actv = getprop(nd_props.fplan_active);
-    setprop('instrumentation/efis/nd/route-manager-active', actv);
-});
-
-setlistener(nd_props.athr, func{
-    var athr = getprop(nd_props.athr);
-    setprop('instrumentation/efis/nd/athr', (athr == 'eng'));
-});
-
-setlistener('flight-management/control/ver-ctrl', func{
-    var verctrl = getprop("flight-management/control/ver-ctrl");
-    setprop('instrumentation/efis/nd/vnav', (verctrl == 'fmgc'));
-});
-
-setlistener("/flight-management/control/spd-ctrl", func{
-    var spdctrl = getprop("/flight-management/control/spd-ctrl");
-    setprop('instrumentation/efis/nd/managed-spd', (spdctrl == 'fmgc'));
-});
-
-setlistener('flight-management/control/lat-ctrl', func{
-    var latctrl = getprop("flight-management/control/lat-ctrl");
-    setprop('instrumentation/efis/nd/lnav', (latctrl == 'fmgc'));
-});
-
 setlistener("/instrumentation/mcdu/f-pln/disp/first", func{
     var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
     if(typeof(first) == 'nil') first = -1;
@@ -300,72 +199,6 @@ setlistener('/instrumentation/efis/nd/terrain-on-nd', func{
     var alpha = 1;
     if(terr_on_hd) alpha = 0.5;
     nd_display.main.setColorBackground(0,0,0,alpha);
-});
-
-setlistener('instrumentation/nav/frequencies/selected-mhz', func{
-    var mhz = getprop('instrumentation/nav/frequencies/selected-mhz');
-    if(mhz == nil) mhz = 0;
-    setprop('/instrumentation/efis/nd/nav1_frq', mhz);
-});
-
-setlistener('instrumentation/nav[1]/frequencies/selected-mhz', func{
-    var mhz = getprop('instrumentation/nav[1]/frequencies/selected-mhz');
-    if(mhz == nil) mhz = 0;
-    setprop('/instrumentation/efis/nd/nav2_frq', mhz);
-});
-
-setlistener('instrumentation/adf/frequencies/selected-khz', func{
-    var khz = getprop('instrumentation/adf/frequencies/selected-khz');
-    if(khz == nil) khz = 0;
-    setprop('/instrumentation/efis/nd/adf1_frq', khz);
-});
-
-setlistener('instrumentation/adf[1]/frequencies/selected-khz', func{
-    var khz = getprop('instrumentation/adf[1]/frequencies/selected-khz');
-    if(khz == nil) khz = 0;
-    setprop('/instrumentation/efis/nd/adf2_frq', khz);
-});
-
-setlistener('flight-management/hold/init', func{
-    var init = getprop('flight-management/hold/init');
-    if(init == nil) init = 0;
-    setprop('/instrumentation/efis/nd/hold_init', init);
-});
-
-setlistener("/flight-management/hold/wp", func{
-    var wpid = getprop("/flight-management/hold/wp");
-    if(wpid == nil) wpid = '';
-    setprop('/instrumentation/efis/nd/hold_wp', wpid);
-});
-
-setlistener('autopilot/route-manager/route/num', func{
-    var num = getprop('autopilot/route-manager/route/num');
-    setprop('/instrumentation/efis/nd/route_num', num);
-});
-
-setlistener(nd_props.cur_wp, func(){
-    var curwp = getprop(nd_props.cur_wp);
-    setprop('/instrumentation/efis/nd/cur_wp',curwp);
-});
-
-setlistener("/flight-management/control/ap1-master", func(){
-    var ap1 = getprop("/flight-management/control/ap1-master");
-    setprop('/instrumentation/efis/nd/ap1',ap1);
-});
-
-setlistener("/flight-management/control/ap2-master", func(){
-    var ap2 = getprop("/flight-management/control/ap2-master");
-    setprop('/instrumentation/efis/nd/ap2',ap2);
-});
-
-setlistener("/autopilot/route-manager/departure/runway", func(){
-    var rwy = getprop("/autopilot/route-manager/departure/runway");
-    setprop('/instrumentation/efis/nd/dep_rwy',rwy);
-});
-
-setlistener("/autopilot/route-manager/destination/runway", func(){
-    var rwy = getprop("/autopilot/route-manager/destination/runway");
-    setprop('/instrumentation/efis/nd/dest_rwy',rwy);
 });
 
 var showNd = func() {

@@ -1,3 +1,5 @@
+var assert_m = canvas.assert_m;
+
 # --------------------------------
 # From FGDATA/Nasal/canvas/api.nas
 # --------------------------------

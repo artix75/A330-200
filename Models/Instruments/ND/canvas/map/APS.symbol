@@ -1,36 +1,19 @@
 # See: http://wiki.flightgear.org/MapStructure
 # Class things:
 var name = 'APS';
-var parents = [canvas.DotSym];
+var parents = [SVGSymbol];
 var __self__ = caller(0)[0];
-canvas.DotSym.makeinstance( name, __self__ );
- 
-#var svg_path = "Nasal/canvas/map/Images/boeingAirplane.svg";
-var element_type = 'group';
+DotSym.makeinstance( name, __self__ );
+
+var svg_path = "Nasal/canvas/map/Images/boeingAirplane.svg";
 var element_id = "airplane";
 
-var model = props.globals.getNode('/position');
-
-
-var init = func {
-    var aircraft_dir = split('/', getprop("/sim/aircraft-dir"))[-1];
-    me.airplane_grp = me.element.createChild("group","airplane");
-    canvas.parsesvg(me.airplane_grp, "Aircraft/" ~ aircraft_dir ~ "/Models/Instruments/ND/canvas/res/airbusAirplane.svg");
-    var aplSymbol = me.airplane_grp.getElementById("airplane");
-    aplSymbol.setTranslation(-45,-52);
-};
-
- 
 # Rotate with the main aircraft.
 # Will have to be adapted if intended for use with other aircraft
 # (but one could simply copy the layer for that).
 var draw = func {
-    var rot = getprop("/orientation/heading-deg");
-    var hdg = canvas_nd.nd_display.main._node.getNode('group/map').getValue('hdg');
-    if(hdg)
-        rot -= hdg;
-    #else
-    #    print('APS Symbol: NO HDG!');
-    #me.layer.map.getHdg();
-    me.element.setRotation(rot*D2R);
+	var rot = getprop("/orientation/heading-deg");
+	rot -= me.layer.map.getHdg();
+	me.element.setRotation(rot*D2R);
 };
+

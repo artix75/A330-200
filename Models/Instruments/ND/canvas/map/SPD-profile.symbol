@@ -16,13 +16,14 @@ var init = func {
     #var radius = me.style.radius;
     var sym_group = me.element.createChild("group", name);
     sym_group.set("z-index",5);
+    var color = me.getStyle('color');
     var spd_path = sym_group.createChild("path").
     setStrokeLineWidth(3).
     moveTo(-17,0).
     arcSmallCW(17,17,0,34,0).
     arcSmallCW(17,17,0,-34,0).
-    setColor(0.69,0,0.39).
-    setColorFill(0.69,0,0.39).
+    setColor(color).
+    setColorFill(color).
     set("z-index",5);
 }
 

@@ -4,12 +4,6 @@ var name = 'HOLD';
 var parents = [canvas.SymbolLayer.Controller];
 var __self__ = caller(0)[0];
 
-var nd_props = canvas.NDConfig.properties;
-var _options = { # default configuration options
-    active_node: nd_props.fplan_active,
-    hold_node: nd_props.holding,
-    points_node: nd_props.holding_points
-};
 canvas.SymbolLayer.Controller.add(name, __self__);
 canvas.SymbolLayer.add(name, {
     parents: [MultiSymbolLayer],
@@ -25,7 +19,7 @@ var new = func(layer) {
     };
     #debug.dump(layer.parents);
     layer.searcher._equals = func(a,b) a.id == b.id;
-    #append(m.listeners, setlistener(layer.options.active_node, func m.layer.update() ));
+    #append(m.listeners, setlistener(layer.options.fplan_active, func m.layer.update() ));
     #m.addVisibilityListener();
  
     return m;
@@ -38,7 +32,7 @@ var del = func() {
  
 var searchCmd = func {
     var results = [];
-    var node = props.globals.getNode(me._options.hold_node);
+    var node = props.globals.getNode(me.layer.options.hold_node);
     var wp_id = node.getValue('wp');
     if(wp_id == nil or wp_id == '' or wp_id == '---'){
         return [];
@@ -72,9 +66,11 @@ var searchCmd = func {
         var wp_idx = node.getValue('wp_id');
         var fp = flightplan();
         var wp = fp.getWP(wp_idx);
-        #print("HOLD AT "~wp.wp_lat~", "~wp.wp_lon);
+        print("HOLD AT "~wp.wp_lat~", "~wp.wp_lon);
         if(wp == nil)
             return [];
+        var wp_lat = wp.wp_lat;
+        var wp_lon = wp.wp_lon;
         var model = {
             parents: [geo.Coord],
             id: wp_id~'-inactive',
@@ -82,8 +78,8 @@ var searchCmd = func {
             type: 'hold_symbol',
             latlon: func(){ 
                 return [
-                    wp.wp_lat,
-                    wp.wp_lon
+                    wp_lat,
+                    wp_lon
                 ];
             },
             radial: node.getValue('crs'),

@@ -4,29 +4,41 @@ var name = 'APT';
 var parents = [DotSym];
 var __self__ = caller(0)[0];
 DotSym.makeinstance( name, __self__ );
- 
+
 var element_type = "group"; # we want a group, becomes "me.element"
 var icon_apt = nil;
 var text_apt = nil;
- 
+
 # add the draw routine from airports-nd.draw here
-var init = func(){
-        
-    var apt_name = me.model.id;#me.model.name;
-    var apt_grp = me.element.createChild("group", apt_name);
+var init = func {
+	var icon_apt = nil;
+	var style = me.layer.style;
+	var svg_path = style.svg_path;
+	if(svg_path != nil){
+		canvas.parsesvg(me.element, svg_path);
+	} else {
+		icon_apt = me.element.createChild("path", name ~ " icon" )
+		.moveTo(-17,0)
+		.arcSmallCW(17,17,0,34,0)
+		.arcSmallCW(17,17,0,-34,0)
+		.close()
+		.setColor(style.color_default)
+		.setStrokeLineWidth(style.line_width);
+	}
+	var text = me.getLabelFromModel();
+	if(text == nil){
+		text = me.model.id;
+	}
+	var text_apt = me.element.createChild("text", name ~ " label")
+		.setDrawMode( canvas.Text.TEXT )
+		.setTranslation(style.text_offset)
+		.setText(text)
+		.setFont("LiberationFonts/LiberationSans-Regular.ttf")
+		.setColor(style.label_font_color)
+		.setFontSize(style.label_font_size);
 
-    SymbolPainter.drawAirport(apt_grp);
-    me.text_apt = apt_grp.createChild("text", apt_name ~ " label")
-    .setDrawMode( canvas.Text.TEXT )
-    .setTranslation(45,35)
-    .setText(apt_name)
-    .setFont("LiberationFonts/LiberationSans-Regular.ttf")
-    .setColor(1,1,1)
-    .setFontSize(28);
-    apt_grp.set("z-index",1); # FIXME: this needs to be configurable!!
-    #}
-
-    # draw routines should always return their canvas group to the caller for further processing
-
-}
+	# FIXME: this applies scale to the whole group, better do this separately for each element?
+	me.element.setScale(style.scale_factor);
+};
 var draw = func;
+

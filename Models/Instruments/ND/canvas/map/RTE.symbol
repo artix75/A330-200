@@ -6,38 +6,27 @@ var parents = [LineSymbol];
 var __self__ = caller(0)[0];
 LineSymbol.makeinstance( name, __self__ );
 
-var activeStyle = { # style to use by default
-    line_width: 5,
-    color: [1,0,1]
+SymbolLayer.get(name).df_style = { # style to use by default
+	line_width: 5,
+	color: [1,0,1]
 };
 
-var activeStyle = { # style to use by default
-    line_width: 5,
-    color: [0.4,0.7,0.4]
+var setRouteStyle = func{
+	var df_style = SymbolLayer.get(name).df_style;
+	var dash = me.getStyle('line_dash', []);
+	var color = me.getStyle('color', df_style.color);
+	var line_width = me.getStyle('line_width', df_style.line_width);
+	me.element.setColor(color)
+	.setStrokeLineWidth(line_width);
+	if(typeof(dash) == 'vector')
+		me.element.setStrokeDashArray(dash);
 };
-
-var inactiveStyle = { # style to use by default
-    line_width: 5,
-    color: [0.95,0.95,0.21]
-};
-
-SymbolLayer.get(name).df_style = inactiveStyle;
-
-var nd_props = canvas.NDConfig.properties;
 
 var init = func {
-    var style = nil;
-    var lnav = (getprop(nd_props.lat_ctrl) == 'fmgc');
-    var actv = getprop(nd_props.fplan_active);
-
-    if(!lnav or !actv)
-        me.element.setStrokeDashArray([32, 16]);
-    else
-        me.element.setStrokeDashArray([]);
-    if(actv)
-        style = activeStyle;
-    else
-        style = inactiveStyle;
-    me.element.setColor(style.color)
-    .setStrokeLineWidth(style.line_width);
+	me.setRouteStyle();
 };
+
+#var draw = func {
+#    me.setRouteStyle();
+#};
+

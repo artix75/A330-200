@@ -1,5 +1,9 @@
 # Override FGDATA/Nasal/canvas/map/navdisplay.mfd
 
+var default_hash = canvas.default_hash;
+var _MP_dbg_lvl = canvas._MP_dbg_lvl;
+var assert_m = canvas.assert_m;
+
 canvas.NavDisplay.newMFD = func(canvas_group, parent=nil, nd_options=nil, update_time=0.05)
 {
     if (me.inited) die("MFD already was added to scene");
@@ -196,8 +200,7 @@ canvas.NavDisplay.newMFD = func(canvas_group, parent=nil, nd_options=nil, update
 
 };
 
-canvas.NavDisplay.update_sub: func()
-{
+canvas.NavDisplay.update_sub = func(){
     # Variables:
     var userLat = me.aircraft_source.get_lat();
     var userLon = me.aircraft_source.get_lon();
@@ -516,5 +519,5 @@ canvas.NavDisplay.update = func() # FIXME: This stuff is still too aircraft spec
     me.symbols['status.sta'].setVisible( me.get_switch('toggle_stations') and  me.in_mode('toggle_display_mode', ['MAP']));
     # Okay, _how_ do we hook this up with FGPlot?
     printlog(_MP_dbg_lvl, "Total ND update took "~((systime()-_time)*100)~"ms");
-    setprop("/instrumentation/navdisplay["~ NavDisplay.id ~"]/update-ms", systime() - _time);
+    setprop("/instrumentation/navdisplay["~ canvas.NavDisplay.id ~"]/update-ms", systime() - _time);
 };
