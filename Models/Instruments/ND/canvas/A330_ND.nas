@@ -87,9 +87,6 @@ setlistener("sim/signals/fdm-initialized", func() {
 		'toggle_track_heading': 	{path: '/trk-selected', value:0, type:'BOOL'},
 		'toggle_wpt_idx': {path: '/inputs/plan-wpt-index', value: -1, type: 'INT'},
 		'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'},
-		'toggle_app_mode': {path: '/nd/app-mode', value:'', type: 'STRING'},
-		'toggle_hold_update': {path: '/nd/hold_update', value: 0, type: 'INT'},
-		'toggle_hold_wp': {path: '/nd/hold_wp', value: '', type: 'STRING'},
         # add new switches here
     };
 

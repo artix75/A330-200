@@ -350,11 +350,9 @@ canvas.NDStyles["Airbus"] = {
 		{ 
 			name:'HOLD', 
 			isMapStructure: 1,
-			update_on:['toggle_range','toggle_display_mode',
-				   'toggle_hold_update','toggle_wpt_idx'],
+			update_on:['toggle_range','toggle_display_mode','toggle_wpt_idx'],
 			predicate: func(nd, layer) {
-				var visible= (nd.in_mode('toggle_display_mode', ['MAP','PLAN']) and 
-					  nd.get_switch('toggle_hold_wp'));
+				var visible= nd.in_mode('toggle_display_mode', ['MAP','PLAN']);
 				layer.group.setVisible( visible );
 				if (visible) {
 					layer.update();
@@ -364,16 +362,18 @@ canvas.NDStyles["Airbus"] = {
 				hold_node: '/flight-management/hold',
 				hold_init: 'flight-management/hold/init',
 				points_node: '/flight-management/hold/points',
+				first_point_node: '/flight-management/hold/points/point/lat',
 				hold_wp: '/flight-management/hold/wp',
+				hold_wp_idx: '/flight-management/hold/wp_id',
 				range_dependant: 1,
 				listen: [
-					'hold_node',
-					'points_node',
+					'first_point_node',
 					'fplan_active',
 					'lat_ctrl',
 					'current_wp',
 					'hold_wp',
-					'hold_init'
+					'hold_init',
+					'hold_wp_idx'
 				]
 			}
 			# end of layer update predicate

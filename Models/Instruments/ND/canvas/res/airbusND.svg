@@ -28,9 +28,9 @@
      inkscape:window-height="706"
      id="namedview102"
      showgrid="false"
-     inkscape:zoom="0.50383782"
+     inkscape:zoom="0.81454783"
      inkscape:cx="434.17987"
-     inkscape:cy="645.06448"
+     inkscape:cy="841.49248"
      inkscape:window-x="14"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -460,12 +460,12 @@
        sodipodi:linespacing="125%"
        id="eta"
        y="126.06245"
-       x="870.04407"
+       x="892.04407"
        style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#32f519;fill-opacity:1;stroke:none;display:inline;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
        xml:space="preserve"><tspan
          style="font-size:36px"
          y="126.06245"
-         x="870.04407"
+         x="892.04407"
          id="tspan3092"
          sodipodi:role="line">08 34.4z</tspan></text>
 <g
@@ -1760,8 +1760,7 @@
          sodipodi:role="line"
          id="tspan3241"
          x="515.13123"
-         y="30.118813"
-         >ILS APP</tspan></text>
+         y="30.118813">ILS APP</tspan></text>
 </g><g
      inkscape:groupmode="layer"
      id="layer2"
