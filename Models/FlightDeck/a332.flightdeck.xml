@@ -115,7 +115,7 @@
 	</model>
 	
 	<model>
-		<path>Aircraft/A330-200/Models/Instruments/ND/ND.xml</path>
+		<path>Aircraft/A330-200/Models/Instruments/ND/ND_R.xml</path>
 		<offsets>
 			<x-m>-0.5807</x-m>
 			<y-m>0.3161</y-m>
@@ -3629,6 +3629,19 @@
 	
 	<animation>
 		<type>pick</type>
+		<object-name>cstr.001</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>/instrumentation/efis[1]/inputs/CSTR</property>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
+		<type>pick</type>
 		<object-name>wpt</object-name>
 		<action>
 			<button>0</button>
@@ -3636,6 +3649,19 @@
 			<binding>
 				<command>property-toggle</command>
 				<property>/instrumentation/efis/inputs/wpt</property>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
+		<type>pick</type>
+		<object-name>wpt.001</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>/instrumentation/efis[1]/inputs/wpt</property>
 			</binding>
 		</action>
 	</animation>
@@ -3655,6 +3681,19 @@
 	
 	<animation>
 		<type>pick</type>
+		<object-name>vord.001</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>/instrumentation/efis[1]/inputs/VORD</property>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
+		<type>pick</type>
 		<object-name>ndb</object-name>
 		<action>
 			<button>0</button>
@@ -3662,6 +3701,19 @@
 			<binding>
 				<command>property-toggle</command>
 				<property>/instrumentation/efis/inputs/NDB</property>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
+		<type>pick</type>
+		<object-name>ndb.001</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>/instrumentation/efis[1]/inputs/NDB</property>
 			</binding>
 		</action>
 	</animation>
@@ -3680,9 +3732,34 @@
 	</animation>
 	
 	<animation>
+		<type>pick</type>
+		<object-name>arpt.001</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-toggle</command>
+				<property>/instrumentation/efis[1]/inputs/arpt</property>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
 		<type>textranslate</type>
 		<object-name>cstr</object-name>
 		<property>/instrumentation/efis/inputs/CSTR</property>
+		<factor>0.0625</factor>
+		<axis>
+			<x>0</x>
+			<y>1</y>
+			<z>0</z>
+		</axis>
+	</animation>
+	
+	<animation>
+		<type>textranslate</type>
+		<object-name>cstr.001</object-name>
+		<property>/instrumentation/efis[1]/inputs/CSTR</property>
 		<factor>0.0625</factor>
 		<axis>
 			<x>0</x>
@@ -3705,8 +3782,32 @@
 	
 	<animation>
 		<type>textranslate</type>
+		<object-name>wpt.001</object-name>
+		<property>/instrumentation/efis[1]/inputs/wpt</property>
+		<factor>0.0625</factor>
+		<axis>
+			<x>0</x>
+			<y>1</y>
+			<z>0</z>
+		</axis>
+	</animation>
+	
+	<animation>
+		<type>textranslate</type>
 		<object-name>vord</object-name>
 		<property>/instrumentation/efis/inputs/VORD</property>
+		<factor>0.0625</factor>
+		<axis>
+			<x>0</x>
+			<y>1</y>
+			<z>0</z>
+		</axis>
+	</animation>
+	
+	<animation>
+		<type>textranslate</type>
+		<object-name>vord.001</object-name>
+		<property>/instrumentation/efis[1]/inputs/VORD</property>
 		<factor>0.0625</factor>
 		<axis>
 			<x>0</x>
@@ -3729,6 +3830,18 @@
 	
 	<animation>
 		<type>textranslate</type>
+		<object-name>ndb.001</object-name>
+		<property>/instrumentation/efis[1]/inputs/NDB</property>
+		<factor>0.0625</factor>
+		<axis>
+			<x>0</x>
+			<y>1</y>
+			<z>0</z>
+		</axis>
+	</animation>
+	
+	<animation>
+		<type>textranslate</type>
 		<object-name>arpt</object-name>
 		<property>/instrumentation/efis/inputs/arpt</property>
 		<factor>0.0625</factor>
@@ -3740,9 +3853,20 @@
 	</animation>
 	
 	<animation>
+		<type>textranslate</type>
+		<object-name>arpt.001</object-name>
+		<property>/instrumentation/efis[1]/inputs/arpt</property>
+		<factor>0.0625</factor>
+		<axis>
+			<x>0</x>
+			<y>1</y>
+			<z>0</z>
+		</axis>
+	</animation>
+	
+	<animation>
 		<type>pick</type>
 		<object-name>nd-mode</object-name>
-		<object-name>nd-mode-right</object-name>
 		<action>
 			<button>0</button>
 			<repeatable type="bool">false</repeatable>
@@ -3768,71 +3892,6 @@
                 <command>nasal</command>
                 <script>utils.clickSound(4)</script>
             </binding>
-			<!--binding>
-				<command>nasal</command>
-				<script>
-					var nd_disp = getprop("/instrumentation/efis/nd/display-mode");
-					
-					if (nd_disp == "ILS") {
-						setprop("/instrumentation/efis/nd/display-mode-num", 0);
-					
-						setprop("/instrumentation/nd/y-center", 0.5);
-						setprop("/instrumentation/nd/aircraft-heading-up", 1);
-                        setprop("/instrumentation/nd/user-position", "");
-                        setprop("/instrumentation/nd/plan-mode", 0);
-					
-					} elsif (nd_disp == "VOR") {
-						setprop("/instrumentation/efis/nd/display-mode-num", 1);
-						
-						setprop("/instrumentation/nd/y-center", 0.5);
-						setprop("/instrumentation/nd/aircraft-heading-up", 1);
-                        setprop("/instrumentation/nd/user-position", "");
-                        setprop("/instrumentation/nd/plan-mode", 0);
-						
-					} elsif (nd_disp == "NAV") {
-						setprop("/instrumentation/efis/nd/display-mode-num", 2);
-						
-						setprop("/instrumentation/nd/y-center", 0.5);
-						setprop("/instrumentation/nd/aircraft-heading-up", 1);
-                        setprop("/instrumentation/nd/user-position", "");
-                        setprop("/instrumentation/nd/plan-mode", 0);
-						
-					} elsif (nd_disp == "ARC") {
-						setprop("/instrumentation/efis/nd/display-mode-num", 3);
-						
-						setprop("/instrumentation/nd/y-center", 0.25);
-						setprop("/instrumentation/nd/aircraft-heading-up", 1);
-                        setprop("/instrumentation/nd/user-position", "");
-                        setprop("/instrumentation/nd/plan-mode", 0);
-						
-					} else {
-						setprop("/instrumentation/efis/nd/display-mode-num", 4);
-						
-						setprop("/instrumentation/nd/y-center", 0.5);
-						setprop("/instrumentation/nd/aircraft-heading-up", 0);
-                                                setprop("/instrumentation/nd/plan-mode", 1);
-                        var wpNum = getprop("autopilot/route-manager/route/num");
-						if (wpNum > 0){
-                            setprop("/instrumentation/nd/user-position", "1");
-                            var fp = flightplan();
-                            if(getprop("/instrumentation/mcdu/page" == "f-plan")){
-                                var firstWp = getprop("/instrumentation/mcdu/f-pln/disp/first");
-                                if(firstWp >= wpNum) firstWp = wpNum;
-                                var wp = fp.getWP(firstWp);
-                                setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lat);
-                                setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lon);
-                                
-                            } else {
-                                var curWP = fp.currentWP();
-                                setprop("/instrumentation/nd/user-latitude-deg", curWP.wp_lat);
-                                setprop("/instrumentation/nd/user-longitude-deg", curWP.wp_lon);
-                            }
-                        } else {
-                            setprop("/instrumentation/nd/user-position", "");
-                        }
-					}
-				</script>
-			</binding-->
 		</action>
         <action>
             <button>4</button>
@@ -3887,35 +3946,97 @@
             </binding>
         </action>
 	</animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>nd-mode-right</object-name>
+        <action>
+            <button>0</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/nd/display-mode</property>
+                <value>ILS</value>
+                <value>VOR</value>
+                <value>NAV</value>
+                <value>ARC</value>
+                <value>PLAN</value>
+            </binding>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/nd/display-mode-num</property>
+                <value>0</value>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+                <value>4</value>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(4)</script>
+            </binding>
+        </action>
+        <action>
+            <button>4</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/nd/display-mode</property>
+                <value>PLAN</value>
+                <value>ARC</value>
+                <value>NAV</value>
+                <value>VOR</value>
+                <value>ILS</value>
+            </binding>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/nd/display-mode-num</property>
+                <value>4</value>
+                <value>3</value>
+                <value>2</value>
+                <value>1</value>
+                <value>0</value>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(4)</script>
+            </binding>
+        </action>
+        <action>
+            <button>3</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/nd/display-mode</property>
+                <value>ILS</value>
+                <value>VOR</value>
+                <value>NAV</value>
+                <value>ARC</value>
+                <value>PLAN</value>
+            </binding>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/nd/display-mode-num</property>
+                <value>0</value>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+                <value>4</value>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(4)</script>
+            </binding>
+        </action>
+    </animation>
 	
 	<animation>
 		<type>pick</type>
 		<object-name>nd-range</object-name>
-		<object-name>nd-range-right</object-name>
 		<action>
 			<button>0</button>
 			<button>3</button>
 			<repeatable type="bool">false</repeatable>
-			<binding>
-				<command>property-cycle</command>
-				<property>/instrumentation/nd/range</property>
-				<value>10</value>
-				<value>20</value>
-				<value>40</value>
-				<value>80</value>
-				<value>160</value>
-				<value>320</value>
-			</binding>
-			<binding>
-				<command>property-cycle</command>
-				<property>/instrumentation/nd[1]/range</property>
-				<value>10</value>
-				<value>20</value>
-				<value>40</value>
-				<value>80</value>
-				<value>160</value>
-				<value>320</value>
-			</binding>
 			<binding>
 				<command>property-cycle</command>
 				<property>/instrumentation/efis/inputs/range-nm</property>
@@ -3937,26 +4058,6 @@
 			<repeatable type="bool">false</repeatable>
 			<binding>
 				<command>property-cycle</command>
-				<property>/instrumentation/nd/range</property>
-				<value>320</value>
-				<value>160</value>
-				<value>80</value>
-				<value>40</value>
-				<value>20</value>
-				<value>10</value>
-			</binding>
-			<binding>
-				<command>property-cycle</command>
-				<property>/instrumentation/nd[1]/range</property>
-				<value>320</value>
-				<value>160</value>
-				<value>80</value>
-				<value>40</value>
-				<value>20</value>
-				<value>10</value>
-			</binding>
-			<binding>
-				<command>property-cycle</command>
 				<property>/instrumentation/efis/inputs/range-nm</property>
 				<value>320</value>
 				<value>160</value>
@@ -3971,11 +4072,53 @@
             </binding>
 		</action>
 	</animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>nd-range-right</object-name>
+        <action>
+            <button>0</button>
+            <button>3</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/inputs/range-nm</property>
+                <value>10</value>
+                <value>20</value>
+                <value>40</value>
+                <value>80</value>
+                <value>160</value>
+                <value>320</value>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(4)</script>
+            </binding>
+        </action>
+        <action>
+            <button>1</button>
+            <button>4</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/inputs/range-nm</property>
+                <value>320</value>
+                <value>160</value>
+                <value>80</value>
+                <value>40</value>
+                <value>20</value>
+                <value>10</value>
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(4)</script>
+            </binding>
+        </action>
+    </animation>
 	
 	<animation>
 		<type>pick</type>
 		<object-name>vor-adf-1</object-name>
-		<object-name>vor-adf-1-right</object-name>
 		<action>
 			<button>0</button>
 			<repeatable type="bool">false</repeatable>
@@ -3993,17 +4136,43 @@
 				<value>1</value> <!-- VOR -->
 				<value>-1</value> <!-- ADF -->
 			</binding>
-                        <binding>
-                            <command>nasal</command>
-                            <script>utils.clickSound(7)</script>
-                        </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(7)</script>
+            </binding>
 		</action>
 	</animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>vor-adf-1-right</object-name>
+        <action>
+            <button>0</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/input/vor-adf-1</property>
+                <value>0</value> <!-- OFF -->
+                <value>1</value> <!-- VOR -->
+                <value>2</value> <!-- ADF -->
+            </binding>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/input/lh-vor-adf</property>
+                <value>0</value> <!-- OFF -->
+                <value>1</value> <!-- VOR -->
+                <value>-1</value> <!-- ADF -->
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(7)</script>
+            </binding>
+        </action>
+    </animation>
 	
 	<animation>
 		<type>pick</type>
 		<object-name>vor-adf-2</object-name>
-		<object-name>vor-adf-2-right</object-name>
 		<action>
 			<button>0</button>
 			<repeatable type="bool">false</repeatable>
@@ -4021,12 +4190,39 @@
 				<value>1</value> <!-- VOR -->
 				<value>-1</value> <!-- ADF -->
 			</binding>
-                        <binding>
-                            <command>nasal</command>
-                            <script>utils.clickSound(7)</script>
-                        </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(7)</script>
+            </binding>
 		</action>
 	</animation>
+    
+    <animation>
+        <type>pick</type>
+        <object-name>vor-adf-2-right</object-name>
+        <action>
+            <button>0</button>
+            <repeatable type="bool">false</repeatable>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/input/vor-adf-2</property>
+                <value>0</value> <!-- OFF -->
+                <value>1</value> <!-- VOR -->
+                <value>2</value> <!-- ADF -->
+            </binding>
+            <binding>
+                <command>property-cycle</command>
+                <property>/instrumentation/efis[1]/input/rh-vor-adf</property>
+                <value>0</value> <!-- OFF -->
+                <value>1</value> <!-- VOR -->
+                <value>-1</value> <!-- ADF -->
+            </binding>
+            <binding>
+                <command>nasal</command>
+                <script>utils.clickSound(7)</script>
+            </binding>
+        </action>
+    </animation>
 	
 	<!-- EFIS Rotate Animations -->
 	
@@ -4048,7 +4244,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>nd-mode-right</object-name>
-		<property>/instrumentation/efis/nd/display-mode-num</property>
+		<property>/instrumentation/efis[1]/nd/display-mode-num</property>
 		<factor>45</factor>
 		<axis>
 			<x1-m>-0.4668</x1-m>
@@ -4063,7 +4259,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>nd-range</object-name>
-		<property>/instrumentation/nd[0]/range</property>
+        <property>/instrumentation/efis[0]/inputs/range-nm</property>
 		<interpolation>
 			<entry><ind>10</ind><dep>0</dep></entry>
 			<entry><ind>20</ind><dep>45</dep></entry>
@@ -4085,7 +4281,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>nd-range-right</object-name>
-		<property>/instrumentation/nd[0]/range</property>
+        <property>/instrumentation/efis[1]/inputs/range-nm</property>
 		<interpolation>
 			<entry><ind>10</ind><dep>0</dep></entry>
 			<entry><ind>20</ind><dep>45</dep></entry>

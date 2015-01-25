@@ -38,52 +38,52 @@
 				<x-m type="float">-16.4</x-m>
 				<class type="string">2</class>
 		   </ramp>
-           <map>
-               <default_exit>
-                   <x-offset-m type ="float">-16.7</x-offset-m>
-                   <y-offset-m type ="float">-1.67</y-offset-m>
-               </default_exit>
-           </map>
+			<map>
+				<default_exit>
+					<x-offset-m type ="float">-16.7</x-offset-m>
+					<y-offset-m type ="float">-1.67</y-offset-m>
+				</default_exit>
+			</map>
 		</model>
-        
-        <fgcamera>
+
+		<fgcamera>
 			<camera1 include="fgcamera/pilot.xml"/>
-            <camera2 include="fgcamera/view2.xml"/>
-            <camera3 include="fgcamera/view3.xml"/>
-            <camera4 include="fgcamera/view4.xml"/>
-            <camera5 include="fgcamera/view5.xml"/>
-            <camera6 include="fgcamera/view6.xml"/>
-            <camera7 include="fgcamera/view7.xml"/>
-            <camera100 include="fgcamera/view100.xml"/>
-            <camera101 include="fgcamera/view101.xml"/>
-            <camera102 include="fgcamera/view102.xml"/>
-            <camera103 include="fgcamera/view103.xml"/>
-            <camera104 include="fgcamera/view104.xml"/>
-            <camera105 include="fgcamera/view105.xml"/>
+			<camera2 include="fgcamera/view2.xml"/>
+			<camera3 include="fgcamera/view3.xml"/>
+			<camera4 include="fgcamera/view4.xml"/>
+			<camera5 include="fgcamera/view5.xml"/>
+			<camera6 include="fgcamera/view6.xml"/>
+			<camera7 include="fgcamera/view7.xml"/>
+			<camera100 include="fgcamera/view100.xml"/>
+			<camera101 include="fgcamera/view101.xml"/>
+			<camera102 include="fgcamera/view102.xml"/>
+			<camera103 include="fgcamera/view103.xml"/>
+			<camera104 include="fgcamera/view104.xml"/>
+			<camera105 include="fgcamera/view105.xml"/>
 		</fgcamera>
-		
+
 		<multiplay>
 			<generic>
 				<float n="0" type="double">2</float>
 				<float n="1" type="double">2</float>
-				
+
 				<!-- Integers -->
-				
+
 				<int n="0" alias="/aircraft/tyresmoke/nose"/>
 				<int n="1" alias="/aircraft/tyresmoke/left"/>
 				<int n="2" alias="/aircraft/tyresmoke/right"/>
-				
+
 				<int n="3" alias="controls/lighting/landing-lights[0]"/>
 				<int n="4" alias="controls/lighting/landing-lights[1]"/>
 				<int n="5" alias="controls/lighting/landing-lights[2]"/>
-				
+
 				<int n="6" alias="controls/lighting/nav-lights-switch"/>
 				<int n="7" alias="controls/lighting/strobe"/>
 				<int n="8" alias="controls/lighting/beacon"/>
 				<int n="9" alias="controls/lighting/cones"/>
-				
+
 				<!-- Float -->
-				
+
 				<float n="2" alias="/gear/compression/left/avg-ft"/>
 				<float n="3" alias="/gear/compression/right/avg-ft"/>
 				<float n="4" alias="/gear/tilt/left-tilt-deg"/>
@@ -92,12 +92,12 @@
 				<float n="7" alias="/engines/engine[1]/reverser-pos-norm"/>
 				<float n="8" alias="/aircraft/wingflex"/>
 				<float n="9" alias="/aircraft/nose-compression"/>
-				
+
 				<float n="10" alias="/fdm/jsbsim/fcs/elevator-fbw-output"/>
 				<float n="11" alias="/fdm/jsbsim/fcs/aileron-fbw-output"/>
 			</generic>
 		</multiplay>
-		
+
 		<flight-recorder>
 			<replay-config type="int">0</replay-config>
 			<config n="0" include="/Aircraft/Generic/flightrecorder/generic-jet.xml">
@@ -174,222 +174,222 @@
 					<property type="string">/aircraft/tyresmoke/right</property>
 					<interpolation>linear</interpolation>
 				</signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">controls/parking-brake</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">hydraulics/control/ptu</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">controls/electric/APU-generator</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">controls/electric/engine[0]/generator</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">controls/electric/engine[1]/generator</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">controls/APU/master-switch</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">controls/APU/starter</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">controls/electric/battery-switch</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">controls/electric/external-power</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">controls/engines/engine[0]/cutoff-switch</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">controls/engines/engine[1]/cutoff-switch</property>
-                                </signal>
-                                <signal>
-                                    <type>float</type>
-                                    <property type="string">controls/engines/engine-start-switch</property>
-                                </signal>
-                                <signal>
-                                    <type>float</type>
-                                    <property type="string">/velocities/groundspeed-kt</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/deicing_truck/enable</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/catering/enable</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/chokes/nose</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/chokes/left</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/chokes/right</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/ext-pwr/enable</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/baggage/enable</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/stairs/l1</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/stairs/l2</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/stairs/l4</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">services/stairs/cover</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">hydraulics/control/ptu</property>
-                                </signal>
-                                <signal>
-                                    <type>float</type>
-                                    <property type="string">/consumables/fuel/tank[1]/level-kg</property>
-                                </signal>
-                                <signal>
-                                    <type>float</type>
-                                    <property type="string">/consumables/fuel/tank[2]/level-kg</property>
-                                </signal>
-                                <signal>
-                                    <type>float</type>
-                                    <property type="string">/consumables/fuel/tank[3]/level-kg</property>
-                                </signal>
-                                <signal>
-                                    <type>float</type>
-                                    <property type="string">/consumables/fuel/tank[4]/level-kg</property>
-                                </signal>
-                                <signal>
-                                    <type>float</type>
-                                    <property type="string">/consumables/fuel/tank[5]/level-kg</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">sim/sound/welcome</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">sim/sound/safety</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">sim/sound/pretakeoff</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">sim/sound/climb</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">sim/sound/cruise-seatbelt</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">sim/sound/descent</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">sim/sound/land</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">sim/sound/gate</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">sim/sound/emergency</property>
-                                </signal>
-                                <signal>
-                                    <type>bool</type>
-                                    <property type="string">sim/sound/turbulence</property>
-                                </signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">controls/parking-brake</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">hydraulics/control/ptu</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">controls/electric/APU-generator</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">controls/electric/engine[0]/generator</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">controls/electric/engine[1]/generator</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">controls/APU/master-switch</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">controls/APU/starter</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">controls/electric/battery-switch</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">controls/electric/external-power</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">controls/engines/engine[0]/cutoff-switch</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">controls/engines/engine[1]/cutoff-switch</property>
+								</signal>
+								<signal>
+									<type>float</type>
+									<property type="string">controls/engines/engine-start-switch</property>
+								</signal>
+								<signal>
+									<type>float</type>
+									<property type="string">/velocities/groundspeed-kt</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/deicing_truck/enable</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/catering/enable</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/chokes/nose</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/chokes/left</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/chokes/right</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/ext-pwr/enable</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/baggage/enable</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/stairs/l1</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/stairs/l2</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/stairs/l4</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">services/stairs/cover</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">hydraulics/control/ptu</property>
+								</signal>
+								<signal>
+									<type>float</type>
+									<property type="string">/consumables/fuel/tank[1]/level-kg</property>
+								</signal>
+								<signal>
+									<type>float</type>
+									<property type="string">/consumables/fuel/tank[2]/level-kg</property>
+								</signal>
+								<signal>
+									<type>float</type>
+									<property type="string">/consumables/fuel/tank[3]/level-kg</property>
+								</signal>
+								<signal>
+									<type>float</type>
+									<property type="string">/consumables/fuel/tank[4]/level-kg</property>
+								</signal>
+								<signal>
+									<type>float</type>
+									<property type="string">/consumables/fuel/tank[5]/level-kg</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">sim/sound/welcome</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">sim/sound/safety</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">sim/sound/pretakeoff</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">sim/sound/climb</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">sim/sound/cruise-seatbelt</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">sim/sound/descent</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">sim/sound/land</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">sim/sound/gate</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">sim/sound/emergency</property>
+								</signal>
+								<signal>
+									<type>bool</type>
+									<property type="string">sim/sound/turbulence</property>
+								</signal>
 
 			</config>
 		</flight-recorder>
 
 		<systems>
-		
+
 			<!-- Autopilot Helpers ========================================= -->
-		
+
 			<autopilot>
 				<name>Autopilot helpers</name>
 				<path>Aircraft/Generic/generic-autopilot-helper.xml</path>
 			</autopilot>
-			
+
 			<!-- Autopilot Control ========================================= -->
-			
+
 			<autopilot>
 				<name>Auto-throttle</name>
 				<path>Aircraft/A330-200/Systems/FMGC/auto-throttle.xml</path>
 			</autopilot>
-			
+
 			<autopilot>
 				<name>Aileron Control</name>
 				<path>Aircraft/A330-200/Systems/FMGC/aileron-ctrl.xml</path>
 			</autopilot>
-			
+
 			<autopilot>
 				<name>Elevator Control</name>
 				<path>Aircraft/A330-200/Systems/FMGC/elevator-ctrl.xml</path>
 			</autopilot>
-			
+
 			<autopilot>
 				<name>Autoland Rudder</name>
 				<path>Aircraft/A330-200/Systems/FMGC/autoland-rudder.xml</path>
 			</autopilot>
-            
-            <autopilot>
-                <name>Flight Director</name>
-                <path>Aircraft/A330-200/Systems/FMGC/flight-director.xml</path>
-            </autopilot>
-			
+
+			<autopilot>
+				<name>Flight Director</name>
+				<path>Aircraft/A330-200/Systems/FMGC/flight-director.xml</path>
+			</autopilot>
+
 			<!-- Fly-by-wire =============================================== -->
-			
+
 			<autopilot>
 				<name>Fly By Wire</name>
 				<path>Aircraft/A330-200/Systems/FBW/Airbus-fbw.xml</path>
 			</autopilot>
 
 			<!-- Spoilers Control ========================================== -->
-			
+
 			<autopilot>
 				<name>Spoilers</name>
 				<path>Aircraft/A330-200/Systems/a332-spoilers.xml</path>
 			</autopilot>
-			
+
 			<!-- Speed Trend on PFD ======================================== -->
-			
+
 			<autopilot>
 				<name>Speed Trend</name>
 				<path>Aircraft/A330-200/Systems/a332-speedtrend.xml</path>
@@ -398,11 +398,11 @@
 				<name>PFD</name>
 				<path>Aircraft/A330-200/Systems/pfd.xml</path>
 			</autopilot>
-            <autopilot>
-                <name>Thrust Levers</name>
-                <path>Aircraft/A330-200/Systems/thrust_levers.xml</path>
-            </autopilot>
-			
+			<autopilot>
+				<name>Thrust Levers</name>
+				<path>Aircraft/A330-200/Systems/thrust_levers.xml</path>
+			</autopilot>
+
 		</systems>
 
 		<chase-distance-m>-120</chase-distance-m>
@@ -427,37 +427,37 @@
 					<item n="0">
 		                <label>Autopilot Dialog</label>
 		                <enabled type="bool">false</enabled>
-                        <binding>
+						<binding>
 							<command>nasal</command>
 							<script>
 							</script>
-                        </binding>
-                    </item>
-                    <item n="1">
+						</binding>
+					</item>
+					<item n="1">
 		                <label>Route Manager</label>
 		                <enabled type="bool">true</enabled>
-                        <binding>
+						<binding>
 							<command>nasal</command>
 							<script>
 							</script>
-                        </binding>
-                    </item>
+						</binding>
+					</item>
 				</menu>
-                                -->
+								-->
 				<menu n="5">
-                    <item n="1">
-                    <label>Airbus Radio Stack</label>
-                        <binding>
-                            <command>nasal</command>
-                            <script>
+					<item n="1">
+					<label>Airbus Radio Stack</label>
+						<binding>
+							<command>nasal</command>
+							<script>
 							 var airbus_rms = gui.Dialog.new("sim/gui/dialogs/airbus-rms/dialog", "Aircraft/A330-200/Systems/radio-dlg.xml");
 							 airbus_rms.open();
 							</script>
-                        </binding>
-                    </item>
-                </menu>
+						</binding>
+					</item>
+				</menu>
 				<menu n="100">
-					
+
 					<enabled type="bool">true</enabled>
 					<item>
 						<name>autostart</name>
@@ -548,40 +548,40 @@
 							</script>
 						</binding>
 					</item>
-                    <item>
-                        <label>Crew</label>
-                        <binding>
-                            <command>nasal</command>
-                            <script>
-                                var crw = gui.Dialog.new("sim/gui/dialogs/crew/dialog", 
-                                    "Aircraft/A330-200/Systems/crew-dlg.xml");
-                                crw.open();
-                            </script>
-                        </binding>
-                    </item>
 					<item>
-      					<label>Announcements</label>
-      					<binding>
-       					<command>nasal</command>
-       					<script>
-	  				var mal = gui.Dialog.new("/sim/gui/dialogs/announce/dialog", 
-                                                              "Aircraft/A330-200/Systems/announcements-dlg.xml");
-        				mal.open();
-       					</script>
-      					</binding>
-     					</item>
+						<label>Crew</label>
+						<binding>
+							<command>nasal</command>
+							<script>
+								var crw = gui.Dialog.new("sim/gui/dialogs/crew/dialog",
+									"Aircraft/A330-200/Systems/crew-dlg.xml");
+								crw.open();
+							</script>
+						</binding>
+					</item>
+					<item>
+							<label>Announcements</label>
+							<binding>
+							<command>nasal</command>
+							<script>
+	  				var mal = gui.Dialog.new("/sim/gui/dialogs/announce/dialog",
+																"Aircraft/A330-200/Systems/announcements-dlg.xml");
+						mal.open();
+							</script>
+							</binding>
+						</item>
 					<item>
 						<label>Configuration</label>
 						<binding>
 							<command>nasal</command>
 							<script>
-								var cfg = gui.Dialog.new("sim/gui/dialogs/aircraft-config/dialog", 
+								var cfg = gui.Dialog.new("sim/gui/dialogs/aircraft-config/dialog",
 								"Aircraft/A330-200/Systems/config-dlg.xml");
 								cfg.open();
 							</script>
 						</binding>
 					</item>
-                    
+
 				</menu>
 				<menu n="101">
 					<label>Reset Systems</label>
@@ -620,21 +620,21 @@
 		</menubar>
 
 	</sim>
-    
-    <aircraft-config>
-        <auto-annunciator type="bool">0</auto-annunciator>
+
+	<aircraft-config>
+		<auto-annunciator type="bool">0</auto-annunciator>
 		<saved>
 			<fcu>
 				<shift-to-rotate type="bool">0</shift-to-rotate>
 				<disable-tooltips type="bool">0</disable-tooltips>
 			</fcu>
 		</saved>
-    </aircraft-config>
-    
-    <copilot>
-        <lights type="bool">0</lights>
-    </copilot>
-	
+	</aircraft-config>
+
+	<copilot>
+		<lights type="bool">0</lights>
+	</copilot>
+
 	<hydraulics>
 		<control>
 			<ptu type="bool">false</ptu>
@@ -676,14 +676,14 @@
 				<flare-spd type="int">125</flare-spd>
 			</approach>
 		</spd-manager>
-        <thrust-lock type="float">0</thrust-lock>
-        <thrust-lock-reason type="string"></thrust-lock-reason>
-        <control>
-            <exped-mode type="bool">false</exped-mode>
-        </control>
-        <settings>
-            <min-elevator-ctrl type="double">-0.15</min-elevator-ctrl>
-        </settings>
+		<thrust-lock type="float">0</thrust-lock>
+		<thrust-lock-reason type="string"></thrust-lock-reason>
+		<control>
+			<exped-mode type="bool">false</exped-mode>
+		</control>
+		<settings>
+			<min-elevator-ctrl type="double">-0.15</min-elevator-ctrl>
+		</settings>
 	</flight-management>
 
 	<services>
@@ -772,24 +772,24 @@
 				<cutoff-switch type="bool">true</cutoff-switch>
 				<starter type="bool">false</starter>
 				<starter-switch type="bool">false</starter-switch>
-                <max-athr-thrust type="float">0.94</max-athr-thrust>
+				<max-athr-thrust type="float">0.94</max-athr-thrust>
 			</engine>
 			<engine n="1">
 				<cutoff type="bool">true</cutoff>
 				<cutoff-switch type="bool">true</cutoff-switch>
 				<starter type="bool">false</starter>
 				<starter-switch type="bool">false</starter-switch>
-                <max-athr-thrust type="float">0.94</max-athr-thrust>
+				<max-athr-thrust type="float">0.94</max-athr-thrust>
 			</engine>
-            <detents>
-                <current type="string">none</current>
-                <throttle type="float">0</throttle>
-                <rev type="float">-0.59</rev>
-                <idle type="float">0</idle>
-                <clb type="float">0.72</clb>
-                <flex type="float">0.98</flex>
-                <toga type="float">1</toga>
-            </detents>
+			<detents>
+				<current type="string">none</current>
+				<throttle type="float">0</throttle>
+				<rev type="float">-0.59</rev>
+				<idle type="float">0</idle>
+				<clb type="float">0.72</clb>
+				<flex type="float">0.98</flex>
+				<toga type="float">1</toga>
+			</detents>
 		</engines>
 		<flight>
 			<ground-spoilers-armed type="bool">false</ground-spoilers-armed>
@@ -819,7 +819,7 @@
 			<rudder-trim type="int">0</rudder-trim>
 		</switches>
 	</controls>
-	
+
 	<engines>
 		<apu>
 			<rpm type="double">0</rpm>
@@ -873,7 +873,7 @@
 	</gear>
 
 	<instrumentation>
-	
+
 		<mcdu>
 			<prog>
 				<ident type="string">empty</ident>
@@ -884,25 +884,25 @@
 				<wp type="string">---</wp>
 				<wp_id type="int">0</wp_id>
 			</hold>
-            <texts>
-                <MDA type="string">MDA</MDA>
-                <DH type="string">DH</DH>
-            </texts>
+			<texts>
+				<MDA type="string">MDA</MDA>
+				<DH type="string">DH</DH>
+			</texts>
 		</mcdu>
-	
+
 		<efis n="0">
 
 			<ecam>
-                <display-mode type="string">FUEL</display-mode>
+				<display-mode type="string">FUEL</display-mode>
 			</ecam>
 			<nd>
-                <display-mode type="string">ILS</display-mode>
-                <display-mode-knob type="int">0</display-mode-knob>
-                <display-mode-num type="int">0</display-mode-num>
-                <display-range type="int">40</display-range>
-                <terrain-on-nd type="int">0</terrain-on-nd>
-                <canvas-display-mode type="string">APP</canvas-display-mode>
-				
+				<display-mode type="string">ILS</display-mode>
+				<display-mode-knob type="int">0</display-mode-knob>
+				<display-mode-num type="int">0</display-mode-num>
+				<display-range type="int">40</display-range>
+				<terrain-on-nd type="int">0</terrain-on-nd>
+				<canvas-display-mode type="string">APP</canvas-display-mode>
+
 			</nd>
 			<input>
 				<vor-adf-1 type="int">1</vor-adf-1>
@@ -919,24 +919,25 @@
 				<TRAF type="bool">true</TRAF>
 				<taxi type="bool">true</taxi>
 				<range-nm type="int">10</range-nm>
-                <nd-centered type="bool">true</nd-centered>
-                <wxr type="bool">true</wxr>
-                <tfc type="bool">true</tfc>
+				<nd-centered type="bool">true</nd-centered>
+				<wxr type="bool">true</wxr>
+				<tfc type="bool">true</tfc>
 			</inputs>
 
 		</efis>
-	
+
 		<efis n="1">
 
 			<ecam>
 					<display-mode type="string">FUEL</display-mode>
 			</ecam>
 			<nd>
-                <display-mode type="string">ILS</display-mode>
-                <display-mode-knob type="int">0</display-mode-knob>
-                <display-mode-num type="int">0</display-mode-num>
+				<display-mode type="string">ILS</display-mode>
+				<display-mode-knob type="int">0</display-mode-knob>
+				<display-mode-num type="int">0</display-mode-num>
 				<display-range type="int">40</display-range>
-				
+				<terrain-on-nd type="int">0</terrain-on-nd>
+				<canvas-display-mode type="string">APP</canvas-display-mode>
 			</nd>
 			<input>
 				<vor-adf-1 type="int">1</vor-adf-1>
@@ -952,10 +953,14 @@
 				<TERR type="bool">true</TERR>
 				<TRAF type="bool">true</TRAF>
 				<taxi type="bool">true</taxi>
+				<range-nm type="int">10</range-nm>
+				<nd-centered type="bool">true</nd-centered>
+				<wxr type="bool">true</wxr>
+				<tfc type="bool">true</tfc>
 			</inputs>
 
 		</efis>
-		
+
 		<tcas><!-- http://wiki.flightgear.org/index.php/TCAS -->
 			<serviceable type="bool">true</serviceable><!-- TCAS ENABLE -->
 			<inputs>
@@ -978,9 +983,9 @@
 				<VR type="double">0</VR>
 				<V2 type="double">0</V2>
 			</vspeeds>
-            <trans-alt type="int">18000</trans-alt>
-            <acc-alt type="int">1500</acc-alt>
-            <flex-to-temp type="int">-999</flex-to-temp>
+			<trans-alt type="int">18000</trans-alt>
+			<acc-alt type="int">1500</acc-alt>
+			<flex-to-temp type="int">-999</flex-to-temp>
 		</fmc>
 		<dme n="1">
 			<serviceable type="bool">true</serviceable>
@@ -988,9 +993,9 @@
 		<nav-compass>
 			<nav-display n="0" type="int">0</nav-display>
 		</nav-compass>
-        <pfd-old>
-            <enabled type="bool">false</enabled>
-        </pfd-old>
+		<pfd-old>
+			<enabled type="bool">false</enabled>
+		</pfd-old>
 
 		<!-- See http://wiki.flightgear.org/index.php/GPWS -->
 		<mk-viii>
@@ -1003,7 +1008,7 @@
 				<category-6 type="int">1</category-6>
 				<category-7 type="int">124</category-7>
 				<category-8 type="int">2</category-8>
-				<category-9 type="int">3</category-9> 
+				<category-9 type="int">3</category-9>
 				<category-10 type="int">6</category-10>
 				<category-13 type="int">7</category-13>
 				<category-14 type="int">0</category-14>
@@ -1092,7 +1097,7 @@
 			</font>
 
 		</radar>
- 
+
 
 		<groundradar>
 			<range type="double">1.0</range>
@@ -1120,20 +1125,20 @@
 			<x-center type="float">0.5</x-center>
 			<y-center type="float">0.5</y-center>
 		</nd>
-        <texts>
-            <ap-status type="string"></ap-status>
-            <fd-status type="string">1 FD 2</fd-status>
-            <athr-status type="string">ATHR</athr-status>
-            <om-beacon>OM</om-beacon>
-            <mm-beacon>MM</mm-beacon>
-            <im-beacon>AWY</im-beacon>
-        </texts>
+		<texts>
+			<ap-status type="string"></ap-status>
+			<fd-status type="string">1 FD 2</fd-status>
+			<athr-status type="string">ATHR</athr-status>
+			<om-beacon>OM</om-beacon>
+			<mm-beacon>MM</mm-beacon>
+			<im-beacon>AWY</im-beacon>
+		</texts>
 
 	</instrumentation>
 
 	<input>
 		<keyboard>
-            
+
 			<key n="357">
 				<name>Up</name>
 				<repeatable type="bool">true</repeatable>
@@ -1227,17 +1232,17 @@
 				</binding>
 				<binding>
 					<property>/controls/flight/ground-spoilers-armed</property>
-                                        <command>nasal</command>
-                                        <script>
-                                            #var spLever = 'controls/flight/speedbrake-lever';
-                                            var grnBrkArmed = '/controls/flight/ground-spoilers-armed';
-                                            #if(getprop(spLever) == 0){
-                                            #    setprop(grnBrkArmed, 1);
-                                            #} else {
-                                            setprop(grnBrkArmed, 0);
-                                            #}
+										<command>nasal</command>
+										<script>
+											#var spLever = 'controls/flight/speedbrake-lever';
+											var grnBrkArmed = '/controls/flight/ground-spoilers-armed';
+											#if(getprop(spLever) == 0){
+											#    setprop(grnBrkArmed, 1);
+											#} else {
+											setprop(grnBrkArmed, 0);
+											#}
 
-                                        </script>
+										</script>
 				</binding>
 			</key>
 			<key n="106">
@@ -1251,7 +1256,7 @@
 					</script>
 				</binding>
 			</key>
-			
+
 			<key n="107">
 				<name>k</name>
 				<repeatable type="bool">true</repeatable>
@@ -1263,7 +1268,7 @@
 					</script>
 				</binding>
 			</key>
-			
+
 			<key n="108">
 				<name>l</name>
 				<repeatable type="bool">true</repeatable>
@@ -1296,7 +1301,7 @@
 					</binding>
 				</mod-up>
 			</key>
-			
+
 			<key n="11">
 				<name>CTRL+k</name>
 				<repeatable type="bool">true</repeatable>
@@ -1308,7 +1313,7 @@
 					</script>
 				</binding>
 			</key>
-			
+
 			<key n="12">
 				<name>CTRL+l</name>
 				<repeatable type="bool">true</repeatable>
@@ -1358,70 +1363,70 @@
 				<repeatable type="bool">false</repeatable>
 				<binding>
 					<command>nasal</command>
-                                        <script>
-                                            setprop('controls/flight/speedbrake-lever', 0);
-                                        </script>
+										<script>
+											setprop('controls/flight/speedbrake-lever', 0);
+										</script>
 				</binding>
 				<binding>
 					<command>property-toggle</command>
 					<property>/controls/flight/ground-spoilers-armed</property>
 				</binding>
 			</key>
-            <key n="82">
-            	<name>R</name>
-                <desc>Throttle Detent: Reverse</desc>
-                <repeatable type="bool">false</repeatable>
-                <binding>
-                	<command>nasal</command>
-                    <script>
-                        throttle_detents.set_detent('rev');
-                    </script>
-                </binding>
-            </key>
-            <key n="73">
-                <name>I</name>
-                <desc>Throttle Detent: Idle</desc>
-                <repeatable type="bool">false</repeatable>
-                <binding>
-                    <command>nasal</command>
-                    <script>
-                        throttle_detents.set_detent('idle');
-                    </script>
-                </binding>
-            </key>
-            <key n="67">
-                <name>C</name>
-                <desc>Throttle Detent: CL</desc>
-                <repeatable type="bool">false</repeatable>
-                <binding>
-                    <command>nasal</command>
-                    <script>
-                        throttle_detents.set_detent('clb');
-                    </script>
-                </binding>
-            </key>
-            <key n="70">
-                <name>F</name>
-                <desc>Throttle Detent: Flex/MCT</desc>
-                <repeatable type="bool">false</repeatable>
-                <binding>
-                    <command>nasal</command>
-                    <script>
-                        throttle_detents.set_detent('flex');
-                    </script>
-                </binding>
-            </key>
-            <key n="84">
-                <name>T</name>
-                <desc>Throttle Detent: TOGA</desc>
-                <repeatable type="bool">false</repeatable>
-                <binding>
-                    <command>nasal</command>
-                    <script>
-                        throttle_detents.set_detent('toga');
-                    </script>
-                </binding>
-            </key>
+			<key n="82">
+				<name>R</name>
+				<desc>Throttle Detent: Reverse</desc>
+				<repeatable type="bool">false</repeatable>
+				<binding>
+					<command>nasal</command>
+					<script>
+						throttle_detents.set_detent('rev');
+					</script>
+				</binding>
+			</key>
+			<key n="73">
+				<name>I</name>
+				<desc>Throttle Detent: Idle</desc>
+				<repeatable type="bool">false</repeatable>
+				<binding>
+					<command>nasal</command>
+					<script>
+						throttle_detents.set_detent('idle');
+					</script>
+				</binding>
+			</key>
+			<key n="67">
+				<name>C</name>
+				<desc>Throttle Detent: CL</desc>
+				<repeatable type="bool">false</repeatable>
+				<binding>
+					<command>nasal</command>
+					<script>
+						throttle_detents.set_detent('clb');
+					</script>
+				</binding>
+			</key>
+			<key n="70">
+				<name>F</name>
+				<desc>Throttle Detent: Flex/MCT</desc>
+				<repeatable type="bool">false</repeatable>
+				<binding>
+					<command>nasal</command>
+					<script>
+						throttle_detents.set_detent('flex');
+					</script>
+				</binding>
+			</key>
+			<key n="84">
+				<name>T</name>
+				<desc>Throttle Detent: TOGA</desc>
+				<repeatable type="bool">false</repeatable>
+				<binding>
+					<command>nasal</command>
+					<script>
+						throttle_detents.set_detent('toga');
+					</script>
+				</binding>
+			</key>
 		</keyboard>
 	</input>
 
@@ -1439,14 +1444,14 @@
 			<file>Aircraft/A330-200/Nasal/mCDU/parse_DB.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/user.nas</file>
 		</mcdu>
-		
+
 		<procedures>
 			<file>Aircraft/A330-200/Nasal/procedures/fmsDB.nas</file>
 			<file>Aircraft/A330-200/Nasal/procedures/fmsWP.nas</file>
 			<file>Aircraft/A330-200/Nasal/procedures/fmsTP.nas</file>
 			<file>Aircraft/A330-200/Nasal/procedures/fmsTransition.nas</file>
 		</procedures>
-		
+
 		<fmgc>
 			<file>Aircraft/A330-200/Nasal/FMGC/hold-pattern.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/new_flight.nas</file>
@@ -1457,7 +1462,7 @@
 			<file>Aircraft/A330-200/Nasal/FMGC/fmgc_loop.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/wp_transit.nas</file>
 		</fmgc>
-		
+
 		<hydraulics>
 			<file>Aircraft/A330-200/Nasal/hydraulics/common.nas</file>
 			<file>Aircraft/A330-200/Nasal/hydraulics/green.nas</file>
@@ -1467,12 +1472,12 @@
 			<file>Aircraft/A330-200/Nasal/hydraulics/hyd_loop.nas</file>
 			<file>Aircraft/A330-200/Nasal/hydraulics/brk_loop.nas</file>
 		</hydraulics>
-		
+
 		<cp_panels>
 			<file>Aircraft/A330-200/Nasal/cp_panels/gear_pnl.nas</file>
 			<file>Aircraft/A330-200/Nasal/cp_panels/cp_panels.nas</file>
 		</cp_panels>
-	
+
 		<fbw>
 			<file>Aircraft/A330-200/Systems/FBW/Airbus-fbw.nas</file>
 		</fbw>
@@ -1487,26 +1492,26 @@
 			<file>Aircraft/A330-200/Nasal/compression.nas</file>
 			<file>Aircraft/A330-200/Nasal/tyresmoke.nas</file>
 			<file>Aircraft/A330-200/Nasal/general_loop.nas</file>
-            <file>Aircraft/A330-200/Nasal/autoannunciator.nas</file>
+			<file>Aircraft/A330-200/Nasal/autoannunciator.nas</file>
 		</a332>
-        <canvas_nd>
-                <file>Aircraft/A330-200/Models/Instruments/ND/canvas/ND.nas</file>
-        </canvas_nd>
+		<canvas_nd>
+				<file>Aircraft/A330-200/Models/Instruments/ND/canvas/ND.nas</file>
+		</canvas_nd>
 		<systems>
 			<file>Aircraft/A330-200/Nasal/systems.nas</file>
 		</systems>
-        <flightdeck>
-            <file>Aircraft/A330-200/Nasal/flightdeck.nas</file>
-        </flightdeck>
+		<flightdeck>
+			<file>Aircraft/A330-200/Nasal/flightdeck.nas</file>
+		</flightdeck>
 		<utils>
 			<file>Aircraft/A330-200/Nasal/utils.nas</file>
 		</utils>
-        <throttle_detents>
+		<throttle_detents>
 			<file>Aircraft/A330-200/Nasal/throttle_detents.nas</file>
-        </throttle_detents>
-        <thrust_levers>
-            <file>Aircraft/A330-200/Nasal/thrust_levers.nas</file>
-        </thrust_levers>
+		</throttle_detents>
+		<thrust_levers>
+			<file>Aircraft/A330-200/Nasal/thrust_levers.nas</file>
+		</thrust_levers>
 		<electrical>
 			<file>Aircraft/A330-200/Nasal/electrical.nas</file>
 		</electrical>
@@ -1534,7 +1539,7 @@
 		</arduino -->
 	</nasal>
 
-	
+
 	<aircraft>
 		<jetway-pos>
 			<x-tra>-1.95</x-tra>

@@ -102,6 +102,7 @@ setlistener("sim/signals/fdm-initialized", func() {
     # set up a  new ND instance, under 'instrumentation/efis' and use the
     # myCockpit_switches hash to map control properties
     var NDCpt = ND.new("instrumentation/efis", myCockpit_switches, 'Airbus');
+    var NDFo = ND.new("instrumentation/efis[1]", myCockpit_switches, 'Airbus');
 
     nd_display.main = canvas.new({
         "name": "ND",
@@ -109,59 +110,69 @@ setlistener("sim/signals/fdm-initialized", func() {
         "view": [1024, 1024],
         "mipmapping": 1
     });
+    
+    nd_display.right = canvas.new({
+        "name": "ND",
+        "size": [1024, 1024],
+        "view": [1024, 1024],
+        "mipmapping": 1
+    });
 
     nd_display.main.addPlacement({"node": "ND.screen"});
+    nd_display.right.addPlacement({"node": "ND_R.screen"});
+    
     var group = nd_display.main.createGroup();
-
-
     NDCpt.newMFD(group);
-    var layer_names = keys(NDCpt.layers);
-
-    foreach(var layer_name; layer_names){
-        var the_layer = NDCpt.layers[layer_name];
-        if(the_layer != nil)
-            the_layer.map = NDCpt.map;
-    }
     NDCpt.update();
+    
+    var group_r = nd_display.right.createGroup();
+    NDFo.newMFD(group);
+    NDFo.update();
 
     setprop("instrumentation/efis/inputs/plan-wpt-index", -1);
-
+    setprop("instrumentation/efis[1]/inputs/plan-wpt-index", -1);
+    
     print("ND Canvas Initialized!");
 }); # fdm-initialized listener callback
 
 var nd_props = canvas.NDConfig.properties;
 
-setlistener("instrumentation/efis/nd/display-mode", func{
-    var canvas_mode = "instrumentation/efis/nd/canvas-display-mode";
-    var nd_centered = "instrumentation/efis/inputs/nd-centered";
-    var mode = getprop("instrumentation/efis/nd/display-mode");
-    var cvs_mode = 'NAV';
-    var centered = 1;
-    if(mode == 'ILS'){
-        cvs_mode = 'APP';
-    }
-    elsif(mode == 'VOR') {
-        cvs_mode = 'VOR';
-    }
-    elsif(mode == 'NAV'){
-        cvs_mode = 'MAP';
-    }
-    elsif(mode == 'ARC'){
-        cvs_mode = 'MAP';
-        centered = 0;
-    }
-    elsif(mode == 'PLAN'){
-        cvs_mode = 'PLAN';
-    }
-    setprop(canvas_mode, cvs_mode);
-    setprop(nd_centered, centered);
-});
+for(i = 0; i < 2; i = i + 1){
+    setlistener("instrumentation/efis["~i~"]/nd/display-mode", func(node){
+        var par = node.getParent().getParent();
+        var idx = par.getIndex();
+        var canvas_mode = "instrumentation/efis["~idx~"]/nd/canvas-display-mode";
+        var nd_centered = "instrumentation/efis["~idx~"]/inputs/nd-centered";
+        var mode = getprop("instrumentation/efis["~idx~"]/nd/display-mode");
+        var cvs_mode = 'NAV';
+        var centered = 1;
+        if(mode == 'ILS'){
+            cvs_mode = 'APP';
+        }
+        elsif(mode == 'VOR') {
+            cvs_mode = 'VOR';
+        }
+        elsif(mode == 'NAV'){
+            cvs_mode = 'MAP';
+        }
+        elsif(mode == 'ARC'){
+            cvs_mode = 'MAP';
+            centered = 0;
+        }
+        elsif(mode == 'PLAN'){
+            cvs_mode = 'PLAN';
+        }
+        setprop(canvas_mode, cvs_mode);
+        setprop(nd_centered, centered);
+    });
+}
 
 setlistener("/instrumentation/mcdu/f-pln/disp/first", func{
     var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
     if(typeof(first) == 'nil') first = -1;
     if(getprop('autopilot/route-manager/route/num') == 0) first = -1;
     setprop("instrumentation/efis/inputs/plan-wpt-index", first);
+    setprop("instrumentation/efis[1]/inputs/plan-wpt-index", first);
 });
 
 setlistener('/instrumentation/efis/nd/terrain-on-nd', func{
@@ -171,10 +182,11 @@ setlistener('/instrumentation/efis/nd/terrain-on-nd', func{
     nd_display.main.setColorBackground(0,0,0,alpha);
 });
 
-var showNd = func() {
+var showNd = func(nd = nil) {
+    if(nd == nil) nd = 'main';
     # The optional second arguments enables creating a window decoration
     var dlg = canvas.Window.new([400, 400], "dialog");
-    dlg.setCanvas( nd_display["main"] );
+    dlg.setCanvas( nd_display[nd] );
 }
 
 
