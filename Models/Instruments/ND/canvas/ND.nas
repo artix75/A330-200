@@ -1,4 +1,4 @@
-var ND_AIRBUS_SUPPORT = contains(canvas.NDStyles, 'Airbuss');
+var ND_AIRBUS_SUPPORT = contains(canvas.NDStyles, 'Airbus');
 
 if(!ND_AIRBUS_SUPPORT){
     io.include('A330_ND.nas');

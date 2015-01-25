@@ -21,8 +21,8 @@ canvas.SymbolLayer.add(name, {
             .setColor(1,1,1)
             .setScale(1);
         },
-        vor_symbol: 'Nasal/canvas/map/Airbus/Images/airbus_vor.svg',
-        airport_symbol: 'Nasal/canvas/map/Airbus/Images/airbus_airport.svg',
+        vor_symbol: get_local_path('res/airbus_vor.svg'),
+        airport_symbol: get_local_path('res/airbus_airport.svg'),
         ndb_symbol: func(group){
             group.createChild('path')
             .moveTo(-15,15)
@@ -79,7 +79,7 @@ var WPTModel = {
     equals: func(other) {
         # this is set on symbol init, so use this for equality...
         me.name == other.name and me.alt == other.alt and
-        me.type == other.type
+        me.type == other.type and me.idx == other.idx
     },
 };
 
