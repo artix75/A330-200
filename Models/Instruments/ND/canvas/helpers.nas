@@ -137,20 +137,3 @@ var SymbolPainter = {
             return me.drawFIX(grp, opts);
     }
 };
-
-Group.setColor = func(r,g,b, excl = nil){
-    var children = me.getChildren();
-    foreach(var e; children){
-        var do_skip = 0;
-        if(excl != nil){
-            foreach(var cl; excl){
-                if(isa(e, cl)){
-                    do_skip = 1;
-                    continue;                 
-                }
-            }
-        }
-        if(!do_skip)
-            e.setColor(r,g,b);
-    }
-}

@@ -1,5 +1,5 @@
+# See: http://wiki.flightgear.org/MapStructure
 # Class things:
-
 var name = 'NDB';
 var parents = [SymbolLayer.Controller];
 var __self__ = caller(0)[0];
@@ -8,15 +8,18 @@ SymbolLayer.add(name, {
 	parents: [NavaidSymbolLayer],
 	type: name, # Symbol type
 	df_controller: __self__, # controller to use by default -- this one
+	df_style: {},
 });
 var new = func(layer) {
 	var m = {
 		parents: [__self__],
 		layer: layer,
+		map: layer.map,
 		listeners: [],
-		query_range_nm: 25,
 		query_type:'ndb',
 	};
+	m.addVisibilityListener();
+
 	return m;
 };
 var del = func() {
@@ -24,8 +27,6 @@ var del = func() {
 		removelistener(l);
 };
 
-var searchCmd = func {
-	#print("Running query:", me.query_type);
-	return positioned.findWithinRange(me.query_range_nm, me.query_type); # the range should also be exposed, it will typically be controlled via a GUI widget or NavDisplay switch
-};
+var searchCmd = NavaidSymbolLayer.make('ndb');
+
 

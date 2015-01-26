@@ -1,33 +1,31 @@
+# See: http://wiki.flightgear.org/MapStructure
 # Class things:
 var name = 'FIX';
 var parents = [SymbolLayer.Controller];
 var __self__ = caller(0)[0];
 SymbolLayer.Controller.add(name, __self__);
 SymbolLayer.add(name, {
-    parents: [NavaidSymbolLayer],
+	parents: [NavaidSymbolLayer],
 	type: name, # Symbol type
 	df_controller: __self__, # controller to use by default -- this one
 });
-var a_instance = nil;
 var new = func(layer) {
 	var m = {
 		parents: [__self__],
 		layer: layer,
+		map: layer.map,
 		listeners: [],
-		query_range_nm: 25,
 		query_type:'fix',
 	};
-	__self__.a_instance = m;
+	m.addVisibilityListener();
+
 	return m;
 };
 var del = func() {
-	#print("VOR.lcontroller.del()");
+	printlog(_MP_dbg_lvl, "VOR.lcontroller.del()");
 	foreach (var l; me.listeners)
 		removelistener(l);
 };
 
-var searchCmd = func {
-	#print("Running query:", me.query_type);
-	return positioned.findWithinRange(me.query_range_nm, me.query_type); # the range should also be exposed, it will typically be controlled via a GUI widget or NavDisplay switch
-};
+var searchCmd = NavaidSymbolLayer.make('fix');
 

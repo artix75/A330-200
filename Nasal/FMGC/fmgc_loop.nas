@@ -1924,7 +1924,7 @@ var fmgc_loop = {
             elsif(me.flplan_active)
                 app_type = 'RNAV APP';
                 
-            setprop('/instrumentation/efis/nd/app-mode', app_type);
+            setprop('/instrumentation/nd/app-mode', app_type);
 
         } elsif ((phase == "APP") and (getprop("/gear/gear/wow"))) {
 
@@ -1933,7 +1933,7 @@ var fmgc_loop = {
 
         } elsif (phase == "LANDED" and ias <= 70) {
             setprop("/flight-management/phase", "T/O");
-            setprop('/instrumentation/efis/nd/app-mode', '');
+            setprop('/instrumentation/nd/app-mode', '');
             setprop("/autoland/retard", 0);
 
             new_flight();
@@ -2142,7 +2142,7 @@ var fmgc_loop = {
                 if(cur_lo == nil) cur_lo = 0;
                 if(math.abs(nm - cur_lo) > 0.5){
                     setprop(lo_raw_prop, nm);
-                    setprop('instrumentation/efis/nd/level-off-at', nm);
+                    setprop('/autopilot/route-manager/vnav/level-off-alt',nm);
                 }
                 
                 #print("TC: " ~ nm);
