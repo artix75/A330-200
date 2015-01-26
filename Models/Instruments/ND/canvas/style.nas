@@ -83,6 +83,42 @@ canvas.NDStyles["Airbus"] = {
 	},
 	layers: [
 		{ 
+			name:'WXR_live', 
+			isMapStructure:1, 
+			always_update: 1,
+			update_on:[ 'toggle_range','toggle_weather','toggle_display_mode','toggle_weather_live'],
+			predicate: func(nd, layer) {
+				var visible=nd.get_switch('toggle_weather') and 
+					nd.get_switch('toggle_weather_live') and 
+					nd.get_switch('toggle_display_mode') != "PLAN";
+				layer.group.setVisible(visible);
+				if (visible) {
+					layer.update(); 
+				}
+			}, # end of layer update predicate
+			options: {
+				viewport_radius: 706
+			},
+			'z-index': -100,
+		},
+		{ 
+			name:'WXR', 
+			isMapStructure:1, 
+			update_on:[ {rate_hz: 0.1}, 'toggle_range','toggle_weather','toggle_display_mode', 'toggle_weather_live'],
+			predicate: func(nd, layer) {
+				#print("Running storms predicate");
+				var visible=nd.get_switch('toggle_weather') and 
+					!nd.get_switch('toggle_weather_live') and 
+					nd.get_switch('toggle_display_mode') != "PLAN";
+				layer.group.setVisible(visible);
+				if (visible) {
+					print("storms update requested! (timer issue when closing the dialog?)");
+					layer.update(); 
+				}
+			}, # end of layer update predicate
+			'z-index': -4,
+		}, # end of storms/WXR layer
+		{ 
 			name:'FIX', 
 			isMapStructure:1, 
 			update_on:['toggle_range','toggle_waypoints',
@@ -561,6 +597,24 @@ canvas.NDStyles["Airbus"] = {
 	# TODO: update_on([]), update_mode (update() vs. timers/listeners)
 	# TODO: support putting symbols on specific layers
 	features: [
+		{
+			id: 'compass_mask',
+			impl: {
+			init: func(nd, symbol),
+				predicate: func(nd) !nd.get_switch('toggle_centered'),
+				is_true: func(nd) nd.symbols.compass_mask.show(),
+				is_false: func(nd) nd.symbols.compass_mask.hide(),
+			}
+		},
+		{
+			id: 'compass_mask_ctr',
+			impl: {
+			init: func(nd, symbol),
+				predicate: func(nd) nd.get_switch('toggle_centered') or nd.in_mode('toggle_display_mode',['PLAN']),
+				is_true: func(nd) nd.symbols.compass_mask_ctr.show(),
+				is_false: func(nd) nd.symbols.compass_mask_ctr.hide(),
+			}
+		},
 		{
 			# TODO: taOnly doesn't need to use getprop polling in update(), use a listener instead!
 			id: 'taOnly', # the SVG ID

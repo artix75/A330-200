@@ -4,10 +4,22 @@ var default_hash = canvas.default_hash;
 var _MP_dbg_lvl = canvas._MP_dbg_lvl;
 var assert_m = canvas.assert_m;
 
+var wxr_live_tree = "/instrumentation/wxr";
+
+canvas.NavDisplay.set_switch = func(s, v) {
+    var switch = me.efis_switches[s];
+    if(switch == nil) return nil;
+    var path = me.efis_path ~ switch.path ;
+    #print(s,":Getting switch prop:", path);
+
+    setprop( path, v );
+};
+
 canvas.NavDisplay.newMFD = func(canvas_group, parent=nil, nd_options=nil, update_time=0.05)
 {
     if (me.inited) die("MFD already was added to scene");
     me.range_dependant_layers = [];
+    me.always_update_layers = {};
     me.inited = 1;
     me.update_timer = maketimer(update_time, func me.update() );
     me.nd = canvas_group;
@@ -46,7 +58,8 @@ canvas.NavDisplay.newMFD = func(canvas_group, parent=nil, nd_options=nil, update
 
     me.map = me.nd.createChild("map","map")
     .set("clip", "rect(124, 1024, 1024, 0)")
-    .set("screen-range", 700);
+    .set("screen-range", 700)
+    .set('z-index',-1);
 
     me.update_sub(); # init some map properties based on switches
 
@@ -157,6 +170,8 @@ canvas.NavDisplay.newMFD = func(canvas_group, parent=nil, nd_options=nil, update
                 if(opt.range_dependant)
                     append(me.range_dependant_layers, the_layer);
             }
+            if(contains(layer, 'always_update'))
+                me.always_update_layers[layer.name] = layer.always_update;
             if (1) (func {
                 var l = layer;
                 var _predicate = l.predicate;
@@ -284,7 +299,12 @@ canvas.NavDisplay.update_sub = func(){
 canvas.NavDisplay.update = func() # FIXME: This stuff is still too aircraft specific, cannot easily be reused by other aircraft
 {
     var _time = systime();
-
+    # Disables WXR Live if it's not enabled. The toggle_weather_live should be common to all 
+    # ND instances.
+    var wxr_live_enabled = getprop(wxr_live_tree~'/enabled');
+    if(wxr_live_enabled == nil or wxr_live_enabled == '') 
+        wxr_live_enabled = 0;
+    me.set_switch('toggle_weather_live', wxr_live_enabled);
     call(me.update_sub, nil, nil, caller(0)[0]); # call this in the same namespace to "steal" its variables
 
     # MapStructure update!
@@ -293,7 +313,8 @@ canvas.NavDisplay.update = func() # FIXME: This stuff is still too aircraft spec
     } else {
         # TODO: ugly list here
         # FIXME: use a VOLATILE layer helper here that handles TFC, APS, WXR etc ?
-        me.map.update(func(layer) (var n=layer.type) == "TFC" or n == "APS");
+        var update_layers = me.always_update_layers;
+        me.map.update(func(layer) contains(update_layers, layer.type));
     }
 
     # Other symbol update

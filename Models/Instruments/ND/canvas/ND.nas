@@ -33,6 +33,7 @@ setlistener("sim/signals/fdm-initialized", func() {
 		'toggle_track_heading': 	{path: '/trk-selected', value:0, type:'BOOL'},
 		'toggle_wpt_idx': {path: '/inputs/plan-wpt-index', value: -1, type: 'INT'},
 		'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'},
+		'toggle_weather_live': {path: '/mfd/wxr-live-enabled', value: 0, type: 'BOOL'}
 		# add new switches here
 	};
 
