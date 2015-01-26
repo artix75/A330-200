@@ -33,6 +33,7 @@ var fcu = {
         return type;
     },
     knob_rotated: func(name){
+        utils.clickSound(3);
         var type = me.get_type(name);
         if(type == '') return;
         var mode = getprop('/flight-management/control/' ~ type ~ '-ctrl');
@@ -45,7 +46,7 @@ var fcu = {
     },
     knob_pushed: func(name){
         utils.clickSound(4);
-		me.push_animation(name);
+        me.push_animation(name);
         if (fmgc.fmgc_loop.active_common_mode == 'LAND')
             return;
         var type = me.get_type(name);
@@ -64,7 +65,7 @@ var fcu = {
     },
     knob_pulled: func(name){
         utils.clickSound(4);
-		me.pull_animation(name);
+        me.pull_animation(name);
         if (fmgc.fmgc_loop.active_common_mode == 'LAND')
             return;
         var type = me.get_type(name);
@@ -85,25 +86,26 @@ var fcu = {
                     getprop("/flight-management/fcu-values/hdg"));
         }
     },
-	push_animation: func(name){
-		var pos_prop = 'flightdeck/fcu/'~name~'-knob-pos';
-		var knob_pos = getprop(pos_prop);
-		if(knob_pos == nil) knob_pos = 0;
-		if(knob_pos <= 0){
-			interpolate(pos_prop, 1, 0.1);
-			settimer(func setprop(pos_prop, 0), 0.11);
-		}
-	},
-	pull_animation: func(name){
-		var pos_prop = 'flightdeck/fcu/'~name~'-knob-pos';
-		var knob_pos = getprop(pos_prop);
-		if(knob_pos == nil) knob_pos = 0;
-		if(knob_pos >= 0){
-			interpolate(pos_prop, -1, 0.1);
-			settimer(func setprop(pos_prop, 0), 0.11);
-		}
-	},
+    push_animation: func(name){
+        var pos_prop = 'flightdeck/fcu/'~name~'-knob-pos';
+        var knob_pos = getprop(pos_prop);
+        if(knob_pos == nil) knob_pos = 0;
+        if(knob_pos <= 0){
+            interpolate(pos_prop, 1, 0.1);
+            settimer(func setprop(pos_prop, 0), 0.11);
+        }
+    },
+    pull_animation: func(name){
+        var pos_prop = 'flightdeck/fcu/'~name~'-knob-pos';
+        var knob_pos = getprop(pos_prop);
+        if(knob_pos == nil) knob_pos = 0;
+        if(knob_pos >= 0){
+            interpolate(pos_prop, -1, 0.1);
+            settimer(func setprop(pos_prop, 0), 0.11);
+        }
+    },
     vsfpa_rotated: func(){
+        utils.clickSound(3);
         var vs_mode = getprop('/flight-management/control/vsfpa-mode');
         if (!vs_mode){
             var sec = int(getprop('sim/time/elapsed-sec'));
@@ -131,6 +133,7 @@ var fcu = {
                 getprop("/flight-management/fcu-values/fcu-alt"));
     },
     alt_rotated: func(direction){
+        utils.clickSound(3);
         var step = getprop("/flight-management/control/alt-sel-mode");
         var alt_prop = "/flight-management/fcu-values/alt";
         var alt_disp = "/flight-management/fcu-values/fcu-alt";
