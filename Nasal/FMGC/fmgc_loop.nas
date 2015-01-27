@@ -1151,7 +1151,10 @@ var fmgc_loop = {
         me.current_wp = getprop("autopilot/route-manager/current-wp");
         me.wp_count = getprop(actrte~"num");
         me.remaining_nm = getprop("autopilot/route-manager/distance-remaining-nm");
-        me.airborne = !getprop("/gear/gear[3]/wow");
+        me.airborne = !getprop("/gear/gear[0]/wow") and 
+                      !getprop("/gear/gear[1]/wow") and 
+                      !getprop("/gear/gear[2]/wow") and 
+                      !getprop("/gear/gear[3]/wow");
         me.nav_in_range = getprop('instrumentation/nav/in-range');
         me.gs_in_range = getprop('instrumentation/nav/gs-in-range');
         me.autoland_phase = getprop('/autoland/phase');

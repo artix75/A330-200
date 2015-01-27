@@ -225,8 +225,8 @@
         <name>Landing light (left)</name>
         <path>Aircraft/A330-200/Models/Lights/light-cone.xml</path>
         <offsets>
-            <x-m>1.09</x-m>
-            <y-m>-6</y-m>
+            <x-m>-1.89</x-m>
+            <y-m>-3.53</y-m>
             <z-m>-1.2</z-m>
         </offsets>
         <condition>
@@ -247,8 +247,8 @@
         <name>Landing light (right)</name>
         <path>Aircraft/A330-200/Models/Lights/light-cone.xml</path>
         <offsets>
-            <x-m>1.09</x-m>
-            <y-m>6</y-m>
+            <x-m>-1.89</x-m>
+            <y-m>3.53</y-m>
             <z-m>-1.2</z-m>
         </offsets>
         <condition>
