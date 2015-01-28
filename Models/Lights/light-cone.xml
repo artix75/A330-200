@@ -19,9 +19,15 @@
 					<property>sim/time/sun-angle-rad</property>
 					<value>1.45</value>
 				</greater-than>
-				<not>
-					<property>sim/rendering/shaders/skydome</property>
-				</not>
+				<or>
+					<not>
+						<property>sim/rendering/shaders/skydome</property>
+					</not>
+					<less-than>
+						<property>sim/version/flightgear</property>
+						<value>3.5</value>
+					</less-than>
+				</or>
 			</and>
 		</condition>
 	</animation>
