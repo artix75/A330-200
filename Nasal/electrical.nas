@@ -363,7 +363,8 @@ update_electrical = func {
     var scnd = getprop("sim/time/delta-sec");
     update_virtual_bus( scnd );
     if(getprop("sim/rendering/shaders/skydome") and 
-        getprop("systems/electrical/outputs/efis") >= 9){
+        getprop("systems/electrical/outputs/efis") >= 9 and 
+        getprop('sim/current-view/internal')){
         var land_light_l = getprop("systems/electrical/outputs/landing-light[0]");
         var land_light_r = getprop("systems/electrical/outputs/landing-light[2]");
         var taxi_light = getprop("systems/electrical/outputs/landing-light[1]");

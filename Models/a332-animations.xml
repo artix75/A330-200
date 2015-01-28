@@ -29,31 +29,25 @@
 	</effect>
 	
 	<effect>
-		<inherits-from>Effects/model-combined-deferred</inherits-from>
-		<parameters>
+		<inherits-from>Aircraft/A330-200/Models/Effects/fuselage-lights</inherits-from>
+		<!--parameters>
 			<lightmap-enabled type="int">1</lightmap-enabled>
+			<lightmap-multi type="int">1</lightmap-multi>
 			<texture n="3">
-				<image>Aircraft/A330-200/Models/Effects/res/land-lightmap.png</image>
-			</texture>
-			<lightmap-factor type="float" n="0">
-				<use>controls/lighting/landing-lights</use>
-			</lightmap-factor>
-		</parameters>
-		<object-name>land-light-l</object-name>
-	</effect>
-	
-	<effect>
-		<inherits-from>Effects/model-combined-deferred</inherits-from>
-		<parameters>
-			<lightmap-enabled type="int">1</lightmap-enabled>
-			<texture n="3">
-				<image>Aircraft/A330-200/Models/Effects/res/land-lightmap.png</image>
+				<image>Aircraft/A330-200/Models/Effects/res/land-lightmap-multi.png</image>
 			</texture>
 			<lightmap-factor type="float" n="0">
 				<use>controls/lighting/landing-lights[2]</use>
 			</lightmap-factor>
-		</parameters>
-		<object-name>land-light-r</object-name>
+			<lightmap-color type="vec3d" n="0">0.03 0.03 0.03</lightmap-color>
+			<lightmap-factor type="float" n="1">
+				<use>controls/lighting/landing-lights[0]</use>
+			</lightmap-factor>
+			<lightmap-factor type="float" n="2">0.0</lightmap-factor>
+			<lightmap-factor type="float" n="3">0.0</lightmap-factor>
+			<lightmap-color type="vec3d" n="1">0.03 0.03 0.03</lightmap-color>
+		</parameters-->
+		<object-name>fuselage</object-name>
 	</effect>
 
 	<effect>
@@ -70,7 +64,7 @@
 		<object-name>windshield</object-name>
 	</effect>
 	
-	<effect>
+	<!--effect>
 		<inherits-from>Effects/model-combined-deferred</inherits-from>
 		<parameters>
 			<lightmap-enabled type="int">1</lightmap-enabled>
@@ -82,7 +76,7 @@
 			</lightmap-factor>
 		</parameters>
 		<object-name>fuselage</object-name>
-	</effect>
+	</effect-->
 
 	<effect>
 		<inherits-from>Effects/model-combined-deferred</inherits-from>
