@@ -77,6 +77,7 @@ canvas.NDStyles["Airbus"] = {
 			level_off_alt: '/autopilot/route-manager/vnav/level-off-alt',
 			athr: '/flight-management/control/a-thrust',
 			app_mode: 'instrumentation/nd/app-mode',
+			chrono_node: 'instrumentation/chrono',
 			active_route_color: [0.4,0.7,0.4],
 			inactive_route_color: [0.95,0.95,0.21]
 		}
@@ -284,6 +285,37 @@ canvas.NDStyles["Airbus"] = {
 				]
 			}
 		}, # end of VOR layer
+		{ 
+			name:'DME', 
+			isMapStructure:1, 
+			update_on:['toggle_display_mode','toggle_range','toggle_dme'],
+			# FIXME: this is a really ugly place for controller code
+			predicate: func(nd, layer) {
+				var visible = nd.get_switch('toggle_dme') and 
+					nd.in_mode('toggle_display_mode', ['MAP']) and 
+					(nd.rangeNm() <= 40);
+				# toggle visibility here
+				layer.group.setVisible( visible );
+				if (visible) {
+					#print("Updating MapStructure ND layer: DME");
+					layer.update();
+				}
+			}, # end of layer update predicate
+			options: {
+				draw_dme: func(sym){
+					return sym.createChild("path")
+					.moveTo(-13, 0)
+					.arcSmallCW(13,13,0,26,0)
+					.arcSmallCW(13,13,0,-26,0)
+					.close();
+				}
+			},
+			style: {
+				color_default: [0.9,0,0.47],
+				color_tuned: [0,0.62,0.84],
+			},
+			'z-index': -2,
+		}, # end of DME layer
 		{ 
 			name:'NDB', 
 			isMapStructure:1, 
@@ -1429,6 +1461,38 @@ canvas.NDStyles["Airbus"] = {
 				is_false: func(nd){
 					nd.symbols.appMode.hide();
 				}
+			}  
+		},
+		{
+			id:'chrono_box',
+			impl: {
+				init: func(nd,symbol),
+				predicate: func(nd) nd.get_switch('toggle_chrono'),
+				is_true: func(nd) {
+					var efis_node = props.globals.getNode(nd.efis_path);
+					var idx = efis_node.getIndex() or 0;
+					var chronoNode = nd.options.defaults.chrono_node~'['~idx~']';
+					chronoNode = props.globals.getNode(chronoNode);
+					var time = nil;
+					if(chronoNode != nil){
+						time = chronoNode.getValue('text');
+					}
+					nd.symbols.chrono_box.show();
+					if(time != nil and time != '')
+						nd.symbols.chrono_text.setText(time);
+				},
+				is_false: func(nd){
+					nd.symbols.chrono_box.hide();
+				}
+			}  
+		},
+		{
+			id:'chrono_text',
+			impl: {
+				init: func(nd,symbol),
+				predicate: func(nd) 1,
+				is_true: func(nd) nd.symbols.chrono_text.show(),
+				is_false: func(nd) nd.symbols.chrono_text.hide(),
 			}  
 		},
 		{

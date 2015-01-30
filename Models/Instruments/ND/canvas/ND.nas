@@ -18,6 +18,7 @@ setlistener("sim/signals/fdm-initialized", func() {
 		'toggle_ndb': 	{path: '/inputs/NDB', value:0, type:'BOOL'},
 		'toggle_stations':     {path: '/inputs/sta', value:0, type:'BOOL'},
 		'toggle_vor': 	{path: '/inputs/VORD', value:0, type:'BOOL'},
+		'toggle_dme': 	{path: '/inputs/DME', value:0, type:'BOOL'},
 		'toggle_cstr': 	{path: '/inputs/CSTR', value:0, type:'BOOL'},
 		'toggle_waypoints': 	{path: '/inputs/wpt', value:0, type:'BOOL'},
 		'toggle_position': 	{path: '/inputs/pos', value:0, type:'BOOL'},
@@ -33,7 +34,8 @@ setlistener("sim/signals/fdm-initialized", func() {
 		'toggle_track_heading': 	{path: '/trk-selected', value:0, type:'BOOL'},
 		'toggle_wpt_idx': {path: '/inputs/plan-wpt-index', value: -1, type: 'INT'},
 		'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'},
-		'toggle_weather_live': {path: '/mfd/wxr-live-enabled', value: 0, type: 'BOOL'}
+		'toggle_weather_live': {path: '/mfd/wxr-live-enabled', value: 0, type: 'BOOL'},
+		'toggle_chrono': {path: '/inputs/CHRONO', value: 0, type: 'INT'},
 		# add new switches here
 	};
 

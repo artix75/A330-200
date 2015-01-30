@@ -1133,6 +1133,22 @@
 			<mm-beacon>MM</mm-beacon>
 			<im-beacon>AWY</im-beacon>
 		</texts>
+		
+		<chrono n="0">
+			<started type="bool">false</started>
+			<paused type="bool">false</paused>
+			<text type="string">0' 00'</text>
+			<started-at type="int">0</started-at>
+			<elapsed-time type="int">0</elapsed-time>
+		</chrono>
+		
+		<chrono n="1">
+			<started type="bool">false</started>
+			<paused type="bool">false</paused>
+			<text type="string">0' 00'</text>
+			<started-at type="int">0</started-at>
+			<elapsed-time type="int">0</elapsed-time>
+		</chrono>
 
 	</instrumentation>
 

@@ -164,7 +164,111 @@ var fcu = {
     }
 };
 
+var Chrono = {
+    new: func(idx, listen_prop=nil){
+        var m = {
+            parents: [Chrono],
+            index: idx
+        };
+        m.init();
+        if(listen_prop != nil)
+            m.listen(listen_prop);
+        return m;
+    },
+    init: func(){
+        var parentNode = props.globals.getNode('instrumentation');
+		var path = 'instrumentation/chrono['~me.index~']';
+        me.node = parentNode.getNode(path);
+		if(me.node == nil)
+			me.node = props.globals.initNode(path);
+        path = me.node.getPath();
+        props.globals.initNode(path~ '/started', 0, 'BOOL');
+        props.globals.initNode(path~ '/paused', 0, 'BOOL');
+        props.globals.initNode(path~ '/started-at', 0, 'INT');
+        props.globals.initNode(path~ '/elapsed-time', 0, 'INT');
+        props.globals.initNode(path~ '/text', "0' 0''", 'STRING');
+    },
+    listen: func(prop){
+        var m = me;
+        me.listener = setlistener(prop, func(_node){
+            var state = _node.getValue();
+            if(state == 0)
+                m.stop();
+            elsif(state == 1)
+                m.start();
+            elsif(state == 2)
+                m.pause();
+            elsif(state == 3)
+                m.resume();
+        }, 0, 0);
+    },
+    reset: func(){
+        me.set('started', 0);
+        me.set('paused', 0);
+        me.set('started-at', 0);
+        me.set('elapsed-time', 0);
+        me.set('text', '');
+    },
+    start: func(){
+        me.reset();
+        var started_at = systime();
+        me.set('started-at', started_at);
+        me.update();
+        me.timer = maketimer(1, me, me.update);
+        me.timer.start();
+        me.set('started', 1);
+        me.set('paused', 0);
+    },
+    pause: func(){
+        me.timer.stop();
+        me.set('paused', 1);
+    },
+    resume: func(){
+        me.timer.restart();
+        me.set('paused', 0);
+    },
+    stop: func(){
+        me.timer.stop();
+        me.reset();
+    },
+    set: func(name, value){
+        me.node.getNode(name).setValue(value);
+    },
+    get: func(name){
+        me.node.getNode(name).getValue();
+    },
+    update: func(){
+        var t = systime();
+        var started_at = me.get('started-at');
+        if(!started_at){
+            started_at = systime();
+            me.set('started-at', started_at);
+        }
+        var elapsed = t - started_at;
+        me.set('elapsed-time', elapsed);
+        me.updateText(elapsed);
+    },
+    updateText: func(elapsed){
+        var d = elapsed;
+        var h = int(d / 3600);
+        d = math.fmod(d, 3600);
+        var m = int(d / 60);
+        d = math.fmod(d, 60);
+        var s = d;
+        var text = '';
+        if(h > 0)
+            text = sprintf("%02d %02d' %02d\"", h, m ,s);
+        else
+            text = sprintf("%d' %02d\"", m ,s);
+        me.set('text', text);
+    }
+};
+
+var chronos = [];
+
 setlistener("sim/signals/fdm-initialized", func{
     fcu.init();
+    append(chronos, Chrono.new(0, 'instrumentation/efis/inputs/CHRONO'));
+    append(chronos, Chrono.new(1, 'instrumentation/efis[1]/inputs/CHRONO'));
     print("FCU initialized");
 });

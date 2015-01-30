@@ -3612,6 +3612,40 @@
 		</axis>
 	</animation>
 	
+	<!-- Chrono buttons -->
+	
+	<animation>
+		<type>pick</type>
+		<object-name>chrono_l</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-cycle</command>
+				<property>/instrumentation/efis/inputs/CHRONO</property>
+				<value>1</value>
+				<value>2</value>
+				<value>0</value>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
+		<type>pick</type>
+		<object-name>chrono_r</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>property-cycle</command>
+				<property>/instrumentation/efis[1]/inputs/CHRONO</property>
+				<value>1</value>
+				<value>2</value>
+				<value>0</value>
+			</binding>
+		</action>
+	</animation>
+	
 	<!-- EFIS Pick and Textranslate Animations -->
 	
 	<animation>
@@ -3676,6 +3710,10 @@
 				<command>property-toggle</command>
 				<property>/instrumentation/efis/inputs/VORD</property>
 			</binding>
+			<binding>
+				<command>property-toggle</command>
+				<property>/instrumentation/efis/inputs/DME</property>
+			</binding>
 		</action>
 	</animation>
 	
@@ -3688,6 +3726,10 @@
 			<binding>
 				<command>property-toggle</command>
 				<property>/instrumentation/efis[1]/inputs/VORD</property>
+			</binding>
+			<binding>
+				<command>property-toggle</command>
+				<property>/instrumentation/efis[1]/inputs/DME</property>
 			</binding>
 		</action>
 	</animation>

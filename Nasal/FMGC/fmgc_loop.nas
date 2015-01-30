@@ -1085,12 +1085,14 @@ var fmgc_loop = {
                 setprop('flight-management/thrust-lock-reason', '');
             }
         } else {
-            if (last_athr == 'eng' and !me.thrust_lock and me.a_thr != 'armed'){
+			var was_engaged = (last_athr == 'eng');
+			var idle = (me.max_throttle == 0);
+            if (was_engaged and !me.thrust_lock and me.a_thr != 'armed' and !idle){
                 me.thrust_lock_value = me.last_thrust;
                 setprop('flight-management/thrust-lock', 1);
                 setprop('flight-management/thrust-lock-reason', 'THR');
             }
-            elsif(last_athr == 'eng' and me.thrust_lock){
+            elsif(was_engaged and me.thrust_lock){
                 if(me.thrust_lock_reason == 'TOGA'){
                     setprop('flight-management/thrust-lock', 0);
                     setprop('flight-management/thrust-lock-reason', '');
