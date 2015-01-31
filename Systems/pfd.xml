@@ -185,4 +185,27 @@
         </enable>
     </filter>
     
+    <filter>
+        <name>Localizer course diff</name>
+        <type>gain</type>
+        <update-interval-secs type="double">0.05</update-interval-secs>
+        <gain>1.0</gain>
+        <input>
+            <property>/instrumentation/nav/radials/selected-deg</property>
+        </input>
+        <reference>
+            <property>/orientation/heading-deg</property>
+        </reference>
+        <output>instrumentation/pfd/loc-crs-diff</output>
+        <enable>
+            <property>/flight-management/freq/ils-mode</property>
+            <not>
+                <equals>
+                    <property>/instrumentation/nav/nav-id</property>
+                    <value></value>
+                </equals>
+            </not>
+        </enable>
+    </filter>
+    
 </PropertyList>

@@ -1054,6 +1054,83 @@
         </condition>
     </animation>
     
+    <animation>
+        <type>texmultiple</type>
+        <object-name>loc-crs</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>/instrumentation/nav/radials/selected-deg</property>
+            <factor>0.002832031</factor>
+            <axis>
+                <x>-1</x>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>/orientation/heading-deg</property>
+            <factor>0.002832031</factor>
+            <axis>
+                <x>1</x>
+            </axis>
+        </transform>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>loc-crs</object-name>
+        <condition>
+            <property>/flight-management/freq/ils-mode</property>
+            <not>
+                <equals>
+                    <property>/instrumentation/nav/nav-id</property>
+                    <value></value>
+                </equals>
+            </not>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>loc-label-left</object-name>
+        <object-name>loc-box-left</object-name>
+        <condition>
+            <and>
+                <property>/flight-management/freq/ils-mode</property>
+                <not>
+                    <equals>
+                        <property>/instrumentation/nav/nav-id</property>
+                        <value></value>
+                    </equals>
+                </not>
+                <less-than>
+                    <property>instrumentation/pfd/loc-crs-diff</property>
+                    <value>-21</value>
+                </less-than>
+            </and>
+        </condition>
+    </animation>
+
+    <animation>
+        <type>select</type>
+        <object-name>loc-label-right</object-name>
+        <object-name>loc-box-right</object-name>
+        <condition>
+            <and>
+                <property>/flight-management/freq/ils-mode</property>
+                <not>
+                    <equals>
+                        <property>/instrumentation/nav/nav-id</property>
+                        <value></value>
+                    </equals>
+                </not>
+                <greater-than>
+                    <property>instrumentation/pfd/loc-crs-diff</property>
+                    <value>21</value>
+                </greater-than>
+            </and>
+        </condition>
+    </animation>
+    
     <!-- Glideslope pointer -->
 
     <animation>
@@ -1514,6 +1591,102 @@
         </font-resolution>
     </text>
 	
+    <text>
+        <name>loc-label-right</name>
+        <offsets>
+            <x-m>0.0230</x-m>
+            <y-m>0.03</y-m>
+            <z-m>-0.061</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%3.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>instrumentation/nav/radials/selected-deg</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.005</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>loc-box-right</name>
+        <offsets>
+            <x-m>0.0230</x-m>
+            <y-m>0.03</y-m>
+            <z-m>-0.061</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%3.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>instrumentation/nav/radials/selected-deg</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.0058</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>loc-label-left</name>
+        <offsets>
+            <x-m>0.0230</x-m>
+            <y-m>-0.04</y-m>
+            <z-m>-0.061</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%3.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>instrumentation/nav/radials/selected-deg</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.005</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>loc-box-left</name>
+        <offsets>
+            <x-m>0.0230</x-m>
+            <y-m>-0.04</y-m>
+            <z-m>-0.061</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%3.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>instrumentation/nav/radials/selected-deg</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.0058</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
 	<!-- Altitude -->
 	
 	<!-- Current Altitude 100s -->
@@ -2937,6 +3110,8 @@
         <type>material</type>
         <object-name>hdg-box-right</object-name>
         <object-name>hdg-box-left</object-name>
+        <object-name>loc-box-right</object-name>
+        <object-name>loc-box-left</object-name>
         <diffuse>
             <red>0.65</red>
             <green>0.65</green>
@@ -2965,6 +3140,8 @@
         <object-name>nav-id</object-name>
         <object-name>nav-frq</object-name>
         <object-name>nav-hdg</object-name>
+        <object-name>loc-label-left</object-name>
+        <object-name>loc-label-right</object-name>
 		<diffuse>
 			<red>1</red>
 			<green>0</green>
