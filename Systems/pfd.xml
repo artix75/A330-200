@@ -72,6 +72,28 @@
     </filter>
     
     <filter>
+        <name>V1 speed diff</name>
+        <type>gain</type>
+        <update-interval-secs type="double">0.05</update-interval-secs>
+        <gain>1.0</gain>
+        <input>
+            <property>instrumentation/fmc/vspeeds/V1</property>
+        </input>
+        <reference>
+            <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+        </reference>
+        <output>instrumentation/pfd/v1-speed-diff</output>
+        <enable>
+            <condition>
+                <greater-than>
+                    <property>instrumentation/fmc/vspeeds/V1</property>
+                    <value>0</value>
+                </greater-than>
+            </condition>
+        </enable>
+    </filter>
+    
+    <filter>
         <name>Target alt diff (selected)</name>
         <type>gain</type>
         <update-interval-secs type="double">0.05</update-interval-secs>
