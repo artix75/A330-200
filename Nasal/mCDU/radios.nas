@@ -102,6 +102,21 @@ var rad_nav = {
             }
             return nil;
     },
+    search_ndb : func(id) {
+
+        var gps = "/instrumentation/gps/";
+
+        setprop(gps~ "scratch/query", id);
+
+        setprop(gps~ "scratch/type", "ndb");
+
+        setprop(gps~ "command", "search");
+
+        var freq = getprop(gps~ "scratch/frequency-khz");
+
+        return freq;
+
+    },
     find_ils_cat: func(id, digit_format = 0){
         var gps = "/instrumentation/gps/";
 
