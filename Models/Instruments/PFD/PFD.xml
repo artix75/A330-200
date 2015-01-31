@@ -946,6 +946,82 @@
     	</axis>
     </animation>
     
+    <!--animation>
+        <type>select</type>
+        <object-name>hdg-tape</object-name>
+        <condition>
+            <property>no-prop</property>
+        </condition>
+    </animation-->
+    
+    <animation>
+        <type>texmultiple</type>
+        <object-name>hdg-bug</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>/autopilot/settings/heading-bug-deg</property>
+            <factor>0.002832031</factor>
+            <axis>
+                <x>-1</x>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>/orientation/heading-deg</property>
+            <factor>0.002832031</factor>
+            <axis>
+                <x>1</x>
+            </axis>
+        </transform>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>hdg-bug</object-name>
+        <condition>
+            <equals>
+                <property>flight-management/control/lat-ctrl</property>
+                <value>man-set</value>
+            </equals>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>hdg-label-left</object-name>
+        <object-name>hdg-box-left</object-name>
+        <condition>
+            <and>
+                <equals>
+                    <property>flight-management/control/lat-ctrl</property>
+                    <value>man-set</value>
+                </equals>
+                <less-than>
+                    <property>instrumentation/pfd/hdg-diff</property>
+                    <value>-21</value>
+                </less-than>
+            </and>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>hdg-label-right</object-name>
+        <object-name>hdg-box-right</object-name>
+        <condition>
+            <and>
+                <equals>
+                    <property>flight-management/control/lat-ctrl</property>
+                    <value>man-set</value>
+                </equals>
+                <greater-than>
+                    <property>instrumentation/pfd/hdg-diff</property>
+                    <value>21</value>
+                </greater-than>
+            </and>
+        </condition>
+    </animation>
+    
     <!-- Glideslope pointer -->
 
     <animation>
@@ -1304,6 +1380,102 @@
         <draw-boundingbox type="bool">false</draw-boundingbox>
         <character-size>0.005
         </character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>hdg-label-right</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>0.03</y-m>
+            <z-m>-0.061</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%3.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>autopilot/settings/heading-bug-deg</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.005</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>hdg-box-right</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>0.03</y-m>
+            <z-m>-0.061</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%3.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>autopilot/settings/heading-bug-deg</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.0058</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>hdg-label-left</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>-0.04</y-m>
+            <z-m>-0.061</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%3.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>autopilot/settings/heading-bug-deg</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.005</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>hdg-box-left</name>
+        <offsets>
+            <x-m>0.0010</x-m>
+            <y-m>-0.04</y-m>
+            <z-m>-0.061</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">number-value</type>
+        <format type="string">%3.0f</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_bold.txf</font>
+        <property>autopilot/settings/heading-bug-deg</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.0058</character-size>
         <font-resolution>
             <width type="int">32</width>
             <height type="int">32</height>
@@ -2728,6 +2900,32 @@
             <blue>1</blue>
         </emission>
     </animation>
+    
+    <animation>
+        <type>material</type>
+        <object-name>hdg-box-right</object-name>
+        <object-name>hdg-box-left</object-name>
+        <diffuse>
+            <red>0.65</red>
+            <green>0.65</green>
+            <blue>0.65</blue>
+        </diffuse>
+        <ambient>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </ambient>
+        <specular>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </specular>
+        <emission>
+            <red>0.65</red>
+            <green>0.65</green>
+            <blue>0.65</blue>
+        </emission>
+    </animation>
 	
 	<animation>
 		<type>material</type>
@@ -2875,6 +3073,8 @@
         <object-name>man-mach</object-name>
         <object-name>man-mach-lower</object-name>
         <object-name>v1-spd</object-name>
+        <object-name>hdg-label-right</object-name>
+        <object-name>hdg-label-left</object-name>
 		<diffuse>
 			<red>0</red>
 			<green>0.886</green>
