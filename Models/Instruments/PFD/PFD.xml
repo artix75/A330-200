@@ -1022,6 +1022,38 @@
         </condition>
     </animation>
     
+    <animation>
+        <type>texmultiple</type>
+        <object-name>trk-ind</object-name>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>/orientation/track-deg</property>
+            <factor>0.002832031</factor>
+            <axis>
+                <x>-1</x>
+            </axis>
+        </transform>
+        <transform>
+            <subtype>textranslate</subtype>
+            <property>/orientation/heading-deg</property>
+            <factor>0.002832031</factor>
+            <axis>
+                <x>1</x>
+            </axis>
+        </transform>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>trk-ind</object-name>
+        <condition>
+            <greater-than>
+                <property>/velocities/groundspeed-kt</property>
+                <value>80</value>
+            </greater-than>
+        </condition>
+    </animation>
+    
     <!-- Glideslope pointer -->
 
     <animation>
