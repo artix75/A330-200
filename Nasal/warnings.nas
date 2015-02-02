@@ -365,7 +365,11 @@ var warning_system = {
             
             var ap_off = warning.new("AP 1+2 OFF", "ap_disc", "caution", "ap-off");
             ap_off.condition = func() {
-                    return ((getprop("/flight-management/control/ap1-master") == "off") and (getprop("/flight-management/control/ap2-master") == "off") and (((getprop("/position/altitude-agl-ft") > 400) and (getprop("/velocities/vertical-speed-fps") < -5)) or ((getprop("/position/altitude-agl-ft") > 10000) and (getprop("/velocities/vertical-speed-fps") > 5))));
+                    return ((getprop("/flight-management/control/ap1-master") == "off") and 
+                            (getprop("/flight-management/control/ap2-master") == "off") and 
+                            (((getprop("/position/altitude-agl-ft") > 400) and (getprop("/velocities/vertical-speed-fps") < -5)) or 
+                            ((getprop("/position/altitude-agl-ft") > 10000) and (getprop("/velocities/vertical-speed-fps") > 5)) or 
+                            ((getprop('flight-management/phase') == 'APP') and (getprop("/velocities/airspeed-kt") > 70))));
             };
             
             var athr_off = warning.new("A/THR OFF", "chime", "caution", "athr-off");
@@ -378,9 +382,15 @@ var warning_system = {
                 return ((getprop("/flight-management/control/a-thrust") == "eng") and (fmgc.fmgc_loop.max_throttle_pos < 0.6));
             };
 
+            #var thr_lock = warning.new("THR LEVERS...... MOVE", 'chime', 'caution', 'thr-lock');
+            #var thr_lock.condition = func(){
+            #    var fmc = fmgc.fmgc_loop;
+            #    return fmc.thrust_lock and fmc.thrust_lock_reason == 'THR';
+            #};
+
             # All warnings into a hash for easier use
             
-            me.warnings = [stall, spdbrk_stillout, apu_emer, to_cfg_pbrk, to_cfg_flaps, to_cfg_spdbrk, to_cfg_ptrim, to_cfg_rtrim, elv_fault, ail_fault, rud_fault, spdbrk_fault, flaps_fault, direct_law, altn_law, abn_law , engd_fail, eng1_fail, eng2_fail, engd_oilp, eng1_oilp, eng2_oilp, engd_shut, eng1_shut, eng2_shut, hydall, hydby, hydbg, hydgy, hydb_lopr, hydy_lopr, hydg_lopr, ptu_fault, fuel_1lo, fuel_2lo, fuel_clo, fuel_wlo, fuel_bal, apugen_fault, gen1_fault, gen2_fault, emer_conf, ap_off, athr_off, athr_limited];
+                me.warnings = [stall, spdbrk_stillout, apu_emer, to_cfg_pbrk, to_cfg_flaps, to_cfg_spdbrk, to_cfg_ptrim, to_cfg_rtrim, elv_fault, ail_fault, rud_fault, spdbrk_fault, flaps_fault, direct_law, altn_law, abn_law , engd_fail, eng1_fail, eng2_fail, engd_oilp, eng1_oilp, eng2_oilp, engd_shut, eng1_shut, eng2_shut, hydall, hydby, hydbg, hydgy, hydb_lopr, hydy_lopr, hydg_lopr, ptu_fault, fuel_1lo, fuel_2lo, fuel_clo, fuel_wlo, fuel_bal, apugen_fault, gen1_fault, gen2_fault, emer_conf, ap_off, athr_off, athr_limited];
 
             #TO CONFIG
 

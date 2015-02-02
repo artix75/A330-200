@@ -1030,6 +1030,11 @@ var fmgc_loop = {
         setprop('instrumentation/pfd/fd_pitch', fd_pitch);
         setprop('instrumentation/pfd/ver-alert-box', ver_alert and me.airborne);
         var dh = (me.dh or 200) - 50; 
+        var disengage_ap =  me.phase == 'APP' and 
+                            apEngaged and 
+                            me.app_cat < 3 and 
+                            me.agl < dh and 
+                            me.agl > 30;
         if (me.phase == 'APP' and apEngaged and me.app_cat < 3 and me.agl < dh){
             setprop(fmgc~ "ap1-master", "off");
             setprop(fmgc~ "ap2-master", "off");
@@ -2693,6 +2698,58 @@ setlistener('/flight-management/flight-modes/message', func(){
     }
 }, 0, 0);
 
+setlistener('/instrumentation/pfd/ils-appr-mode', func(){
+    var mode = getprop('/instrumentation/pfd/ils-appr-mode');
+    var box_node = 'instrumentation/pfd/ils-appr-mode-box';
+    if(mode != ''){
+        setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 10);
+    } else {
+        setprop(box_node, 0);
+    }
+},0,0);
+
+setlistener(radio~ 'ils-cat', func(node){
+    var cat = node.getValue();
+    var box_node = 'instrumentation/pfd/ils-cat-box';
+    if(cat != nil and cat != ''){
+        setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 10);
+    } else {
+        setprop(box_node, 0);
+    }
+}, 0, 0);
+
+setlistener('/instrumentation/texts/ap-status', func(node){
+    var status = node.getValue();
+    var box_node = 'instrumentation/pfd/ap-status-box';
+    if(status != nil and status != '' and status != 'AP '){
+        setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 10);
+    } else {
+        setprop(box_node, 0);
+    }
+}, 0, 0);
+
+setlistener("flight-management/control/fd", func(node){
+    var engaged = node.getValue();
+    var box_node = 'instrumentation/pfd/fd-status-box';
+    if(engaged){
+        setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 10);
+    } else {
+        setprop(box_node, 0);
+    }
+}, 0, 0);
+
 setlistener(fmgc~ "lat-ctrl", func(){
     var lat_ctrl = getprop(fmgc~ "lat-ctrl");
     if(lat_ctrl == 'fmgc'){
@@ -2746,9 +2803,24 @@ setlistener(fmgc~ 'ap2-master', func(ap){
 
 setlistener(fmgc~ "a-thrust", func(){
     update_ap_fma_msg();
-    if(getprop(fmgc~ "a-thrust") == 'eng'){
+    var display_box = 0;
+    var status = getprop(fmgc~ "a-thrust");
+    if(status == 'eng'){
         setprop('instrumentation/pfd/flx-indication', 0);
         setprop('instrumentation/pfd/athr-armed-box', 0);
+        display_box = 1;
+    } 
+    elsif(status == 'armed'){
+        display_box = 1;
+    }
+    var box_node = 'instrumentation/pfd/athr-status-box';
+    if(display_box){
+        setprop(box_node, 1);
+        settimer(func(){
+            setprop(box_node, 0);     
+        }, 10);
+    } else {
+        setprop(box_node, 0);
     }
 }, 0, 0);
 

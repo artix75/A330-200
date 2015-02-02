@@ -2809,6 +2809,8 @@
         </font-resolution>
     </text>
     
+    <!-- -->
+    
     <text>
         <name>fma-message-white</name>
         <offsets>
@@ -3075,6 +3077,144 @@
             <height type="int">32</height>
         </font-resolution>
     </text>
+    
+
+    <text>
+        <name>ils-cat-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0406226</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/flight-management/freq/ils-cat</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <!--text>
+        <name>dh-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0406226</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">literal</type>
+        <text type="string">MDA 2000</format>
+        <font type="string">helvetica_medium.txf</font>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text-->
+
+    <text>
+        <name>ils-appr-mode-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0406226</y-m>
+            <z-m>0.0605781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/pfd/ils-appr-mode</property>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>ap-status-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0666226</y-m>
+            <z-m>0.0680781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">literal</type>
+        <font type="string">helvetica_medium.txf</font>
+        <text>AP 12</text>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>fd-status-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0666226</y-m>
+            <z-m>0.0605781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">literal</type>
+        <font type="string">helvetica_medium.txf</font>
+        <text>1 FD2</text>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
+    <text>
+        <name>athr-status-box</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>0.0666226</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>center-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">literal</type>
+        <font type="string">helvetica_medium.txf</font>
+        <text>ATHR</text>
+        <draw-text type="bool">false</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">true</draw-boundingbox>
+        <character-size>0.008</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+
 	
 	<!-- Material Animation -->
     
@@ -3458,6 +3598,12 @@
         <object-name>fd-engaged</object-name>
         <object-name>ap-engaged</object-name>
         <object-name>ils-cat</object-name>
+        <object-name>ils-cat-box</object-name>
+        <object-name>ils-appr-mode-box</object-name>
+        <!--object-name>dh-box</object-name-->
+        <object-name>ap-status-box</object-name>
+        <object-name>athr-status-box</object-name>
+        <object-name>fd-status-box</object-name>
         <diffuse>
             <red>1</red>
             <green>1</green>
@@ -4243,6 +4389,46 @@
         <object-name>athr-alert-box</object-name>
         <condition>
             <property>instrumentation/pfd/athr-alert-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>ils-cat-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/ils-cat-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>ils-appr-mode-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/ils-appr-mode-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>ap-status-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/ap-status-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>fd-status-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/fd-status-box</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>athr-status-box</object-name>
+        <condition>
+            <property>instrumentation/pfd/athr-status-box</property>
         </condition>
     </animation>
     
