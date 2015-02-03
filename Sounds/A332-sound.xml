@@ -598,19 +598,37 @@
 		<stall>
 			<name>stall</name>
 			<mode>looped</mode>
-			<path>/Aircraft/A330-200/Sounds/res/stall.wav</path>
+			<path>/Aircraft/A330-200/Sounds/res/stall1.wav</path>
 			<type>avionics</type>
 			<condition>
-				<property>sim/sound/stall-horn</property>
+				<property>warnings/stall/active</property>
 			</condition>
 			<volume>
 				<property>sim/sound/effects/volume</property>
-				<!--offset>1</offset-->
 			</volume>
 			
 			<reference-dist>10</reference-dist>
 			<max-dist>100.0</max-dist>
 		</stall>
+		
+		<stall-voice>
+			<name>stall-voice</name>
+			<mode>looped</mode>
+			<path>/Aircraft/A330-200/Sounds/res/stall_voice.wav</path>
+			<type>avionics</type>
+			<condition>
+				<property>warnings/stall/active</property>
+			</condition>
+			<volume>
+				<property>sim/sound/effects/volume</property>
+				<factor>3</factor>
+				<!--offset>1</offset-->
+			</volume>
+
+			<reference-dist>10</reference-dist>
+			<max-dist>100.0</max-dist>
+		</stall-voice>
+		
 		<autopilotoff>
 			<name>Autopilot off</name>
 			<path>Aircraft/A330-200/Sounds/res/airbus-warning.wav</path>
