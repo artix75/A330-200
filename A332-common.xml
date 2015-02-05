@@ -445,7 +445,7 @@
 				</menu>
 								-->
 				<menu n="5">
-					<item n="1">
+					<item n="100">
 					<label>Airbus Radio Stack</label>
 						<binding>
 							<command>nasal</command>
@@ -560,16 +560,25 @@
 						</binding>
 					</item>
 					<item>
-							<label>Announcements</label>
-							<binding>
+						<label>Announcements</label>
+						<binding>
 							<command>nasal</command>
 							<script>
-	  				var mal = gui.Dialog.new("/sim/gui/dialogs/announce/dialog",
-																"Aircraft/A330-200/Systems/announcements-dlg.xml");
-						mal.open();
+								var mal = gui.Dialog.new("/sim/gui/dialogs/announce/dialog",
+								"Aircraft/A330-200/Systems/announcements-dlg.xml");
+								mal.open();
 							</script>
-							</binding>
-						</item>
+						</binding>
+					</item>
+					<item>
+						<label>WXR Live</label>
+						<binding>
+							<command>nasal</command>
+							<script>
+								a332_gui.WXRLiveDialog.new().show();
+							</script>
+						</binding>
+					</item>
 					<item>
 						<label>Configuration</label>
 						<binding>
@@ -1510,6 +1519,9 @@
 			<file>Aircraft/A330-200/Nasal/general_loop.nas</file>
 			<file>Aircraft/A330-200/Nasal/autoannunciator.nas</file>
 		</a332>
+		<a332_gui>
+			<file>Aircraft/A330-200/Nasal/GUI/WXRLiveDialog.nas</file>
+		</a332_gui>
 		<canvas_nd>
 				<file>Aircraft/A330-200/Models/Instruments/ND/canvas/ND.nas</file>
 		</canvas_nd>
