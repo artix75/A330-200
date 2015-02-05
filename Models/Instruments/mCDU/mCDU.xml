@@ -643,6 +643,8 @@
 				<command>nasal</command>
 		 		<script>
                     setprop("/instrumentation/mcdu/page", "f-pln");
+					var num = getprop('autopilot/route-manager/route/num');
+					if(num == 0) return;
 					
 					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
                     
@@ -656,26 +658,37 @@
                     
                         setprop("/instrumentation/mcdu/f-pln/show-hold", 1);
                     
-                        hold_id = (hold - first) + 1;
+                        hold_id = (hold - first) + (first == 0);
                     
 					}
 					setprop("/instrumentation/mcdu/f-pln/hold-id", hold_id);
                     
-                    var num = getprop('autopilot/route-manager/route/num');
+
                     var cur_wp = getprop("autopilot/route-manager/current-wp");
-                    var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+					var dest_apt = getprop('autopilot/route-manager/destination/airport');
+					var dest_idx = num - 1;
+					var fp = flightplan();
+					for(var idx = dest_idx; idx > 0; idx = idx - 1){
+						var wp = fp.getWP(idx);
+						if(wp.wp_role != 'approach') continue;
+						if(wp.wp_type == 'runway' or wp.id == dest_apt){
+							dest_idx = idx;
+							break;
+						}
+					}
                     if(cur_wp == 0 or cur_wp == 1){
                         if(first == 0)
-                            first = num - 5;
+                            first = dest_idx;
                         else
                             first = 0;
                     } else {
-                        first = num - 5;
+                        first = dest_idx;
                     }
-                    var mod = math.fmod(first, 5);
-                    if(mod != 0){
-                        first = first + (5 - mod);
-                    }
+
+                    #var mod = math.fmod(first, 5);
+                    #if(mod != 0){
+                    #    first = first + (5 - mod);
+                    #}
                     setprop("/instrumentation/mcdu/f-pln/disp/first", first);
                     
 					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
@@ -690,7 +703,7 @@
                     
                         setprop("/instrumentation/mcdu/f-pln/show-hold", 1);
                     
-                        hold_id = (hold - first) + 1;
+                        hold_id = (hold - first) + (first == 0);
                     
 					}
                     
