@@ -384,7 +384,7 @@
 			
 						setprop("/instrumentation/mcdu/f-pln/show-hold", 1);
 				
-						hold_id = (hold - first) + 1;
+						hold_id = (hold - first) + (first == 0);
 			
 					}
 			
@@ -432,7 +432,7 @@
 			
 						setprop("/instrumentation/mcdu/f-pln/show-hold", 1);
 				
-						hold_id = (hold - first) + 1;
+						hold_id = (hold - first) + (first == 0);
 			
 					}
 			
