@@ -140,6 +140,7 @@ var f_pln = {
 		
 		setprop("/autopilot/route-manager/current-wp", 0);
                 setprop("instrumentation/efis/inputs/plan-wpt-index", 0);
+                setprop("instrumentation/efis[1]/inputs/plan-wpt-index", 0);
 		#setprop(rm_route~ "active", 1); # TRICK: refresh canvas
 		#setprop(rm_route~ "active", 0);
 	
