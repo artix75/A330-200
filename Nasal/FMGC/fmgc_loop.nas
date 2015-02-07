@@ -875,16 +875,29 @@ var fmgc_loop = {
 
                         setprop("/flight-management/hold/init", 0);
 
-                        var bug = getprop("/autopilot/internal/true-heading-error-deg");
+                        #var bug = getprop("/autopilot/internal/true-heading-error-deg");
+                        var f = me.flightplan;
+                        var geocoord = geo.aircraft_position();
+                        var referenceCourse = f.pathGeod(f.indexOfWP(f.destination_runway), -getprop("autopilot/route-manager/distance-remaining-nm"));
+                        var courseCoord = geo.Coord.new().set_latlon(referenceCourse.lat, referenceCourse.lon);
+                        var CourseError = (geocoord.distance_to(courseCoord) / 1852) + 1;
+                        var change_wp = abs(getprop("autopilot/route-manager/wp/bearing-deg") - getprop('orientation/heading-deg'));
+                        if(change_wp > 180) change_wp = (360 - change_wp);
+                        CourseError += (change_wp / 20);
+                        var targetCourse = f.pathGeod(f.indexOfWP(f.destination_runway), (-getprop("autopilot/route-manager/distance-remaining-nm") + CourseError));
+                        courseCoord = geo.Coord.new().set_latlon(targetCourse.lat, targetCourse.lon);
+                        CourseError = (geocoord.course_to(courseCoord) - getprop("orientation/heading-deg"));
+                        if(CourseError < -180) CourseError += 360;
+                        elsif(CourseError > 180) CourseError -= 360;
 
                         var accuracy = getprop(settings~ "gps-accur");
 
                         var bank = 0; 
 
                         if (accuracy == "HIGH")
-                            bank = limit(bug, 25);
+                            bank = limit(CourseError, 25);
                         else
-                            bank = limit(bug, 15);
+                            bank = limit(CourseError, 15);
 
                         if(apEngaged){
                             setprop(servo~  "aileron", 1);
