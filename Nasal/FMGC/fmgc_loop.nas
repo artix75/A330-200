@@ -886,7 +886,7 @@ var fmgc_loop = {
                         CourseError += (change_wp / 20);
                         var targetCourse = f.pathGeod(f.indexOfWP(f.destination_runway), (-getprop("autopilot/route-manager/distance-remaining-nm") + CourseError));
                         courseCoord = geo.Coord.new().set_latlon(targetCourse.lat, targetCourse.lon);
-                        CourseError = (geocoord.course_to(courseCoord) - getprop("orientation/heading-deg"));
+                        CourseError = (geocoord.course_to(courseCoord) - me.hdg_trk);
                         if(CourseError < -180) CourseError += 360;
                         elsif(CourseError > 180) CourseError -= 360;
 
@@ -1095,6 +1095,9 @@ var fmgc_loop = {
         me.dep_airport = getprop("/autopilot/route-manager/departure/airport");
         me.dep_rwy = getprop("/autopilot/route-manager/departure/runway");
         me.dh = getprop('/instrumentation/mk-viii/inputs/arinc429/decision-height') or 200;
+        me.use_true_north = (abs(getprop("position/latitude-deg")) > 82.0);
+        setprop('instrumentation/efis/mfd/true-north', me.use_true_north);
+        setprop('instrumentation/efis[1]/mfd/true-north', me.use_true_north);
         
         if (me.a_thr == 'eng') {
             me.last_thrust = me.max_throttle;
@@ -1103,8 +1106,8 @@ var fmgc_loop = {
                 setprop('flight-management/thrust-lock-reason', '');
             }
         } else {
-			var was_engaged = (last_athr == 'eng');
-			var idle = (me.max_throttle == 0);
+            var was_engaged = (last_athr == 'eng');
+            var idle = (me.max_throttle == 0);
             if (was_engaged and !me.thrust_lock and me.a_thr != 'armed' and !idle){
                 me.thrust_lock_value = me.last_thrust;
                 setprop('flight-management/thrust-lock', 1);
@@ -1208,6 +1211,14 @@ var fmgc_loop = {
             me.wp = nil;
             
         }
+        if(!me.use_true_north){
+            me.heading = getprop("orientation/heading-magnetic-deg");
+            me.track = getprop("orientation/track-magnetic-deg");
+        } else {
+            me.heading = getprop("orientation/heading-deg");
+            me.track = getprop("orientation/track-deg");
+        }
+        me.hdg_trk = (me.ver_sub == 'vs' ? me.heading : me.track);
     },
     check_flight_modes : func{
         var flplan_active = me.flplan_active;
@@ -1440,12 +1451,8 @@ var fmgc_loop = {
                (!me.toga_on_ground or me.toga_trk != nil)){
                 me.active_lat_mode = 'GA TRK';
                 me.armed_lat_mode = '';
-                if(me.toga_trk == nil){
-                    if(!me.use_true_north)
-                        me.toga_trk = getprop("orientation/track-magnetic-deg");
-                    else 
-                        me.toga_trk = getprop("orientation/track-deg");
-                }
+                if(me.toga_trk == nil)
+                    me.toga_trk = me.track;
                 me.lat_mode = 'hdg';
                 setprop(fmgc~ "lat-mode", 'hdg');
                 me.lat_ctrl = 'man-set';
@@ -2524,14 +2531,7 @@ var fmgc_loop = {
         return nil;
     },
     set_current_hdgtrk: func(){
-        var sub = me.ver_sub;
-        var heading = 0;
-        var heading_type = (sub == 'vs' ? 'heading' : 'track'); 
-        if(!me.use_true_north)
-            heading = getprop("orientation/"~heading_type~"-magnetic-deg");
-        else 
-            heading = getprop("orientation/"~heading_type~"-deg");
-        setprop(fcu~ 'hdg', int(heading));
+        setprop(fcu~ 'hdg', int(me.hdg_trk));
     },
     set_current_spd: func(){
         setprop(fcu~ 'ias', me.ias);
