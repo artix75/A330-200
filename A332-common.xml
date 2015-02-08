@@ -575,7 +575,16 @@
 						<binding>
 							<command>nasal</command>
 							<script>
-								a332_gui.WXRLiveDialog.new().show();
+								var version = getprop('sim/version/flightgear');
+								var v = split('.', version);
+								version = num(v[0]~'.'~v[1]);
+								if(version >= 3.4)
+									a332_gui.WXRLiveDialog.new().show();
+								else {
+									var dlg = gui.Dialog.new("/sim/gui/dialogs/wxr-live/dialog",
+															 "Aircraft/A330-200/Systems/wxr-live-dialog.xml");
+									dlg.open();
+								}
 							</script>
 						</binding>
 					</item>

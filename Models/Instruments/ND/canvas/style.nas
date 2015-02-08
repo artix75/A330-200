@@ -113,7 +113,7 @@ canvas.NDStyles["Airbus"] = {
 					nd.get_switch('toggle_display_mode') != "PLAN";
 				layer.group.setVisible(visible);
 				if (visible) {
-					print("storms update requested! (timer issue when closing the dialog?)");
+					#print("storms update requested! (timer issue when closing the dialog?)");
 					layer.update(); 
 				}
 			}, # end of layer update predicate

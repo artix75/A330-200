@@ -5,7 +5,7 @@
     <!-- Manually apply thrust with levers position -->
     <filter> 
         <name>Left Throttle Position</name>
-        <debug>true</debug>
+        <debug>false</debug>
         <type>gain</type>
         <gain>1.0</gain>
         <enable><!-- Disabled when auho-thrust is active or thrust reverser active-->

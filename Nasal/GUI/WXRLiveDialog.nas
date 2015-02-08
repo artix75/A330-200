@@ -51,7 +51,6 @@ var WXRLiveDialog = {
                              .createGroup();
         var vbox = canvas.VBoxLayout.new();
         me._dialog.setLayout(vbox);
-        
         vbox.setContentsMargin(12);
         var r = me._root;
         var s = canvas.style;

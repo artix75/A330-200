@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<PropertyList>
+    <name>wxr-live-dialog</name>
+    <layout>vbox</layout>
+    <resizable>true</resizable>
+    <default-padding>3</default-padding>
+    <nasal>
+        <open><![CDATA[
+            var wxr_tree = "/instrumentation/wxr";
+            var dlg = props.globals.getNode("/sim/gui/dialogs/wxr-live", 1);
+            var api_key = getprop('/instrumentation/wxr/api-key');
+            var enabled = getprop('/instrumentation/wxr/enabled');
+            if(api_key == nil or api_key == '' or api_key == 'YOUR API KEY'){
+                api_key = '';
+                enabled = 0;
+            }
+            if(enabled == nil) enabled = 0;
+            if(api_key == nil) api_key = '';
+            setprop('/sim/gui/dialogs/wxr-live/dialog/wxr-enabled', enabled);
+            setprop('/sim/gui/dialogs/wxr-live/dialog/api-key', api_key);
+            var wxr_save = func(){
+                var api_key = getprop('/sim/gui/dialogs/wxr-live/dialog/api-key');
+                var enabled = getprop('/sim/gui/dialogs/wxr-live/dialog/wxr-enabled');
+                if(api_key == nil or api_key == '' or api_key == 'YOUR API KEY'){
+                    api_key = '';
+                    enabled = 0;
+                }
+                if(enabled == nil) enabled = 0;
+                if(api_key == nil) api_key = '';
+                setprop('/instrumentation/wxr/enabled', enabled);
+                setprop('/instrumentation/wxr/api-key', api_key);
+                var saved_conf = getprop("/sim/fg-home") ~ "/Export/wxr_api.xml";
+                io.write_properties(saved_conf, wxr_tree);
+            };
+            setprop('/sim/gui/dialogs/wxr-live/dialog/warn-text', "In order to use the Live WXR you need to obtain a free "~
+                  "API Key from Wunderground");
+        ]]></open>
+    </nasal>
+    <group>
+        <layout>hbox</layout>
+        <empty><stretch>1</stretch></empty>
+
+        <text>
+            <label>Live WXR</label>
+        </text>
+
+        <empty><stretch>1</stretch></empty>
+
+        <button>
+            <pref-width>16</pref-width>
+            <pref-height>16</pref-height>
+            <legend></legend>
+            <default>1</default>
+            <keynum>27</keynum>
+            <border>2</border>
+
+            <binding>
+                <command>dialog-close</command>
+            </binding>
+        </button>
+    </group>
+    <hrule/>
+    <group>
+        <layout>vbox</layout>
+        <checkbox>
+            <name>wxr-enabled</name>
+            <halign>left</halign>
+            <label>Use Live WXR on ND</label>
+            <property>/sim/gui/dialogs/wxr-live/dialog/wxr-enabled</property>
+            <live>true</live>
+            <binding>
+                <command>dialog-apply</command>
+                <object-name>wxr-enabled</object-name>
+            </binding>
+        </checkbox>
+        <!--textbox>
+            <halign>fill</halign>
+            <stretch>true</stretch>
+            <editable>false</editable>
+            <wrap>true</wrap>
+            <live>true</live>
+            <property>/sim/gui/dialogs/wxr-live/dialog/warn-text</property>
+        </textbox-->
+        <group>
+            <layout>hbox</layout>
+            <text>
+                <halign>left</halign>
+                <color>
+                    <red>1</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+                <label>API Key required</label>
+            </text>
+            <empty><stretch>1</stretch></empty>
+            <button>
+                <legend>Get a free API Key</legend>
+                <binding>
+                    <command>open-browser</command>
+                    <url>http://www.wunderground.com/weather/api</url>
+                </binding>
+            </button>
+        </group>
+    </group>
+
+    <!--text>
+        <halign>center</halign>
+        <label>
+            free API Key from Wunderground
+        </label>
+    </text-->
+
+    <group>
+        <layout>hbox</layout>
+        <text><label>API Key: </label></text>
+        <input>
+            <name>api-key</name>
+            <halign>fill</halign>
+            <stretch>true</stretch>
+            <pref-width>120</pref-width>
+            <property>/sim/gui/dialogs/wxr-live/dialog/api-key</property>
+            <live>true</live>
+            <binding>
+                <command>dialog-apply</command>
+                <object-name>api-key</object-name>
+            </binding>
+        </input>
+        <button>
+            <legend>Paste from clipboard</legend>
+            <binding>
+                <command>nasal</command>
+                <script>
+                    setprop('/sim/gui/dialogs/wxr-live/dialog/api-key', clipboard.getText());
+                </script>
+            </binding>
+        </button>
+    </group>
+    <button>
+        <legend>Save</legend>
+        <binding>
+            <command>nasal</command>
+            <script>wxr_save();</script>
+        </binding>
+    </button>
+</PropertyList>
