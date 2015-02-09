@@ -174,167 +174,162 @@
 					<property type="string">/aircraft/tyresmoke/right</property>
 					<interpolation>linear</interpolation>
 				</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">controls/parking-brake</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">hydraulics/control/ptu</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">controls/electric/APU-generator</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">controls/electric/engine[0]/generator</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">controls/electric/engine[1]/generator</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">controls/APU/master-switch</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">controls/APU/starter</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">controls/electric/battery-switch</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">controls/electric/external-power</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">controls/engines/engine[0]/cutoff-switch</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">controls/engines/engine[1]/cutoff-switch</property>
-								</signal>
-								<signal>
-									<type>float</type>
-									<property type="string">controls/engines/engine-start-switch</property>
-								</signal>
-								<signal>
-									<type>float</type>
-									<property type="string">/velocities/groundspeed-kt</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/deicing_truck/enable</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/catering/enable</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/chokes/nose</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/chokes/left</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/chokes/right</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/ext-pwr/enable</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/baggage/enable</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/stairs/l1</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/stairs/l2</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/stairs/l4</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">services/stairs/cover</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">hydraulics/control/ptu</property>
-								</signal>
-								<signal>
-									<type>float</type>
-									<property type="string">/consumables/fuel/tank[1]/level-kg</property>
-								</signal>
-								<signal>
-									<type>float</type>
-									<property type="string">/consumables/fuel/tank[2]/level-kg</property>
-								</signal>
-								<signal>
-									<type>float</type>
-									<property type="string">/consumables/fuel/tank[3]/level-kg</property>
-								</signal>
-								<signal>
-									<type>float</type>
-									<property type="string">/consumables/fuel/tank[4]/level-kg</property>
-								</signal>
-								<signal>
-									<type>float</type>
-									<property type="string">/consumables/fuel/tank[5]/level-kg</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">sim/sound/welcome</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">sim/sound/safety</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">sim/sound/pretakeoff</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">sim/sound/climb</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">sim/sound/cruise-seatbelt</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">sim/sound/descent</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">sim/sound/land</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">sim/sound/gate</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">sim/sound/emergency</property>
-								</signal>
-								<signal>
-									<type>bool</type>
-									<property type="string">sim/sound/turbulence</property>
-								</signal>
-
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/parking-brake</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/electric/APU-generator</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/electric/engine[0]/generator</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/electric/engine[1]/generator</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/APU/master-switch</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/APU/starter</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/electric/battery-switch</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/electric/external-power</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/engines/engine[0]/cutoff-switch</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/engines/engine[1]/cutoff-switch</property>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">controls/engines/engine-start-switch</property>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/velocities/groundspeed-kt</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/deicing_truck/enable</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/catering/enable</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/chokes/nose</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/chokes/left</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/chokes/right</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/ext-pwr/enable</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/baggage/enable</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/stairs/l1</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/stairs/l2</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/stairs/l4</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">services/stairs/cover</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">hydraulics/control/ptu</property>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/consumables/fuel/tank[1]/level-kg</property>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/consumables/fuel/tank[2]/level-kg</property>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/consumables/fuel/tank[3]/level-kg</property>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/consumables/fuel/tank[4]/level-kg</property>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/consumables/fuel/tank[5]/level-kg</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">sim/sound/welcome</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">sim/sound/safety</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">sim/sound/pretakeoff</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">sim/sound/climb</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">sim/sound/cruise-seatbelt</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">sim/sound/descent</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">sim/sound/land</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">sim/sound/gate</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">sim/sound/emergency</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">sim/sound/turbulence</property>
+				</signal>
 			</config>
 		</flight-recorder>
 
@@ -877,16 +872,16 @@
 			<caster-angle-deg-damped type="double">0</caster-angle-deg-damped>
 		</gear>
 		<gear n="3">
-		   <tyre-smoke type="int">0</tyre-smoke>
-		   <sprayspeed-ms type="double">0</sprayspeed-ms>
-		   <spray-density type="double">0</spray-density>
-		   <caster-angle-deg-damped type="double">0</caster-angle-deg-damped>
+			<tyre-smoke type="int">0</tyre-smoke>
+			<sprayspeed-ms type="double">0</sprayspeed-ms>
+			<spray-density type="double">0</spray-density>
+			<caster-angle-deg-damped type="double">0</caster-angle-deg-damped>
 		</gear>
 		<gear n="4">
-		   <tyre-smoke type="int">0</tyre-smoke>
-		   <sprayspeed-ms type="double">0</sprayspeed-ms>
-		   <spray-density type="double">0</spray-density>
-		   <caster-angle-deg-damped type="double">0</caster-angle-deg-damped>
+			<tyre-smoke type="int">0</tyre-smoke>
+			<sprayspeed-ms type="double">0</sprayspeed-ms>
+			<spray-density type="double">0</spray-density>
+			<caster-angle-deg-damped type="double">0</caster-angle-deg-damped>
 		</gear>
 	</gear>
 
@@ -1153,7 +1148,7 @@
 			<mm-beacon>MM</mm-beacon>
 			<im-beacon>AWY</im-beacon>
 		</texts>
-		
+
 		<chrono n="0">
 			<started type="bool">false</started>
 			<paused type="bool">false</paused>
@@ -1161,7 +1156,7 @@
 			<started-at type="int">0</started-at>
 			<elapsed-time type="int">0</elapsed-time>
 		</chrono>
-		
+
 		<chrono n="1">
 			<started type="bool">false</started>
 			<paused type="bool">false</paused>
