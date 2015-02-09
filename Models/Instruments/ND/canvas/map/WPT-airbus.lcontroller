@@ -36,7 +36,11 @@ canvas.SymbolLayer.add(name, {
     },
     df_style: {
         active_wp_color: [0.4,0.7,0.4],
-        current_wp_color: [1,1,1]
+        current_wp_color: [1,1,1],
+        translation: {
+            'airport': [-24,-24],
+                'VOR': [-24,-24]
+        }
     },
     toggle_cstr: 0
 });

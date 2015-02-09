@@ -930,6 +930,7 @@
 				<CSTR type="bool">true</CSTR>
 				<WPT type="bool">true</WPT>
 				<VORD type="bool">true</VORD>
+				<DME type="bool">true</DME>
 				<NDB type="bool">true</NDB>
 				<ARPT type="bool">true</ARPT>
 				<WX type="bool">true</WX>
@@ -965,6 +966,7 @@
 				<CSTR type="bool">true</CSTR>
 				<WPT type="bool">true</WPT>
 				<VORD type="bool">true</VORD>
+				<DME type="bool">true</DME>
 				<NDB type="bool">true</NDB>
 				<ARPT type="bool">true</ARPT>
 				<WX type="bool">true</WX>

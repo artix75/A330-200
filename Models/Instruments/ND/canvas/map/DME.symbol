@@ -127,6 +127,15 @@ var init = func {
 
 	# finally scale the symbol as requested, this is done last so that people can override this when creating the layer
 	me.apply_scale();
+	if(me.getOption('draw_text', 0)){
+		me.dme_text = me.element.createChild("text")
+		.setDrawMode( canvas.Text.TEXT )
+		.setText(me.model.id)
+		.setFont("LiberationFonts/LiberationSans-Regular.ttf")
+		.setFontSize(28)
+		.setColor(me.getStyle('text_color', [1,1,1]))
+		.setTranslation(me.getStyle('translation', [45,25]));
+	}
 	if (me.layer.style.animation_test) {
 		me.timer = maketimer(0.33, func me.animate() );
 		me.timer.start();

@@ -28,8 +28,10 @@ var init = func {
     var idLen = size(me.model.wp_id);
     var draw_sym = nil;
     if(wp_type == 'navaid'){
-        if(idLen == 4)
+        if(idLen == 4){
             draw_sym = me.options.airport_symbol;
+            wp_type = 'airport';
+        }
         elsif(idLen == 3){
             var navaids = navinfo(me.model.lat,me.model.lon,me.model.wp_id);
             var type = 'VOR';
@@ -41,6 +43,7 @@ var init = func {
                 draw_sym = me.options.vor_symbol;
             else
                 draw_sym = me.options.ndb_symbol;
+            wp_type = type;
         }
         else
             draw_sym = me.options.fix_symbol;
@@ -52,6 +55,10 @@ var init = func {
         draw_sym(me.wp_sym);
     elsif(typeof(draw_sym) == 'scalar')
         canvas.parsesvg(me.wp_sym, draw_sym);
+    var translation = me.getStyle('translation', {});
+    if(contains(translation, wp_type)){
+        me.wp_sym.setTranslation(translation[wp_type]);
+    }
     me.text_wps = wp_group.createChild("text", "wp-text-" ~ me.model.idx)
     .setDrawMode( canvas.Text.TEXT )
     .setText(me.model.name)

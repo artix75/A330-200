@@ -287,6 +287,7 @@ canvas.NDStyles["Airbus"] = {
 		}, # end of VOR layer
 		{ 
 			name:'DME', 
+			disabled:1, 
 			isMapStructure:1, 
 			update_on:['toggle_display_mode','toggle_range','toggle_dme'],
 			# FIXME: this is a really ugly place for controller code
@@ -307,8 +308,10 @@ canvas.NDStyles["Airbus"] = {
 					.moveTo(-13, 0)
 					.arcSmallCW(13,13,0,26,0)
 					.arcSmallCW(13,13,0,-26,0)
+					.setStrokeLineWidth(2)
 					.close();
-				}
+				},
+				draw_text: 1
 			},
 			style: {
 				color_default: [0.9,0,0.47],

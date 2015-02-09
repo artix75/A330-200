@@ -35,4 +35,5 @@ var draw = func{
             me.element.setColor(dfcolor);
         }
     }
+    me.text_vor.setColor(me.getStyle('text_color', [1,1,1]));
 }
