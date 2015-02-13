@@ -146,15 +146,69 @@
     </filter>
     
     <filter>
-        <name>Track heading diff</name>
+        <name>Heading Deg</name>
+        <type>gain</type>
+        <update-interval-secs type="double">0.05</update-interval-secs>
+        <gain>1.0</gain>
+        <input>
+            <property>/orientation/heading-deg</property>
+            <condition>
+                <property>instrumentation/efis/mfd/true-north</property>
+            </condition>
+        </input>
+        <input>
+            <property>/orientation/heading-magnetic-deg</property>
+        </input>
+        <reference>0</reference>
+        <output>instrumentation/pfd/heading-deg</output>
+        <enable>
+            <equals>
+                <property>/flight-management/control/lat-ctrl</property>
+                <value>man-set</value>
+            </equals>
+        </enable>
+    </filter>
+    
+    <filter>
+        <name>Track Deg</name>
         <type>gain</type>
         <update-interval-secs type="double">0.05</update-interval-secs>
         <gain>1.0</gain>
         <input>
             <property>/orientation/track-deg</property>
+            <condition>
+                <property>instrumentation/efis/mfd/true-north</property>
+            </condition>
+        </input>
+        <input>
+            <property>/orientation/track-magnetic-deg</property>
+        </input>
+        <reference>0</reference>
+        <output>instrumentation/pfd/track-deg</output>
+        <enable>
+            <equals>
+                <property>/flight-management/control/lat-ctrl</property>
+                <value>man-set</value>
+            </equals>
+        </enable>
+    </filter>
+    
+    <filter>
+        <name>Track heading diff</name>
+        <type>gain</type>
+        <update-interval-secs type="double">0.05</update-interval-secs>
+        <gain>1.0</gain>
+        <input>
+            <condition>
+                <property>instrumentation/efis/mfd/true-north</property>
+            </condition>
+            <property>/orientation/track-deg</property>
+        </input>
+        <input>
+            <property>/orientation/track-magnetic-deg</property>
         </input>
         <reference>
-            <property>/orientation/heading-deg</property>
+            <property>instrumentation/pfd/heading-deg</property>
         </reference>
         <output>instrumentation/pfd/track-diff</output>
         <enable>
@@ -172,11 +226,23 @@
         <gain>1.0</gain>
         <input>
             <property>/autopilot/settings/heading-bug-deg</property>
+            <period>
+                <min>-180.0</min>
+                <max>180.0</max>
+            </period>
         </input>
         <reference>
-            <property>/orientation/heading-deg</property>
+            <property>instrumentation/pfd/heading-deg</property>
+            <period>
+                <min>-180.0</min>
+                <max>180.0</max>
+            </period>
         </reference>
         <output>instrumentation/pfd/hdg-diff</output>
+        <period>
+            <min>-180.0</min>
+            <max>180.0</max>
+        </period>
         <enable>
             <equals>
                 <property>/flight-management/control/lat-ctrl</property>
@@ -185,6 +251,7 @@
         </enable>
     </filter>
     
+    
     <filter>
         <name>Localizer course diff</name>
         <type>gain</type>
@@ -192,11 +259,23 @@
         <gain>1.0</gain>
         <input>
             <property>/instrumentation/nav/radials/selected-deg</property>
+            <period>
+                <min>-180.0</min>
+                <max>180.0</max>
+            </period>
         </input>
         <reference>
-            <property>/orientation/heading-deg</property>
+            <property>instrumentation/pfd/heading-deg</property>
+            <period>
+                <min>-180.0</min>
+                <max>180.0</max>
+            </period>
         </reference>
         <output>instrumentation/pfd/loc-crs-diff</output>
+        <period>
+            <min>-180.0</min>
+            <max>180.0</max>
+        </period>
         <enable>
             <property>/flight-management/freq/ils-mode</property>
             <not>

@@ -12,6 +12,12 @@ var athr_modes = flight_modes ~ "athr/";
 var radio = "/flight-management/freq/";
 var actrte = "/autopilot/route-manager/route/";
 
+var RAD2DEG = 57.2957795;
+var DEG2RAD = 0.016774532925;
+var NM2FT = 6076.11549;
+var FT2NM = 0.000164579;
+var KTS2FPS = 1.68780986;
+
 setprop("/flight-management/text/qnh", "QNH");
 
 setprop(settings~ "gps-accur", "LOW");
@@ -112,6 +118,7 @@ var fmgc_loop = {
         setprop(fcu~ "fpa", 5);
 
         setprop(fcu~ "hdg", 0);
+        setprop('autopilot/settings/heading-bug-deg', 0);
 
         setprop(fmgc_val~ "ias", 250);
         setprop(fmgc_val~ "mach", 0.78);
@@ -123,17 +130,15 @@ var fmgc_loop = {
         setprop(servo~ "target-bank", 0);
 
         setprop(servo~ "elevator-vs", 0);
+        setprop(servo~ "elevator-gs", 0);
+        setprop(servo~ "elevator-fpa", 0);
         setprop(servo~ "elevator", 0);
         setprop(servo~ "target-pitch", 0);
 
-        setprop(servo~ "fd-aileron", 0);
-        setprop(servo~ "fd-aileron-nav1", 0);
-        setprop(servo~ "fd-target-bank", 0);
+        setprop(fmfd~ "aileron", 0);
+        setprop(fmfd~ "aileron-nav1", 0);
+        setprop(fmfd~ "target-bank", 0);
 
-        #setprop(servo~ "fd-elevator-vs", 0);
-        #setprop(servo~ "fd-elevator-gs", 0);
-        #setprop(servo~ "fd-elevator", 0);
-        #setprop(servo~ "fd-target-pitch", 0);
         setprop(fmfd ~ "target-vs", 0);
         setprop(fmfd ~ "target-fpa", 0);
         setprop(fmfd ~ "pitch-vs", 0);
@@ -173,6 +178,7 @@ var fmgc_loop = {
         me.max_throttle = 0;
         me.airborne = 0;
         me.toga_on_ground = 0;
+        me.armed_ver_secondary_mode = '';
         # Radio
     
         setprop(radio~ 'autotuned', 0);
@@ -239,15 +245,7 @@ var fmgc_loop = {
         me.calc_speed_change();
         me.calc_level_off();
         var decel_point = me.decel_point;
-        #var plan_mode = getprop("/instrumentation/nd/plan-mode");
-        #if(plan_mode != nil and plan_mode){
-        #    setprop("/instrumentation/nd/symbols/aircraft/latitude-deg", getprop('position/latitude-deg'));
-        #    setprop("/instrumentation/nd/symbols/aircraft/longitude-deg", getprop('position/longitude-deg'));
-        #    setprop("/instrumentation/nd/symbols/aircraft/true-heading-deg", getprop('orientation/heading-magnetic-deg'));   
-        #} else {
-        #    setprop("/instrumentation/nd/symbols/aircraft", '');
-        #}
-        var flplan_active = me.flplan_active;	
+        var flplan_active = me.flplan_active;
         
         # NAV1 Auto-tuning
         
@@ -258,11 +256,8 @@ var fmgc_loop = {
 
         # SET OFF IF NOT USED
 
-        if (me.lat_ctrl != "fmgc") {
-
+        if (me.lat_ctrl != "fmgc")
             setprop("/flight-management/hold/init", 0);
-
-        }
 
         # Turn off rudder control when AP is off
 
@@ -293,6 +288,7 @@ var fmgc_loop = {
         if ((me.ver_ctrl == "off") or ((me.ap1 == "off") and (me.ap2 == "off"))) {
 
             setprop(servo~ "elevator-vs", 0);
+            setprop(servo~ "elevator-fpa", 0);
             setprop(servo~ "elevator-gs", 0);
             setprop(servo~ "elevator", 0);
             setprop(servo~ "target-pitch", 0);
@@ -345,18 +341,14 @@ var fmgc_loop = {
         var ver_managed = me.ver_managed;
         #print("FMGC Loop: AP Eng -> " ~ apEngaged);
         var vs_fps = me.vs_fps;
+        var ver_sub = me.ver_sub;
+        var fpa_mode = (ver_sub == 'fpa');
         if (!fdEngaged) {
-
-            setprop(servo~ "fd-aileron", 0);
-            setprop(servo~ "fd-aileron-nav1", 0);
-            setprop(servo~ "fd-target-bank", 0);
-
-            #setprop(servo~ "fd-elevator-vs", 0);
-            #setprop(servo~ "fd-elevator-gs", 0);
-            #setprop(servo~ "fd-elevator", 0);
-            #setprop(servo~ "fd-target-pitch", 0);
+            setprop(fmfd ~ "aileron", 0);
+            setprop(fmfd ~ "aileron-nav1", 0);
+            setprop(fmfd ~ "target-bank", 0);
             setprop(fmfd ~ "target-vs", vs_fps);
-            setprop(fmfd ~ "target-fpa", vs_fps);
+            setprop(fmfd ~ "target-fpa", me.fpa_angle);
             setprop(fmfd ~ "pitch-vs", 0);
             setprop(fmfd ~ "pitch-fpa", 0);
             setprop(fmfd ~ "pitch-gs", 0);
@@ -386,7 +378,7 @@ var fmgc_loop = {
                     if (!retard){
                         setprop(settings~ 'spd-pitch-min', min);
                         setprop(settings~ 'spd-pitch-max', max);
-                        setprop(fmgc~ "spd-with-pitch", 1);
+                        setprop(fmgc~ "spd-with-pitch", me.speed_with_pitch);
                     } else {
                         #print("Retard...");
                         setprop(fmgc~ "spd-with-pitch", 0);
@@ -441,12 +433,7 @@ var fmgc_loop = {
 
             ## LATERAL CONTROL -----------------------------------------------------
 
-            #if (me.lat_ctrl == "man-set") {
-
-                
-
-            #}
-            if (lmode == "HDG" or lmode == "TRK" or me.toga_trk != nil) {#TODO: support GA TRK
+            if (lmode == "HDG" or lmode == "TRK" or me.toga_trk != nil) {
 
                 # Find Heading Deflection
                 var true_north = me.use_true_north;
@@ -463,17 +450,17 @@ var fmgc_loop = {
                     setprop(servo~  "aileron", 1);
                     setprop(servo~ "aileron-nav1", 0);
 
-                    if (math.abs(deflection) <= 1)
+                    if (math.abs(deflection) <= 0.25)#TODO: change to 0.25
                         setprop(servo~ "target-bank", 0);
                     else
                         setprop(servo~ "target-bank", bank);
                 }
-                setprop(servo~  "fd-aileron", 1);
-                setprop(servo~ "fd-aileron-nav1", 0);
-                if (math.abs(deflection) <= 1)
-                    setprop(servo~ "fd-target-bank", 0);
+                setprop(fmfd~ "aileron", 1);
+                setprop(fmfd~ "aileron-nav1", 0);
+                if (math.abs(deflection) <= 0.25)#TODO: change to 0.25
+                    setprop(fmfd~ "target-bank", 0);
                 else
-                    setprop(servo~ "fd-target-bank", bank);
+                    setprop(fmfd~ "target-bank", bank);
 
             } elsif (me.active_lat_mode == "LOC" or 
                      me.active_lat_mode == "LOC*" or 
@@ -505,16 +492,16 @@ var fmgc_loop = {
                     setprop(servo~ "target-bank", bank);
                 }
                 if(fdEngaged){
-                    setprop(servo~ "fd-aileron", 0);
+                    setprop(fmfd~ "aileron", 0);
 
-                    setprop(servo~ "fd-aileron-nav1", me.airborne); 	
+                    setprop(fmfd~ "aileron-nav1", me.airborne); 	
 
                     if(me.airborne)
-                        setprop(servo~ "fd-target-bank", bank);
+                        setprop(fmfd~ "target-bank", bank);
                     else {
                         var trgt_rudder = getprop(fmfd~'target-rudder');
                         var fd_bank = (me.ias >= 10 ? trgt_rudder : 0);
-                        setprop('/autopilot/internal/fd-bank', fd_bank);
+                        setprop('/instrumentation/pfd/fd_bank', fd_bank);
                     }
                         
                 }
@@ -547,26 +534,22 @@ var fmgc_loop = {
                         apEngaged = 0;
                     }
                 }
+                var early_desc = getprop("/autoland/early-descent") - 250;
                 if(apEngaged){
-                    if (agl > getprop("/autoland/early-descent") and !npa) {
-
+                    if (agl > early_desc and !npa) {
                         setprop(servo~ "elevator-gs", 1);
-
                         setprop(servo~ "elevator-vs", 0);
-
+                        setprop(servo~ "elevator-fpa", 0);
                     } else {
-
                         setprop(servo~ "elevator-gs", 0);
-
                         setprop(servo~ "elevator-vs", 1);
-
+                        setprop(servo~ "elevator-fpa", 0);
                     }
-
                     setprop(servo~ "elevator", 0);
                 }
                 var update_fd_pitch = (me.airborne and !apEngaged);
                 if(fdEngaged){
-                    if (agl > getprop("/autoland/early-descent") and !npa) {
+                    if (agl > early_desc and !npa) {
                         setprop(fmfd ~ "pitch-vs", 0);
                         setprop(fmfd ~ "pitch-fpa", 0);
                         setprop(fmfd ~ "pitch-gs", update_fd_pitch);
@@ -577,25 +560,35 @@ var fmgc_loop = {
                         setprop(fmfd ~ "pitch-fpa", 0);
                         setprop(fmfd ~ "pitch-gs", 0);
                     }
+                    if(fpa_mode){
+                        var fpa = 0;
+                        if(npa or me.gs_dev < 0.15){
+                            fpa = me.calc_final_fpa() or 0;
+                            if(agl > early_desc and !npa) fpa += me.gs_dev;
+                        }
+                        setprop(fmfd ~ "target-fpa", fpa);
+                    }
                 }
-
-                
-                #TODO: Flight Director Here
-                #setprop(servo~ "fd-elevator", 0);
 
             } else {
                 if(!ver_managed){
                     var vs_ref = 3000; 
+                    var fpa_ref = 15;
+                    var is_alt_mode = (substr(vmode, 0, 3) == 'ALT');
                     #TODO: FPA standard settings
                     var vsfpa_mode = 0; 
                     if(vmode == 'VS' or vmode == 'FPA'){
                         vs_ref = vs_setting; 
+                        fpa_ref = fpa_setting;
                         vsfpa_mode = 1; 
                     } else {
-                        if(me.true_vertical_phase == 'DES')
+                        if(me.true_vertical_phase == 'DES'){
                             vs_ref *= -1;
+                            fpa_ref *= -1;
+                        }
                     }
-                    if (me.ver_sub == "vs") {
+                    # V/S mode or ALT mode or OP CLB/DES
+                    if (ver_sub == "vs" or is_alt_mode or !vsfpa_mode) {
 
                         var target = getprop(fcu~ "alt");
 
@@ -624,44 +617,48 @@ var fmgc_loop = {
                         if(apEngaged){
                             setprop(servo~ "target-vs", vs);
                             setprop(servo~ "elevator-vs", 1);
+                            setprop(servo~ "elevator-fpa", 0);
                             setprop(servo~ "elevator", 0);
                             setprop(servo~ "elevator-gs", 0);
                         }
-                        setprop(fmfd ~ "target-vs", vs);
-                        setprop(fmfd ~ "pitch-vs", me.airborne and !apEngaged);
-                        setprop(fmfd ~ "pitch-fpa", 0);
-                        setprop(fmfd ~ "pitch-gs", 0);
-                        #setprop(servo~ "fd-elevator-vs", 0);
-                        #setprop(servo~ "fd-elevator", 0);
-                        #setprop(servo~ "fd-elevator-gs", 0);
-                        #setprop(servo~ "fd-target-vs", trgt_vs / 60);
-                        #setprop(servo~ "fd-target-pitch", (trgt_vs / 60) * 0.1);
+                        if(fdEngaged){
+                            setprop(fmfd ~ "target-vs", vs);
+                            setprop(fmfd ~ "pitch-vs", me.airborne and !apEngaged);
+                            setprop(fmfd ~ "pitch-fpa", 0);
+                            setprop(fmfd ~ "pitch-gs", 0);
+                            var target_fpa = 0;
+                            if(fpa_mode){
+                                if (((altitude - target) * fpa_ref) > 0) {
 
+                                    target_fpa = limit((target - altitude) / 200, 1);
+
+                                } else {
+
+                                    target_fpa = limit2((target - altitude) / 200, fpa_ref);
+
+                                }
+                            }
+                            setprop(fmfd ~ "target-fpa", target_fpa);
+                        }
                     } else {
 
-                        var target_alt = getprop(fcu~ "alt");
+                        #var target_alt = getprop(fcu~ "alt");
 
-                        var trgt_fpa = limit2((target_alt - altitude) * 2, fpa_setting);
+                        #var trgt_fpa = limit2((target_alt - altitude) * 2, fpa_setting);
                         if(apEngaged){
-                            setprop(servo~ "target-pitch", trgt_fpa);
+                            setprop(servo~ "target-fpa", fpa_setting);
 
                             setprop(servo~ "elevator-vs", 0);
-
-                            setprop(servo~ "elevator", 1);
+                            setprop(servo~ "elevator-fpa", 1);
+                            setprop(servo~ "elevator", 0);
 
                             setprop(servo~ "elevator-gs", 0);
                         }
-                        setprop(fmfd ~ "target-fpa", trgt_fpa);
-                        setprop(fmfd ~ "target-pitch", trgt_fpa);
+                        setprop(fmfd ~ "target-fpa", fpa_setting);
+                        setprop(fmfd ~ "target-pitch", fpa_setting);
                         setprop(fmfd ~ "pitch-vs", 0);
                         setprop(fmfd ~ "pitch-fpa", 1);
                         setprop(fmfd ~ "pitch-gs", 0);
-                        #setprop(servo~ "fd-elevator-vs", 0);
-
-                        #setprop(servo~ "fd-elevator", 1);
-
-                        #setprop(servo~ "fd-elevator-gs", 0);
-                        #setprop(servo~ "fd-target-pitch", trgt_fpa);
                     }
                 }
             }
@@ -861,13 +858,13 @@ var fmgc_loop = {
                                 else
                                     setprop(servo~ "target-bank", bank);
                             }
-                            setprop(servo~  "fd-aileron", 1);
-                            setprop(servo~ "fd-aileron-nav1", 0);
+                            setprop(fmfd~ "aileron", 1);
+                            setprop(fmfd~ "aileron-nav1", 0);
 
                             if (math.abs(deflection) <= 1)
-                                setprop(servo~ "fd-target-bank", 0);
+                                setprop(fmfd~ "target-bank", 0);
                             else
-                                setprop(servo~ "fd-target-bank", bank);							
+                                setprop(fmfd~ "target-bank", bank);							
 
                         }
 
@@ -906,11 +903,11 @@ var fmgc_loop = {
 
                             setprop(servo~ "target-bank", bank);
                         }
-                        setprop(servo~  "fd-aileron", 1);
+                        setprop(fmfd~ "aileron", 1);
 
-                        setprop(servo~ "fd-aileron-nav1", 0);
+                        setprop(fmfd~ "aileron-nav1", 0);
 
-                        setprop(servo~ "fd-target-bank", bank);
+                        setprop(fmfd~ "target-bank", bank);
                     }
 
                     # Else, fly the respective procedures
@@ -932,11 +929,11 @@ var fmgc_loop = {
 
                             setprop(servo~ "target-bank", bank);
                         }
-                        setprop(servo~  "fd-aileron", 1);
+                        setprop(fmfd~ "aileron", 1);
 
-                        setprop(servo~ "fd-aileron-nav1", 0);
+                        setprop(fmfd~ "aileron-nav1", 0);
 
-                        setprop(servo~ "fd-target-bank", bank);
+                        setprop(fmfd~ "target-bank", bank);
 
                     } elsif (getprop("/flight-management/procedures/active") == "star") {
 
@@ -953,11 +950,11 @@ var fmgc_loop = {
 
                             setprop(servo~ "target-bank", bank);
                         }
-                        setprop(servo~  "fd-aileron", 1);
+                        setprop(fmfd~ "aileron", 1);
 
-                        setprop(servo~ "fd-aileron-nav1", 0);
+                        setprop(fmfd~ "aileron-nav1", 0);
 
-                        setprop(servo~ "fd-target-bank", bank);
+                        setprop(fmfd~ "target-bank", bank);
 
                     } else {
 
@@ -975,11 +972,11 @@ var fmgc_loop = {
 
                             setprop(servo~ "target-bank", bank);
                         }
-                        setprop(servo~  "fd-aileron", 1);
+                        setprop(fmfd~ "aileron", 1);
 
-                        setprop(servo~ "fd-aileron-nav1", 0);
+                        setprop(fmfd~ "aileron-nav1", 0);
 
-                        setprop(servo~ "fd-target-bank", bank);
+                        setprop(fmfd~ "target-bank", bank);
                     }
 
                 }
@@ -988,7 +985,7 @@ var fmgc_loop = {
 
             ## VERTICAL CONTROL ----------------------------------------------------
 
-            if (ver_managed) {
+            if (ver_managed and !me.non_precision_app) {
                 var target_alt = me.real_target_alt;
                 var alt_diff = me.real_target_alt - altitude;
 
@@ -996,10 +993,15 @@ var fmgc_loop = {
                 var abs_diff = math.abs(alt_diff);
 
                 var max_vs = 0; #TODO: is it right?
-                if(target_alt > altitude)
+                var max_fpa = 0;
+                if(target_alt > altitude){
                     max_vs = 2400;
-                elsif(target_alt < altitude)
+                    max_fpa = 15;
+                }
+                elsif(target_alt < altitude){
                     max_vs = -2400;
+                    max_fpa = -15;
+                }
                 if (((altitude - target_alt) * max_vs) > 0) {
                     final_vs = limit((target_alt - altitude) * 2, 200);
                 } else {
@@ -1010,33 +1012,53 @@ var fmgc_loop = {
                 setprop(fmgc_val ~ 'vnav-final-vs', final_vs);
                 if(apEngaged){
                     setprop(servo~ "target-vs", final_vs);
-
                     setprop(servo~ "elevator-vs", 1);
-
+                    setprop(servo~ "elevator-fpa", 0);
                     setprop(servo~ "elevator", 0);
-
                     setprop(servo~ "elevator-gs", 0);
                 }
-                #setprop(servo~ "fd-target-vs", final_vs);
-                #setprop(servo~ "fd-target-pitch", final_vs * 0.1);
-                setprop(fmfd ~ "target-vs", final_vs);
-                setprop(fmfd ~ "pitch-vs", me.airborne and !apEngaged);
-                setprop(fmfd ~ "pitch-fpa", 0);
-                setprop(fmfd ~ "pitch-gs", 0);
+                if(fdEngaged){
+                    setprop(fmfd ~ "target-vs", final_vs);
+                    setprop(fmfd ~ "pitch-vs", me.airborne and !apEngaged);
+                    setprop(fmfd ~ "pitch-fpa", 0);
+                    setprop(fmfd ~ "pitch-gs", 0);
+                    var target_fpa = 0;
+                    if(fpa_mode){
+                        if (((altitude - target_alt) * max_fpa) > 0) {
+
+                            target_fpa = limit((target_alt - altitude) / 200, 1);
+
+                        } else {
+
+                            target_fpa = limit2((target_alt - altitude) / 200, max_fpa);
+
+                        }
+                    }
+                    setprop(fmfd ~ "target-fpa", target_fpa);
+                }
             }
 
         } # End of AP1 MASTER CHECK
         var fd_pitch = 0;
         if(me.speed_with_pitch){
-            fd_pitch = getprop('/autopilot/settings/target-pitch-deg');
-            setprop(fmfd~ 'target-pitch', getprop('/orientation/pitch-deg'));
+            if(fpa_mode and apEngaged){
+                fd_pitch = me.fpa_angle; 
+                setprop(fmfd~ 'target-fpa', fd_pitch);
+            } else {
+                fd_pitch = getprop('/autopilot/settings/target-pitch-deg'); 
+                setprop(fmfd~ 'target-pitch', getprop('/orientation/pitch-deg'));
+            }
         }
         else{
-            if(!apEngaged)
-                fd_pitch = getprop('/flight-management/fd/target-pitch');
+            if(!apEngaged or vmode == 'FPA')
+                fd_pitch = getprop(fmfd~ 'target-pitch');
             else {
-                fd_pitch = getprop('/orientation/pitch-deg');
-                setprop('/flight-management/fd/target-pitch', fd_pitch);
+                if(fpa_mode){
+                    fd_pitch = getprop('/flight-management/fd/target-fpa');
+                } else {
+                    fd_pitch = getprop('/orientation/pitch-deg');
+                }
+                setprop(fmfd~ 'target-pitch', fd_pitch);
             }     
         }  
         if(fd_pitch == nil or !me.airborne) fd_pitch = 0;
@@ -1168,6 +1190,10 @@ var fmgc_loop = {
                 retract_flaps_spd);
         me.stall_spd = stall_spd;
     },
+    calc_required_fpa: func(alt, target_alt, distance){
+        var d = target_alt - alt;
+        return RAD2DEG * math.atan2((d * FT2NM), distance);
+    },
     get_current_state : func(){
         me.flplan_active = getprop("/autopilot/route-manager/active");
         me.agl = getprop("/position/altitude-agl-ft");
@@ -1230,6 +1256,8 @@ var fmgc_loop = {
         me.armed_lat_mode = '';
         me.active_ver_mode = '';
         me.armed_ver_mode = '';
+        #me.armed_ver_secondary_mode = '';
+        me.display_ver_secondary_mode = 0;
         me.active_common_mode = '';
         me.armed_common_mode = '';
         me.athr_msg = '';
@@ -1252,7 +1280,6 @@ var fmgc_loop = {
         var throttle = me.max_throttle_pos;
         var toga = (throttle == 1);
         var flex_mct = (throttle >= thrust_levers.detents.FLEX and throttle < 1);
-        
         
         # Basic Lateral Mode
         var lmode = '';
@@ -1303,7 +1330,7 @@ var fmgc_loop = {
                 setprop(fmgc_val ~ 'vnav-target-alt', fcu_alt);
                 follow_alt_cstr = 0;
             } else {
-                if((phase == 'CLB' and fcu_alt < alt_cstr) or 
+                if((phase == 'CLB' and fcu_alt < alt_cstr) or  #TODO: What if phase == APP ??
                    (phase == 'DES' and fcu_alt > alt_cstr)){
                     setprop(fmgc_val ~ 'vnav-target-alt', fcu_alt);
                     follow_alt_cstr = 0;
@@ -1383,7 +1410,7 @@ var fmgc_loop = {
             elsif(appr_pressed){
                 if(me.ils_frq and getprop(radio~ 'ils-mode')){
                     vmode = 'G/S';
-                } elsif(flplan_active and me.dest_rwy != '') {
+                } elsif(flplan_active and me.dest_rwy != '') { #TODO: check for non-ILS destination? maybe not
                     vmode = 'FINAL';
                     lmode = 'APP NAV';
                     #final_app_actv
@@ -1414,7 +1441,7 @@ var fmgc_loop = {
                     if(me.nav_in_range){
                         me.active_lat_mode = lmode;
                         me.armed_lat_mode = ''; #TODO: it seems there's not VOR LOC support
-                        if(math.abs(me.loc_dev) > 0.085) 
+                        if(math.abs(me.loc_dev) > 0.09) 
                             me.active_lat_mode = 'LOC*';
                     } else {
                         me.active_lat_mode = lat_sel_mode;
@@ -1422,7 +1449,7 @@ var fmgc_loop = {
                     }
                 }
                 elsif(lmode == 'NAV'){
-                    if(flplan_active){
+                    if(flplan_active){ #TODO: support gps leg course error
                         me.active_lat_mode = lmode;
                         me.armed_lat_mode = (loc_mode ? 'LOC' : '');
                     } else {
@@ -1433,7 +1460,7 @@ var fmgc_loop = {
                     me.active_lat_mode = lmode;
                     me.armed_lat_mode = '';
                 }
-                if(loc_mode){
+                if(loc_mode){ #TODO: check for NPA?
                     if(me.active_lat_mode != 'LOC' and 
                        me.active_lat_mode != 'LOC*' and 
                        me.nav_in_range){
@@ -1450,7 +1477,7 @@ var fmgc_loop = {
             if(toga and me.flaps > 0 and me.agl < me.acc_alt and 
                (!me.toga_on_ground or me.toga_trk != nil)){
                 me.active_lat_mode = 'GA TRK';
-                me.armed_lat_mode = '';
+                me.armed_lat_mode = ''; #TODO: arm HDG/TRK?
                 if(me.toga_trk == nil)
                     me.toga_trk = me.track;
                 me.lat_mode = 'hdg';
@@ -1482,9 +1509,9 @@ var fmgc_loop = {
                         if(me.ver_ctrl != 'man-set'){
                             setprop(fmgc~ "ver-ctrl", 'man-set');
                             me.ver_ctrl = 'man-set';
-                        }      
+                        }
                         var flare = (me.autoland_phase == 'flare');
-                        var below_early_des = (me.agl < getprop('autoland/early-descent'));
+                        var below_early_des = (me.agl < getprop('autoland/early-descent')); #TODO: below_early_des > instance variable
                         if(flare){
                             me.active_common_mode = 'FLARE';
                             me.armed_common_mode = 'ROLL OUT';
@@ -1498,6 +1525,7 @@ var fmgc_loop = {
                             me.active_ver_mode = vmode;
                             me.armed_common_mode = 'LAND'; 
                         }
+                        me.armed_ver_secondary_mode = '';
                     } else {
                         if(ver_fmgc) 
                             me.active_ver_mode = vmode_main;
@@ -1506,6 +1534,7 @@ var fmgc_loop = {
                                                                        vphase,
                                                                        raw_alt_diff);
                         me.armed_ver_mode = vmode;
+                        me.display_ver_secondary_mode = 1;
                     }
                 }
                 elsif(vmode == 'FINAL') { #TODO: final disarms at DH - 50
@@ -1513,12 +1542,19 @@ var fmgc_loop = {
                     if(dest_wp != nil){
                         var dest_idx = dest_wp.index;
                         if(dest_idx != current_wp){
-                            me.active_ver_mode = getprop(vmodes~'active');
+                            if(ver_fmgc) 
+                                me.active_ver_mode = vmode_main;
+                            else 
+                                me.active_ver_mode = me.get_selected_vmode(vmode_main, 
+                                                                           vphase,
+                                                                           raw_alt_diff);
                             me.armed_ver_mode = vmode;
+                            me.display_ver_secondary_mode = 1;
                         } else{
                             me.active_ver_mode = vmode;
                             me.armed_ver_mode = '';
                             me.non_precision_app = 1;
+                            me.armed_ver_secondary_mode = '';
                         }
                     } else {
                         me.revert_to_vsfpa(vmode);
@@ -1558,6 +1594,8 @@ var fmgc_loop = {
                             me.armed_ver_mode = 'ALT';
                         }
                     }
+                    if(appr_pressed)
+                        me.armed_ver_secondary_mode = me.armed_ver_mode;
                 }
             }
             # Check if fcu alt contrasts with CLB or DES modes
@@ -1571,6 +1609,7 @@ var fmgc_loop = {
         }
         #ATHR 
         var fixed_thrust = 0;
+        me.speed_with_pitch = me.pitch_controls_speed(me.active_ver_mode);
         if(me.a_thr == 'eng'){
             var spd_mode = '';
             if(me.spd_mode == "ias"){
@@ -1580,6 +1619,7 @@ var fmgc_loop = {
             }
             if(!me.ap_engaged and !me.fd_engaged){
                 me.active_athr_mode = spd_mode;
+                me.speed_with_pitch = 0;
             } else {
                 me.active_athr_mode = me.get_athr_mode(me.active_ver_mode, spd_mode);
                 if(me.active_athr_mode != spd_mode)
@@ -1607,6 +1647,7 @@ var fmgc_loop = {
         }
         if(me.is_stalling or me.alpha_floor_mode){
             fixed_thrust = 1;
+            me.speed_with_pitch = 1;
             me.active_athr_mode = 'A. FLOOR';
             me.alpha_floor_mode = 1;
         } 
@@ -1658,12 +1699,15 @@ var fmgc_loop = {
             me.armed_ver_mode = '';
             me.active_common_mode = '';
             me.armed_common_mode = '';
+            me.armed_ver_secondary_mode = '';
         }
         
         setprop(athr_modes~'active', me.active_athr_mode);
         setprop(athr_modes~'armed', me.armed_athr_mode);
         setprop(vmodes~'active', me.active_ver_mode);
         setprop(vmodes~'armed', me.armed_ver_mode);
+        setprop(vmodes~'secondary-armed', me.armed_ver_secondary_mode);
+        setprop(vmodes~'display-secondary-armed', me.display_ver_secondary_mode);
         setprop(lmodes~'active', me.active_lat_mode);
         setprop(lmodes~'armed', me.armed_lat_mode);
         setprop(common_modes~'active', me.active_common_mode);
@@ -1688,15 +1732,7 @@ var fmgc_loop = {
                 return spd_mode;
         }
         var retard = getprop("/autoland/retard");
-        if(vmode == 'SRS' or 
-           vmode == 'CLB' or 
-           vmode == 'DES' or 
-           vmode == 'OP CLB' or 
-           vmode == 'OP DES' or 
-           vmode == 'EXP CLB' or 
-           vmode == 'EXP DES' or 
-           retard
-          ){
+        if(me.speed_with_pitch or retard){
             var thr_mode = 'THR';
             if(me.max_throttle_pos < 0.6 and !me.thrust_lock and !retard){
                 thr_mode = 'THR LVR';
@@ -1711,6 +1747,17 @@ var fmgc_loop = {
             return thr_mode;
         }
         return spd_mode;
+    },
+    pitch_controls_speed: func(vmode){
+        return (
+            vmode == 'SRS' or 
+            vmode == 'CLB' or 
+            vmode == 'DES' or 
+            vmode == 'OP CLB' or 
+            vmode == 'OP DES' or 
+            vmode == 'EXP CLB' or 
+            vmode == 'EXP DES'
+        );
     },
     get_alt_mode: func(trgt_alt, alt_cstr, crz_alt, capturing){
         var mode = 'ALT';
@@ -2530,6 +2577,15 @@ var fmgc_loop = {
         }
         return nil;
     },
+    calc_final_fpa: func(){
+        var alt = me.altitude;
+        var dest_alt = getprop('autopilot/route-manager/destination/field-elevation-ft');
+        var diff = dest_alt - alt;
+        var wp = me.get_destination_wp();
+        if(wp == nil) return nil;
+        var distance = getprop('autopilot/route-manager/route/wp['~wp.index~']/distance-nm');
+        return me.calc_required_fpa(alt, dest_alt, distance);
+    },
     set_current_hdgtrk: func(){
         setprop(fcu~ 'hdg', int(me.hdg_trk));
     },
@@ -2551,6 +2607,7 @@ var fmgc_loop = {
         setprop(fcu~ prop, current);
     },
     revert_to_vsfpa: func(vmode){
+        if (me.vsfpa_mode) return;
         me.vsfpa_mode = 1;
         setprop(fmgc~'vsfpa-mode', 1);
         setprop(fmgc~ "ver-ctrl", "man-set");

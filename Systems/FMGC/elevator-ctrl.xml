@@ -86,6 +86,42 @@
 	</pid-controller>
 
 	<pid-controller>
+		<name>FCU/AP Elevator Control FPA</name>
+		<debug type="bool">false</debug>
+		<enable>
+			<condition>
+				<and>
+					<property>/servo-control/elevator-fpa</property>
+					<not>
+						<property>/flight-management/control/spd-with-pitch</property>
+					</not>
+				</and>
+			</condition>
+		</enable>
+		<input>
+			<prop>/flight-management/fmgc-values/fpa-angle</prop>
+		</input>
+		<reference>
+			<prop>/servo-control/target-fpa</prop>
+		</reference>
+		<output>
+			<prop>/controls/flight/elevator</prop> <!-- This is basically the fbw input prop -->
+		</output>
+		<config>
+			<Kp>-0.0075</Kp>
+			<beta>1</beta>
+			<alpha>0.1</alpha>
+			<gamma>0</gamma>
+			<Ti>10</Ti>
+			<Td>0.00001</Td>
+			<u_min>
+				<property>/flight-management/settings/min-elevator-ctrl</property>
+			</u_min>
+			<u_max>0.1</u_max>
+		</config>
+	</pid-controller>
+
+	<pid-controller>
 		<name>FCU/AP Elevator Control GS</name>
 		<debug type="bool">true</debug>
 		<enable>

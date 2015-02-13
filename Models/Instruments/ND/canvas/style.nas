@@ -873,11 +873,7 @@ canvas.NDStyles["Airbus"] = {
 				init: func(nd,symbol),
 				predicate: func(nd) (!nd.get_switch('toggle_centered') and	nd.get_switch('toggle_display_mode') != "PLAN"),
 				is_true: func(nd) {
-					if(nd.get_switch('toggle_true_north'))
-						var hdg = nd.aircraft_source.get_trk_tru();
-					else
-						var hdg = nd.aircraft_source.get_trk_mag();
-					nd.symbols.compass.setRotation(-hdg*D2R);
+					nd.symbols.compass.setRotation(-nd.userHdgTrk*D2R);
 					nd.symbols.compass.show()
 				},
 				is_false: func(nd) nd.symbols.compass.hide(),
@@ -889,11 +885,7 @@ canvas.NDStyles["Airbus"] = {
 				init: func(nd,symbol),
 				predicate: func(nd) (nd.get_switch('toggle_centered') and  nd.get_switch('toggle_display_mode') != "PLAN"),
 				is_true: func(nd) {
-					if(nd.get_switch('toggle_true_north'))
-						var hdg = nd.aircraft_source.get_trk_tru();
-					else
-						var hdg = nd.aircraft_source.get_trk_mag();
-					nd.symbols.compassApp.setRotation(-hdg*D2R);
+					nd.symbols.compassApp.setRotation(-nd.userHdgTrk*D2R);
 					nd.symbols.compassApp.show()
 				},
 				is_false: func(nd) nd.symbols.compassApp.hide(),

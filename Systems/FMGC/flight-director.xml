@@ -14,6 +14,8 @@
         <filter-gain>0.0</filter-gain>
     </predict-simple>
     
+    <!-- VERTICAL -->
+    
     <pid-controller>
         <name>FD V/S Target Pitch</name>
         <debug type="bool">false</debug>
@@ -70,6 +72,15 @@
             <prop>/velocities/vertical-speed-fps</prop>
             <!--prop>autopilot/internal/lookahead-5-sec-vs-fps</prop-->
         </input>
+        <reference><!-- When the aircraft is below glideslope keep level -->
+            <condition>
+                <greater-than>
+                    <property>instrumentation/nav/gs-needle-deflection-norm</property>
+                    <value>0.15</value>
+                </greater-than>
+            </condition>
+            <value>0</value>
+        </reference>
         <reference>
             <prop>/instrumentation/nav[0]/gs-rate-of-climb</prop>
         </reference>
@@ -88,6 +99,62 @@
             <!--Td>0.00001</Td-->
             <u_min>-15</u_min>
             <u_max>30</u_max>
+        </config>
+    </pid-controller>
+    
+    <!-- LATERAL -->
+
+    <pid-controller>
+        <name>FCU/FD Aileron Control</name>
+        <debug type="bool">false</debug>
+        <enable>
+            <prop>/flight-management/fd/aileron</prop>
+        </enable>
+        <input>
+            <prop>/orientation/roll-deg</prop>
+        </input>
+        <reference>
+            <prop>/flight-management/fd/target-bank</prop>
+        </reference>
+        <output>
+            <prop>/instrumentation/pfd/fd_bank</prop> <!-- This is basically the fbw input prop -->
+        </output>
+        <config>
+            <Kp>0.05</Kp>
+            <beta>1</beta>
+            <alpha>0.1</alpha>
+            <gamma>0</gamma>
+            <Ti>10</Ti>
+            <Td>0.00001</Td>
+            <u_min>-0.3</u_min>
+            <u_max>0.3</u_max>
+        </config>
+    </pid-controller>
+
+    <pid-controller>
+        <name>FCU/FD Aileron NAV1 Control</name>
+        <debug type="bool">false</debug>
+        <enable>
+            <prop>/flight-management/fd/aileron-nav1</prop>
+        </enable>
+        <input>
+            <prop>/orientation/roll-deg</prop>
+        </input>
+        <reference>
+            <prop>/flight-management/fd/target-bank</prop>
+        </reference>
+        <output>
+            <prop>/instrumentation/pfd/fd_bank</prop> <!-- This is basically the fbw input prop -->
+        </output>
+        <config>
+            <Kp>0.1</Kp>
+            <beta>1</beta>
+            <alpha>0.1</alpha>
+            <gamma>0</gamma>
+            <Ti>10</Ti>
+            <Td>0.00001</Td>
+            <u_min>-0.5</u_min>
+            <u_max>0.5</u_max>
         </config>
     </pid-controller>
     
