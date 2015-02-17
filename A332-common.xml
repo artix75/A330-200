@@ -271,6 +271,18 @@
 					<property type="string">hydraulics/control/ptu</property>
 				</signal>
 				<signal>
+					<type>bool</type>
+					<property type="string">controls/pneumatic/APU-bleed</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/pneumatic/engine/bleed</property>
+				</signal>
+				<signal>
+					<type>bool</type>
+					<property type="string">controls/pneumatic/engine[1]/bleed</property>
+				</signal>
+				<signal>
 					<type>float</type>
 					<property type="string">/consumables/fuel/tank[1]/level-kg</property>
 				</signal>

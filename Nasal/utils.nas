@@ -188,3 +188,7 @@ var print_flightplan = func(){
         print('');
     }
 }
+
+var reload_sound = func(){
+    fgcommand("reinit", props.Node.new({ subsystem: "sound" }));
+}

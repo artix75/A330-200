@@ -681,7 +681,8 @@ var warning_system = {
         var ap2 = getprop("/flight-management/control/ap2-master");
         var agl = getprop("/position/altitude-agl-ft");
         var al_wrn = 0;
-        if(actv_common_mode == "LAND" and !me.should_check_autoland){
+        var land_mode = (actv_common_mode == "LAND");
+        if(land_mode and !me.should_check_autoland){
             if (ap1 == 'eng' or ap2 == 'eng')
                 me.should_check_autoland = 1;
         }
@@ -696,7 +697,7 @@ var warning_system = {
                 if(agl > 15){
                     var loc_dev = getprop("instrumentation/nav/heading-needle-deflection-norm");
                     al_wrn = math.abs(loc_dev > 0.3);
-                }     
+                }
                 if(getprop('/gear/gear/wow')){
                     me.should_check_autoland = 0;
                     al_wrn = 0;

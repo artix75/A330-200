@@ -262,10 +262,16 @@
         <object-name>lat.dash</object-name>
         <condition>
             <and>
-                <equals>
-                    <property>/flight-management/control/lat-ctrl</property>
-                    <value>fmgc</value>
-                </equals>
+                <or>
+                    <equals>
+                        <property>/flight-management/control/lat-ctrl</property>
+                        <value>fmgc</value>
+                    </equals>
+                    <equals>
+                        <property>/flight-management/control/lat-mode</property>
+                        <value>nav1</value>
+                    </equals>
+                </or>
                 <not>
                     <property>/flight-management/fcu/display-hdg</property>
                 </not>
@@ -1194,13 +1200,21 @@
 		<type>select</type>
 		<object-name>hdg-text</object-name>
 		<condition>
-            <or>
-                <equals>
-                    <property>/flight-management/control/lat-ctrl</property>
-                    <value>man-set</value>
-                </equals>
-                <property>/flight-management/fcu/display-hdg</property>
-            </or>
+			<and>
+				<or>
+					<equals>
+						<property>/flight-management/control/lat-ctrl</property>
+						<value>man-set</value>
+					</equals>
+					<property>/flight-management/fcu/display-hdg</property>
+				</or>
+				<not>
+					<equals>
+						<property>/flight-management/control/lat-mode</property>
+						<value>nav1</value>
+					</equals>
+				</not>
+			</and>
 		</condition>
 	</animation>
 	

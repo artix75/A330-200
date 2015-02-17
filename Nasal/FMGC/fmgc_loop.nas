@@ -338,6 +338,10 @@ var fmgc_loop = {
                          common_mode == 'FLARE' or 
                          common_mode == 'FINAL APP');
         
+        if(app_phase and me.phase != 'APP'){
+            me.phase = 'APP';
+            setprop('flight-management/phase', 'APP');
+        }
         var ver_managed = me.ver_managed;
         #print("FMGC Loop: AP Eng -> " ~ apEngaged);
         var vs_fps = me.vs_fps;
@@ -1330,8 +1334,9 @@ var fmgc_loop = {
                 setprop(fmgc_val ~ 'vnav-target-alt', fcu_alt);
                 follow_alt_cstr = 0;
             } else {
-                if((phase == 'CLB' and fcu_alt < alt_cstr) or  #TODO: What if phase == APP ??
-                   (phase == 'DES' and fcu_alt > alt_cstr)){
+                if((phase == 'CLB' and fcu_alt < alt_cstr) or 
+                   (phase == 'DES' and fcu_alt > alt_cstr) or 
+                   (phase == 'APP' and fcu_alt > alt_cstr)){
                     setprop(fmgc_val ~ 'vnav-target-alt', fcu_alt);
                     follow_alt_cstr = 0;
                 } else {
@@ -1498,7 +1503,8 @@ var fmgc_loop = {
             #VERTICAL
             
             if((me.agl < me.acc_alt and me.agl > 0 and 
-                me.srs_spd > 0 and me.phase == 'CLB') or me.toga_trk != nil){
+                me.srs_spd > 0 and me.phase == 'CLB' and !appr_pressed) or 
+               me.toga_trk != nil){
                 me.active_ver_mode = 'SRS';
                 me.armed_ver_mode = vmode;
                 if(me.vmax > me.srs_spd)
@@ -1897,7 +1903,7 @@ var fmgc_loop = {
 
     },
     update_fcu: func(){
-        if(me.lat_ctrl == 'fmgc'){
+        if(me.lat_ctrl == 'fmgc' or me.lat_mode == 'nav1'){
             if(!getprop('/flight-management/fcu/display-hdg'))
                 me.set_current_hdgtrk();
         }

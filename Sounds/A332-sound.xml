@@ -120,29 +120,84 @@
  <!-- FX:                                                             -->
  <!-- =============================================================== -->
  
- <!-- Passengers
 
-    <passngrs>
-      <name>passenger cabin</name>
-      <mode>looped</mode>
-      <path>Aircraft/A330-200/Sounds/res/PassgCab5.wav</path>
-      <condition>
-	<property>sim/current-view/internal</property>
-      </condition>
-      <volume>
-	<property>sim/sound/effects/volume</property>
-	<factor>0.8</factor>
-	<min>0.3</min>
-	<max>0.5</max>
-      </volume>
-      <position>
-	<x>20</x>
-	<y>0</y>
-	<z>4</z>
-      </position>
-      <reference-dist>10</reference-dist>
-      <max-dist>25</max-dist>
-    </passngrs -->
+		<passngrs>
+			<name>passenger cabin</name>
+			<mode>looped</mode>
+			<path>Aircraft/A330-200/Sounds/res/PassgCab5.wav</path>
+			<condition>
+				<and>
+					<property>sim/current-view/internal</property>
+					<property>sim/sound/passengers</property>
+					<less-than>
+						<property>sim/current-view/view-number</property>
+						<value>10</value>
+					</less-than>
+					<greater-than-equals>
+						<property>sim/current-view/view-number</property>
+						<value>8</value>
+					</greater-than-equals>
+				</and>
+			</condition>
+			<volume>
+				<property>sim/sound/effects/volume</property>
+				<factor>0.2</factor>
+				<min>0</min>
+				<max>0.1</max>
+			</volume>
+			<position>
+				<x>15</x>
+				<y>0</y>
+				<z>4</z>
+			</position>
+			<reference-dist>5</reference-dist>
+			<max-dist>25</max-dist>
+		</passngrs>
+		
+		<inside>
+			<name>inside</name>
+			<mode>looped</mode>
+			<path>Aircraft/A330-200/Sounds/res/inside.wav</path>
+			<condition>
+				<and>
+					<property>sim/current-view/internal</property>
+					<or>
+						<and>
+							<property>engines/apu/running</property>
+							<property>controls/pneumatic/APU-bleed</property>
+						</and>
+						<and>
+							<property>engines/engine/running</property>
+							<property>controls/pneumatic/engine/bleed</property>
+						</and>
+						<and>
+							<property>engines/engine[1]/running</property>
+							<property>controls/pneumatic/engine[1]/bleed</property>
+						</and>
+					</or>
+				</and>
+			</condition>
+			<volume>
+				<!--property>sim/sound/effects/volume</property-->
+				<factor>0.25</factor>
+				<internal>dt_play</internal>
+				<min>0</min>
+				<max>0.15</max>
+			</volume>
+			<!--volume>
+				<factor>0.25</factor>
+				<internal>dt_stop</internal>
+				<min>0</min>
+				<max>0.15</max>
+			</volume-->
+			<position>
+				<x>0</x>
+				<y>0</y>
+				<z>4</z>
+			</position>
+			<reference-dist>10</reference-dist>
+			<max-dist>25</max-dist>
+		</inside>
 
 		<wind>
 			<name>wind</name>
@@ -199,7 +254,7 @@
 				<property>/velocities/groundspeed-kt</property>
 				<type>log</type>
 				<factor>0.36</factor>
-				<!--max>0.9</max-->
+				<max>0.9</max>
 
 			</volume>
 			<pitch>
@@ -623,6 +678,8 @@
 				<property>sim/sound/effects/volume</property>
 				<factor>3</factor>
 				<!--offset>1</offset-->
+				<min>1</min>
+				<max>6</max>
 			</volume>
 
 			<reference-dist>10</reference-dist>
@@ -1200,33 +1257,36 @@
 		<max-dist>100</max-dist>
 	</crc>
     
-    <rumblemain>
-        <name>main gear rumble</name>
-        <mode>looped</mode>
-        <path>Sounds/rumble.wav</path>
-        <condition>
-            <and>
-                <or>
-                    <property>gear/gear[1]/wow</property>
-                    <property>gear/gear[2]/wow</property>
-                </or>
-                <property>sim/current-view/internal</property>
-            </and>
-        </condition>
-        <volume>
-            <property>velocities/groundspeed-kt</property>
-            <!--type>log</type>
-            <factor>0.25</factor-->
-            <factor>0.08</factor>
-        </volume>
-        <position>
-            <x>-6.5</x>
-            <y>0</y>
-            <z>-5</z>
-        </position>
-        <reference-dist>20.0</reference-dist>
-        <max-dist>6000.0</max-dist>
-    </rumblemain>
+		<rumblemain>
+			<name>main gear rumble</name>
+			<mode>looped</mode>
+			<path>Sounds/rumble.wav</path>
+			<condition>
+				<and>
+					<or>
+						<property>gear/gear[0]/wow</property>
+						<property>gear/gear[1]/wow</property>
+						<property>gear/gear[2]/wow</property>
+					</or>
+					<property>sim/current-view/internal</property>
+				</and>
+			</condition>
+			<volume>
+				<property>velocities/groundspeed-kt</property>
+				<!--type>log</type>
+   <factor>0.25</factor-->
+				<factor>0.08</factor>
+				<min>0</min>
+				<max>0.6</max>
+			</volume>
+			<position>
+				<x>-6.5</x>
+				<y>0</y>
+				<z>-5</z>
+			</position>
+			<reference-dist>20.0</reference-dist>
+			<max-dist>6000.0</max-dist>
+		</rumblemain>
     
     <!-- CLICKS -->
     <switch>

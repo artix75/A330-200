@@ -170,6 +170,16 @@
         <property>sim/sound/music2</property>
       </binding>
     </checkbox>
+
+    <checkbox>
+      <halign>left</halign>
+      <label>Passenger noise</label>
+      <property>sim/sound/passengers</property>
+      <binding>
+          <command>property-toggle</command>
+          <property>sim/sound/passengers</property>
+      </binding>
+    </checkbox>
     
     <hrule/>
     
