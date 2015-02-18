@@ -1,6 +1,6 @@
 var spd_tree = "/flight-management/spd-manager/";
 
-var manage_speeds = func(descent_started, decel_point_passed, vmax) {
+var manage_speeds = func(descent_started, decel_point_passed, vmin, vmax) {
 
 	# Climb Speeds MANAGED (PERF)
 	
@@ -62,4 +62,6 @@ var manage_speeds = func(descent_started, decel_point_passed, vmax) {
 
     if(use_perf_speed and vmax and getprop("/flight-management/fmgc-values/target-spd") > vmax)
         setprop("/flight-management/fmgc-values/target-spd", vmax);
+    elsif(use_perf_speed and vmin and getprop("/flight-management/fmgc-values/target-spd") < vmin)
+        setprop("/flight-management/fmgc-values/target-spd", vmin);
 };

@@ -1033,7 +1033,7 @@ refs 4
 kids 0
 OBJECT poly
 name "target-alt-mng"
-loc 0.000460576 -0.000264099 -0.0424465
+loc 0.000960576 -0.000264099 -0.0424465
 texture "trgt-alt-mng.png"
 crease 45.000000
 numvert 4

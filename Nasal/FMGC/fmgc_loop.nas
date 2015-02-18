@@ -166,6 +166,7 @@ var fmgc_loop = {
         me.destination = nil;
         me.approach_runway = nil;
         me.approach_ils = nil;
+        me.destination_wp_info = nil;
 
         me.active_athr_mode = '';
         me.armed_athr_mode = '';
@@ -671,10 +672,10 @@ var fmgc_loop = {
 
         # FMGC CONTROL MODE ====================================================
         var remaining = me.remaining_nm;
+        var vmin = me.minimum_selectable_speed;
         var toga_flx_mode = (athrArmed and me.speed_with_pitch);
         if ((me.spd_ctrl == "fmgc") and (athrEngaged or toga_flx_mode or 
                                          !me.airborne)) {
-
             var cur_wp = me.current_wp;
             #var ias = getprop("/velocities/airspeed-kt");
 
@@ -697,7 +698,7 @@ var fmgc_loop = {
                     if (spd > 1) {
                         setprop("instrumentation/pfd/target-spd", spd);
                     }
-                }
+                } #TODO: ?? Cannot understand this
             }
             elsif(!me.airborne){
                 var spd = me.v2_spd;
@@ -759,31 +760,20 @@ var fmgc_loop = {
                         spd = vmax;
                     elsif(vmax and spd <=1 and vmax <= 1 and spd > vmax)
                         spd = vmax;
+                    if(spd > 1 and spd < vmin)
+                        spd = vmin;
                     setprop(fmgc_val~ "target-spd", spd);
 
                 }
 
                 # Performance and Automatic Calculated speeds from the PERF page on the mCDU are managed separately
                 if(!srs and !me.exped_mode)
-                    manage_speeds(me.descent_started, (remaining < decel_point), me.vmax);
+                    manage_speeds(me.descent_started, (remaining < decel_point), vmin, me.vmax);
 
                 setprop(fmgc~ "a-thr/ias", 0);
                 setprop(fmgc~ "a-thr/mach", 0);
 
                 var spd = getprop(fmgc_val~ "target-spd");
-
-                #if (spd == nil) {
-                        
-                #    if (altitude <= 10000)
-                #        spd = 250;
-                #    elsif(altitude < 25000)
-                #        spd = 320;
-                #    else
-                #        spd = 0.78;
-                #
-                #}
-                #if(ias >= (me.vne - 20))
-                #    spd = me.vne - 30;
 
                 if (spd < 1) {
                     #TODO: change SPEED/MACH indication on PFD
@@ -811,6 +801,11 @@ var fmgc_loop = {
                     setprop(fmgc~ "spd-mode", 'ias');
                 }
                 fcu_ias = exped_spd;
+            } else {
+                if(fcu_ias < vmin){
+                    setprop(fcu~ "ias", vmin);
+                    fcu_ias = vmin;
+                }
             }
             setprop("instrumentation/pfd/target-spd", fcu_ias);
         }
@@ -879,13 +874,19 @@ var fmgc_loop = {
                         #var bug = getprop("/autopilot/internal/true-heading-error-deg");
                         var f = me.flightplan;
                         var geocoord = geo.aircraft_position();
-                        var referenceCourse = f.pathGeod(f.indexOfWP(f.destination_runway), -getprop("autopilot/route-manager/distance-remaining-nm"));
+                        var dest_wp_info = me.get_destination_wp();
+                        if(dest_wp_info == nil){
+                            dest_wp_info = {
+                                index: me.wp_count - 1
+                            };
+                        }
+                        var referenceCourse = f.pathGeod(dest_wp_info.index, -getprop("autopilot/route-manager/distance-remaining-nm"));
                         var courseCoord = geo.Coord.new().set_latlon(referenceCourse.lat, referenceCourse.lon);
                         var CourseError = (geocoord.distance_to(courseCoord) / 1852) + 1;
                         var change_wp = abs(getprop("autopilot/route-manager/wp/bearing-deg") - getprop('orientation/heading-deg'));
                         if(change_wp > 180) change_wp = (360 - change_wp);
                         CourseError += (change_wp / 20);
-                        var targetCourse = f.pathGeod(f.indexOfWP(f.destination_runway), (-getprop("autopilot/route-manager/distance-remaining-nm") + CourseError));
+                        var targetCourse = f.pathGeod(dest_wp_info.index, (-getprop("autopilot/route-manager/distance-remaining-nm") + CourseError));
                         courseCoord = geo.Coord.new().set_latlon(targetCourse.lat, targetCourse.lon);
                         CourseError = (geocoord.course_to(courseCoord) - me.hdg_trk);
                         if(CourseError < -180) CourseError += 360;
@@ -1166,6 +1167,7 @@ var fmgc_loop = {
                 me.approach_runway = nil;
                 me.approach_ils = nil;
             }
+            me.destination_wp_info = nil;
         }
         if(last_throttle < 1 and me.max_throttle == 1){
             me.toga_on_ground = !me.airborne;
@@ -1232,6 +1234,7 @@ var fmgc_loop = {
         me.thrust_lock = getprop('flight-management/thrust-lock');
         me.thrust_lock_reason = getprop('flight-management/thrust-lock-reason');
         me.green_dot_spd = me.stall_spd + 15;
+        me.minimum_selectable_speed = me.green_dot_spd;
         setprop(fmgc_val ~ 'fpa-angle', me.fpa_angle);
         setprop('instrumentation/pfd/green-dot-speed', me.green_dot_spd);
         me.flightplan = flightplan();
@@ -1291,7 +1294,7 @@ var fmgc_loop = {
         var lat_sel_mode = (me.ver_sub == 'fpa' ? 'TRK' : 'HDG');
         if (me.lat_ctrl == "man-set") {
             if (me.lat_mode == "hdg") {
-                lmode = lat_sel_mode;            
+                lmode = lat_sel_mode;
             } 
             elsif(loc_mode){
                 lmode = 'LOC';
@@ -2552,10 +2555,13 @@ var fmgc_loop = {
         }
     },
     get_destination_wp: func(){
+        var wp_info = me.destination_wp_info;
+        if(wp_info != nil)
+            return wp_info;
         var f= me.flightplan; 
         var numwp = me.wp_count;
         var lastidx = numwp - 1;
-        var wp_info = nil;
+        wp_info = nil;
         for(var i = lastidx; i >= 0; i = i - 1){
             var wp = f.getWP(i);
             if(wp != nil){
@@ -2570,6 +2576,7 @@ var fmgc_loop = {
                 }
             }
         }
+        me.destination_wp_info = wp_info;
         return wp_info;
     },
     calc_final_vs: func(){
