@@ -180,6 +180,9 @@ var fmgc_loop = {
         me.airborne = 0;
         me.toga_on_ground = 0;
         me.armed_ver_secondary_mode = '';
+        me.missed_approach_planned = 0;
+        me.missed_approach_idx = -1;
+        me.missed_approach = 0;
         # Radio
     
         setprop(radio~ 'autotuned', 0);
@@ -227,7 +230,9 @@ var fmgc_loop = {
         me.update_fcu();
 
         setprop("flight-management/procedures/active", procedure.check());
-
+        setprop("autopilot/route-manager/real-remaining-nm", me.remaining_nm);
+        setprop("autopilot/route-manager/real-distance-nm", me.fp_distance);
+        
         setprop(fcu~ "alt-100", me.alt_100());
         setprop(fcu~ "alt-disp", me.target_alt_disp());
         setprop(fmgc~ "follow-alt-cstr", 
@@ -818,8 +823,9 @@ var fmgc_loop = {
             if (lmode == 'NAV' or lmode == 'APP NAV' or common_mode == 'FINAL APP') {
 
                 # If A procedure's NOT being flown, we'll fly the active F-PLN (unless it's a hold pattern)
+                var remaining = me.remaining_nm;
 
-                if (getprop("/flight-management/procedures/active") == "off") {
+                if (1) { #getprop("/flight-management/procedures/active") == "off") {
 
                     if (((getprop("/flight-management/hold/wp_id") == getprop("/flight-management/current-wp")) or (getprop("/flight-management/hold/init") == 1)) and (getprop("/flight-management/hold/wp_id") != 0)) {
 
@@ -863,7 +869,7 @@ var fmgc_loop = {
                             if (math.abs(deflection) <= 1)
                                 setprop(fmfd~ "target-bank", 0);
                             else
-                                setprop(fmfd~ "target-bank", bank);							
+                                setprop(fmfd~ "target-bank", bank);
 
                         }
 
@@ -880,13 +886,13 @@ var fmgc_loop = {
                                 index: me.wp_count - 1
                             };
                         }
-                        var referenceCourse = f.pathGeod(dest_wp_info.index, -getprop("autopilot/route-manager/distance-remaining-nm"));
+                        var referenceCourse = f.pathGeod(dest_wp_info.index, -remaining);
                         var courseCoord = geo.Coord.new().set_latlon(referenceCourse.lat, referenceCourse.lon);
                         var CourseError = (geocoord.distance_to(courseCoord) / 1852) + 1;
                         var change_wp = abs(getprop("autopilot/route-manager/wp/bearing-deg") - getprop('orientation/heading-deg'));
                         if(change_wp > 180) change_wp = (360 - change_wp);
                         CourseError += (change_wp / 20);
-                        var targetCourse = f.pathGeod(dest_wp_info.index, (-getprop("autopilot/route-manager/distance-remaining-nm") + CourseError));
+                        var targetCourse = f.pathGeod(dest_wp_info.index, (-remaining + CourseError));
                         courseCoord = geo.Coord.new().set_latlon(targetCourse.lat, targetCourse.lon);
                         CourseError = (geocoord.course_to(courseCoord) - me.hdg_trk);
                         if(CourseError < -180) CourseError += 360;
@@ -1202,10 +1208,29 @@ var fmgc_loop = {
     },
     get_current_state : func(){
         me.flplan_active = getprop("/autopilot/route-manager/active");
+        me.flightplan = flightplan();
         me.agl = getprop("/position/altitude-agl-ft");
         me.current_wp = getprop("autopilot/route-manager/current-wp");
         me.wp_count = getprop(actrte~"num");
         me.remaining_nm = getprop("autopilot/route-manager/distance-remaining-nm");
+        me.remaining_total_nm = me.remaining_nm;
+        me.total_fp_distance = getprop("autopilot/route-manager/total-distance");
+        me.fp_distance = me.total_fp_distance;
+        me.last_wp_idx = me.wp_count - 1;
+        var dest_wp = me.get_destination_wp();
+        if(dest_wp != nil){
+            var dst_idx = dest_wp.index;
+            var missed_approach_planned = (dst_idx < me.last_wp_idx);
+            if(missed_approach_planned){
+                me.missed_approach = (me.current_wp > dst_idx);
+                me.fp_distance = dest_wp.distance_along_route;
+                var d = (me.total_fp_distance - me.fp_distance);
+                me.remaining_nm -= d;
+            } else {
+                me.missed_approach = 0;
+            }
+            me.missed_approach_planned = missed_approach_planned;
+        }
         me.airborne = !getprop("/gear/gear[0]/wow") and 
                       !getprop("/gear/gear[1]/wow") and 
                       !getprop("/gear/gear[2]/wow") and 
@@ -1237,7 +1262,6 @@ var fmgc_loop = {
         me.minimum_selectable_speed = me.green_dot_spd;
         setprop(fmgc_val ~ 'fpa-angle', me.fpa_angle);
         setprop('instrumentation/pfd/green-dot-speed', me.green_dot_spd);
-        me.flightplan = flightplan();
         if(me.flplan_active and me.wp_count > 0){
             me.wp = me.flightplan.getWP();
         } else {
@@ -2071,7 +2095,9 @@ var fmgc_loop = {
             #print("TD: " ~ top_of_descent);
             var f= me.flightplan; 
             #                   var topClimb = f.pathGeod(0, 100);
-            var topDescent = f.pathGeod(-1, -top_of_descent);
+            var dest_wp = me.get_destination_wp();
+            var idx = (dest_wp != nil ? dest_wp.index : -1);
+            var topDescent = f.pathGeod(idx, -top_of_descent);
             setprop(tdNode ~ "/latitude-deg", topDescent.lat); 
             setprop(tdNode ~ "/longitude-deg", topDescent.lon); 
             if(me.armed_ver_mode == "DES")
@@ -2103,39 +2129,20 @@ var fmgc_loop = {
                 
                 var trans_alt = cruise_alt - (vs_fpm / 2);
                 var before_trans_nm = me.nm2level(altitude, trans_alt, vs_fpm);
-                #before_trans_nm = before_trans_nm * 2;
                 var after_trans_nm = me.nm2level(trans_alt, cruise_alt, vs_fpm / 4);
-                #print('ALT: ' ~ altitude);
-                #print('D: ' ~ d);
-                #print("Trans ALT: "~trans_alt);
-                #print("VS: "~vs_fpm);
-                #print("Before NM: "~before_trans_nm);
-                #print("After NM: "~after_trans_nm);
-                #print('---');
                 if(before_trans_nm < 1 or 
                    (d <= 500 and before_trans_nm >= 1) or 
                     d < 250) 
                     return;
-                #var min = d / vs_fpm;
-                #var ground_speed_kt = getprop("/velocities/groundspeed-kt");
-                #var nm_min = ground_speed_kt / 60;
-                #var nm = nm_min * min;
                 var nm = before_trans_nm + after_trans_nm;
                 #print("NM: "~nm);
                 #print('-----');
                 var remaining = me.remaining_nm;
-                var totdist = getprop("autopilot/route-manager/total-distance");
-                nm = nm + (totdist - remaining);
-                #if(d > 500)
-                #    nm += 8;
-                #else 
-                #    nm += (8 * (d / 500));
+                nm = nm + (me.fp_distance - remaining);
                 var cur_tc = getprop(tc_raw_prop);
                 if(cur_tc == nil) cur_tc = 0;
                 if(math.abs(nm - cur_tc) > 0){
                     setprop(tc_raw_prop, nm);
-                    #var bearing = me.calc_point_bearing(nm);
-                    #setprop(tcNode~'/bearing-deg', bearing);
                 } 
                 var f= me.flightplan; 
                 #print("TC: " ~ nm);
@@ -2216,8 +2223,7 @@ var fmgc_loop = {
                 var nm_min = ground_speed_kt / 60;
                 var nm = nm_min * min;
                 var remaining = me.remaining_nm;
-                var totdist = getprop("autopilot/route-manager/total-distance");
-                nm = nm + (totdist - remaining);
+                nm = nm + (me.fp_distance - remaining);
                 #if(d > 500)
                 #    nm += 8;
                 #else 
@@ -2324,10 +2330,12 @@ var fmgc_loop = {
             }
             if(first_approach_wp != nil){
                 var dist = wp.distance_along_route;
-                var totdist = getprop("autopilot/route-manager/total-distance");
+                var totdist = me.fp_distance;
                 dist = totdist - dist;
                 var nm = dist + 11;
-                var decelPoint = f.pathGeod(-1, -nm);
+                var dest_wp = me.get_destination_wp();
+                var idx = (dest_wp != nil ? dest_wp.index : -1);
+                var decelPoint = f.pathGeod(idx, -nm);
                 setprop(decelNode ~ "/latitude-deg", decelPoint.lat); 
                 setprop(decelNode ~ "/longitude-deg", decelPoint.lon); 
                 return nm;
@@ -2394,8 +2402,7 @@ var fmgc_loop = {
                     var nm_min = ground_speed_kt / 60;
                     var nm = nm_min * min;
                     var remaining = me.remaining_nm;
-                    var totdist = getprop("autopilot/route-manager/total-distance");
-                    nm = nm + (totdist - remaining);
+                    nm = nm + (me.fp_distance - remaining);
                     if(d > 500 and alt == trgt_alt)
                         nm += 8;
                     elsif(d <= 500 and alt == trgt_alt)
@@ -2435,7 +2442,7 @@ var fmgc_loop = {
         if(n == nil or n == 0) return 0;
         var bearing = 0;
         if(offset < 0){
-            var totdist = getprop("autopilot/route-manager/total-distance");
+            var totdist = me.fp_distance;
             nm = totdist - nm;
         }
         var idx = 0;
@@ -2509,7 +2516,7 @@ var fmgc_loop = {
                     var rwy = apt_info.runways[dest_rwy];
                     var rwy_ils = me.approach_ils;
                     if(rwy_ils != nil){
-                        var dist = getprop("/autopilot/route-manager/wp-last/dist");
+                        var dist = me.remaining_nm;
                         if(dist <= 50){
                             var frq = rwy_ils.frequency / 100;
                             var crs = rwy_ils.course;
@@ -2570,6 +2577,7 @@ var fmgc_loop = {
                 if(role == 'approach' and type == 'runway'){
                     wp_info = {
                         index: wp.index,
+                        distance_along_route: wp.distance_along_route,
                         id: wp.id
                     };
                     break;
@@ -2934,6 +2942,11 @@ setlistener(fmgc~ 'exped-mode', func(n){
         setprop(fmgc~ 'ver-mode', 'alt');
         setprop(fmgc~ 'ver-ctrl', 'man-set');
     }
+});
+
+setlistener('autopilot/route-manager/signals/edited', func(){
+    fmgc_loop.flightplan = flightplan();
+    fmgc_loop.destination_wp_info = nil;
 });
 
 

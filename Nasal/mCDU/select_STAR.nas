@@ -14,38 +14,38 @@ var star = {
 		
 		# Get a list of all available runways on the departure airport
 
-        var info = airportinfo(icao);
-        if (info == nil){
-            setprop(arr~ "runway", '');
-            me.update_rwys();
-            return;
-        }
-        
-        var runways = keys(info.runways);
-        var rwy_count = size(runways);
+		var info = airportinfo(icao);
+		if (info == nil){
+			setprop(arr~ "runway", '');
+			me.update_rwys();
+			return;
+		}
+
+		var runways = keys(info.runways);
+		var rwy_count = size(runways);
 		
 		for(var rwy_index = 0; rwy_index < rwy_count; rwy_index += 1) {
-            var rwy_name = runways[rwy_index];
-            var rwy = info.runways[rwy_name];
-		
+			var rwy_name = runways[rwy_index];
+			var rwy = info.runways[rwy_name];
+
 			setprop(arr~ "runway[" ~ rwy_index ~ "]/id", rwy.id);
-			
+
 			setprop(arr~ "runway[" ~ rwy_index ~ "]/crs", int(rwy.heading));
-			
+
 			setprop(arr~ "runway[" ~ rwy_index ~ "]/length-m", int(rwy.length));
-			
+
 			setprop(arr~ "runway[" ~ rwy_index ~ "]/width-ft", rwy.width * globals.M2FT);
-            
-            var ils = rwy.ils;
-            if (ils != nil){
-                var ils_frq = ils.frequency;
-                if(ils_frq == nil) ils_frq = 0; 
-                ils_frq = ils_frq / 100;
-                setprop(arr~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", ils_frq);
-            } else {
-                setprop(arr~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", 0);
-            }
-		
+
+			var ils = rwy.ils;
+			if (ils != nil){
+				var ils_frq = ils.frequency;
+				if(ils_frq == nil) ils_frq = 0; 
+				ils_frq = ils_frq / 100;
+				setprop(arr~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", ils_frq);
+			} else {
+				setprop(arr~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", 0);
+			}
+
 		}
 		
 		setprop(arr~ "runways", rwy_index);
@@ -87,7 +87,18 @@ var star = {
 		
 		me.update_stars();
 		
-		me.confirm_iap(id);
+		var fp = flightplan();
+		var sz = fp.getPlanSize();
+		for(var i = 0; i < sz; i += 1){
+			var wp = fp.getWP(i);
+			var type = wp.wp_type;
+			var role = wp.wp_role;
+			if((role == 'star' or role == 'approach' or role == 'missed') and 
+			    type != 'runway')
+				fp.deleteWP(wp);
+		}
+		
+		#me.confirm_iap(id);
 	
 	},
 	
@@ -104,18 +115,24 @@ var star = {
 	confirm_star : func(n) {
 	
 		me.WPmax = size(me.STARList[n].wpts);
-		
+		var skipped = 0;
+		var dest_wpt = get_destination_wp();
+		var last_idx = dest_wpt.index;
 		for(var wp = 0; wp < me.WPmax; wp += 1) {
-		
+			var star_wp = me.STARList[n].wpts[wp];
 			# Copy waypoints to property tree
 		
-			setprop(arr~ "active-star/wp[" ~ wp ~ "]/name", me.STARList[n].wpts[wp].wp_name);
+			setprop(arr~ "active-star/wp[" ~ wp ~ "]/name", star_wp.wp_name);
 			
-			setprop(arr~ "active-star/wp[" ~ wp ~ "]/latitude-deg", me.STARList[n].wpts[wp].wp_lat);
+			setprop(arr~ "active-star/wp[" ~ wp ~ "]/latitude-deg", star_wp.wp_lat);
 			
-			setprop(arr~ "active-star/wp[" ~ wp ~ "]/longitude-deg", me.STARList[n].wpts[wp].wp_lon);
+			setprop(arr~ "active-star/wp[" ~ wp ~ "]/longitude-deg", star_wp.wp_lon);
 			
-			setprop(arr~ "active-star/wp[" ~ wp ~ "]/alt_cstr", me.STARList[n].wpts[wp].alt_cstr);
+			setprop(arr~ "active-star/wp[" ~ wp ~ "]/alt_cstr", star_wp.alt_cstr);
+			
+			var wp_idx = (wp + last_idx) - skipped;
+			var wpt = insert_procedure_wp('star', star_wp, wp_idx);
+			if(wpt == nil) skipped += 1;
 			
 		}
 		
@@ -125,18 +142,22 @@ var star = {
 		setprop("/flight-management/procedures/star-transit", me.WPmax);
 		
 		setprop("/instrumentation/mcdu/page", "f-pln");
-                if(me.STARList[n].wp_name == 'DEFAULT'){
-                    setprop('/autopilot/route-manager/destination/approach', 'DEFAULT');
-                    setprop(arr~ "active-star/name", 'DEFAULT');
-                    setprop(iap~ "active-iap/name", 'DEFAULT');
-                }
+		if(me.STARList[n].wp_name == 'DEFAULT'){
+			setprop('/autopilot/route-manager/destination/approach', 'DEFAULT');
+			setprop(arr~ "active-star/name", 'DEFAULT');
+			setprop(iap~ "active-iap/name", 'DEFAULT');
+		} else {
+			var rwy = getprop(arr~ "selected-rwy");
+			me.confirm_iap(rwy);
+		}
 		
 		mcdu.f_pln.update_disp();
 	
 	},
 	
 	confirm_iap : func(id) {
-        if(size(me.ApproachList) == 0) return;
+		#print('Confirming IAP, number of Approaches: ', size(me.ApproachList) );
+		if(size(me.ApproachList) == 0) return;
 	
 		setprop(iap~ "selected-iap", me.ApproachList[0].wp_name);
 	
@@ -144,18 +165,33 @@ var star = {
 		
 		setprop(iap~ "iap-index", 0);
 		
+		var skipped = 0;
+		var dest_wpt = get_destination_wp();
+		var last_idx = dest_wpt.index;
+		var type = 'approach';
+		
 		for(var wp = 0; wp < me.WPmax; wp += 1) {
 		
 			# Copy waypoints to property tree
+			var appr_wp = me.ApproachList[0].wpts[wp];
 		
-			setprop(iap~ "active-iap/wp[" ~ wp ~ "]/name", me.ApproachList[0].wpts[wp].wp_name);
+			setprop(iap~ "active-iap/wp[" ~ wp ~ "]/name", appr_wp.wp_name);
 			
-			setprop(iap~ "active-iap/wp[" ~ wp ~ "]/latitude-deg", me.ApproachList[0].wpts[wp].wp_lat);
+			setprop(iap~ "active-iap/wp[" ~ wp ~ "]/latitude-deg", appr_wp.wp_lat);
 			
-			setprop(iap~ "active-iap/wp[" ~ wp ~ "]/longitude-deg", me.ApproachList[0].wpts[wp].wp_lon);
+			setprop(iap~ "active-iap/wp[" ~ wp ~ "]/longitude-deg", appr_wp.wp_lon);
 			
-			setprop(iap~ "active-iap/wp[" ~ wp ~ "]/alt_cstr", me.ApproachList[0].wpts[wp].alt_cstr);
+			setprop(iap~ "active-iap/wp[" ~ wp ~ "]/alt_cstr", appr_wp.alt_cstr);
 			
+			if(string.trim(appr_wp.real_type) == 'Runway' and type != 'missed'){
+				type = 'missed';
+				skipped += 1;
+				last_idx += 1;
+				continue;
+			}
+			var wp_idx = (wp + last_idx) - skipped;
+			var wpt = insert_procedure_wp(type, appr_wp, wp_idx);
+			if(wpt == nil) skipped += 1;
 		}
 		
 		setprop(iap~ "active-iap/name", me.ApproachList[0].wp_name);

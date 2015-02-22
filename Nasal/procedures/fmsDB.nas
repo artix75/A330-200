@@ -141,8 +141,13 @@ var fmsDB = {
             #if (len == 9) {
             #  pos = int(len-3);
             #}
-            var run = substr(tp.wp_name,3);
-            ##print("   set approach runway: "~run);
+            var run = substr(tp.wp_name,3,3);
+            if(size(run) == 3){
+                var last_c = string.uc(substr(run, 2, 1));
+                if(last_c != 'L' and last_c != 'R')
+                    run = substr(run, 0, 2);
+            }
+            print(icao~"   set approach runway: "~run);
             append(tp.runways,run);
           }
         }
@@ -249,6 +254,7 @@ var fmsDB = {
                 }
               }
             }
+            wp.real_type = data;
           }
           if (name == "Sid_Transition" or name == "Star_Transition") {
             ##print("-- end Sid transition to TP: "~trans.trans_name);

@@ -61,10 +61,10 @@ var wp_transit = {
 				if (me.current_wp == last_wp - 1) {
 			
 					print("--------------------------");
-					
-					if (getprop("/flight-management/procedures/star/active-star/name") != "------") {
-						print("[FMGC] TRANSITION TO ARRIVAL: " ~ getprop("/flight-management/procedures/star/active-star/name"));
-						print("[FMGC] STAR: " ~ getprop("/flight-management/procedures/star/active-star/name") ~ " > TARGET SET: " ~ getprop("/flight-management/procedures/star/active-star/wp/name"));
+					var star_name = getprop("/flight-management/procedures/star/active-star/name");
+					if (star_name != "------" and star_name != nil and star_name != 'DEFAULT') {
+						print("[FMGC] TRANSITION TO ARRIVAL: " ~ star_name);
+						print("[FMGC] STAR: " ~ star_name ~ " > TARGET SET: " ~ getprop("/flight-management/procedures/star/active-star/wp/name"));
 					} else {
 					
 						print("[FMGC] ARRIVAL PROCEDURE NOT SET!");

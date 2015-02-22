@@ -82,6 +82,13 @@ var sid = {
 		setprop("/autopilot/route-manager/departure/runway", id);
 		
 		me.update_sids();
+		var fp = flightplan();
+		var sz = fp.getPlanSize();
+		for(var i = 0; i < sz; i += 1){
+			var wp = fp.getWP(i);
+			if(wp.wp_role == 'sid' and wp.wp_type != 'runway')
+				fp.deleteWP(wp);
+		}
 	
 	},
 	
@@ -97,24 +104,28 @@ var sid = {
 	
 	confirm_sid : func(n) {
                 
-	
+		var fp = flightplan();
 		me.WPmax = size(me.SIDList[n].wpts);
-		
+		var skipped = 0;
 		for(var wp = 0; wp < me.WPmax; wp += 1) {
 		
 			# Copy waypoints to property tree
-		
-			setprop(dep~ "active-sid/wp[" ~ wp ~ "]/name", me.SIDList[n].wpts[wp].wp_name);
+			var sid_wp = me.SIDList[n].wpts[wp];
 			
-			setprop(dep~ "active-sid/wp[" ~ wp ~ "]/latitude-deg", me.SIDList[n].wpts[wp].wp_lat);
+			setprop(dep~ "active-sid/wp[" ~ wp ~ "]/name", sid_wp.wp_name);
 			
-			setprop(dep~ "active-sid/wp[" ~ wp ~ "]/longitude-deg", me.SIDList[n].wpts[wp].wp_lon);
+			setprop(dep~ "active-sid/wp[" ~ wp ~ "]/latitude-deg", sid_wp.wp_lat);
 			
-			setprop(dep~ "active-sid/wp[" ~ wp ~ "]/alt_cstr", me.SIDList[n].wpts[wp].alt_cstr);
+			setprop(dep~ "active-sid/wp[" ~ wp ~ "]/longitude-deg", sid_wp.wp_lon);
+			
+			setprop(dep~ "active-sid/wp[" ~ wp ~ "]/alt_cstr", sid_wp.alt_cstr);
 			
 			# Insert waypoints into Route Manager After Departure (INDEX = 0)
 			
-			#	setprop("/autopilot/route-manager/input", "@INSERT" ~ (wp + 1) ~ ":" ~ me.SIDList[n].wpts[wp].wp_lon ~ "," ~ me.SIDList[n].wpts[wp].wp_lat ~ "@" ~ me.SIDList[n].wpts[wp].alt_cstr);
+			#	setprop("/autopilot/route-manager/input", "@INSERT" ~ (wp + 1) ~ ":" ~ sid_wp.wp_lon ~ "," ~ sid_wp.wp_lat ~ "@" ~ sid_wp.alt_cstr);
+			var wp_idx = (wp + 1) - skipped;
+			var wpt = insert_procedure_wp('sid', sid_wp, wp_idx);
+			if(wpt == nil) skipped += 1;
 		
 		}
         if (me.SIDList[n].wp_name == 'DEFAULT'){
