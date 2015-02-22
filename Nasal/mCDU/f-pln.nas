@@ -292,7 +292,7 @@ var f_pln = {
 			setprop(f_pln_disp~ "dist", "----");
 		
 		}
-		
+		var fp = flightplan();
 		# PAGE 1 ---------------------------------------------------------------
 		
 		if (first == 0) {
@@ -328,10 +328,14 @@ var f_pln = {
 			for (var wp = 1; wp <= 3; wp += 1) {
 			
 				var id = getprop(rm_route~ "route/wp[" ~ wp ~ "]/id");
+				var fp_wp = fp.getWP(wp);
+				var fly_type = (fp_wp != nil ? fp_wp.fly_type : '');
 				
 				if (id != nil) {
 				
 					setprop(f_pln_disp~ "l" ~ (wp + 2) ~ "/id", id);
+					var ovfly_sym = (fly_type == 'flyOver' ? 'D' : '');
+					setprop(f_pln_disp~ "l" ~ (wp + 2) ~ "/ovfly", ovfly_sym);
 				
 					var time_min = int(getprop(rm_route~ "route/wp[" ~ wp ~ "]/leg-time"));
 					
@@ -412,8 +416,13 @@ var f_pln = {
 				var id = getprop(rm_route~ "route/wp[" ~ wp ~ "]/id");				
 				
 				if (id != nil) {
+					
+					var fp_wp = fp.getWP(wp);
+					var fly_type = (fp_wp != nil ? fp_wp.fly_type : '');
 				
 					setprop(f_pln_disp~ "l" ~ l ~ "/id", id);
+					var ovfly_sym = (fly_type == 'flyOver' ? 'D' : '');
+					setprop(f_pln_disp~ "l" ~ l ~ "/ovfly", ovfly_sym);
 				
 					var time_min = getprop(rm_route~ "route/wp[" ~ wp ~ "]/leg-time");
 					
@@ -480,3 +489,71 @@ var f_pln = {
 	}
 
 };
+
+var insert_procedure_wp = func(type, proc_wp, idx){
+	var fp = flightplan();
+	var lat = num(string.trim(proc_wp.wp_lat));
+	var lon = num(string.trim(proc_wp.wp_lon));
+	if((lat == 0 and lon == 0) or 
+	   (math.abs(lat) > 90) or 
+		(math.abs(lon) > 180) or 
+			(proc_wp.wp_type == 'Intc') or 
+			(proc_wp.wp_type == 'Hold')) {
+			return nil;
+		}
+	var wp_pos = {
+		lat: lat,
+		lon: lon
+	};
+	var wpt = createWP(wp_pos, proc_wp.wp_name, type);
+	#wpt.wp_role = 'sid';
+	print('Insert '~type~' WP '~proc_wp.wp_name ~ ' at ' ~ idx);
+	fp.insertWP(wpt, idx);
+	wpt = fp.getWP(idx);
+	if(proc_wp.alt_cstr_ind)
+		wpt.setAltitude(proc_wp.alt_cstr, 'at');
+	if(proc_wp.spd_cstr_ind)
+		wpt.setSpeed(proc_wp.spd_cstr, 'at');
+	var fly_type = string.lc(string.trim(proc_wp.fly_type));
+	if(fly_type == 'fly-over'){
+		wpt.fly_type = 'flyOver';
+	}
+	return wpt;
+}
+
+var get_destination_wp = func(){
+	var f= flightplan(); 
+	var numwp = f.getPlanSize();
+	var lastidx = numwp - 1;
+	var wp_info = nil;
+	for(var i = lastidx; i >= 0; i = i - 1){
+		var wp = f.getWP(i);
+		if(wp != nil){
+			var role = wp.wp_role;
+			var type = wp.wp_type;
+			if(role == 'approach' and type == 'runway'){
+				wp_info = {
+					index: wp.index,
+					id: wp.id
+				};
+				break;
+			}
+		}
+	}
+	return wp_info;
+}
+
+var toggle_overfly = func(wp_idx){
+	if(!getprop('/instrumentation/mcdu/overfly-mode')) return;
+	var fp = flightplan();
+	var wp = fp.getWP(wp_idx);
+	if(wp != nil){
+		var fly_type = wp.fly_type;
+		if(fly_type != 'flyOver')
+			wp.fly_type = 'flyOver';
+		else 
+			wp.fly_type = 'flyBy';
+	}
+	f_pln.update_disp();
+	setprop('/instrumentation/mcdu/overfly-mode', 0);
+}

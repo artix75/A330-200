@@ -3,9 +3,9 @@
 <PropertyList>
 
 	<path>f-pln.ac</path>
-	
+
 	<!-- mCDU Display Brightness -->
-	
+
 	<animation>
 		<type>material</type>
 		<object-name>white</object-name>
@@ -20,7 +20,7 @@
 			<factor-prop>/instrumentation/mcdu/brt</factor-prop>
 		</emission>
 	</animation>
-	
+
 	<animation>
 		<type>material</type>
 		<object-name>green</object-name>
@@ -36,571 +36,572 @@
 			<blue>0</blue>
 		</diffuse>
 	</animation>
-	
+
 	<!-- Button Pick Animations -->
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>r1</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			# IAS Ex. - 250/8000
 		 			# MACH Ex. - 0.80/35000
-		 		
+
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
+
 					var input = getprop("/instrumentation/mcdu/input");
 					var comps = split('/', input);
 					var spd = nil;
-					
+
 					var alt = nil;
 					var ncomps = size(comps);
-                    if(ncomps == 1){
-                        alt = num(comps[0]);
-                    } 
-                    elsif(ncomps == 2){
-                        spd = num(comps[0]);
-                        alt = num(comps[1]);
-                    }
-					if (first == 0) {
-					
-						setprop("/instrumentation/mcdu/input", "ERROR: VER REV NOT POSSIBLE");
-					
-					} else {
-					    if(spd != nil)
-						  setprop("autopilot/route-manager/route/wp[" ~ (first) ~ "]/ias-mach", spd);
-                        if(alt != nil)
-						  setprop("autopilot/route-manager/route/wp[" ~ (first) ~ "]/altitude-ft", alt);
-                        var fp = flightplan();
-                        var wp = fp.getWP(first);
-                        if(spd != nil)
-                            wp.setSpeed(spd, 'at');
-                        if(alt != nil)
-                            wp.setAltitude(alt, 'at');
-                        mcdu.clear_inp();
-					
+					if(ncomps == 1){
+						alt = num(comps[0]);
 					}
-					
+					elsif(ncomps == 2){
+						spd = num(comps[0]);
+						alt = num(comps[1]);
+					}
+					if (first == 0) {
+
+						setprop("/instrumentation/mcdu/input", "ERROR: VER REV NOT POSSIBLE");
+
+					} else {
+						if(spd != nil)
+							setprop("autopilot/route-manager/route/wp[" ~ (first) ~ "]/ias-mach", spd);
+						if(alt != nil)
+							setprop("autopilot/route-manager/route/wp[" ~ (first) ~ "]/altitude-ft", alt);
+						var fp = flightplan();
+						var wp = fp.getWP(first);
+						if(spd != nil)
+							wp.setSpeed(spd, 'at');
+						if(alt != nil)
+							wp.setAltitude(alt, 'at');
+						mcdu.clear_inp();
+					}
+
 					mcdu.f_pln.update_disp();
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>r2</object-name>
 		<action>
-            <button>0</button>
-	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			# IAS Ex. - 250/8000
 		 			# MACH Ex. - 0.80/35000
-		 		
-		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
-					var input = getprop("/instrumentation/mcdu/input");
-					
-                    var comps = split('/', input);
-                    var spd = nil;
 
-                    var alt = nil;
-                    var ncomps = size(comps);
-                    if(ncomps == 1){
-                        alt = num(comps[0]);
-                    } 
-                    elsif(ncomps == 2){
-                        spd = num(comps[0]);
-                        alt = num(comps[1]);
-                    }
-					
-					if (first == 0) {
-					
-						setprop("/instrumentation/mcdu/input", "ERROR: VER REV NOT POSSIBLE");
-					
-					} else {
-                        if(spd != nil)
-                            setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/ias-mach", spd);
-                        if(alt != nil)
-                            setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/altitude-ft", alt);
-                        var fp = flightplan();
-                        var wp = fp.getWP(first + 1);
-                        if(spd != nil)
-                            wp.setSpeed(spd, 'at');
-                        if(alt != nil)
-                            wp.setAltitude(alt, 'at');
-                        mcdu.clear_inp();
+		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+
+					var input = getprop("/instrumentation/mcdu/input");
+
+					var comps = split('/', input);
+					var spd = nil;
+
+					var alt = nil;
+					var ncomps = size(comps);
+					if(ncomps == 1){
+						alt = num(comps[0]);
 					}
-					
+					elsif(ncomps == 2){
+						spd = num(comps[0]);
+						alt = num(comps[1]);
+					}
+
+					if (first == 0) {
+
+						setprop("/instrumentation/mcdu/input", "ERROR: VER REV NOT POSSIBLE");
+
+					} else {
+						if(spd != nil)
+							setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/ias-mach", spd);
+						if(alt != nil)
+							setprop("autopilot/route-manager/route/wp[" ~ (first + 1) ~ "]/altitude-ft", alt);
+						var fp = flightplan();
+						var wp = fp.getWP(first + 1);
+						if(spd != nil)
+							wp.setSpeed(spd, 'at');
+						if(alt != nil)
+							wp.setAltitude(alt, 'at');
+						mcdu.clear_inp();
+					}
+
 					mcdu.f_pln.update_disp();
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>r3</object-name>
 		<action>
-            <button>0</button>
-	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<button>0</button>
+			
+			<repeatable type="bool">false</repeatable>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			# IAS Ex. - 250/8000
 		 			# MACH Ex. - 0.80/35000
-		 		
-		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
-					var input = getprop("/instrumentation/mcdu/input");
-					
-                    var comps = split('/', input);
-                    var spd = nil;
 
-                    var alt = nil;
-                    var ncomps = size(comps);
-                    if(ncomps == 1){
-                        alt = num(comps[0]);
-                    } 
-                    elsif(ncomps == 2){
-                        spd = num(comps[0]);
-                        alt = num(comps[1]);
-                    }
-					
-					if (first == 0) {
-                        if(spd != nil)
-						  setprop("autopilot/route-manager/route/wp[1]/ias-mach", spd);
-                        if(alt != nil)
-						  setprop("autopilot/route-manager/route/wp[1]/altitude-ft", alt);
-                        var fp = flightplan();
-                        var wp = fp.getWP(1);
-                        if(spd != nil)
-                            wp.setSpeed(spd, 'at');
-                        if(alt != nil)
-                            wp.setAltitude(alt, 'at');
-					
-					} else {
-                        if(spd != nil)
-						  setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/ias-mach", spd);
-                        if(alt != nil)
-                            setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/altitude-ft", alt);
-                        var fp = flightplan();
-                        var wp = fp.getWP(first + 2);
-                        if(spd != nil)
-                            wp.setSpeed(spd, 'at');
-                        if(alt != nil)
-                            wp.setAltitude(alt, 'at');
-					
+		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+
+					var input = getprop("/instrumentation/mcdu/input");
+
+					var comps = split('/', input);
+					var spd = nil;
+
+					var alt = nil;
+					var ncomps = size(comps);
+					if(ncomps == 1){
+						alt = num(comps[0]);
 					}
-					
+					elsif(ncomps == 2){
+						spd = num(comps[0]);
+						alt = num(comps[1]);
+					}
+
+					if (first == 0) {
+						if(spd != nil)
+						  setprop("autopilot/route-manager/route/wp[1]/ias-mach", spd);
+						if(alt != nil)
+						  setprop("autopilot/route-manager/route/wp[1]/altitude-ft", alt);
+						var fp = flightplan();
+						var wp = fp.getWP(1);
+						if(spd != nil)
+							wp.setSpeed(spd, 'at');
+						if(alt != nil)
+							wp.setAltitude(alt, 'at');
+
+					} else {
+						if(spd != nil)
+						  setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/ias-mach", spd);
+						if(alt != nil)
+							setprop("autopilot/route-manager/route/wp[" ~ (first + 2) ~ "]/altitude-ft", alt);
+						var fp = flightplan();
+						var wp = fp.getWP(first + 2);
+						if(spd != nil)
+							wp.setSpeed(spd, 'at');
+						if(alt != nil)
+							wp.setAltitude(alt, 'at');
+
+					}
+
 					mcdu.clear_inp();
-					
+
 					mcdu.f_pln.update_disp();
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>r4</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			# IAS Ex. - 250/8000
 		 			# MACH Ex. - 0.80/35000
-		 		
-		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
-					var input = getprop("/instrumentation/mcdu/input");
-					
-                    var comps = split('/', input);
-                    var spd = nil;
 
-                    var alt = nil;
-                    var ncomps = size(comps);
-                    if(ncomps == 1){
-                        alt = num(comps[0]);
-                    } 
-                    elsif(ncomps == 2){
-                        spd = num(comps[0]);
-                        alt = num(comps[1]);
-                    }
-					
-					if (first == 0) {
-                        if(spd != nil)
-                            setprop("autopilot/route-manager/route/wp[2]/ias-mach", spd);
-                        if(alt != nil)
-                            setprop("autopilot/route-manager/route/wp[2]/altitude-ft", alt);
-                        var fp = flightplan();
-                        var wp = fp.getWP(2);
-                        if(spd != nil)
-                            wp.setSpeed(spd, 'at');
-                        if(alt != nil)
-                            wp.setAltitude(alt, 'at');
-					
-					} else {
-                        if(spd != nil)
-                            setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/ias-mach", spd);
-                        if(alt != nil)
-                            setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/altitude-ft", alt);
-                        var fp = flightplan();
-                        var wp = fp.getWP(first + 3);
-                        if(spd != nil)
-                            wp.setSpeed(spd, 'at');
-                        if(alt != nil)
-                            wp.setAltitude(alt, 'at');
-					
+		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+
+					var input = getprop("/instrumentation/mcdu/input");
+
+					var comps = split('/', input);
+					var spd = nil;
+
+					var alt = nil;
+					var ncomps = size(comps);
+					if(ncomps == 1){
+						alt = num(comps[0]);
 					}
-					
+					elsif(ncomps == 2){
+						spd = num(comps[0]);
+						alt = num(comps[1]);
+					}
+
+					if (first == 0) {
+						if(spd != nil)
+							setprop("autopilot/route-manager/route/wp[2]/ias-mach", spd);
+						if(alt != nil)
+							setprop("autopilot/route-manager/route/wp[2]/altitude-ft", alt);
+						var fp = flightplan();
+						var wp = fp.getWP(2);
+						if(spd != nil)
+							wp.setSpeed(spd, 'at');
+						if(alt != nil)
+							wp.setAltitude(alt, 'at');
+
+					} else {
+						if(spd != nil)
+							setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/ias-mach", spd);
+						if(alt != nil)
+							setprop("autopilot/route-manager/route/wp[" ~ (first + 3) ~ "]/altitude-ft", alt);
+						var fp = flightplan();
+						var wp = fp.getWP(first + 3);
+						if(spd != nil)
+							wp.setSpeed(spd, 'at');
+						if(alt != nil)
+							wp.setAltitude(alt, 'at');
+
+					}
+
 					mcdu.clear_inp();
-					
+
 					mcdu.f_pln.update_disp();
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>r5</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			# IAS Ex. - 250/8000
 		 			# MACH Ex. - 0.80/35000
-		 		
-		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
-					var input = getprop("/instrumentation/mcdu/input");
-					
-                    var comps = split('/', input);
-                    var spd = nil;
 
-                    var alt = nil;
-                    var ncomps = size(comps);
-                    if(ncomps == 1){
-                        alt = num(comps[0]);
-                    } 
-                    elsif(ncomps == 2){
-                        spd = num(comps[0]);
-                        alt = num(comps[1]);
-                    }
-					
-					if (first == 0) {
-                        if(spd != nil)
-                            setprop("autopilot/route-manager/route/wp[3]/ias-mach", spd);
-                        if(alt != nil)
-                            setprop("autopilot/route-manager/route/wp[3]/altitude-ft", alt);
-                        var fp = flightplan();
-                        var wp = fp.getWP(3);
-                        if(spd != nil)
-                            wp.setSpeed(spd, 'at');
-                        if(alt != nil)
-                            wp.setAltitude(alt, 'at');
-					
-					} else {
-                        if(spd != nil)
-                            setprop("autopilot/route-manager/route/wp[" ~ (first + 4) ~ "]/ias-mach", spd);
-                        if(alt != nil)
-                            setprop("autopilot/route-manager/route/wp[" ~ (first + 4) ~ "]/altitude-ft", alt);
-                        var fp = flightplan();
-                        var wp = fp.getWP(first + 4);
-                        if(spd != nil)
-                            wp.setSpeed(spd, 'at');
-                        if(alt != nil)
-                            wp.setAltitude(alt, 'at');
-					
+		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+
+					var input = getprop("/instrumentation/mcdu/input");
+
+					var comps = split('/', input);
+					var spd = nil;
+
+					var alt = nil;
+					var ncomps = size(comps);
+					if(ncomps == 1){
+						alt = num(comps[0]);
 					}
-					
+					elsif(ncomps == 2){
+						spd = num(comps[0]);
+						alt = num(comps[1]);
+					}
+
+					if (first == 0) {
+						if(spd != nil)
+							setprop("autopilot/route-manager/route/wp[3]/ias-mach", spd);
+						if(alt != nil)
+							setprop("autopilot/route-manager/route/wp[3]/altitude-ft", alt);
+						var fp = flightplan();
+						var wp = fp.getWP(3);
+						if(spd != nil)
+							wp.setSpeed(spd, 'at');
+						if(alt != nil)
+							wp.setAltitude(alt, 'at');
+
+					} else {
+						if(spd != nil)
+							setprop("autopilot/route-manager/route/wp[" ~ (first + 4) ~ "]/ias-mach", spd);
+						if(alt != nil)
+							setprop("autopilot/route-manager/route/wp[" ~ (first + 4) ~ "]/altitude-ft", alt);
+						var fp = flightplan();
+						var wp = fp.getWP(first + 4);
+						if(spd != nil)
+							wp.setSpeed(spd, 'at');
+						if(alt != nil)
+							wp.setAltitude(alt, 'at');
+
+					}
+
 					mcdu.clear_inp();
-					
+
 					mcdu.f_pln.update_disp();
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>l_arrow</object-name>
 		<object-name>r_arrow</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
 		 			mcdu.f_pln.cpy_to_active();
-		 		
+
 					setprop("/instrumentation/mcdu/page", "f-pln2");
-					
+
 					mcdu.f_pln.init_f_pln2();
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>u_arrow</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 		
+
 					if (first != 0)
 						setprop("/instrumentation/mcdu/f-pln/disp/first", first - 1);
-						
+
 					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
-		
+
 					var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-			
+
 					var hold = getprop("/flight-management/hold/wp_id");
-			
+
 					var hold_id = 0;
-			
+
 					if ((hold >= first) and (first + 4 > hold) and (hold != 0)) {
-			
+
 						setprop("/instrumentation/mcdu/f-pln/show-hold", 1);
-				
+
 						hold_id = (hold - first) + (first == 0);
-			
+
 					}
-			
+
 					setprop("/instrumentation/mcdu/f-pln/hold-id", hold_id);
-						
+
 					mcdu.f_pln.update_disp();
-                    var fp = flightplan();
-                    var firstWp = getprop("/instrumentation/mcdu/f-pln/disp/first");
-                    var wpNum = getprop("autopilot/route-manager/route/num");
-                    if(firstWp >= wpNum) firstWp = wpNum;
-                    var wp = fp.getWP(firstWp);
-                    setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lat);
-                    setprop("/instrumentation/nd/user-longitude-deg", wp.wp_lon);
+					var fp = flightplan();
+					var firstWp = getprop("/instrumentation/mcdu/f-pln/disp/first");
+					var wpNum = getprop("autopilot/route-manager/route/num");
+					if(firstWp >= wpNum) firstWp = wpNum;
+					var wp = fp.getWP(firstWp);
+					setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lat);
+					setprop("/instrumentation/nd/user-longitude-deg", wp.wp_lon);
 
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>d_arrow</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 		
+
 		 			var max = getprop("/autopilot/route-manager/route/num");
-		 		
+
 					if (max - 1 > first)
 						setprop("/instrumentation/mcdu/f-pln/disp/first", first + 1);
-						
+
 					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
-		
+
 					var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-			
+
 					var hold = getprop("/flight-management/hold/wp_id");
-			
+
 					var hold_id = 0;
-			
+
 					if ((hold >= first) and (first + 4 > hold) and (hold != 0)) {
-			
+
 						setprop("/instrumentation/mcdu/f-pln/show-hold", 1);
-				
+
 						hold_id = (hold - first) + (first == 0);
-			
+
 					}
-			
+
 					setprop("/instrumentation/mcdu/f-pln/hold-id", hold_id);
-						
+
 					mcdu.f_pln.update_disp();
-                    var fp = flightplan();
-                    var firstWp = getprop("/instrumentation/mcdu/f-pln/disp/first");
-                    var wpNum = getprop("autopilot/route-manager/route/num");
-                    if(firstWp >= wpNum) firstWp = wpNum;
-                    var wp = fp.getWP(firstWp);
-                    setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lat);
-                    setprop("/instrumentation/nd/user-longitude-deg", wp.wp_lon);
+					var fp = flightplan();
+					var firstWp = getprop("/instrumentation/mcdu/f-pln/disp/first");
+					var wpNum = getprop("autopilot/route-manager/route/num");
+					if(firstWp >= wpNum) firstWp = wpNum;
+					var wp = fp.getWP(firstWp);
+					setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lat);
+					setprop("/instrumentation/nd/user-longitude-deg", wp.wp_lon);
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>r6</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
 		 			setprop("/instrumentation/mcdu/page", "index_f1");
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>l1</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
-		 			
-		 			if (first != 0)
-			 			mcdu.lat_rev.revise(first);
-			 		else
-			 			mcdu.lat_rev.revise(0);
-		 					 		
+					var idx = ((first != 0) ? first : 0);
+					
+					if(getprop('/instrumentation/mcdu/overfly-mode'))
+						mcdu.toggle_overfly(idx);
+					else
+						mcdu.lat_rev.revise(idx);
+
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>l2</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
-		 			if (first != 0)
-		 			
-		 				mcdu.lat_rev.revise(first + 1);
-		 				
+
+		 			if (first != 0){
+						if(getprop('/instrumentation/mcdu/overfly-mode'))
+							mcdu.toggle_overfly(first + 1);
+						else
+							mcdu.lat_rev.revise(first + 1);
+					}
 		 			else
-		 				
 		 				setprop("/instrumentation/mcdu/input", "ERROR: LAT REV NOT POSSIBLE");
-		 					 		
+
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>l3</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
-		 			if (first != 0)
-			 			mcdu.lat_rev.revise(first + 2);
-			 		else
-			 			mcdu.lat_rev.revise(1);
-		 					 		
+					var idx = ((first != 0) ? (first + 2) : 1);
+					if(getprop('/instrumentation/mcdu/overfly-mode'))
+						mcdu.toggle_overfly(idx);
+					else
+						mcdu.lat_rev.revise(idx);
+
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>l4</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
-		 			if (first != 0)
-			 			mcdu.lat_rev.revise(first + 3);
-			 		else
-			 			mcdu.lat_rev.revise(2);
-		 					 		
+					var idx = ((first != 0) ? (first + 3) : 2);
+					if(getprop('/instrumentation/mcdu/overfly-mode'))
+						mcdu.toggle_overfly(idx);
+					else
+						mcdu.lat_rev.revise(idx);
+
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>l5</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
-		 			if (first != 0)
-			 			mcdu.lat_rev.revise(first + 4);
-			 		else
-			 			mcdu.lat_rev.revise(3);
-		 					 		
+					var idx = ((first != 0) ? (first + 4) : 3);
+					if(getprop('/instrumentation/mcdu/overfly-mode'))
+						mcdu.toggle_overfly(idx);
+					else
+						mcdu.lat_rev.revise(idx);
+
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<animation>
 		<type>pick</type>
 		<object-name>l6</object-name>
 		<action>
-            <button>0</button>
+			<button>0</button>
 	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<binding>
 				<command>nasal</command>
 		 		<script>
-		 		
+
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-		 			
+
 		 			mcdu.lat_rev.revise_dest();
-		 					 		
+
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
-	
+
 	<!-- Show Hold Data if available -->
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>hold0</object-name>
@@ -617,7 +618,7 @@
 			</and>
 		</condition>
 	</animation>
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>hold1</object-name>
@@ -634,7 +635,7 @@
 			</and>
 		</condition>
 	</animation>
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>hold2</object-name>
@@ -651,7 +652,7 @@
 			</and>
 		</condition>
 	</animation>
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>hold3</object-name>
@@ -668,7 +669,7 @@
 			</and>
 		</condition>
 	</animation>
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>hold4</object-name>
@@ -685,9 +686,9 @@
 			</and>
 		</condition>
 	</animation>
-	
+
 	<!-- Hold Directions -->
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>holdL</object-name>
@@ -698,7 +699,7 @@
 			</equals>
 		</condition>
 	</animation>
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>holdR</object-name>
@@ -709,9 +710,9 @@
 			</equals>
 		</condition>
 	</animation>
-	
+
 	<!-- Show flightplan only if initialized -->
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>white</object-name>
@@ -741,10 +742,10 @@
 						<value>0</value>
 					</equals>
 				</not>
-			</and>	
+			</and>
 		</condition>
 	</animation>
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>unavail</object-name>
@@ -762,10 +763,10 @@
 					<property>/flight-management/crz_fl</property>
 					<value>0</value>
 				</equals>
-			</or>	
+			</or>
 		</condition>
 	</animation>
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>from</object-name>
@@ -777,7 +778,7 @@
 			</equals>
 		</condition>
 	</animation>
-	
+
 	<animation>
 		<type>select</type>
 		<object-name>eof</object-name>
@@ -788,9 +789,9 @@
 			</equals>
 		</condition>
 	</animation>
-	
+
 	<!-- OSGText -->
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -815,7 +816,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -840,7 +841,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -865,7 +866,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -890,7 +891,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -920,6 +921,131 @@
 		<name>green</name>
 		<offsets>
 			<x-m>-0.0703</x-m>
+			<y-m>-0.0184</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l1/ovfly</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">symbol.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>green</name>
+		<offsets>
+			<x-m>-0.0612</x-m>
+			<y-m>-0.0184</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l2/ovfly</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">symbol.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>green</name>
+		<offsets>
+			<x-m>-0.0524</x-m>
+			<y-m>-0.0184</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l3/ovfly</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">symbol.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>green</name>
+		<offsets>
+			<x-m>-0.0430</x-m>
+			<y-m>-0.0184</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l4/ovfly</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">symbol.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>green</name>
+		<offsets>
+			<x-m>-0.0336</x-m>
+			<y-m>-0.0184</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l5/ovfly</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">symbol.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>green</name>
+		<offsets>
+			<x-m>-0.0703</x-m>
 			<y-m>-0.0094</y-m>
 			<z-m>-0.0006</z-m>
 			<heading-deg>90</heading-deg>
@@ -940,7 +1066,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -965,7 +1091,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -990,7 +1116,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -1015,7 +1141,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -1040,7 +1166,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -1065,7 +1191,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -1090,7 +1216,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -1115,7 +1241,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -1140,7 +1266,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>green</name>
 		<offsets>
@@ -1165,7 +1291,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>white</name>
 		<offsets>
@@ -1190,7 +1316,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>white</name>
 		<offsets>
@@ -1215,7 +1341,7 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 	<text>
 		<name>white</name>
 		<offsets>
@@ -1240,5 +1366,5 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
-	
+
 </PropertyList>
