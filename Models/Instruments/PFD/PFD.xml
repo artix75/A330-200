@@ -2486,7 +2486,31 @@
         <format type="string">%s</format>
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_medium.txf</font>
-        <property>/flight-management/flight-modes/vertical/armed</property>
+        <property>/instrumentation/pfd/ver-armed-mode</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>ver-armed-mode-left</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0226226</y-m>
+            <z-m>0.0605781</z-m>
+        </offsets>
+        <alignment>right-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/pfd/ver-armed-mode-l</property>
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
@@ -2501,16 +2525,40 @@
         <name>ver-armed-fmgc</name>
         <offsets>
             <x-m>0.00091828</x-m>
-            <y-m>-0.0206226</y-m>
+            <y-m>-0.0226226</y-m>
             <z-m>0.0605781</z-m>
         </offsets>
-        <alignment>center-center</alignment>
+        <alignment>right-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">text-value</type>
         <format type="string">%s</format>
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_medium.txf</font>
-        <property>/flight-management/flight-modes/vertical/armed</property>
+        <property>/instrumentation/pfd/ver-armed-mode-l</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
+    <text>
+        <name>ver-armed-mode-right</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0206226</y-m>
+            <z-m>0.0605781</z-m>
+        </offsets>
+        <alignment>left-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/pfd/ver-armed-mode-r</property>
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
@@ -3088,11 +3136,9 @@
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
-        <type type="string">text-value</type>
-        <format type="string">%s</format>
-        <truncate type="bool">false</truncate>
+        <type type="string">literal</type>
         <font type="string">helvetica_medium.txf</font>
-        <property>/flight-management/freq/ils-cat</property>
+        <text>IIIIIIIIIIII</text>
         <draw-text type="bool">false</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">true</draw-boundingbox>
@@ -3134,11 +3180,9 @@
         </offsets>
         <alignment>center-center</alignment>
         <axis-alignment>yz-plane</axis-alignment>
-        <type type="string">text-value</type>
-        <format type="string">%s</format>
-        <truncate type="bool">false</truncate>
+        <type type="string">literal</type>
         <font type="string">helvetica_medium.txf</font>
-        <property>/instrumentation/pfd/ils-appr-mode</property>
+        <text>IIIIIIIIIIII</text>
         <draw-text type="bool">false</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">true</draw-boundingbox>
@@ -3160,7 +3204,7 @@
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">literal</type>
         <font type="string">helvetica_medium.txf</font>
-        <text>AP 12</text>
+        <text>IIIIIIIIIIII</text>
         <draw-text type="bool">false</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">true</draw-boundingbox>
@@ -3182,7 +3226,7 @@
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">literal</type>
         <font type="string">helvetica_medium.txf</font>
-        <text>1 FD2</text>
+        <text>IIIIIIIIIIII</text>
         <draw-text type="bool">false</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">true</draw-boundingbox>
@@ -3204,7 +3248,7 @@
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">literal</type>
         <font type="string">helvetica_medium.txf</font>
-        <text>ATHR</text>
+        <text>IIIIIIIIIIII</text>
         <draw-text type="bool">false</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">true</draw-boundingbox>
@@ -3528,6 +3572,8 @@
     <animation>
         <type>material</type>
         <object-name>ver-armed-mode</object-name>
+        <object-name>ver-armed-mode-left</object-name>
+        <object-name>ver-armed-mode-right</object-name>
         <object-name>lat-armed-mode</object-name>
         <object-name>common-armed-mode</object-name>
         <object-name>athr-armed</object-name>
@@ -3767,7 +3813,7 @@
     
     <animation>
         <type>select</type>
-        <object-name>ver-armed-mode</object-name>
+        <object-name>ver-armed-mode-left</object-name>
         <condition>
             <not>
                 <property>flight-management/control/follow-alt-cstr</property>

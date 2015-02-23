@@ -24,6 +24,7 @@ setprop(settings~ "gps-accur", "LOW");
 
 setprop("/flight-management/end-flight", 0);
 setprop('/instrumentation/texts/pfd-fmgc-empty-box', '       I');
+setprop('/instrumentation/texts/pfd-fmgc-empty-box-2lines', "       .\n       .");
 setprop('/instrumentation/texts/sep-string', 'I');
 
 var fmgc_loop = {
@@ -179,7 +180,6 @@ var fmgc_loop = {
         me.max_throttle = 0;
         me.airborne = 0;
         me.toga_on_ground = 0;
-        me.armed_ver_secondary_mode = '';
         me.missed_approach_planned = 0;
         me.missed_approach_idx = -1;
         me.missed_approach = 0;
@@ -235,8 +235,13 @@ var fmgc_loop = {
         
         setprop(fcu~ "alt-100", me.alt_100());
         setprop(fcu~ "alt-disp", me.target_alt_disp());
-        setprop(fmgc~ "follow-alt-cstr", 
-                me.follow_alt_cstr and me.armed_ver_mode == 'ALT');
+        var follow_cstr = (
+            me.follow_alt_cstr and (
+                me.armed_ver_mode == 'ALT' or 
+                me.armed_ver_secondary_mode == 'ALT'
+            )
+        );
+        setprop(fmgc~ "follow-alt-cstr", follow_cstr);
         setprop(fmgc~ "is-alt-constraint", me.follow_alt_cstr);
         setprop(settings~ 'min-elevator-ctrl', 
                 (ias >= 300 and vmode_vs_fps < -1 ? -0.05 : -0.15));
@@ -443,7 +448,7 @@ var fmgc_loop = {
 
             ## LATERAL CONTROL -----------------------------------------------------
 
-            if (lmode == "HDG" or lmode == "TRK" or me.toga_trk != nil) {
+            if (lmode == "HDG" or lmode == "TRACK" or me.toga_trk != nil) {
 
                 # Find Heading Deflection
                 var true_north = me.use_true_north;
@@ -1076,12 +1081,18 @@ var fmgc_loop = {
         setprop('instrumentation/pfd/fd_pitch', fd_pitch);
         setprop('instrumentation/pfd/ver-alert-box', ver_alert and me.airborne);
         var dh = (me.dh or 200) - 50; 
-        var disengage_ap =  me.phase == 'APP' and 
+        var app_phase = (me.phase == 'APP');
+        var app_cat = me.app_cat;
+        var agl = me.agl;
+        var disengage_ap =  me.airborne and 
+                            app_phase and 
                             apEngaged and 
-                            me.app_cat < 3 and 
-                            me.agl < dh and 
-                            me.agl > 30;
-        if (me.phase == 'APP' and apEngaged and me.app_cat < 3 and me.agl < dh){
+                            app_cat < 3 and 
+                            agl < dh and 
+                            agl > 30; #TODO: avoid AP disengagement on GoAround: TOGA dinegages ATHR > CAT 2 > AP disengage
+                                      #TODO: check also autoland?
+
+        if (disengage_ap){
             setprop(fmgc~ "ap1-master", "off");
             setprop(fmgc~ "ap2-master", "off");
         }
@@ -1287,7 +1298,7 @@ var fmgc_loop = {
         me.armed_lat_mode = '';
         me.active_ver_mode = '';
         me.armed_ver_mode = '';
-        #me.armed_ver_secondary_mode = '';
+        me.armed_ver_secondary_mode = '';
         me.display_ver_secondary_mode = 0;
         me.active_common_mode = '';
         me.armed_common_mode = '';
@@ -1315,7 +1326,7 @@ var fmgc_loop = {
         # Basic Lateral Mode
         var lmode = '';
         var loc_mode = (me.lat_mode == "nav1");
-        var lat_sel_mode = (me.ver_sub == 'fpa' ? 'TRK' : 'HDG');
+        var lat_sel_mode = (me.ver_sub == 'fpa' ? 'TRACK' : 'HDG');
         if (me.lat_ctrl == "man-set") {
             if (me.lat_mode == "hdg") {
                 lmode = lat_sel_mode;
@@ -1419,7 +1430,10 @@ var fmgc_loop = {
                     me.capture_alt_at = capture_alt_at;
                     is_capturing_alt = 1;
                 } else {
-                    vmode_main = vphase;
+                    if(me.toga_trk or me.missed_approach)
+                        vmode_main = me.true_vertical_phase;
+                    else
+                        vmode_main = vphase;
                 }
             }  
         }
@@ -1509,7 +1523,7 @@ var fmgc_loop = {
             if(toga and me.flaps > 0 and me.agl < me.acc_alt and 
                (!me.toga_on_ground or me.toga_trk != nil)){
                 me.active_lat_mode = 'GA TRK';
-                me.armed_lat_mode = ''; #TODO: arm HDG/TRK?
+                me.armed_lat_mode = lat_sel_mode; #TODO: arm HDG/TRK?
                 if(me.toga_trk == nil)
                     me.toga_trk = me.track;
                 me.lat_mode = 'hdg';
@@ -1520,7 +1534,10 @@ var fmgc_loop = {
                 me.ver_mode = 'alt';
                 setprop(fmgc~ "ver-mode", 'alt');
                 me.ver_ctrl = 'man-set';
-                getprop(fmgc~ "ver-ctrl", 'man-set');
+                setprop(fmgc~ "ver-ctrl", 'man-set');
+                me.spd_ctrl = 'fmgc';
+                setprop(fmgc~ "spd-ctrl", 'fmgc');
+                setprop("/autoland/retard", 0);
             } else {
                 if(me.toga_trk != nil)
                     me.set_current_vsfpa();
@@ -1560,14 +1577,20 @@ var fmgc_loop = {
                         }
                         me.armed_ver_secondary_mode = '';
                     } else {
-                        if(ver_fmgc) 
+                        if(ver_fmgc) {
                             me.active_ver_mode = vmode_main;
-                        else 
+                            var armed_vmode_2 = me.get_armed_ver_mode(fcu_alt,
+                                                                      trgt_alt,
+                                                                      alt_cstr,
+                                                                      crz_alt,
+                                                                      is_capturing_alt);
+                            me.armed_ver_secondary_mode = armed_vmode_2;
+                        } else {
                             me.active_ver_mode = me.get_selected_vmode(vmode_main, 
                                                                        vphase,
                                                                        raw_alt_diff);
+                        }
                         me.armed_ver_mode = vmode;
-                        me.display_ver_secondary_mode = 1;
                     }
                 }
                 elsif(vmode == 'FINAL') { #TODO: final disarms at DH - 50
@@ -1575,14 +1598,19 @@ var fmgc_loop = {
                     if(dest_wp != nil){
                         var dest_idx = dest_wp.index;
                         if(dest_idx != current_wp){
-                            if(ver_fmgc) 
+                            if(ver_fmgc) {
                                 me.active_ver_mode = vmode_main;
-                            else 
+                                var armed_vmode_2 = me.get_armed_ver_mode(fcu_alt,
+                                                                          trgt_alt,
+                                                                          alt_cstr,
+                                                                          crz_alt,
+                                                                          is_capturing_alt);
+                                me.armed_ver_secondary_mode = armed_vmode_2;
+                            } else {
                                 me.active_ver_mode = me.get_selected_vmode(vmode_main, 
                                                                            vphase,
                                                                            raw_alt_diff);
-                            me.armed_ver_mode = vmode;
-                            me.display_ver_secondary_mode = 1;
+                            }
                         } else{
                             me.active_ver_mode = vmode;
                             me.armed_ver_mode = '';
@@ -1594,41 +1622,11 @@ var fmgc_loop = {
                     }
                 } else {
                     me.active_ver_mode = vmode;
-                    var is_alt_mode = (substr(vmode, 0, 3) == 'ALT');
-                    if(is_alt_mode and !is_capturing_alt){
-                        if(vmode == 'ALT CST'){ # ALT CST automatically arms DES/CLB
-                            if(fcu_alt > alt_cstr)
-                                me.armed_ver_mode = 'CLB';
-                            else 
-                                me.armed_ver_mode = 'DES';
-                        } else {
-                            var tmp_fcu_alt = getprop(fcu~ 'fcu-alt');
-                            var ver_armed = '';
-                            var clbdes_armed = 0;
-                            if ((tmp_fcu_alt - fcu_alt) < -250){
-                                ver_armed = 'DES';
-                                clbdes_armed = 1;
-                            }
-                            elsif ((tmp_fcu_alt - fcu_alt) >250){
-                                ver_armed = 'CLB';
-                                clbdes_armed = 1;
-                            }
-                            #if (!ver_fmgc and clbdes_armed)
-                            #    ver_armed = 'OP '~ ver_armed;
-                            me.armed_ver_mode = ver_armed;
-                            if (clbdes_armed)
-                                me.revert_to_vsfpa(vmode);
-                        }
-                    } elsif (is_alt_mode and is_capturing_alt) {
-                        me.armed_ver_mode = '';
-                    } else { #NO ALT MODE: armed mode is ALT
-                        me.armed_ver_mode = me.get_alt_mode(trgt_alt, alt_cstr, crz_alt, 0); 
-                        if(me.armed_ver_mode != 'ALT CRZ'){
-                            me.armed_ver_mode = 'ALT';
-                        }
-                    }
-                    if(appr_pressed)
-                        me.armed_ver_secondary_mode = me.armed_ver_mode;
+                    me.armed_ver_mode = me.get_armed_ver_mode(fcu_alt,
+                                                              trgt_alt,
+                                                              alt_cstr,
+                                                              crz_alt,
+                                                              is_capturing_alt);
                 }
             }
             # Check if fcu alt contrasts with CLB or DES modes
@@ -1739,7 +1737,7 @@ var fmgc_loop = {
         setprop(athr_modes~'armed', me.armed_athr_mode);
         setprop(vmodes~'active', me.active_ver_mode);
         setprop(vmodes~'armed', me.armed_ver_mode);
-        setprop(vmodes~'secondary-armed', me.armed_ver_secondary_mode);
+        setprop(vmodes~'armed[1]', me.armed_ver_secondary_mode);
         setprop(vmodes~'display-secondary-armed', me.display_ver_secondary_mode);
         setprop(lmodes~'active', me.active_lat_mode);
         setprop(lmodes~'armed', me.armed_lat_mode);
@@ -1747,6 +1745,7 @@ var fmgc_loop = {
         setprop(common_modes~'armed', me.armed_common_mode);
         setprop(athr_modes~ 'msg', me.athr_msg);
         setprop(athr_modes~ 'alert', me.athr_alert);
+        me.update_pfd_fma();
         #setprop(fmgc ~'fixed-thrust', fixed_thrust);
         me.ver_managed = (me.ver_ctrl == 'fmgc' and 
                           me.flplan_active and 
@@ -1882,6 +1881,44 @@ var fmgc_loop = {
         }
         return vmode;
     },
+    get_armed_ver_mode: func(fcu_alt, trgt_alt, alt_cstr, crz_alt, is_capturing_alt){
+        var vmode = me.active_ver_mode;
+        var armed_ver_mode = '';
+        var is_alt_mode = (substr(vmode, 0, 3) == 'ALT');
+        if(is_alt_mode and !is_capturing_alt){
+            if(vmode == 'ALT CST'){ # ALT CST automatically arms DES/CLB
+                if(fcu_alt > alt_cstr)
+                    armed_ver_mode = 'CLB';
+                else 
+                    armed_ver_mode = 'DES';
+            } else {
+                var tmp_fcu_alt = getprop(fcu~ 'fcu-alt');
+                var ver_armed = '';
+                var clbdes_armed = 0;
+                if ((tmp_fcu_alt - fcu_alt) < -250){
+                    ver_armed = 'DES';
+                    clbdes_armed = 1;
+                }
+                elsif ((tmp_fcu_alt - fcu_alt) >250){
+                    ver_armed = 'CLB';
+                    clbdes_armed = 1;
+                }
+                #if (!ver_fmgc and clbdes_armed)
+                #    ver_armed = 'OP '~ ver_armed;
+                armed_ver_mode = ver_armed;
+                if (clbdes_armed)
+                    me.revert_to_vsfpa(vmode);
+            }
+        } elsif (is_alt_mode and is_capturing_alt) {
+            armed_ver_mode = '';
+        } else { #NO ALT MODE: armed mode is ALT
+            armed_ver_mode = me.get_alt_mode(trgt_alt, alt_cstr, crz_alt, 0); 
+            if(armed_ver_mode != 'ALT CRZ'){
+                armed_ver_mode = 'ALT';
+            }
+        }
+        return armed_ver_mode;
+    },
     lvlch_check : func {
 
         if ((me.ap1 == "eng") or (me.ap2 == "eng")) {
@@ -1938,6 +1975,36 @@ var fmgc_loop = {
             if(!getprop('/flight-management/fcu/display-spd'))
                 me.set_current_spd();
         }
+    },
+    update_pfd_fma: func(){
+        var armed_vmode_l = '';
+        var armed_vmode_r = '';
+        var armed_vmode = '';
+        var armed_vmode_1 = me.armed_ver_mode;
+        var armed_vmode_2 = me.armed_ver_secondary_mode;
+        var left_modes = ['ALT', 'CLB', 'DES'];
+        var right_modes = ['G/S', 'FINAL'];
+        var left = 0;
+        var right = 0;
+        foreach(var mode; left_modes){
+            if(armed_vmode_1 == mode or armed_vmode_2 == mode){
+                armed_vmode_l = mode;
+                left = 1;
+                break;
+            }
+        }
+        foreach(var mode; right_modes){
+            if(armed_vmode_1 == mode or armed_vmode_2 == mode){
+                armed_vmode_r = mode;
+                right = 1;
+                break;
+            }
+        }
+        if(!left and !right)
+            armed_vmode = armed_vmode_1;
+        setprop('instrumentation/pfd/ver-armed-mode', armed_vmode);
+        setprop('instrumentation/pfd/ver-armed-mode-l', armed_vmode_l);
+        setprop('instrumentation/pfd/ver-armed-mode-r', armed_vmode_r);
     },
     fcu_lights : func {
 
