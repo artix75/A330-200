@@ -1503,6 +1503,7 @@
 			<file>Aircraft/A330-200/Nasal/FMGC/deflection.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/procedure.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/fmgc_loop.nas</file>
+			<file>Aircraft/A330-200/Nasal/FMGC/route.nas</file>
 			<file>Aircraft/A330-200/Nasal/FMGC/wp_transit.nas</file>
 		</fmgc>
 

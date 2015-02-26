@@ -491,12 +491,16 @@ canvas.NDStyles["Airbus"] = {
 					var is_active = getprop(me.options.fplan_active);
 					(is_active ? me.active_color : me.inactive_color);
 				},
+				color_missed: [0,0.62,0.84],
+				color_temporary: func me.getStyle('inactive_color', me.getOption('inactive_route_color')),
+				color_secondary: [1,1,1],
 				line_dash: func{
 					var lat_ctrl = getprop(me.options.lat_ctrl);
 					var is_managed = (lat_ctrl == me.options.managed_val);
 					var is_active = getprop(me.options.fplan_active);
 					(is_managed and is_active ? [] : [32, 16]);
-				}
+				},
+				line_dash_temporary: [32,16]
 			}
 		}, # end of route layer
 		{ 
@@ -1526,7 +1530,119 @@ canvas.NDStyles["Airbus"] = {
 					nd.symbols.degreeArrows.hide();
 				}
 			}  
-		}
+		},
+		{
+			id: 'legDistL',
+			impl: {
+				init: func(nd,symbol),
+				predicate: func(nd) (nd.get_switch('toggle_display_mode') == 'MAP' and !nd.get_switch('toggle_centered')),
+				is_true: func(nd){
+					var active = getprop('autopilot/route-manager/active');
+					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
+					var managed_v = getprop(nd.options.defaults.managed_val);
+					var is_managed = (lat_ctrl == managed_v);
+					if(!active or is_managed){
+						nd.symbols.legDistL.hide();
+					} else {
+						var dist = getprop('instrumentation/gps/wp/wp[1]/course-error-nm');
+						if(dist == nil or dist == '' or dist > -0.1){
+							nd.symbols.legDistL.hide();
+						} else {
+							dist = sprintf('%.1fL', math.abs(dist));
+							nd.symbols.legDistL.setText(dist);
+							nd.symbols.legDistL.show();
+						}
+					}
+				},
+				is_false: func(nd){
+					nd.symbols.legDistL.hide();
+				}
+			}
+		},
+		{
+			id: 'legDistR',
+			impl: {
+				init: func(nd,symbol),
+				predicate: func(nd) (nd.get_switch('toggle_display_mode') == 'MAP' and !nd.get_switch('toggle_centered')),
+				is_true: func(nd){
+					var active = getprop('autopilot/route-manager/active');
+					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
+					var managed_v = getprop(nd.options.defaults.managed_val);
+					var is_managed = (lat_ctrl == managed_v);
+					if(!active or is_managed){
+						nd.symbols.legDistR.hide();
+					} else {
+						var dist = getprop('instrumentation/gps/wp/wp[1]/course-error-nm');
+						if(dist == nil or dist == '' or dist < 0.1){
+							nd.symbols.legDistR.hide();
+						} else {
+							dist = sprintf('%.1fR', math.abs(dist));
+							nd.symbols.legDistR.setText(dist);
+							nd.symbols.legDistR.show();
+						}
+					}
+				},
+				is_false: func(nd){
+					nd.symbols.legDistR.hide();
+				}
+			}
+		},
+		{
+			id: 'legDistCtrL',
+			impl: {
+			init: func(nd,symbol),
+				predicate: func(nd) (nd.get_switch('toggle_display_mode') == 'MAP' and nd.get_switch('toggle_centered')),
+				is_true: func(nd){
+					var active = getprop('autopilot/route-manager/active');
+					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
+					var managed_v = getprop(nd.options.defaults.managed_val);
+					var is_managed = (lat_ctrl == managed_v);
+					if(!active or is_managed){
+						nd.symbols.legDistCtrL.hide();
+					} else {
+						var dist = getprop('instrumentation/gps/wp/wp[1]/course-error-nm');
+						if(dist == nil or dist == '' or dist > -0.1){
+							nd.symbols.legDistCtrL.hide();
+						} else {
+							dist = sprintf('%.1fL', math.abs(dist));
+							nd.symbols.legDistCtrL.setText(dist);
+							nd.symbols.legDistCtrL.show();
+						}
+					}
+				},
+				is_false: func(nd){
+					nd.symbols.legDistCtrL.hide();
+				}
+			}
+		},
+		{
+			id: 'legDistCtrR',
+			impl: {
+				init: func(nd,symbol),
+				predicate: func(nd) (nd.get_switch('toggle_display_mode') == 'MAP' and nd.get_switch('toggle_centered')),
+				is_true: func(nd){
+					var active = getprop('autopilot/route-manager/active');
+					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
+					var managed_v = getprop(nd.options.defaults.managed_val);
+					var is_managed = (lat_ctrl == managed_v);
+					if(!active or is_managed){
+						nd.symbols.legDistCtrR.hide();
+					} else {
+						var dist = getprop('instrumentation/gps/wp/wp[1]/course-error-nm');
+						if(dist == nil or dist == '' or dist < 0.1){
+							nd.symbols.legDistCtrR.hide();
+						} else {
+							dist = sprintf('%.1fR', math.abs(dist));
+							nd.symbols.legDistCtrR.setText(dist);
+							nd.symbols.legDistCtrR.show();
+						}
+					}
+				},
+				is_false: func(nd){
+					nd.symbols.legDistCtrR.hide();
+				}
+			}
+		},
 
 	], # end of vector with features
 

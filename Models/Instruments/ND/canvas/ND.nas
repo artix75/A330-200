@@ -6,6 +6,9 @@ if(!ND_AIRBUS_SUPPORT){
 #    io.include('ND_config.nas');
 #}
 
+io.include('A330_ND_drivers.nas');
+canvas.NDStyles['Airbus'].options.defaults.route_driver = A330RouteDriver.new();
+
 var nd_display = {};
 
 setlistener("sim/signals/fdm-initialized", func() {

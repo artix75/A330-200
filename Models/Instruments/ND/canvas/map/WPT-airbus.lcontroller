@@ -88,10 +88,18 @@ var WPTModel = {
 };
 
 var searchCmd = func {
-    var fp = flightplan();
-    var fpSize = fp.getPlanSize();
+    var driver = opt_member(me.layer.options, 'route_driver');
+    if(driver == nil){
+        driver = canvas.RouteDriver.new();
+    }
+    driver.update();
     var result = [];
-    for (var i = 0; i < fpSize; i+=1)
-        append(result, WPTModel.new(fp, i));
+    var planCount = driver.getNumberOfFlightPlans();
+    for(var idx = 0; idx < planCount; idx += 1){
+        var fp = driver.getFlightPlan(idx);
+        var fpSize = fp.getPlanSize(idx);
+        for (var i = 0; i < fpSize; i+=1)
+            append(result, WPTModel.new(fp, i));
+    }
     return result;
 }

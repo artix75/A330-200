@@ -39,19 +39,38 @@ var del = func() {
 var searchCmd = func {
 	# FIXME: do we return the current route even if it isn't active?
 	printlog(_MP_dbg_lvl, "Running query: ", name);
-	var plans = []; # TODO: multiple flightplans?
-
-	# http://wiki.flightgear.org/Nasal_Flightplan
-	var fp = flightplan();
-	var fpSize = fp.getPlanSize();
-	if (!getprop(me.layer.options.active_node) and
-		!me.layer.options.display_inactive_rte) fpSize = 0;
-	var coords = [];
-	for (var i=0; i<fpSize; i += 1) {
-		var leg = fp.getWP(i);
-		coords ~= leg.path();
+	var plans = [];
+	var driver = opt_member(me.layer.options, 'route_driver');
+	if(driver == nil){
+		driver = canvas.RouteDriver.new();
 	}
-	append(plans, coords);
+	driver.update();
+	# http://wiki.flightgear.org/Nasal_Flightplan
+	var planCount = driver.getNumberOfFlightPlans();
+	for(var idx = 0; idx < planCount; idx += 1){
+		#var fp = driver.getFlightPlan(idx);
+		var fpSize = driver.getPlanSize(idx);
+		var type = driver.getFlightPlanType(idx);
+		if(type == nil) type = 'current';
+		if (!getprop(me.layer.options.active_node) and 
+			type == 'current' and 
+			!me.layer.options.display_inactive_rte) fpSize = 0;
+		var coords = [];
+		for (var i=0; i<fpSize; i += 1) {
+			var leg = driver.getWP(idx, i);
+			coords ~= leg.path();
+		}
+		append(plans, {
+			id: type,
+			#name: type,
+			type: type,
+			path: coords,
+			#size: fpSize,
+			equals: func(o){
+				me.id == o.id# and me.size == o.size
+			}
+		});
+	}
 	return plans;
 };
 

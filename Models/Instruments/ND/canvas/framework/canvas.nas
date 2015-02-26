@@ -243,3 +243,56 @@ canvas.SymbolLayer._new = func(m, style, controller, options) {
     m.controller = controller;
 };
 
+# LineSymbol
+
+canvas.LineSymbol.new = func(group, layer, model, controller=nil) {
+	if (me == nil) __die("Need me reference for LineSymbol.new()");
+	if (typeof(model) != 'vector') {
+		if(typeof(model) == 'hash'){
+			if(!contains(model, 'path'))
+			canvas.__die("LineSymbol.new(): model hash requires path");
+		}
+		else canvas.__die("LineSymbol.new(): need a vector of points or a hash");
+	}
+	var m = {
+		parents: [me],
+		group: group,
+		layer: layer,
+		model: model,
+		controller: controller == nil ? me.df_controller : controller,
+		element: group.createChild(
+			"path", me.element_id
+		),
+	};
+	append(m.parents, m.element);
+	canvas.Symbol._new(m);
+
+	m.init();
+	return m;
+};
+	# Non-static:
+canvas.LineSymbol.draw = func() {
+	me.callback('draw_before');
+	if (!me.needs_update) return;
+	#printlog(_MP_dbg_lvl, "redrawing a LineSymbol "~me.layer.type);
+	me.element.reset();
+	var cmds = [];
+	var coords = [];
+	var cmd = canvas.Path.VG_MOVE_TO;
+	var path = me.model;
+	if(typeof(path) == 'hash'){
+		path = me.model.path;
+		if(path == nil) 
+			canvas.__die("LineSymbol model requires a 'path' member (vector)");
+	}
+	foreach (var m; path) {
+		var (lat,lon) = me.controller.getpos(m);
+		append(coords,"N"~lat);
+		append(coords,"E"~lon);
+		append(cmds,cmd); cmd = canvas.Path.VG_LINE_TO;
+	}
+	me.element.setDataGeo(cmds, coords);
+	me.element.update(); # this doesn't help with flickering, it seems
+	me.callback('draw_after');
+};
+

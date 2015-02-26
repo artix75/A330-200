@@ -36,6 +36,7 @@ if(version < 3.2){
 io.include('ND_config.nas');
 io.include('framework/canvas.nas');
 io.include('framework/navdisplay.nas');
+io.include('framework/MapDrivers.nas');
 io.include('loaders.nas');
 io.include('helpers.nas');
 io.include('style.nas');
