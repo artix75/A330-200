@@ -76,5 +76,14 @@ var A330RouteDriver = {
 			var offset = missed_approach.first_wp.index;
 			fp.getWP(offset + idx);
 		}
+	},
+	getListeners: func(){
+		var rm = fmgc.RouteManager;
+		[
+			me.route_manager.getSignal(rm.SIGNAL_FP_COPY),
+			me.route_manager.getSignal(rm.SIGNAL_FP_CREATED),
+			me.route_manager.getSignal(rm.SIGNAL_FP_DEL),
+			me.route_manager.getSignal(rm.SIGNAL_FP_EDIT)
+		]
 	}
 };

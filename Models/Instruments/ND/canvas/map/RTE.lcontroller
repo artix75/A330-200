@@ -28,7 +28,15 @@ var new = func(layer) {
 	layer.searcher._equals = func(l,r) 0; # TODO: create model objects instead?
 	append(m.listeners, setlistener(layer.options.active_node, func m.layer.update() ), setlistener(layer.options.wp_num, func m.layer.update() ));
 	m.addVisibilityListener();
-
+	var driver = opt_member(m.layer.options, 'route_driver');
+	if(driver == nil){
+		driver = RouteDriver.new();
+	}
+	var driver_listeners = driver.getListeners();
+	foreach(var listener; driver_listeners){
+		append(m.listeners, setlistener(listener, func m.layer.update()));
+	}
+	m.route_driver = driver;
 	return m;
 };
 var del = func() {
@@ -40,10 +48,7 @@ var searchCmd = func {
 	# FIXME: do we return the current route even if it isn't active?
 	printlog(_MP_dbg_lvl, "Running query: ", name);
 	var plans = [];
-	var driver = opt_member(me.layer.options, 'route_driver');
-	if(driver == nil){
-		driver = canvas.RouteDriver.new();
-	}
+	var driver = me.route_driver;
 	driver.update();
 	# http://wiki.flightgear.org/Nasal_Flightplan
 	var planCount = driver.getNumberOfFlightPlans();

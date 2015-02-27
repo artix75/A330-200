@@ -9,6 +9,7 @@ var RouteManager = {
         var fp = flightplan();
         if(fp == nil) return;
         me.flightplan = fp;
+        me.plans['current'] = fp;
         me.wp_count = fp.getPlanSize();
         me.total_wp_count = me.wp_count;
         me.active = getprop('autopilot/route-manager/active');
@@ -52,6 +53,7 @@ var RouteManager = {
     },
     reset: func(){
         me.flightplan = nil;
+        me.plans = {};
         me.wp_count = 0;
         me.total_wp_count = 0;
         me.last_idx = 0;
@@ -82,42 +84,141 @@ var RouteManager = {
         }
         return remaining_nm;
     },
-    createTemporaryFlightPlan: func(){
+    createFlightPlan: func(planId, src = nil, empty = 0){
         me.update();
-        me.temporary_flightplan = me.flightplan.clone();
-        return me.temporary_flightplan;
+        if(planId == 'current' or string.trim(planId) == ''){
+            print('RouteManager -> createFlightPlan: cannot create current fp.');
+            return;
+        }
+        if(src == nil) src = me.flightplan;
+        var fp = src.clone();
+        if(empty){
+            me.clearFlightPlan(fp);
+        }
+        me.plans[planId] = fp;
+        me.trigger('edited', 'fp-created');
+        return fp;
+    },
+    createTemporaryFlightPlan: func(){
+        var fp = me.createFlightPlan('temporary');
+        me.trigger('tmpy-created');
+        return fp;
     },
     createSecondaryFlightPlan: func(empty = 0){
-        me.update();
-        me.secondary_flightplan = me.flightplan.clone();
-        if(empty) {
-            #me.secondary_flightplan.cleanPlan();
-            while(me.secondary_flightplan.getPlanSize())
-                me.secondary_flightplan.deleteWP(0);
+        var fp = me.createFlightPlan('secondary', nil, empty);
+        me.trigger('sec-created');
+        return fp;
+    },
+    clearFlightPlan: func(fp = nil){
+        if(fp == nil)
+            fp = me.flightplan;
+        elsif(typeof(fp) == 'scalar')
+            fp = me.getFlightPlan(fp);
+        if(fp == nil){
+            print('RouteManager -> clearFlightPlan: no flightplan.');
+            return;
         }
-        return me.secondary_flightplan;
+        me.trigger('before-fp-clear');
+        while(fp.getPlanSize())
+            fp.deleteWP(0);
+        me.trigger('edited', 'fp-clear');
+    },
+    copyToActiveFlightPlan: func(fp, delete_src = 0){
+        if(fp == nil) {
+            print('RouteManager -> copyToActiveFlightPlan: no flightplan.');
+            return;
+        }
+        var fpId = nil;
+        if(typeof(fp) == 'scalar'){
+            fpId = fp;
+            fp = me.getFlightPlan(fp);
+        }
+        if(fp == nil){
+            print('RouteManager -> copyToActiveFlightPlan: no flightplan.');
+            return;
+        }
+        me.trigger('before-fp-copy');
+        me.clearFlightPlan();
+        var sz = fp.getPlanSize();
+        var dest = me.flightplan;
+        for(var i = 0; i < sz; i += 1){
+            var wp = fp.getWP(i);
+            dest.appendWP(wp);
+        }
+        if(delete_src and fpId != nil){
+            me.deleteFlightPlan(fpId);
+        }
+        me.trigger('edited', 'fp-copy');
+    },
+    deleteFlightPlan: func(fpId){
+        if(fpId == 'current'){
+            print('RouteManager -> deleteFlightPlan: cannot delete current fp.');
+            return;
+        }
+        me.trigger('before-fp-del');
+        me.plans[fpId] = nil;
+        me.trigger('edited', 'fp-del');
     },
     allFlightPlans: func(){
-        return {
-            current: me.flightplan,
-            temporary: me.temporary_flightplan,
-            secondary: me.secondary_flightplan
-        };
+        me.update();
+        me.plans;
     },
-    getFlightPlan: func(fplan = nil){
-        if(fplan == nil) fplan = 'current';
+    getFlightPlan: func(fpId = nil){
+        if(fpId == nil) return me.flightplan;#fpId = 'current';
         var all_plans = me.allFlightPlans();
-        if(!contains(all_plans, fplan)) return nil;
-        return all_plans[fplan];
+        if(!contains(all_plans, fpId)) return nil;
+        return all_plans[fpId];
     },
-    getWP: func(idx, fplan = nil){
-        var plan = me.getFlightPlan(fplan);
-        if(plan == nil) return nil;
-        return plan.getWP(idx);
+    getTemporaryFlightPlan: func(){
+        me.getFlightPlan('temporary');
+    },
+    getSecondaryFlightPlan: func(){
+        me.getFlightPlan('secondary');
+    },
+    getWP: func(idx, fpID = nil){
+        var fp = me.getFlightPlan(fpID);
+        if(fp == nil) return nil;
+        return fp.getWP(idx);
+    },
+    insertWP: func(wp, idx, fpID = nil){
+        var fp = me.getFlightPlan(fpID);
+        if(fp == nil){
+            print('RouteManager -> insertWP: no flightplan.');
+            return;
+        }
+        fp.insertWP(wp, idx);
+        me.trigger('edited', 'fg-edited');
+    },
+    appendWP: func(wp, idx, fpID = nil){
+        var fp = me.getFlightPlan(fpID);
+        if(fp == nil){
+            print('RouteManager -> appendWP: no flightplan.');
+            return;
+        }
+        fp.appendWP(wp, idx);
+        me.trigger('edited', 'fg-edited');
+    },
+    deleteWP: func(idx, fpID = nil){
+        var fp = me.getFlightPlan(fpID);
+        if(fp == nil){
+            print('RouteManager -> deleteWP: no flightplan.');
+            return;
+        }
+        fp.deleteWP(idx);
+        me.trigger('edited', 'fg-edited');
     },
     listen: func(prop){
         var _me = me;
         append(me.listeners, setlistener(prop, func _me.update()));
+    },
+    trigger: func(signals...){
+        foreach(var signal; signals){
+            var prp = me.getSignal(signal);
+            setprop(prp, '');
+        }
+    },
+    getSignal: func(signal){
+        'autopilot/route-manager/signals/rm-' ~ signal;
     },
     dump: func(){
         var dump_bool = func(val) (val ? 'true' : 'false');
@@ -148,7 +249,15 @@ var RouteManager = {
         print('remaining_nm: ',me.getRemainingNM());
         #print('remaining_total_nm: ', me.remaining_total_nm);
         print('missed_approach: ', dump_missed_approach());
-    }
+    },
+    # CONSTANTS
+    SIGNAL_EDIT: 'edited',
+    SIGNAL_FP_CLEAR: 'fp-clear',
+    SIGNAL_FP_COPY: 'fp-copy',
+    SIGNAL_FP_CREATED: 'fp-created',
+    SIGNAL_FP_DEL: 'fp-del',
+    SIGNAL_FP_EDIT: 'fg-edited'
+    
 };
 
 setlistener("sim/signals/fdm-initialized", func(){

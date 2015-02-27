@@ -53,6 +53,15 @@ var new = func(layer) {
         listeners: [],
     };
     layer.searcher._equals = func(a,b) a.equals(b);
+    var driver = opt_member(m.layer.options, 'route_driver');
+    if(driver == nil){
+        driver = RouteDriver.new();
+    }
+    var driver_listeners = driver.getListeners();
+    foreach(var listener; driver_listeners){
+        append(m.listeners, setlistener(listener, func m.layer.update()));
+    }
+    m.route_driver = driver;
     return m;
 };
 
@@ -88,10 +97,7 @@ var WPTModel = {
 };
 
 var searchCmd = func {
-    var driver = opt_member(me.layer.options, 'route_driver');
-    if(driver == nil){
-        driver = canvas.RouteDriver.new();
-    }
+    var driver = me.route_driver;
     driver.update();
     var result = [];
     var planCount = driver.getNumberOfFlightPlans();

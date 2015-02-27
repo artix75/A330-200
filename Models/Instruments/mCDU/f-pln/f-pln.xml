@@ -409,13 +409,13 @@
 		<object-name>d_arrow</object-name>
 		<action>
 			<button>0</button>
-	   		<repeatable type="bool">false</repeatable>
+			<repeatable type="bool">false</repeatable>
 			<binding>
 				<command>nasal</command>
-		 		<script>
-		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+				<script>
+					var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
 
-		 			var max = getprop("/autopilot/route-manager/route/num");
+					var max = getprop("/autopilot/route-manager/route/num");
 
 					if (max - 1 > first)
 						setprop("/instrumentation/mcdu/f-pln/disp/first", first + 1);
