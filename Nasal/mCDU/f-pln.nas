@@ -5,7 +5,6 @@ var rm_route = "/autopilot/route-manager/";
 var f_pln_disp = "/instrumentation/mcdu/f-pln/disp/";
 
 var f_pln = {
-
 	init_f_pln : func {
 	
 		# Completely Clear Route Manager, add the new waypoints from 'active_rte' and then add the departure and arrival icaos.
@@ -13,6 +12,8 @@ var f_pln = {
 		# NOTE: Flightplans are only (re-)initialized when switched between active and secondary, and re-initialized after SID (- F-PLN DISCONTINUITY -)
 		
 		## RESET Terminal Procedure Manager
+		
+		me.route_manager = fmgc.RouteManager;
 		
 		fmgc.procedure.reset_tp();
 		
@@ -168,7 +169,14 @@ var f_pln = {
 		setprop("/instrumentation/mcdu/input", "MSG: F-PLN SAVED TO ACTIVE RTE");
 	
 	},
-	
+	get_current_flightplan: func(){
+		var current_fp = getprop(f_pln_disp~ "current-flightplan");
+		if(current_fp == nil or current_fp == ''){
+			current_fp = 'current';
+		}
+		me.route_manager.update();
+		return me.route_manager.getFlightPlan(current_fp);
+	},
 	update_disp : func {
 	
 		# This function is simply to update the display in the Active Flight Plan Page. This gets first wp ID and then places the others accordingly.
@@ -176,16 +184,25 @@ var f_pln = {
 		# - F-PLN DISCONTINUITY - is showed when first wp id = dep and - END OF F-PLN - is showed when wps in l1 to l4 are the last.
 		
 		var first = getprop(f_pln_disp~ "first");
+		var current_fp = getprop(f_pln_disp~ "current-flightplan");
+		if(current_fp == nil or current_fp == ''){
+			current_fp = 'current';
+		}
+		var fp = me.route_manager.getFlightPlan(current_fp);
+		var size = fp.getPlanSize();
+		var fp_tree = rm_route~ "flightplan/"~current_fp~"/route/";
 		
 		# Calculate times
 		
-		for (var wp = 1; wp < getprop(rm_route~ "route/num"); wp += 1) {
+		for (var wp = 1; wp < size; wp += 1) {
+			
+			var waypoint = fp.getWP(wp);
 		
-			var dist = getprop(rm_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-distance-nm");
+			var dist = waypoint.leg_distance;
 			
-			var spd = getprop(rm_route~ "route/wp[" ~ wp ~ "]/ias-mach");
+			var spd = waypoint.speed_cstr;
 			
-			var alt = getprop(rm_route~ "route/wp[" ~ wp ~ "]/altitude-ft");
+			var alt = waypoint.alt_cstr;
 			
 			var gs_min = 0; # Ground Speed in NM/min
 			
@@ -198,7 +215,7 @@ var f_pln = {
 				else
 					spd = 0.78;
 			
-			}		
+			}
 			
 			# MACH SPEED
 			
@@ -220,29 +237,33 @@ var f_pln = {
 			
 			var time_min = int(dist / gs_min);
 			
-			var last_time = getprop(rm_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
+			var last_time = getprop(fp_tree~ "wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
 			
 			if (wp == 1)
-			    last_time = last_time + 30;
+				last_time = last_time + 30;
 			# Atm, using 30 min for taxi time. You will be able to change this in INIT B when it's completed
 			
 			var total_time = last_time + time_min;
 			
-			setprop(rm_route~ "route/wp[" ~ wp ~ "]/leg-time", total_time);
+			setprop(fp_tree~ "wp[" ~ wp ~ "]/leg-time", total_time);
 		
 		}
 		
 		# Destination details --------------------------------------------------
 		
-		var num = getprop(rm_route~ "route/num");
+		var cur_tpy = (current_fp == 'current' or current_fp == 'temporary');
 		
-		if (num >= 2) {
+		if (size >= 2) {
+			me.route_manager.update(current_fp);
+			var destWP = me.route_manager.getDestinationWP(current_fp);
+			var dest_id = size - 1;
+			if(destWP == nil) destWP = fp.getWP(dest_id);
+			if(destWP != nil) dest_id = destWP.index;
+			#var destWP = fp.getWP(dest_id);
 		
-			var dest_id = num - 1;
+			var dest_name = destWP.wp_name;
 		
-			var dest_name = getprop(rm_route~ "route/wp[" ~ dest_id ~ "]/id");
-		
-			var dest_time = getprop(rm_route~ "route/wp[" ~ dest_id ~ "]/leg-time");
+			var dest_time = getprop(fp_tree~ "wp[" ~ dest_id ~ "]/leg-time");
 
 			var dest_time_str = "";
 		
@@ -263,22 +284,26 @@ var f_pln = {
 			
 			}
 		
-			# Set Airborne to get distance to last waypoint
-            var old_actv = getprop(rm_route~ "active");
-		
-			setprop(rm_route~ "active", 1);
-		
-			setprop(rm_route~ "airborne", 1);
-		
-			var rte_dist = getprop(rm_route~ "wp-last/dist");
-		
-			setprop(rm_route~ "active", old_actv);
+			if(0){
+				# Set Airborne to get distance to last waypoint
+				var old_actv = getprop(rm_route~ "active");
+
+				setprop(rm_route~ "active", 1);
+
+				setprop(rm_route~ "airborne", 1);
+
+				var rte_dist = getprop(rm_route~ "wp-last/dist");
+
+				setprop(rm_route~ "active", old_actv);
+			}
+			
+			var rte_dist = me.route_manager.getDistance(current_fp, 1);
 	
 			setprop(f_pln_disp~ "dest", dest_name);
 		
 			setprop(f_pln_disp~ "time", dest_time_str);
 		
-			if (rte_dist != nil)
+			if (rte_dist != nil and rte_dist != 0)
 				setprop(f_pln_disp~ "dist", int(rte_dist));
 			else
 				setprop(f_pln_disp~ "dist", "----");
@@ -292,17 +317,17 @@ var f_pln = {
 			setprop(f_pln_disp~ "dist", "----");
 		
 		}
-		var fp = flightplan();
+		#var fp = flightplan();
 		# PAGE 1 ---------------------------------------------------------------
 		
 		if (first == 0) {
 		
 			# L1 DEPARTURE -----------------------------------------------------
+			var depWP = fp.getWP(0);
 			
-			var dep = getprop(rm_route~ "route/wp/id");
+			if (depWP != nil) {
 			
-			if (dep != nil) {
-			
+				var dep = getprop(rm_route~ "route/wp/id");
                 var time_dep = "0000";
 
                 var spd_alt = "---/-----";
@@ -326,18 +351,18 @@ var f_pln = {
 			# L3 TO L5 WAYPOINTS -----------------------------------------------
 			
 			for (var wp = 1; wp <= 3; wp += 1) {
-			
-				var id = getprop(rm_route~ "route/wp[" ~ wp ~ "]/id");
 				var fp_wp = fp.getWP(wp);
-				var fly_type = (fp_wp != nil ? fp_wp.fly_type : '');
 				
-				if (id != nil) {
+				if (fp_wp != nil) {
+					
+					var id = fp_wp.id;
+					var fly_type = fp_wp.fly_type;
 				
 					setprop(f_pln_disp~ "l" ~ (wp + 2) ~ "/id", id);
 					var ovfly_sym = (fly_type == 'flyOver' ? 'D' : '');
 					setprop(f_pln_disp~ "l" ~ (wp + 2) ~ "/ovfly", ovfly_sym);
 				
-					var time_min = int(getprop(rm_route~ "route/wp[" ~ wp ~ "]/leg-time"));
+					var time_min = int(getprop(fp_tree~ "wp[" ~ wp ~ "]/leg-time"));
 					
 					# Change time to string with 4 characters
 					
@@ -350,9 +375,9 @@ var f_pln = {
 					else
 						setprop(f_pln_disp~ "l" ~ (wp + 2) ~ "/time", time_min);
 						
-					var spd = getprop(rm_route~ "route/wp[" ~ wp ~ "]/ias-mach");
+					var spd = fp_wp.speed_cstr;
 					
-					var alt = getprop(rm_route~ "route/wp[" ~ wp ~ "]/altitude-ft");
+					var alt = fp_wp.alt_cstr;
 					
 					var spd_str = "";
 					
@@ -412,19 +437,18 @@ var f_pln = {
 			for (var l = 1; l <= 5; l += 1) {
 			
 				var wp = first - 1 + l;
+				var fp_wp = fp.getWP(wp);
 				
-				var id = getprop(rm_route~ "route/wp[" ~ wp ~ "]/id");				
 				
-				if (id != nil) {
-					
-					var fp_wp = fp.getWP(wp);
-					var fly_type = (fp_wp != nil ? fp_wp.fly_type : '');
+				if (fp_wp != nil) {
+					var id = fp_wp.id;
+					var fly_type = fp_wp.fly_type;
 				
 					setprop(f_pln_disp~ "l" ~ l ~ "/id", id);
 					var ovfly_sym = (fly_type == 'flyOver' ? 'D' : '');
 					setprop(f_pln_disp~ "l" ~ l ~ "/ovfly", ovfly_sym);
 				
-					var time_min = getprop(rm_route~ "route/wp[" ~ wp ~ "]/leg-time");
+					var time_min = getprop(fp_tree~ "wp[" ~ wp ~ "]/leg-time");
 					
 					# Change time to string with 4 characters
 					
@@ -437,9 +461,9 @@ var f_pln = {
 					else
 						setprop(f_pln_disp~ "l" ~ l ~ "/time", time_min);
 						
-					var spd = getprop(rm_route~ "route/wp[" ~ wp ~ "]/ias-mach");
+					var spd = fp_wp.speed_cstr;
 					
-					var alt = getprop(rm_route~ "route/wp[" ~ wp ~ "]/altitude-ft");
+					var alt = fp_wp.alt_cstr;
 					
 					var spd_str = "";
 					
@@ -526,26 +550,20 @@ var get_destination_wp = func(){
 	var numwp = f.getPlanSize();
 	var lastidx = numwp - 1;
 	var wp_info = nil;
-	for(var i = lastidx; i >= 0; i = i - 1){
-		var wp = f.getWP(i);
-		if(wp != nil){
-			var role = wp.wp_role;
-			var type = wp.wp_type;
-			if(role == 'approach' and type == 'runway'){
-				wp_info = {
-					index: wp.index,
-					id: wp.id
-				};
-				break;
-			}
-		}
+	fmgc.RouteManager.update();
+	var wp = fmgc.RouteManager.destination_wp;
+	if(wp != nil){
+		wp_info = {
+			index: wp.index,
+			id: wp.id
+		};
 	}
 	return wp_info;
 }
 
-var toggle_overfly = func(wp_idx){
+var toggle_overfly = func(fp, wp_idx){
 	if(!getprop('/instrumentation/mcdu/overfly-mode')) return;
-	var fp = flightplan();
+	#var fp = flightplan();
 	var wp = fp.getWP(wp_idx);
 	if(wp != nil){
 		var fly_type = wp.fly_type;

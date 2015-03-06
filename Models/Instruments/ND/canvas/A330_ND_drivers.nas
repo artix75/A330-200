@@ -85,5 +85,8 @@ var A330RouteDriver = {
 			me.route_manager.getSignal(rm.SIGNAL_FP_DEL),
 			me.route_manager.getSignal(rm.SIGNAL_FP_EDIT)
 		]
+	},
+	shouldUpdate: func(){
+		!me.route_manager.sequencing;
 	}
 };

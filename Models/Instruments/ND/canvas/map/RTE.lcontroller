@@ -44,11 +44,14 @@ var del = func() {
 		removelistener(l);
 };
 
+var last_result = [];
+
 var searchCmd = func {
 	# FIXME: do we return the current route even if it isn't active?
 	printlog(_MP_dbg_lvl, "Running query: ", name);
 	var plans = [];
 	var driver = me.route_driver;
+	if(!driver.shouldUpdate()) return me.last_result;
 	driver.update();
 	# http://wiki.flightgear.org/Nasal_Flightplan
 	var planCount = driver.getNumberOfFlightPlans();
@@ -76,6 +79,7 @@ var searchCmd = func {
 			}
 		});
 	}
+	me.last_result = plans;
 	return plans;
 };
 

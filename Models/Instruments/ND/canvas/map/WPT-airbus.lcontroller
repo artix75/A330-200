@@ -98,6 +98,7 @@ var WPTModel = {
 
 var searchCmd = func {
     var driver = me.route_driver;
+    if(!driver.shouldUpdate()) return [];
     driver.update();
     var result = [];
     var planCount = driver.getNumberOfFlightPlans();

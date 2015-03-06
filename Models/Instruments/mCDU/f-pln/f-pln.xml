@@ -24,6 +24,11 @@
 	<animation>
 		<type>material</type>
 		<object-name>green</object-name>
+		<object-name>green-l1</object-name>
+		<object-name>green-l2</object-name>
+		<object-name>green-l3</object-name>
+		<object-name>green-l4</object-name>
+		<object-name>green-l5</object-name>
 		<emission>
 			<red>0</red>
 			<green>0.37</green>
@@ -33,6 +38,26 @@
 		<diffuse>
 			<red>0</red>
 			<green>0.37</green>
+			<blue>0</blue>
+		</diffuse>
+	</animation>
+	
+	<animation>
+		<type>material</type>
+		<object-name>yellow-l1</object-name>
+		<object-name>yellow-l2</object-name>
+		<object-name>yellow-l3</object-name>
+		<object-name>yellow-l4</object-name>
+		<object-name>yellow-l5</object-name>
+		<emission>
+			<red>1</red>
+			<green>1</green>
+			<blue>0</blue>
+			<factor-prop>/instrumentation/mcdu/brt</factor-prop>
+		</emission>
+		<diffuse>
+			<red>1</red>
+			<green>1</green>
 			<blue>0</blue>
 		</diffuse>
 	</animation>
@@ -478,9 +503,9 @@
 
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
 					var idx = ((first != 0) ? first : 0);
-					
+					var fp = mcdu.f_pln.get_current_flightplan();
 					if(getprop('/instrumentation/mcdu/overfly-mode'))
-						mcdu.toggle_overfly(idx);
+						mcdu.toggle_overfly(fp, idx);
 					else
 						mcdu.lat_rev.revise(idx);
 
@@ -502,8 +527,9 @@
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
 
 		 			if (first != 0){
+						var fp = mcdu.f_pln.get_current_flightplan();
 						if(getprop('/instrumentation/mcdu/overfly-mode'))
-							mcdu.toggle_overfly(first + 1);
+							mcdu.toggle_overfly(fp, first + 1);
 						else
 							mcdu.lat_rev.revise(first + 1);
 					}
@@ -527,8 +553,9 @@
 
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
 					var idx = ((first != 0) ? (first + 2) : 1);
+					var fp = mcdu.f_pln.get_current_flightplan();
 					if(getprop('/instrumentation/mcdu/overfly-mode'))
-						mcdu.toggle_overfly(idx);
+						mcdu.toggle_overfly(fp, idx);
 					else
 						mcdu.lat_rev.revise(idx);
 
@@ -549,8 +576,9 @@
 
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
 					var idx = ((first != 0) ? (first + 3) : 2);
+					var fp = mcdu.f_pln.get_current_flightplan();
 					if(getprop('/instrumentation/mcdu/overfly-mode'))
-						mcdu.toggle_overfly(idx);
+						mcdu.toggle_overfly(fp, idx);
 					else
 						mcdu.lat_rev.revise(idx);
 
@@ -571,8 +599,9 @@
 
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
 					var idx = ((first != 0) ? (first + 4) : 3);
+					var fp = mcdu.f_pln.get_current_flightplan();
 					if(getprop('/instrumentation/mcdu/overfly-mode'))
-						mcdu.toggle_overfly(idx);
+						mcdu.toggle_overfly(fp, idx);
 					else
 						mcdu.lat_rev.revise(idx);
 
@@ -717,6 +746,16 @@
 		<type>select</type>
 		<object-name>white</object-name>
 		<object-name>green</object-name>
+		<object-name>green-l1</object-name>
+		<object-name>green-l2</object-name>
+		<object-name>green-l3</object-name>
+		<object-name>green-l4</object-name>
+		<object-name>green-l5</object-name>
+		<object-name>yellow-l1</object-name>
+		<object-name>yellow-l2</object-name>
+		<object-name>yellow-l3</object-name>
+		<object-name>yellow-l4</object-name>
+		<object-name>yellow-l5</object-name>
 		<object-name>hold0</object-name>
 		<object-name>hold1</object-name>
 		<object-name>hold2</object-name>
@@ -789,11 +828,51 @@
 			</equals>
 		</condition>
 	</animation>
+	
+	<animation>
+		<type>select</type>
+		<object-name>green-l1</object-name>
+		<object-name>green-l2</object-name>
+		<object-name>green-l3</object-name>
+		<object-name>green-l4</object-name>
+		<object-name>green-l5</object-name>
+		<condition>
+			<and>
+				<property>autopilot/route-manager/active</property>
+				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>temporary</value>
+					</equals>
+				</not>
+			</and>
+		</condition>
+	</animation>
+	
+	<animation>
+		<type>select</type>
+		<object-name>yellow-l1</object-name>
+		<object-name>yellow-l2</object-name>
+		<object-name>yellow-l3</object-name>
+		<object-name>yellow-l4</object-name>
+		<object-name>yellow-l5</object-name>
+		<condition>
+			<or>
+				<not>
+					<property>autopilot/route-manager/active</property>
+				</not>
+				<equals>
+					<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+					<value>temporary</value>
+				</equals>
+			</or>
+		</condition>
+	</animation>
 
 	<!-- OSGText -->
 
 	<text>
-		<name>green</name>
+		<name>green-l1</name>
 		<offsets>
 			<x-m>-0.0703</x-m>
 			<y-m>-0.0409</y-m>
@@ -818,7 +897,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l2</name>
 		<offsets>
 			<x-m>-0.0612</x-m>
 			<y-m>-0.0409</y-m>
@@ -843,7 +922,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l3</name>
 		<offsets>
 			<x-m>-0.0524</x-m>
 			<y-m>-0.0409</y-m>
@@ -868,7 +947,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l4</name>
 		<offsets>
 			<x-m>-0.0430</x-m>
 			<y-m>-0.0409</y-m>
@@ -893,7 +972,132 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l5</name>
+		<offsets>
+			<x-m>-0.0336</x-m>
+			<y-m>-0.0409</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l5/id</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
+		<name>yellow-l1</name>
+		<offsets>
+			<x-m>-0.0703</x-m>
+			<y-m>-0.0409</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l1/id</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l2</name>
+		<offsets>
+			<x-m>-0.0612</x-m>
+			<y-m>-0.0409</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l2/id</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l3</name>
+		<offsets>
+			<x-m>-0.0524</x-m>
+			<y-m>-0.0409</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l3/id</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l4</name>
+		<offsets>
+			<x-m>-0.0430</x-m>
+			<y-m>-0.0409</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l4/id</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l5</name>
 		<offsets>
 			<x-m>-0.0336</x-m>
 			<y-m>-0.0409</y-m>
@@ -1043,7 +1247,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l1</name>
 		<offsets>
 			<x-m>-0.0703</x-m>
 			<y-m>-0.0094</y-m>
@@ -1068,7 +1272,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l2</name>
 		<offsets>
 			<x-m>-0.0612</x-m>
 			<y-m>-0.0094</y-m>
@@ -1093,7 +1297,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l3</name>
 		<offsets>
 			<x-m>-0.0524</x-m>
 			<y-m>-0.0094</y-m>
@@ -1118,7 +1322,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l4</name>
 		<offsets>
 			<x-m>-0.0430</x-m>
 			<y-m>-0.0094</y-m>
@@ -1143,7 +1347,132 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l5</name>
+		<offsets>
+			<x-m>-0.0336</x-m>
+			<y-m>-0.0094</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>center-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l5/time</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
+		<name>yellow-l1</name>
+		<offsets>
+			<x-m>-0.0703</x-m>
+			<y-m>-0.0094</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>center-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l1/time</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l2</name>
+		<offsets>
+			<x-m>-0.0612</x-m>
+			<y-m>-0.0094</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>center-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l2/time</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l3</name>
+		<offsets>
+			<x-m>-0.0524</x-m>
+			<y-m>-0.0094</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>center-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l3/time</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l4</name>
+		<offsets>
+			<x-m>-0.0430</x-m>
+			<y-m>-0.0094</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>center-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l4/time</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l5</name>
 		<offsets>
 			<x-m>-0.0336</x-m>
 			<y-m>-0.0094</y-m>
@@ -1168,7 +1497,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l1</name>
 		<offsets>
 			<x-m>-0.0703</x-m>
 			<y-m>0.0417</y-m>
@@ -1193,7 +1522,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l2</name>
 		<offsets>
 			<x-m>-0.0612</x-m>
 			<y-m>0.0417</y-m>
@@ -1218,7 +1547,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l3</name>
 		<offsets>
 			<x-m>-0.0524</x-m>
 			<y-m>0.0417</y-m>
@@ -1243,7 +1572,7 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l4</name>
 		<offsets>
 			<x-m>-0.0430</x-m>
 			<y-m>0.0417</y-m>
@@ -1268,7 +1597,132 @@
 	</text>
 
 	<text>
-		<name>green</name>
+		<name>green-l5</name>
+		<offsets>
+			<x-m>-0.0336</x-m>
+			<y-m>0.0417</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l5/spd_alt</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
+		<name>yellow-l1</name>
+		<offsets>
+			<x-m>-0.0703</x-m>
+			<y-m>0.0417</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l1/spd_alt</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l2</name>
+		<offsets>
+			<x-m>-0.0612</x-m>
+			<y-m>0.0417</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l2/spd_alt</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l3</name>
+		<offsets>
+			<x-m>-0.0524</x-m>
+			<y-m>0.0417</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l3/spd_alt</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l4</name>
+		<offsets>
+			<x-m>-0.0430</x-m>
+			<y-m>0.0417</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/mcdu/f-pln/disp/l4/spd_alt</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>yellow-l5</name>
 		<offsets>
 			<x-m>-0.0336</x-m>
 			<y-m>0.0417</y-m>

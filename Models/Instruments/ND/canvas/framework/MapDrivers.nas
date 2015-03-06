@@ -17,7 +17,8 @@ canvas.RouteDriver = {
     getFlightPlan: func(fpNum){me.flightplan},
     getPlanSize: func(fpNum){me.flightplan.getPlanSize()},
     getWP: func(fpNum, idx){me.flightplan.getWP(idx)},
-    getListeners: func(){[]}
+    getListeners: func(){[]},
+    shouldUpdate: func 1,
 };
 
 canvas.MultiRouteDriver = {

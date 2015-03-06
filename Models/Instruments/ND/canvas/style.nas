@@ -1539,7 +1539,7 @@ canvas.NDStyles["Airbus"] = {
 				is_true: func(nd){
 					var active = getprop('autopilot/route-manager/active');
 					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
-					var managed_v = getprop(nd.options.defaults.managed_val);
+					var managed_v = nd.options.defaults.managed_val;
 					var is_managed = (lat_ctrl == managed_v);
 					if(!active or is_managed){
 						nd.symbols.legDistL.hide();
@@ -1567,7 +1567,7 @@ canvas.NDStyles["Airbus"] = {
 				is_true: func(nd){
 					var active = getprop('autopilot/route-manager/active');
 					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
-					var managed_v = getprop(nd.options.defaults.managed_val);
+					var managed_v = nd.options.defaults.managed_val;
 					var is_managed = (lat_ctrl == managed_v);
 					if(!active or is_managed){
 						nd.symbols.legDistR.hide();
@@ -1595,7 +1595,7 @@ canvas.NDStyles["Airbus"] = {
 				is_true: func(nd){
 					var active = getprop('autopilot/route-manager/active');
 					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
-					var managed_v = getprop(nd.options.defaults.managed_val);
+					var managed_v = nd.options.defaults.managed_val;
 					var is_managed = (lat_ctrl == managed_v);
 					if(!active or is_managed){
 						nd.symbols.legDistCtrL.hide();
@@ -1623,7 +1623,7 @@ canvas.NDStyles["Airbus"] = {
 				is_true: func(nd){
 					var active = getprop('autopilot/route-manager/active');
 					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
-					var managed_v = getprop(nd.options.defaults.managed_val);
+					var managed_v = nd.options.defaults.managed_val;
 					var is_managed = (lat_ctrl == managed_v);
 					if(!active or is_managed){
 						nd.symbols.legDistCtrR.hide();

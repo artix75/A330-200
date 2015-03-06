@@ -183,6 +183,7 @@ var fmgc_loop = {
         me.missed_approach_planned = 0;
         me.missed_approach_idx = -1;
         me.missed_approach = 0;
+        me.decel_point = 0;
         # Radio
     
         setprop(radio~ 'autotuned', 0);
@@ -196,8 +197,7 @@ var fmgc_loop = {
         me.vne = getprop('limits/vne');
         me.reset();
     },
-    update : func {   	
-
+    update : func {
         var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
         var ias = getprop("/velocities/airspeed-kt");
         var mach = getprop("/velocities/mach");
@@ -444,11 +444,12 @@ var fmgc_loop = {
         var max_rudder = (me.airborne ? 1 : 0.2);
         setprop(settings~ 'min-rudder', -max_rudder);
         setprop(settings~ 'max-rudder', max_rudder);
+        var rm_sequencing = RouteManager.sequencing;
         if (apEngaged or fdEngaged) {
 
             ## LATERAL CONTROL -----------------------------------------------------
-
-            if (lmode == "HDG" or lmode == "TRACK" or me.toga_trk != nil) {
+            var hdgtrk_mode = (lmode == "HDG" or lmode == "TRACK");
+            if (hdgtrk_mode or me.toga_trk != nil or rm_sequencing) {
 
                 # Find Heading Deflection
                 var true_north = me.use_true_north;
@@ -592,7 +593,7 @@ var fmgc_loop = {
                     var is_alt_mode = (substr(vmode, 0, 3) == 'ALT');
                     #TODO: FPA standard settings
                     var vsfpa_mode = 0; 
-                    if(vmode == 'VS' or vmode == 'FPA'){
+                    if(vmode == 'VS' or vmode == 'FPA' or rm_sequencing){
                         vs_ref = vs_setting; 
                         fpa_ref = fpa_setting;
                         vsfpa_mode = 1; 
@@ -733,7 +734,7 @@ var fmgc_loop = {
                        !app_phase and flplan_active and !toga_flx_mode) {
 
                     var spd = nil;
-                    if(me.wp != nil)
+                    if(me.wp != nil and !rm_sequencing)
                         spd = me.wp.speed_cstr;
 
                     if (spd == nil or spd <= 0) {
@@ -824,8 +825,12 @@ var fmgc_loop = {
         if (apEngaged or fdEngaged) {
 
             ## LATERAL CONTROL -----------------------------------------------------
+            
+            var nav_mode = (lmode == 'NAV' or 
+                            lmode == 'APP NAV' or 
+                            common_mode == 'FINAL APP');
 
-            if (lmode == 'NAV' or lmode == 'APP NAV' or common_mode == 'FINAL APP') {
+            if (nav_mode and !rm_sequencing) {
 
                 # If A procedure's NOT being flown, we'll fly the active F-PLN (unless it's a hold pattern)
                 var remaining = me.remaining_nm;
@@ -1001,7 +1006,7 @@ var fmgc_loop = {
 
             ## VERTICAL CONTROL ----------------------------------------------------
 
-            if (ver_managed and !me.non_precision_app) {
+            if (ver_managed and !me.non_precision_app and !rm_sequencing) {
                 var target_alt = me.real_target_alt;
                 var alt_diff = me.real_target_alt - altitude;
 
@@ -1273,11 +1278,10 @@ var fmgc_loop = {
         me.minimum_selectable_speed = me.green_dot_spd;
         setprop(fmgc_val ~ 'fpa-angle', me.fpa_angle);
         setprop('instrumentation/pfd/green-dot-speed', me.green_dot_spd);
-        if(me.flplan_active and me.wp_count > 0){
+        if(me.flplan_active and me.wp_count > 0 and !RouteManager.sequencing){
             me.wp = me.flightplan.getWP();
         } else {
             me.wp = nil;
-            
         }
         if(!me.use_true_north){
             me.heading = getprop("orientation/heading-magnetic-deg");
@@ -2120,6 +2124,7 @@ var fmgc_loop = {
         return getprop("/flight-management/phase");
     },
     calc_td: func {
+        if(RouteManager.sequencing) return getprop(td_raw_prop) or 0;
         var tdNode = "/autopilot/route-manager/vnav/td";
         var top_of_descent = 36;
 
@@ -2178,6 +2183,7 @@ var fmgc_loop = {
         return top_of_descent;
     },
     calc_tc: func {
+        if(RouteManager.sequencing) return;
         var tcNode = "/autopilot/route-manager/vnav/tc";
         var tc_raw_prop = 'instrumentation/efis/nd/current-tc';
         var phase = me.phase;
@@ -2229,6 +2235,7 @@ var fmgc_loop = {
 
     },
     calc_level_off: func {
+        if(RouteManager.sequencing) return;
         var edProp = "/autopilot/route-manager/vnav/ed"; #END OF DESCENT
         var ecProp = "/autopilot/route-manager/vnav/ec"; #END OF CLIMB
         var scProp = "/autopilot/route-manager/vnav/sc"; #START OF CLIMB
@@ -2379,6 +2386,7 @@ var fmgc_loop = {
 
     },
     calc_decel_point: func{
+        if(RouteManager.sequencing) return me.decel_point;
         var decelNode = "/instrumentation/nd/symbols/decel";
         if (getprop("/autopilot/route-manager/active")){
             var f= me.flightplan; 
@@ -2415,6 +2423,7 @@ var fmgc_loop = {
         return 0;
     },
     calc_speed_change: func(){
+        if(RouteManager.sequencing) return;
         var spdChangeNode = "/autopilot/route-manager/spd/spd-change-point";
         var spd_change_raw = 'instrumentation/efis/nd/spd-change-raw';
         if (!getprop("/autopilot/route-manager/active") or getprop("/gear/gear[3]/wow"))
@@ -2542,6 +2551,7 @@ var fmgc_loop = {
         }
     },
     autotune_ils: func(){
+        if(RouteManager.sequencing) return;
         me.autotuned_nav = getprop(radio~'autotuned');
         var dest_airport = me.dest_airport;
         var dest_rwy = me.dest_rwy;
@@ -2629,6 +2639,10 @@ var fmgc_loop = {
         }
     },
     get_destination_wp: func(){
+        if(RouteManager.sequencing) {
+            me.destination_wp_info = nil;
+            return nil;
+        };
         var wp_info = me.destination_wp_info;
         if(wp_info != nil)
             return wp_info;
@@ -2655,6 +2669,7 @@ var fmgc_loop = {
         return wp_info;
     },
     calc_final_vs: func(){
+        if(RouteManager.sequencing) return nil;
         var eta_seconds = getprop('autopilot/route-manager/wp/eta-seconds');
         if(eta_seconds != nil and eta_seconds != '' and eta_seconds){
             var alt = me.altitude;
@@ -2666,6 +2681,7 @@ var fmgc_loop = {
         return nil;
     },
     calc_final_fpa: func(){
+        if(RouteManager.sequencing) return nil;
         var alt = me.altitude;
         var dest_alt = getprop('autopilot/route-manager/destination/field-elevation-ft');
         var diff = dest_alt - alt;

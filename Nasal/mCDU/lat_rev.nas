@@ -4,9 +4,9 @@ var lr_tree = mcdu_tree~ "lat_rev/";
 var fpln_tree = "/flight-management/f-pln/";
 
 var lat_rev = {
-
 	revise : func (id) {
-	
+		me.tmpy_fplan = nil;
+		me.route_manager = fmgc.RouteManager;
 		setprop(mcdu_tree~ "page", "lat_rev");
 		
 		setprop(lr_tree~ "name", getprop(rm_route~ "route/wp[" ~ id ~ "]/id"));
@@ -29,7 +29,12 @@ var lat_rev = {
 		setprop(lr_tree~ "arr", 0);
 	
 	},
-	
+	copy_to_tmpy: func(){
+		me.tmpy_fplan = me.route_manager.createTemporaryFlightPlan();
+		var f_pln_disp = "/instrumentation/mcdu/f-pln/disp/";
+		setprop(f_pln_disp~ 'current-flightplan', 'temporary');
+		f_pln.update_disp();
+	},
 	revise_dest : func {
 	
 		setprop(mcdu_tree~ "page", "lat_rev");
@@ -97,19 +102,57 @@ var lat_rev = {
 	},
 	
 	next_wp : func (id, name) {
-	
-		setprop(rm_route~ "input", "@INSERT" ~ (id + 1) ~ ":" ~ name);
+		var actv = getprop('autopilot/route-manager/active');
+		var wp = me.create_wp(name);
+		if(wp == nil){
+			return;
+		}
+		var fpId = nil;
+		if(actv and me.tmpy_fplan == nil){
+			me.copy_to_tmpy();
+			fpId = 'temporary';
+		}
+		#setprop(rm_route~ "input", "@INSERT" ~ (id + 1) ~ ":" ~ name);
 		
-		setprop(rm_route~ "route/wp[" ~ (id + 1) ~ "]/ias-mach", 0);
-		
-		
-	
+		#setprop(rm_route~ "route/wp[" ~ (id + 1) ~ "]/ias-mach", 0);
+		var new_id = id + 1;
+		me.route_manager.insertWP(wp, new_id, fpId);
+		var dest_idx = me.route_manager.destination_idx;
+		if(new_id > dest_idx){
+			me.route_manager.update();
+			wp = me.tmpy_fplan.getWP(new_id);
+			wp.wp_role = 'missed';
+		}
 	},
 	
 	rm_wp : func (id) {
+		var actv = getprop('autopilot/route-manager/active');
+		if(actv and me.tmpy_fplan == nil){
+			me.copy_to_tmpy();
+		}
+		me.route_manager.deleteWP(id, 'temporary');
 	
-		setprop(rm_route~ "input", "@DELETE" ~ id);
+	},
 	
+	create_wp: func(wp_id){
+		if(wp_id == nil or string.trim(wp_id) == '') return nil;
+		setprop('instrumentation/gps/scratch/query', wp_id);
+		setprop('instrumentation/gps/scratch/type', '');
+		setprop('instrumentation/gps/command', 'search');
+		var results = getprop('instrumentation/gps/scratch/result-count');
+		if(!results) return nil;
+		var lat = getprop('instrumentation/gps/scratch/latitude-deg');
+		var lon = getprop('instrumentation/gps/scratch/longitude-deg');
+		var type = getprop('instrumentation/gps/scratch/type');
+		var wp_pos = {
+			lat: lat,
+			lon: lon
+		};
+		var wp = createWP(wp_pos, wp_id);
+		if(type == 'fix' or type == 'vor' or type == 'ndb' or type == 'dme')
+			type = 'navaid';
+		wp.wp_type = type;
+		return wp;
 	}
 	
 	# Holding is managed separately
