@@ -8,7 +8,7 @@ var RouteManager = {
     update: func(fpId = nil){
         if(me.sequencing) return;
         if(fpId != nil and fpId != 'current'){
-            me.updateFlighplan(fpId);
+            me.updateFlighPlan(fpId);
             return;
         }
         var fp = flightplan();
@@ -60,7 +60,7 @@ var RouteManager = {
             me.flightplan_info['current'].total_distance_nm = me.total_distance_nm;
         }
     },
-    updateFlighplan: func(fpId){
+    updateFlighPlan: func(fpId){
         if(fpId == nil or fpId == 'current'){
             me.update();
             return;
@@ -89,7 +89,7 @@ var RouteManager = {
                 }
             }
             if(fpData.destination_wp == nil)
-                fpData.destination_wp = fpData.getWP(fpData.last_idx);
+                fpData.destination_wp = fp.getWP(fpData.last_idx);
             fpData.destination_idx = fpData.destination_wp.index;
             fpData.missed_approach_planned = (fpData.last_idx > fpData.destination_idx);
 
@@ -150,6 +150,8 @@ var RouteManager = {
         var fp = src.clone();
         if(empty){
             me.clearFlightPlan(fp);
+        } else {
+            me.copyFlightPlan(src, fp);
         }
         me.plans[planId] = fp;
         me.flightplan_info[planId] = {};
@@ -195,6 +197,58 @@ var RouteManager = {
             me.sequencing = 0;
         me.trigger('edited', 'fp-clear');
     },
+    copyFlightPlan: func(fp, dest_fp){
+        if(fp == nil){
+            print('RouteManager -> copyFlightPlan: no source flightplan.');
+            return;
+        }
+        if(dest_fp == nil){
+            print('RouteManager -> copyFlightPlan: no destination flightplan.');
+            return;
+        }
+        var dep = dest_fp.departure;
+        var dst = dest_fp.destination;
+        var fpdep = fp.departure;
+        var fpdst = fp.destination;
+        dep = (dep != nil ? dep.id : '');
+        dst = (dst != nil ? dst.id : '');
+        fpdep = (fpdep != nil ? fpdep.id : '');
+        fpdst = (fpdst != nil ? fpdst.id : '');
+        var copy_dep_rwy = 0;
+        if(fpdep != dep){
+            dest_fp.departure = fp.departure;
+            copy_dep_rwy = 1;
+        }
+        if(!copy_dep_rwy){
+            dep = dest_fp.departure_runway;
+            fpdep = fp.departure_runway;
+            dep = (dep != nil ? dep.id : '');
+            fpdep = (fpdep != nil ? fpdep.id : '');
+            copy_dep_rwy = (fpdep != dep);
+        }
+        if(copy_dep_rwy)
+            dest_fp.departure_runway = fp.departure_runway;
+        var copy_dst_rwy = 0;
+        if(fpdst != dst){
+            dest_fp.destination = fp.destination;
+            copy_dst_rwy = 1;
+        }
+        if(!copy_dst_rwy){
+            dst = dest_fp.destination_runway;
+            fpdst = fp.destination_runway;
+            dst = (dst != nil ? dst.id : '');
+            fpdst = (fpdst != nil ? fpdst.id : '');
+            copy_dst_rwy = (fpdst != dst);
+        }
+        if(copy_dst_rwy)
+            dest_fp.destination_runway = fp.destination_runway;
+        while(dest_fp.getPlanSize())
+            dest_fp.deleteWP(0);
+        var sz = fp.getPlanSize();
+        for(var i = 0; i < sz; i += 1){
+            me._copyWP(fp, dest_fp, i);
+        }
+    },
     copyFlightPlanToActive: func(fp, delete_src = 0){
         if(fp == nil) {
             print('RouteManager -> copyToActiveFlightPlan: no flightplan.');
@@ -212,18 +266,14 @@ var RouteManager = {
         me.trigger('before-fp-copy');
         me.under_transaction = 1;
         me.sequencing = 1;
-        me.clearFlightPlan();
-        var sz = fp.getPlanSize();
-        var dest = me.flightplan;
-        for(var i = 0; i < sz; i += 1){
-            me._copyWP(fp, dest, i);
-        }
+        me.copyFlightPlan(fp, me.flightplan);
         if(delete_src and fpId != nil){
             me.deleteFlightPlan(fpId);
         }
         var cur_idx = me._findCurrentWPIndex();
         me.under_transaction = 0;
         me.sequencing = 0;
+        me.update();
         me.trigger('edited', 'fp-copy');
         print('RouteManager: setting current wp to '~ cur_idx);
         setprop("/autopilot/route-manager/input", "@JUMP" ~ cur_idx);
@@ -243,7 +293,7 @@ var RouteManager = {
         me.plans;
     },
     getFlightPlan: func(fpId = nil){
-        if(fpId == nil) return me.flightplan;#fpId = 'current';
+        if(fpId == nil or fpId == '') return me.flightplan;#fpId = 'current';
         var all_plans = me.allFlightPlans();
         if(!contains(all_plans, fpId)) return nil;
         return all_plans[fpId];
@@ -272,6 +322,19 @@ var RouteManager = {
             append(wpts, wp);
         }
         return wpts;
+    },
+    findWaypointByID: func(wpId, fpID = nil){
+        var fp = me.getFlightPlan(fpID);
+        if(fp == nil){
+            print('RouteManager -> findWaypointByID: no flightplan.');
+            return;
+        }
+        var sz = fp.getPlanSize();
+        for(var i = 0; i < sz; i += 1){
+            var wp = fp.getWP(i);
+            if(wp.id == wpId) return wp;
+        }
+        return nil;
     },
     insertWP: func(wp, idx, fpID = nil){
         var fp = me.getFlightPlan(fpID);
@@ -313,6 +376,38 @@ var RouteManager = {
         if(fpID != nil and fpID != 'current')
             me._recalcDistance(fpID);
         me.trigger('edited', 'fg-edited');
+    },
+    deleteWaypoints: func(from, count, fpID = nil){
+        var fp = me.getFlightPlan(fpID);
+        if(fp == nil){
+            print('RouteManager -> deleteWaypoints: no flightplan.');
+            return;
+        }
+        var sz = fp.getPlanSize();
+        if(from < 0) from = sz + from;
+        if(from >= sz){
+            print('RouteManager -> deleteWaypoints: from wpt out of bounds.');
+            return;
+        }
+        var do_seq = 0;
+        if(fp == me.flightplan and !me.sequencing){
+            do_seq = 1;
+            me.sequencing = 1;
+        }
+        if(count == nil){
+            count = sz - from;
+        }
+        print('RouteManager -> deleteWaypoints: from '~from~', count: '~count);
+        while(count){
+            if(from >= fp.getPlanSize()) break;
+            fp.deleteWP(from);
+            count -= 1;
+        }
+        if(do_seq) me.sequencing = 0;
+        me.trigger('edited', 'fg-edited');
+    },
+    deleteWaypointsAfter: func(wptIdx, fpID = nil){
+        me.deleteWaypoints(wptIdx + 1, nil, fpID);
     },
     getDistance: func(fpID, total = 0){
         me.update();
@@ -428,10 +523,27 @@ var RouteManager = {
             print('RouteManager -> _copyWP: failed to clone wp.');
             return nil;
         }
-        if(destIdx >= 0)
+        if(destIdx >= 0){
             to.insertWP(dest_wp, destIdx);
-        else 
+            dest_wp = to.getWP(destIdx);
+        } else {
             to.appendWP(dest_wp);
+            dest_wp = to.getWP(to.getPlanSize() - 1);
+        }
+        var fly_type = src_wp.fly_type;
+        if(fly_type != nil) dest_wp.fly_type = fly_type;
+        var alt_cstr = src_wp.alt_cstr;
+        if(alt_cstr != nil){
+            var cstr_type = src_wp.alt_cstr_type;
+            if(cstr_type == nil) cstr_type = 'at';
+            dest_wp.setAltitude(alt_cstr, cstr_type);
+        }
+        var speed_cstr = src_wp.speed_cstr;
+        if(speed_cstr != nil){
+            var cstr_type = src_wp.speed_cstr_type;
+            if(cstr_type == nil) cstr_type = 'at';
+            dest_wp.setSpeed(speed_cstr, cstr_type);
+        }
         dest_wp;
     },
     dump: func(){

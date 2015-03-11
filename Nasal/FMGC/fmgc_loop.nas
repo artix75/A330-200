@@ -2124,6 +2124,7 @@ var fmgc_loop = {
         return getprop("/flight-management/phase");
     },
     calc_td: func {
+        var td_raw_prop = 'instrumentation/efis/nd/current-td';
         if(RouteManager.sequencing) return getprop(td_raw_prop) or 0;
         var tdNode = "/autopilot/route-manager/vnav/td";
         var top_of_descent = 36;
@@ -2155,7 +2156,6 @@ var fmgc_loop = {
                 top_of_descent += (cruise_alt - 3000) / 1000 * 3;
             }
             top_of_descent -= (destination_elevation / 1000 * 3);
-            var td_raw_prop = 'instrumentation/efis/nd/current-td';
             var cur_td = getprop(td_raw_prop);
             if(cur_td == nil) cur_td = 0;
             if(math.abs(top_of_descent - cur_td) > 4){

@@ -28,9 +28,18 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
-		 			setprop("/autopilot/route-manager/destination/airport", "");
-		 		
-					setprop("/autopilot/route-manager/input", "@CLEAR");
+					var f_pln_disp = "/instrumentation/mcdu/f-pln/disp/";
+					var cur = getprop(f_pln_disp~ 'current-flightplan');
+					if(cur == 'temporary'){
+						setprop(f_pln_disp~ 'current-flightplan', '');
+						fmgc.RouteManager.deleteFlightPlan('temporary');
+						setprop("/instrumentation/mcdu/page", "f-pln");
+						mcdu.f_pln.update_disp();
+					} else {
+						setprop("/autopilot/route-manager/destination/airport", "");
+						setprop("/autopilot/route-manager/input", "@CLEAR");
+					}
+					mcdu.lat_rev.tmpy_fplan = nil;
 				</script>
             </binding>
         </action>
@@ -96,6 +105,7 @@
 							#setprop("/autopilot/route-manager/input", "@CLEAR");
 							fmgc.RouteManager.copyFlightPlanToActive('temporary', 1);
 							mcdu.f_pln.tmpy_fplan = nil;
+							mcdu.lat_rev.tmpy_fplan = nil;
 							setprop(f_pln_disp~ 'current-flightplan', '');
 							#setprop("/autopilot/route-manager/input", "@ACTIVATE");
 						}

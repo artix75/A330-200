@@ -32,6 +32,12 @@ var f_pln = {
 		setprop(rm_route~ "departure/runway", "");
 		setprop(rm_route~ "destination/runway", "");
 		
+		setprop(f_pln_disp~ 'current-flightplan', '');
+		setprop(f_pln_disp~ 'departure', '');
+		setprop(f_pln_disp~ 'destination', '');
+	
+		me.route_manager.deleteFlightPlan('temporary');
+		
 		## Copy Waypoints and altitudes from active-rte
 		
 		for (var index = 0; getprop(active_rte~ "route/wp[" ~ index ~ "]/wp-id") != nil; index += 1) {
@@ -69,6 +75,9 @@ var f_pln = {
 		setprop(rm_route~ "departure/airport", dep);
 		setprop(rm_route~ "destination/airport", arr);
 		
+		setprop(f_pln_disp~ 'departure', dep);
+		setprop(f_pln_disp~ 'destination', arr);
+
 		if(getprop("/flight-management/alternate/icao") == "empty") {
 			# artix: disabled this
                         #setprop(rm_route~ "input", "@INSERT99:" ~ dep ~ "@0");
@@ -176,6 +185,56 @@ var f_pln = {
 		}
 		me.route_manager.update();
 		return me.route_manager.getFlightPlan(current_fp);
+	},
+	insert_procedure_wp: func(type, proc_wp, idx){
+		var fp = me.get_current_flightplan();
+		var lat = num(string.trim(proc_wp.wp_lat));
+		var lon = num(string.trim(proc_wp.wp_lon));
+		if( (lat == 0 and lon == 0) or 
+			(math.abs(lat) > 90) or 
+			(math.abs(lon) > 180) or 
+			(proc_wp.wp_type == 'Intc') or 
+			(proc_wp.wp_type == 'Hold') ) {
+				return nil;
+			}
+		var wp_pos = {
+			lat: lat,
+			lon: lon
+		};
+		var wpt = createWP(wp_pos, proc_wp.wp_name, type);
+		#wpt.wp_role = 'sid';
+		print('Insert '~type~' WP '~proc_wp.wp_name ~ ' at ' ~ idx);
+		fp.insertWP(wpt, idx);
+		wpt = fp.getWP(idx);
+		if(proc_wp.alt_cstr_ind)
+			wpt.setAltitude(proc_wp.alt_cstr, 'at');
+		if(proc_wp.spd_cstr_ind)
+			wpt.setSpeed(proc_wp.spd_cstr, 'at');
+		var fly_type = string.lc(string.trim(proc_wp.fly_type));
+		if(fly_type == 'fly-over'){
+			wpt.fly_type = 'flyOver';
+		}
+		return wpt;
+	},
+	get_destination_wp: func(){
+		var f= me.get_current_flightplan(); 
+		var current_fp = getprop(f_pln_disp~ "current-flightplan");
+		if(current_fp == nil or current_fp == ''){
+			current_fp = 'current';
+		}
+		var numwp = f.getPlanSize();
+		var lastidx = numwp - 1;
+		var wp_info = nil;
+		fmgc.RouteManager.update(current_fp);
+		var wp = fmgc.RouteManager.getDestinationWP(current_fp);
+		if(wp != nil){
+			wp_info = wp;
+		}
+		return wp_info;
+	},
+	get_destination_airport: func(){
+		var f= me.get_current_flightplan();
+		return f.destination;
 	},
 	update_disp : func {
 	
@@ -514,53 +573,6 @@ var f_pln = {
 
 };
 
-var insert_procedure_wp = func(type, proc_wp, idx){
-	var fp = flightplan();
-	var lat = num(string.trim(proc_wp.wp_lat));
-	var lon = num(string.trim(proc_wp.wp_lon));
-	if((lat == 0 and lon == 0) or 
-	   (math.abs(lat) > 90) or 
-		(math.abs(lon) > 180) or 
-			(proc_wp.wp_type == 'Intc') or 
-			(proc_wp.wp_type == 'Hold')) {
-			return nil;
-		}
-	var wp_pos = {
-		lat: lat,
-		lon: lon
-	};
-	var wpt = createWP(wp_pos, proc_wp.wp_name, type);
-	#wpt.wp_role = 'sid';
-	print('Insert '~type~' WP '~proc_wp.wp_name ~ ' at ' ~ idx);
-	fp.insertWP(wpt, idx);
-	wpt = fp.getWP(idx);
-	if(proc_wp.alt_cstr_ind)
-		wpt.setAltitude(proc_wp.alt_cstr, 'at');
-	if(proc_wp.spd_cstr_ind)
-		wpt.setSpeed(proc_wp.spd_cstr, 'at');
-	var fly_type = string.lc(string.trim(proc_wp.fly_type));
-	if(fly_type == 'fly-over'){
-		wpt.fly_type = 'flyOver';
-	}
-	return wpt;
-}
-
-var get_destination_wp = func(){
-	var f= flightplan(); 
-	var numwp = f.getPlanSize();
-	var lastidx = numwp - 1;
-	var wp_info = nil;
-	fmgc.RouteManager.update();
-	var wp = fmgc.RouteManager.destination_wp;
-	if(wp != nil){
-		wp_info = {
-			index: wp.index,
-			id: wp.id
-		};
-	}
-	return wp_info;
-}
-
 var toggle_overfly = func(fp, wp_idx){
 	if(!getprop('/instrumentation/mcdu/overfly-mode')) return;
 	#var fp = flightplan();
@@ -575,3 +587,19 @@ var toggle_overfly = func(fp, wp_idx){
 	f_pln.update_disp();
 	setprop('/instrumentation/mcdu/overfly-mode', 0);
 }
+
+setlistener(f_pln_disp~ 'current-flightplan', func(n){
+	var cur = n.getValue();
+	var rm = fmgc.RouteManager;
+	var fp = rm.getFlightPlan(cur);
+	var dep = '';
+	var arr = '';
+	if(fp != nil){
+		var dp = fp.departure;
+		if(dp != nil) dep = dp.id;
+		var dst = fp.destination;
+		if(dst != nil) arr = dst.id;
+	}
+	setprop(f_pln_disp~ 'departure', dep);
+	setprop(f_pln_disp~ 'destination', arr);
+}, 0, 1);

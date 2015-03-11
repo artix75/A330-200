@@ -124,7 +124,7 @@ var sid = {
 			
 			#	setprop("/autopilot/route-manager/input", "@INSERT" ~ (wp + 1) ~ ":" ~ sid_wp.wp_lon ~ "," ~ sid_wp.wp_lat ~ "@" ~ sid_wp.alt_cstr);
 			var wp_idx = (wp + 1) - skipped;
-			var wpt = insert_procedure_wp('sid', sid_wp, wp_idx);
+			var wpt = mcdu.f_pln.insert_procedure_wp('sid', sid_wp, wp_idx);
 			if(wpt == nil) skipped += 1;
 		
 		}

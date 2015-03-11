@@ -1758,7 +1758,7 @@
 		<axis-alignment>xy-plane</axis-alignment>
 		<type type="string">text-value</type>
 		<format type="string">%s</format>
-		<property>/autopilot/route-manager/destination/airport</property>
+		<property>/instrumentation/mcdu/f-pln/disp/destination</property>
 		<truncate type="bool">false</truncate>
 		<font type="string">courier-bold.txf</font>
 		<draw-text type="bool">true</draw-text>

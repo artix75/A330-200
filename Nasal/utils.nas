@@ -192,3 +192,16 @@ var print_flightplan = func(){
 var reload_sound = func(){
     fgcommand("reinit", props.Node.new({ subsystem: "sound" }));
 }
+
+var normalize_range = func( val, min, max ) {
+	var step = max - min;
+	while( val >= max )  val -= step;
+	while( val < min ) val += step;
+	return val;
+};
+
+var heading_diff_deg = func(a, b){
+	var rawDiff = b - a;
+	return normalize_range(rawDiff, -180.0, 180.0);
+}
+

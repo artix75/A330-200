@@ -4,13 +4,27 @@ var arr = "/flight-management/procedures/star/";
 
 var iap = "/flight-management/procedures/iap/";
 
+var f_pln_disp = "/instrumentation/mcdu/f-pln/disp/";
+
 setprop(arr~ "active-star/name", "------");
+
+var DEGREES_TO_RADIANS = math.pi / 180;
+
+var FEET_TO_METER = 0.3048;
+var NM_TO_METER = 1852;
+
+var copysign = func (x, y){
+	if ((x < 0 and y > 0) or (x > 0 and y < 0))
+		return -x;
+	return x;
+};
 
 var star = {
 
 	select_arpt : func(icao) {
 		
 		me.ArrICAO = procedures.fmsDB.new(icao);
+		me.icao = icao;
 		
 		# Get a list of all available runways on the departure airport
 
@@ -82,12 +96,15 @@ var star = {
 		setprop("/instrumentation/mcdu/page", "STAR_SEL");
 		
 		setprop(arr~ "first", 0);
-		
-		setprop("/autopilot/route-manager/destination/runway", id);
+		var arpt = airportinfo(me.icao);
+		var rwy = arpt.runways[id];
+		if(rwy == nil) return;
+		var fp = f_pln.get_current_flightplan();
+		#setprop("/autopilot/route-manager/destination/runway", id);
+		fp.destination_runway = rwy;
 		
 		me.update_stars();
 		
-		var fp = flightplan();
 		var sz = fp.getPlanSize();
 		for(var i = 0; i < sz; i += 1){
 			var wp = fp.getWP(i);
@@ -95,7 +112,7 @@ var star = {
 			var role = wp.wp_role;
 			if((role == 'star' or role == 'approach' or role == 'missed') and 
 			    type != 'runway')
-				fp.deleteWP(wp);
+				fp.deleteWP(i);
 		}
 		
 		#me.confirm_iap(id);
@@ -116,7 +133,7 @@ var star = {
 	
 		me.WPmax = size(me.STARList[n].wpts);
 		var skipped = 0;
-		var dest_wpt = get_destination_wp();
+		var dest_wpt = mcdu.f_pln.get_destination_wp();
 		var last_idx = dest_wpt.index;
 		for(var wp = 0; wp < me.WPmax; wp += 1) {
 			var star_wp = me.STARList[n].wpts[wp];
@@ -131,7 +148,7 @@ var star = {
 			setprop(arr~ "active-star/wp[" ~ wp ~ "]/alt_cstr", star_wp.alt_cstr);
 			
 			var wp_idx = (wp + last_idx) - skipped;
-			var wpt = insert_procedure_wp('star', star_wp, wp_idx);
+			var wpt = mcdu.f_pln.insert_procedure_wp('star', star_wp, wp_idx);
 			if(wpt == nil) skipped += 1;
 			
 		}
@@ -143,9 +160,42 @@ var star = {
 		
 		setprop("/instrumentation/mcdu/page", "f-pln");
 		if(me.STARList[n].wp_name == 'DEFAULT'){
-			setprop('/autopilot/route-manager/destination/approach', 'DEFAULT');
-			setprop(arr~ "active-star/name", 'DEFAULT');
-			setprop(iap~ "active-iap/name", 'DEFAULT');
+			var current_fp = getprop(f_pln_disp~ "current-flightplan");
+			if(current_fp == 'temporary'){
+				var fp = mcdu.f_pln.get_current_flightplan();
+				var dep = fp.departure;
+				var dst = fp.destination;
+				var rwy = dst.runways[getprop(arr~ "selected-rwy")];
+				if(dst != nil and rwy != nil){
+					var enroute_course = -1.0;
+					if(dep != nil){
+						var c1 = geo.Coord.new();
+						var c2 = geo.Coord.new();
+						c1.set_latlon(dep.lat, dep.lon);
+						c2.set_latlon(dst.lat, dst.lon);
+						enroute_course = c1.course_to(c2);
+					}
+					var wpts = me.create_default_approach(dep, rwy, enroute_course);
+					var dst_wp = mcdu.f_pln.get_destination_wp();
+					var idx = dst_wp.index;
+					foreach(var wp_info; wpts){
+						var wp = wp_info[0];
+						var alt = 0;
+						if(size(wp_info) > 1)
+							alt = wp_info[1];
+						fp.insertWP(wp, idx);
+						if(alt > 0){
+							wp = fp.getWP(idx);
+							wp.setAltitude(alt, 'at');
+						}
+						idx += 1;
+					}
+				}
+			} else {
+				setprop('/autopilot/route-manager/destination/approach', 'DEFAULT');
+				setprop(arr~ "active-star/name", 'DEFAULT');
+				setprop(iap~ "active-iap/name", 'DEFAULT');
+			}
 		} else {
 			var rwy = getprop(arr~ "selected-rwy");
 			me.confirm_iap(rwy);
@@ -166,7 +216,7 @@ var star = {
 		setprop(iap~ "iap-index", 0);
 		
 		var skipped = 0;
-		var dest_wpt = get_destination_wp();
+		var dest_wpt = mcdu.f_pln.get_destination_wp();
 		var last_idx = dest_wpt.index;
 		var type = 'approach';
 		
@@ -190,7 +240,7 @@ var star = {
 				continue;
 			}
 			var wp_idx = (wp + last_idx) - skipped;
-			var wpt = insert_procedure_wp(type, appr_wp, wp_idx);
+			var wpt = mcdu.f_pln.insert_procedure_wp(type, appr_wp, wp_idx);
 			if(wpt == nil) skipped += 1;
 		}
 		
@@ -255,6 +305,70 @@ var star = {
 		
 		}
 	
+	},
+	
+	create_default_approach: func(arpt, rwy, aEnrouteCourse){
+		if(rwy == nil) return nil;
+		var thresholdElevFt = arpt.elevation;
+		var approachHeightFt = 2000.0;
+		var glideslopeDistanceM = (approachHeightFt * FEET_TO_METER) /
+			math.tan(3.0 * DEGREES_TO_RADIANS);
+		var wp_id = rwy.id ~ '-12';
+		var wpts = [];
+		var coord = geo.Coord.new();
+		coord.set_latlon(rwy.lat, rwy.lon);
+		coord.apply_course_distance(rwy.heading, -12 * NM_TO_METER);
+		var pos = {
+			lat: coord.lat(),
+			lon: coord.lon()
+		};
+		var wpt = createWP(pos, wp_id, 'approach');
+		append(wpts, [wpt, thresholdElevFt + 4000]);
+		if (aEnrouteCourse >= 0.0) {
+			# valid enroute course
+			var index = 4;
+			var course = rwy.heading;
+			var diff = 0.0;
+			while (math.abs((diff = utils.heading_diff_deg(aEnrouteCourse, course))) > 45.0) {
+				# turn in the sign of the heading change 45 degrees
+				course -= copysign(45.0, diff);
+				
+				wp_id = "APP-" ~ index;
+				index += 1;
+				var first = wpts[0][0];
+				var coord = geo.Coord.new();
+				coord.set_latlon(first.wp_lat, first.wp_lon);
+				coord.apply_course_distance(course + 180.0, 3.0 * NM_TO_METER);
+				var pos = {
+					lat: coord.lat(),
+					lon: coord.lon()
+				};
+				var wpt = createWP(pos, wp_id, 'approach');
+				wpts = [[wpt, 0]] ~ wpts;
+			}
+		}
+		coord = geo.Coord.new();
+		coord.set_latlon(rwy.lat, rwy.lon);
+		coord.apply_course_distance(rwy.heading, -8 * NM_TO_METER);
+		pos = {
+			lat: coord.lat(),
+			lon: coord.lon()
+		};
+		wp_id = rwy.id ~ '-8';
+		wpt = createWP(pos, wp_id, 'approach');
+		append(wpts, [wpt, thresholdElevFt + approachHeightFt]);
+		
+		coord = geo.Coord.new();
+		coord.set_latlon(rwy.lat, rwy.lon);
+		coord.apply_course_distance(rwy.heading, -glideslopeDistanceM);
+		pos = {
+			lat: coord.lat(),
+			lon: coord.lon()
+		};
+		wp_id = rwy.id ~ '-GS';
+		wpt = createWP(pos, wp_id, 'approach');
+		append(wpts, [wpt, thresholdElevFt + approachHeightFt]);
+		return wpts;
 	}
 
 };

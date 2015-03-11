@@ -85,8 +85,12 @@
 		 			
 		 			# ARRIVAL
 		 			
-		 			else
-		 				mcdu.star.select_arpt(getprop("autopilot/route-manager/destination/airport"));
+		 			else{
+						var dest_arpt = mcdu.f_pln.get_destination_airport();
+						var dest_id = (dest_arpt != nil ? dest_arpt.id : getprop("autopilot/route-manager/destination/airport"));
+						mcdu.star.select_arpt(dest_id);
+					}
+		 				
 		 			
 				</script>
             </binding>
@@ -216,11 +220,11 @@
 		 			
 		 			# Next WPT
 		 			
-		 				mcdu.lat_rev.next_wp(getprop("/instrumentation/mcdu/lat_rev/id"), getprop("/instrumentation/mcdu/input"));
+		 				var new_id = mcdu.lat_rev.next_wp(getprop("/instrumentation/mcdu/lat_rev/id"), getprop("/instrumentation/mcdu/input"));
 		 				
 		 				mcdu.clear_inp();
 		 				
-		 				mcdu.lat_rev.revise(getprop("/instrumentation/mcdu/lat_rev/id") + 1);
+						mcdu.lat_rev.revise(new_id);
 		 			
 				</script>
             </binding>
@@ -238,6 +242,11 @@
 		 		<script>
 		 			
 		 			# NEW DESTINATION (COME BACK LATER)
+					mcdu.lat_rev.new_dest(getprop("/instrumentation/mcdu/lat_rev/id"), getprop("/instrumentation/mcdu/input"));
+					mcdu.clear_inp();
+					setprop("/instrumentation/mcdu/page", "f-pln");
+
+					mcdu.f_pln.update_disp();
 		 			
 				</script>
             </binding>
