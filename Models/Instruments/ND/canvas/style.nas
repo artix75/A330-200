@@ -387,6 +387,7 @@ canvas.NDStyles["Airbus"] = {
 		{ 
 			name:'TFC', 
 			#disabled:1, 
+			always_update: 1,
 			isMapStructure:1, 
 			update_on:['toggle_range','toggle_traffic'],
 			predicate: func(nd, layer) {
@@ -421,6 +422,7 @@ canvas.NDStyles["Airbus"] = {
 		{ 
 			name:'HOLD', 
 			isMapStructure: 1,
+			always_update: 1,
 			update_on:['toggle_range','toggle_display_mode','toggle_wpt_idx'],
 			predicate: func(nd, layer) {
 				var visible= nd.in_mode('toggle_display_mode', ['MAP','PLAN']);
@@ -589,6 +591,7 @@ canvas.NDStyles["Airbus"] = {
 		{ 
 			name:'APS', 
 			isMapStructure:1, 
+			always_update: 1,
 			update_on:['toggle_display_mode'], 
 			predicate: func(nd, layer) {
 				 var visible = nd.get_switch('toggle_display_mode') == "PLAN";

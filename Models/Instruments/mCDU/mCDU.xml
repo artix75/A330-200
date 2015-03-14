@@ -537,22 +537,25 @@
 					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
 		
 					var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-			
-					var hold = getprop("/flight-management/hold/wp_id");
-			
-					var hold_id = 0;
-			
-					if ((hold >= first) and (first + 4 > hold) and (hold != 0)) {
-			
-						setprop("/instrumentation/mcdu/f-pln/show-hold", 1);
-				
-						hold_id = (hold - first) + 1;
-			
+					var cur = getprop("/instrumentation/mcdu/f-pln/disp/current-flightplan");
+					if(cur != 'temporary'){
+						mcdu.f_pln.update_flightplan_waypoints();
+						var from_idx = mcdu.f_pln.from_wpt_idx;
+						var wp = mcdu.f_pln.waypoints[from_idx];
+						while(from_idx >= 0 and typeof(wp) == 'scalar' and wp == '---'){
+							from_idx -= 1;
+							if(0 > from_idx) break;
+							wp = mcdu.f_pln.waypoints[from_idx];
+						}
+						if(0 > from_idx) from_idx = 0;
+						setprop("/instrumentation/mcdu/f-pln/disp/first", from_idx);
 					}
-			
-					setprop("/instrumentation/mcdu/f-pln/hold-id", hold_id);
-					
 					mcdu.f_pln.update_disp();
+					var wp = mcdu.f_pln.first_displayed_wp();
+					if(wp != nil){
+						setprop("instrumentation/efis/inputs/plan-wpt-index", first);
+						setprop("instrumentation/efis[1]/inputs/plan-wpt-index", first);
+					}
 				</script>
             </binding>
         </action>
@@ -645,81 +648,68 @@
                     setprop("/instrumentation/mcdu/page", "f-pln");
 					var num = getprop('autopilot/route-manager/route/num');
 					if(num == 0) return;
-					
-					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
                     
 					var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-                    
-					var hold = getprop("/flight-management/hold/wp_id");
-                    
-					var hold_id = 0;
-                    
-					if ((hold >= first) and (first + 4 > hold) and (hold != 0)) {
-                    
-                        setprop("/instrumentation/mcdu/f-pln/show-hold", 1);
-                    
-                        hold_id = (hold - first) + (first == 0);
-                    
-					}
-					setprop("/instrumentation/mcdu/f-pln/hold-id", hold_id);
-                    
 
+					mcdu.f_pln.update_flightplan_waypoints();
                     var cur_wp = getprop("autopilot/route-manager/current-wp");
-					var dest_apt = getprop('autopilot/route-manager/destination/airport');
-					var dest_idx = num - 1;
-					var fp = flightplan();
+					
+					
+					#var dest_apt = getprop('autopilot/route-manager/destination/airport');
+					#
+					var fp = mcdu.f_pln.get_current_flightplan();
+					var wpts = mcdu.f_pln.waypoints;
+					var wpcount = size(wpts);
+					var dest_idx = wpcount - 1;
+					var dest_apt = fp.destination;
+					if(dest_apt != nil) dest_apt = dest_apt.id;
 					for(var idx = dest_idx; idx > 0; idx = idx - 1){
-						var wp = fp.getWP(idx);
+						var wp = wpts[idx];
+						if(typeof(wp) == 'scalar') continue;
 						if(wp.wp_role != 'approach') continue;
 						if(wp.wp_type == 'runway' or wp.id == dest_apt){
 							dest_idx = idx;
 							break;
 						}
 					}
-                    if(cur_wp == 0 or cur_wp == 1){
-                        if(first == 0)
-                            first = dest_idx;
-                        else
-                            first = 0;
-                    } else {
-                        first = dest_idx;
-                    }
-
-                    #var mod = math.fmod(first, 5);
-                    #if(mod != 0){
-                    #    first = first + (5 - mod);
-                    #}
-                    setprop("/instrumentation/mcdu/f-pln/disp/first", first);
-                    
-					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
-                    
-					var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-                    
-					var hold = getprop("/flight-management/hold/wp_id");
-                    
-					var hold_id = 0;
-                    
-					if ((hold >= first) and (first + 4 > hold) and (hold != 0)) {
-                    
-                        setprop("/instrumentation/mcdu/f-pln/show-hold", 1);
-                    
-                        hold_id = (hold - first) + (first == 0);
-                    
+					if(cur_wp == 0 or cur_wp == 1){
+						if(first == 0)
+							first = dest_idx;
+						else
+							first = 0;
+					} else {
+						first = dest_idx;
 					}
-                    
+
+					setprop("/instrumentation/mcdu/f-pln/disp/first", first);
+
+					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
+
+					var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+
+					var hold = getprop("/flight-management/hold/wp_id");
+
+					var hold_id = 0;
+
+					if ((hold >= first) and (first + 4 > hold) and (hold != 0)) {
+
+						setprop("/instrumentation/mcdu/f-pln/show-hold", 1);
+
+						hold_id = (hold - first) + (first == 0);
+
+					}
+
 					setprop("/instrumentation/mcdu/f-pln/hold-id", hold_id);
-                    
+
 					mcdu.f_pln.update_disp();
-                    var fp = flightplan();
-                    var firstWp = getprop("/instrumentation/mcdu/f-pln/disp/first");
-                    var wpNum = getprop("autopilot/route-manager/route/num");
-                    if(firstWp >= wpNum) firstWp = wpNum;
-                    var wp = fp.getWP(firstWp);
-                    setprop("/instrumentation/nd/user-latitude-deg", wp.wp_lat);
-                    setprop("/instrumentation/nd/user-longitude-deg", wp.wp_lon);
+					var wp = mcdu.f_pln.first_displayed_wp();
+					if(wp != nil){
+						setprop("instrumentation/efis/inputs/plan-wpt-index", first);
+						setprop("instrumentation/efis[1]/inputs/plan-wpt-index", first);
+					}
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
 	
 	<!-- Number Pad -->

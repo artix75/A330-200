@@ -64,9 +64,14 @@ var searchCmd = func {
 			type == 'current' and 
 			!me.layer.options.display_inactive_rte) fpSize = 0;
 		var coords = [];
+		var discontinuity = 0;
 		for (var i=0; i<fpSize; i += 1) {
 			var leg = driver.getWP(idx, i);
-			coords ~= leg.path();
+			if(discontinuity)
+				coords ~= [{},{lon:leg.wp_lon, lat:leg.wp_lat}];
+			else
+				coords ~= leg.path();
+			discontinuity = driver.hasDiscontinuity(idx, leg.id);
 		}
 		append(plans, {
 			id: type,

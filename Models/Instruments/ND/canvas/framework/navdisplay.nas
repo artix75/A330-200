@@ -29,6 +29,14 @@ canvas.NavDisplay.newMFD = func(canvas_group, parent=nil, nd_options=nil, update
         me.df_options = me.nd_style.options;
     nd_options = default_hash(nd_options, me.df_options);
     me.options = nd_options;
+    me.route_driver = nil;
+    if(contains(me.options, 'route_driver')){
+        me.route_driver = me.options.route_driver;
+    }
+    elsif(contains(me.options, 'defaults')){
+        if(contains(me.options.defaults, 'route_driver'))
+            me.route_driver = me.options.defaults.route_driver;
+    }
 
     # load the specified SVG file into the me.nd group and populate all sub groups
 
@@ -272,9 +280,21 @@ canvas.NavDisplay.update_sub = func(){
         range: nil,
     };
     # reposition the map, change heading & range:
-    if(me.in_mode('toggle_display_mode', ['PLAN']) and getprop(me.efis_path ~ "/inputs/plan-wpt-index") >= 0) {
-        pos.lat = getprop("/autopilot/route-manager/route/wp["~getprop(me.efis_path ~ "/inputs/plan-wpt-index")~"]/latitude-deg");
-        pos.lon = getprop("/autopilot/route-manager/route/wp["~getprop(me.efis_path ~ "/inputs/plan-wpt-index")~"]/longitude-deg");
+    var pln_wpt_idx = getprop(me.efis_path ~ "/inputs/plan-wpt-index");
+    if(me.in_mode('toggle_display_mode', ['PLAN']) and pln_wpt_idx >= 0) {
+        if(me.route_driver != nil){
+            var wp = me.route_driver.getPlanModeWP(pln_wpt_idx);
+            if(wp != nil){
+                pos.lat = wp.wp_lat;
+                pos.lon = wp.wp_lon;
+            } else {
+                pos.lat = getprop("/autopilot/route-manager/route/wp["~pln_wpt_idx~"]/latitude-deg");
+                pos.lon = getprop("/autopilot/route-manager/route/wp["~pln_wpt_idx~"]/longitude-deg");
+            }
+        } else {
+            pos.lat = getprop("/autopilot/route-manager/route/wp["~pln_wpt_idx~"]/latitude-deg");
+            pos.lon = getprop("/autopilot/route-manager/route/wp["~pln_wpt_idx~"]/longitude-deg");
+        }
     } else {
         pos.lat = userLat;
         pos.lon = userLon;

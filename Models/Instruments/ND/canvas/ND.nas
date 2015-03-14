@@ -117,13 +117,13 @@ for(i = 0; i < 2; i = i + 1){
 	});
 }
 
-setlistener("/instrumentation/mcdu/f-pln/disp/first", func{
-	var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-	if(typeof(first) == 'nil') first = -1;
-	if(getprop('autopilot/route-manager/route/num') == 0) first = -1;
-	setprop("instrumentation/efis/inputs/plan-wpt-index", first);
-	setprop("instrumentation/efis[1]/inputs/plan-wpt-index", first);
-});
+#setlistener("/instrumentation/mcdu/f-pln/disp/first", func{
+	#var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+	#if(typeof(first) == 'nil') first = -1;
+	#if(getprop('autopilot/route-manager/route/num') == 0) first = -1;
+	#setprop("instrumentation/efis/inputs/plan-wpt-index", first);
+	#setprop("instrumentation/efis[1]/inputs/plan-wpt-index", first);
+#});
 
 setlistener('/instrumentation/efis/nd/terrain-on-nd', func{
 	var terr_on_hd = getprop('/instrumentation/efis/nd/terrain-on-nd');

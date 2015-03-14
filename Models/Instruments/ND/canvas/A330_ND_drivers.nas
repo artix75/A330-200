@@ -77,6 +77,9 @@ var A330RouteDriver = {
 			fp.getWP(offset + idx);
 		}
 	},
+	getPlanModeWP: func(idx){
+		return mcdu.f_pln.get_wp(idx);
+	},
 	getListeners: func(){
 		var rm = fmgc.RouteManager;
 		[
@@ -88,5 +91,9 @@ var A330RouteDriver = {
 	},
 	shouldUpdate: func(){
 		!me.route_manager.sequencing;
+	},
+	hasDiscontinuity: func(fpNum, wptID){
+		var type = me.getFlightPlanType(fpNum);
+		me.route_manager.hasDiscontinuity(wptID, type);
 	}
 };

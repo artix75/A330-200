@@ -286,10 +286,15 @@ canvas.LineSymbol.draw = func() {
 			canvas.__die("LineSymbol model requires a 'path' member (vector)");
 	}
 	foreach (var m; path) {
-		var (lat,lon) = me.controller.getpos(m);
-		append(coords,"N"~lat);
-		append(coords,"E"~lon);
-		append(cmds,cmd); cmd = canvas.Path.VG_LINE_TO;
+		if(size(keys(m)) >= 2){
+			var (lat,lon) = me.controller.getpos(m);
+			append(coords,"N"~lat);
+			append(coords,"E"~lon);
+			append(cmds,cmd); 
+			cmd = canvas.Path.VG_LINE_TO;
+		} else {
+			cmd = canvas.Path.VG_MOVE_TO;
+		}
 	}
 	me.element.setDataGeo(cmds, coords);
 	me.element.update(); # this doesn't help with flickering, it seems

@@ -27,7 +27,15 @@ var new = func(layer) {
 	layer.searcher._equals = func(l,r) {l.equals(r)}; # TODO: create model objects instead?
 	#append(m.listeners, setlistener(layer.options.active_node, func m.layer.update() ));
 	#m.addVisibilityListener();
-
+	var driver = opt_member(m.layer.options, 'route_driver');
+	if(driver == nil){
+		driver = RouteDriver.new();
+	}
+	var driver_listeners = driver.getListeners();
+	foreach(var listener; driver_listeners){
+		append(m.listeners, setlistener(listener, func m.layer.update()));
+	}
+	m.route_driver = driver;
 	return m;
 };
 
@@ -60,27 +68,35 @@ var FPRunwayModel = {
 };
 
 var searchCmd = func {
-	var desApt = airportinfo(getprop(me.layer.options.dest_arpt));
-	var depApt = airportinfo(getprop(me.layer.options.dep_arpt));
-	if(desApt == nil and depApt == nil)
-		return [];
+	#var desApt = airportinfo(getprop(me.layer.options.dest_arpt));
+	#var depApt = airportinfo(getprop(me.layer.options.dep_arpt));
+	#if(desApt == nil and depApt == nil)
+	#	return [];
 	var res = [];
 	var desRwy = nil;
 	var depRwy = nil;
 
-	if(depApt != nil){
-		depRwy = depApt.runway(getprop(me.layer.options.dep_rwy));
-		if(depRwy != nil){
-			var model = FPRunwayModel.new(depApt, depRwy);
-			append(res, model);
+	var driver = me.route_driver;
+	var fpcount = driver.getNumberOfFlightPlans();
+	for(var i = 0; i < fpcount; i += 1){
+		var fp = driver.getFlightPlan(i);
+		var depApt = fp.departure;
+		if(depApt != nil){
+			var depRwy = fp.departure_runway;
+			if(depRwy != nil){
+				var model = FPRunwayModel.new(depApt, depRwy);
+				append(res, model);
+			}
+		}
+		var desApt = fp.destination;
+		if(desApt != nil){
+			var desRwy = fp.destination_runway;
+			if(desRwy != nil){
+				var model = FPRunwayModel.new(desApt, desRwy);
+				append(res, model);
+			}
 		}
 	}
-	if(desApt != nil){
-		desRwy = desApt.runway(getprop(me.layer.options.dest_rwy));
-		if(desRwy != nil){
-			var model = FPRunwayModel.new(desApt, desRwy);
-			append(res, model);
-		}
-	}
+
 	return res;
 };

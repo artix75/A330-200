@@ -18,6 +18,8 @@ canvas.RouteDriver = {
     getPlanSize: func(fpNum){me.flightplan.getPlanSize()},
     getWP: func(fpNum, idx){me.flightplan.getWP(idx)},
     getListeners: func(){[]},
+    getPlanModeWP: func(plan_wp_idx){me.flightplan.getWP(plan_wp_idx)},
+    hasDiscontinuity: func(fpNum, wptID){0},
     shouldUpdate: func 1,
 };
 
@@ -26,7 +28,8 @@ canvas.MultiRouteDriver = {
     new: func(){
         var m = {
             parents: [MultiRouteDriver],
-            _flightplans: []
+            _flightplans: [],
+            currentFlightPlan: 0
         };
         m.init();
         return m;
@@ -81,7 +84,12 @@ canvas.MultiRouteDriver = {
     },
     getWP: func(fpNum, idx){
         if(fpNum >= size(me._flightplans)) return nil;
-        var fp = me._flightplans[fpNum].getPlanSize();
+        var fp = me._flightplans[fpNum];
+        return fp.getWP(idx);
+    },
+    getPlanModeWP: func(idx){
+        if(me.currentFlightPlan >= size(me._flightplans)) return nil;
+        var fp = me._flightplans[me.currentFlightPlan];
         return fp.getWP(idx);
     },
     triggerSignal: func(signal){

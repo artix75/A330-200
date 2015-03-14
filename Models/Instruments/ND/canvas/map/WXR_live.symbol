@@ -39,7 +39,10 @@ var fetchWXRMap = func(size){
 	}
 	me.fetching = 1;
 	http.save(url, filePath)
-		.fail(func(){print(me.name~': Download failed!');})
+		.fail(func(){
+			print(me.name~': Download failed!');
+			me.wxlayer.hide();
+		})
 		.done(func(){
 			var sz = size * 2;
 			var transl = -size;

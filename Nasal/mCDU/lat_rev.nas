@@ -112,6 +112,9 @@ var lat_rev = {
 			me.route_manager.deleteWaypointsAfter(id, fpId);
 			var fp = me.route_manager.getFlightPlan(fpId);
 			fp.destination = apt;
+			var wp = fp.getWP(id);
+			if(wp != nil) me.route_manager.setDiscontinuity(wp.id, fpId);
+			me.route_manager.trigger(me.route_manager.SIGNAL_FP_EDIT);
 			setprop(f_pln_disp~ 'current-flightplan', getprop(f_pln_disp~ 'current-flightplan'));
 		}
 	
@@ -154,7 +157,7 @@ var lat_rev = {
 		if(actv and me.tmpy_fplan == nil){
 			me.copy_to_tmpy();
 		}
-		me.route_manager.deleteWP(id, 'temporary');
+		me.route_manager.deleteWP(id, f_pln.get_flightplan_id());
 	
 	},
 	

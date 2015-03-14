@@ -85,7 +85,8 @@ var star = {
 		
 		for(var star_index = 0; star_index < me.STARmax; star_index += 1) {
 		
-			setprop(arr~ "star[" ~ star_index ~ "]/id", me.STARList[star_index].wp_name);
+			setprop(arr~ "star[" ~ star_index ~ "]/id", 
+					me.STARList[star_index].wp_name);
 		
 		}
 		
@@ -102,6 +103,7 @@ var star = {
 		var fp = f_pln.get_current_flightplan();
 		#setprop("/autopilot/route-manager/destination/runway", id);
 		fp.destination_runway = rwy;
+		f_pln.update_flightplan_waypoints();
 		
 		me.update_stars();
 		
@@ -114,6 +116,8 @@ var star = {
 			    type != 'runway')
 				fp.deleteWP(i);
 		}
+		
+		fmgc.RouteManager.trigger(fmgc.RouteManager.SIGNAL_FP_EDIT);
 		
 		#me.confirm_iap(id);
 	
@@ -159,6 +163,15 @@ var star = {
 		setprop("/flight-management/procedures/star-transit", me.WPmax);
 		
 		setprop("/instrumentation/mcdu/page", "f-pln");
+		var do_trigger = 0;
+		var fp = f_pln.get_current_flightplan();
+		var fpID = f_pln.get_flightplan_id();
+		var last_wp = f_pln.get_destination_wp();
+		if(last_wp == nil){
+			var last_id = fp.getPlanSize() - 1;
+			last_wp = fp.getWP(last_id);
+		}
+		last_wp = fp.getWP(last_wp.index - 1);
 		if(me.STARList[n].wp_name == 'DEFAULT'){
 			var current_fp = getprop(f_pln_disp~ "current-flightplan");
 			if(current_fp == 'temporary'){
@@ -191,6 +204,7 @@ var star = {
 						idx += 1;
 					}
 				}
+				do_trigger = 1;
 			} else {
 				setprop('/autopilot/route-manager/destination/approach', 'DEFAULT');
 				setprop(arr~ "active-star/name", 'DEFAULT');
@@ -200,7 +214,12 @@ var star = {
 			var rwy = getprop(arr~ "selected-rwy");
 			me.confirm_iap(rwy);
 		}
-		
+		if(fmgc.RouteManager.hasDiscontinuity(last_wp.id, fpID)){
+			fmgc.RouteManager.clearDiscontinuity(last_wp.id, fpID);
+			do_trigger = 1;
+		}
+		if(do_trigger) 
+			fmgc.RouteManager.trigger(fmgc.RouteManager.SIGNAL_FP_EDIT);
 		mcdu.f_pln.update_disp();
 	
 	},
@@ -248,6 +267,7 @@ var star = {
 		
 		setprop("/flight-management/procedures/iap-current", 0);
 		setprop("/flight-management/procedures/iap-transit", me.WPmax);
+		fmgc.RouteManager.trigger(fmgc.RouteManager.SIGNAL_FP_EDIT);
 		
 	},
 	

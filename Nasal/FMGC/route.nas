@@ -224,7 +224,7 @@ var RouteManager = {
             fpdep = fp.departure_runway;
             dep = (dep != nil ? dep.id : '');
             fpdep = (fpdep != nil ? fpdep.id : '');
-            copy_dep_rwy = (fpdep != dep);
+            copy_dep_rwy = (fpdep != nil and fpdep != dep);
         }
         if(copy_dep_rwy)
             dest_fp.departure_runway = fp.departure_runway;
@@ -238,7 +238,7 @@ var RouteManager = {
             fpdst = fp.destination_runway;
             dst = (dst != nil ? dst.id : '');
             fpdst = (fpdst != nil ? fpdst.id : '');
-            copy_dst_rwy = (fpdst != dst);
+            copy_dst_rwy = (fpdst != nil and fpdst != dst);
         }
         if(copy_dst_rwy)
             dest_fp.destination_runway = fp.destination_runway;
@@ -409,6 +409,53 @@ var RouteManager = {
     deleteWaypointsAfter: func(wptIdx, fpID = nil){
         me.deleteWaypoints(wptIdx + 1, nil, fpID);
     },
+    setDiscontinuity: func(wptID, fpID = nil){
+        if(fpID == nil or fpID == '')
+            fpID = 'current';
+        #me.update();
+        var info = me.flightplan_info[fpID];
+        if(info == nil) return 0;
+        var discontinuities = info['discontinuities'];
+        if(discontinuities == nil){
+            discontinuities = {};
+            info['discontinuities'] = discontinuities;
+        }
+        discontinuities[wptID] = 1;
+        return 1;
+    },
+    clearDiscontinuity: func(wptID, fpID = nil){
+        if(fpID == nil or fpID == '')
+            fpID = 'current';
+        #me.update();
+        var info = me.flightplan_info[fpID];
+        if(info == nil) return 0;
+        var discontinuities = info['discontinuities'];
+        if(discontinuities == nil) return 0;
+        delete(discontinuities, wptID);
+        return 1;
+    },
+    hasDiscontinuity: func(wptID, fpID = nil){
+        if(fpID == nil or fpID == '')
+            fpID = 'current';
+        #me.update();
+        var info = me.flightplan_info[fpID];
+        if(info == nil) return 0;
+        var discontinuities = info['discontinuities'];
+        if(discontinuities == nil) return 0;
+        return contains(discontinuities, wptID) and discontinuities[wptID];
+    },
+    isMissedApproach: func(wpt, fpID = nil){
+        if(wpt.wp_role == 'missed') return 1;
+        var destWP = me.getDestinationWP();
+        if(destWP == nil){
+            var fp = me.getFlightPlan(fpID);
+            if(fp == nil) return 0;
+            var sz = fp.getPlanSize();
+            return (wpt.index >= sz);
+        } else {
+            return (wpt.index > destWP.index);
+        }
+    },
     getDistance: func(fpID, total = 0){
         me.update();
         var info = me.flightplan_info[fpID];
@@ -427,6 +474,24 @@ var RouteManager = {
         var info = me.flightplan_info[fpID];
         if(info == nil) return nil;
         return info['destination_wp'];
+    },
+    getLastEnRouteWaypoint: func(fpID = nil){
+        var fp = me.getFlightPlan(fpID);
+        if(fp == nil){
+            return nil;
+        }
+        var destWP = me.getDestinationWP(fpID);
+        if(destWP == nil) destWP = fp.getWP(fp.getPlanSize() - 1);
+        var idx = destWP.index;
+        for(var i = idx - 1; i > 0; i -= 1){
+            var wp = fp.getWP(i);
+            var type = wp.wp_type;
+            var role = wp.wp_role;
+            if(role != 'sid' and role != 'star' and 
+               role != 'missed' and role != 'approach') return wp;
+            
+        }
+        return nil;
     },
     listen: func(prop){
         var _me = me;

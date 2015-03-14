@@ -9,6 +9,7 @@ var sid = {
 	select_arpt : func(icao) {
 		
 		me.DepICAO = procedures.fmsDB.new(icao);
+		me.icao = icao;
 		
 		# Get a list of all available runways on the departure airport
 		
@@ -79,15 +80,22 @@ var sid = {
 		
 		setprop(dep~ "first", 0);
 		
-		setprop("/autopilot/route-manager/departure/runway", id);
+		#setprop("/autopilot/route-manager/departure/runway", id);
+		var arpt = airportinfo(me.icao);
+		var rwy = arpt.runways[id];
+		if(rwy == nil) return;
+		var fp = f_pln.get_current_flightplan();
+		fp.departure_runway = rwy;
+		f_pln.update_flightplan_waypoints();
 		
 		me.update_sids();
+
 		var fp = flightplan();
 		var sz = fp.getPlanSize();
 		for(var i = 0; i < sz; i += 1){
 			var wp = fp.getWP(i);
 			if(wp.wp_role == 'sid' and wp.wp_type != 'runway')
-				fp.deleteWP(wp);
+				fp.deleteWP(i);
 		}
 	
 	},
@@ -107,6 +115,7 @@ var sid = {
 		var fp = flightplan();
 		me.WPmax = size(me.SIDList[n].wpts);
 		var skipped = 0;
+		var do_trigger = 0;
 		for(var wp = 0; wp < me.WPmax; wp += 1) {
 		
 			# Copy waypoints to property tree
@@ -138,6 +147,16 @@ var sid = {
 		
 		setprop("/flight-management/procedures/sid-current", 0);
 		setprop("/flight-management/procedures/sid-transit", me.WPmax);
+		
+		var fp = f_pln.get_current_flightplan();
+		var fpID = f_pln.get_flightplan_id();
+		var wp = fp.getWP(0);
+		if(fmgc.RouteManager.hasDiscontinuity(wp.id, fpID)){
+			fmgc.RouteManager.clearDiscontinuity(wp.id, fpID);
+			do_trigger = 1;
+		}
+		if(do_trigger) 
+			fmgc.RouteManager.trigger(fmgc.RouteManager.SIGNAL_FP_EDIT);
 		
 		setprop("/instrumentation/mcdu/page", "f-pln");
 		
