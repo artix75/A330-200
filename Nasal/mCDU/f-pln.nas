@@ -4,6 +4,8 @@ var rm_route = "/autopilot/route-manager/";
 
 var f_pln_disp = "/instrumentation/mcdu/f-pln/disp/";
 
+var NM2M = 1852;
+
 var f_pln = {
 	updating_wpts: 0,
 	init_f_pln : func {
@@ -580,6 +582,112 @@ var f_pln = {
 		if(alt != nil)
 			wp.setAltitude(alt, 'at');
 		me.route_manager.trigger(me.route_manager.SIGNAL_FP_EDIT);
+	},
+	dir_to: func(wp_or_idx, opts = nil){
+		var actv = getprop('autopilot/route-manager/active');
+		var cur_fp_id = me.get_flightplan_id();
+		if(!actv or cur_fp_id == 'temporary') return;
+		var wp = nil;
+		var idx = -1;
+		var fp = me.route_manager.flightplan;
+		var sz = fp.getPlanSize();
+		var cur_wp = fp.getWP();
+		if(cur_wp == nil or cur_wp.index == 0) return;
+		if(typeof(wp_or_idx) == 'scalar'){
+			var n = num(wp_or_idx);
+			if(n != nil){
+				idx = n;
+				if(idx <= cur_wp.index or idx >= sz) return;
+				wp = fp.getWP(idx);
+			} else {
+				wp = me.route_manager.findWaypointByID(wp_or_idx);
+				if(wp != nil) idx = wp.index;
+				if(wp == nil){
+					wp = me.create_wp(wp_or_idx);
+					if(wp == nil) return;
+				}
+			}
+		} else {
+			wp = wp_or_idx;
+			if(wp == nil) return;
+			var fp_wp = me.route_manager.findWaypointByID(wp.id);
+			if(fp_wp != nil) idx = fp_wp.index;
+			if(idx >= 0 and (idx <= cur_wp.index or idx >= sz)) return;
+		}
+		if(wp == nil) return;
+		var toWpDist = getprop("/autopilot/route-manager/wp/dist") or 0;
+		if(idx >= 0) {
+			if(idx == cur_wp.index) return;
+			if(toWpDist < 1 and (idx + 1) == cur_wp.index) return;
+		};
+		var tpIdx = cur_wp.index;
+		#var fromIdx = tpIdx + 1;
+		#var offset_nm = 1;
+		#if(toWpDist <= 1){
+		#	offset_nm += 1;
+		#	tpIdx += 1;
+		#	if(idx >= 0 and tpIdx == idx) return;
+		#}
+		var tmpy_fp = me.route_manager.createTemporaryFlightPlan();
+		setprop(f_pln_disp~ 'current-flightplan', 'temporary');
+		setprop('/instrumentation/mcdu/f-pln/dir-to-mode', 1);
+		if(idx > 0){
+			var wpt_count = idx - tpIdx;
+			me.route_manager.deleteWaypoints(tpIdx, wpt_count, 'temporary');
+		}
+		var tpWpt = me.create_tp_wp();
+		me.route_manager.insertWP(tpWpt, tpIdx, 'temporary');
+		tpIdx += 1;
+		tpWpt = me.create_tp_wp(2);
+		me.route_manager.insertWP(tpWpt, tpIdx, 'temporary');
+		tpWpt = tmpy_fp.getWP(tpIdx);
+		tpWpt.fly_type = 'overFly';
+		if(idx < 0){
+			me.route_manager.insertWP(wp, tpIdx + 1, 'temporary');
+			me.route_manager.setDiscontinuity(tpIdx, 'temporary');
+		}
+		setprop('/flight-management/dir-to', tpIdx);
+		me.update_disp();
+	},
+	create_wp: func(wp_id){
+		if(wp_id == nil or string.trim(wp_id) == '') return nil;
+		setprop('instrumentation/gps/scratch/query', wp_id);
+		setprop('instrumentation/gps/scratch/type', '');
+		setprop('instrumentation/gps/command', 'search');
+		var results = getprop('instrumentation/gps/scratch/result-count');
+		if(!results) return nil;
+		var lat = getprop('instrumentation/gps/scratch/latitude-deg');
+		var lon = getprop('instrumentation/gps/scratch/longitude-deg');
+		var type = getprop('instrumentation/gps/scratch/type');
+		var wp_pos = {
+			lat: lat,
+			lon: lon
+		};
+		var wp = createWP(wp_pos, wp_id);
+		if(type == 'fix' or type == 'vor' or type == 'ndb' or type == 'dme')
+			type = 'navaid';
+		wp.wp_type = type;
+		return wp;
+	},
+	create_tp_wp: func(offset_nm = 0){
+		var xtrk_err = getprop('instrumentation/gps/wp/wp[1]/course-error-nm') or 0;
+		var pos = nil;
+		if(math.abs(xtrk_err) < 1){
+			pos = me.pos_along_route(offset_nm);
+		} else {
+			pos = geo.aircraft_position();
+			if(offset_nm != 0){
+				var trk = fmgc.fmgc_loop.track;
+				pos.apply_course_distance(trk, offset_nm * NM2M);
+			}
+		}
+		return createWP(pos, '(T-P)', 'pseudo');
+	},
+	pos_along_route: func(offset_nm = 0){
+		var fp = flightplan();
+		var remaining = getprop("autopilot/route-manager/distance-remaining-nm") or 0;
+		remaining -= offset_nm;
+		return fp.pathGeod(-1, -remaining);
 	}
 
 };

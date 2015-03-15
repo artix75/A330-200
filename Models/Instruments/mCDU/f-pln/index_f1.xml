@@ -97,6 +97,8 @@
 
 						setprop("/autopilot/route-manager/input", "@JUMP1"); # Assumes WP0 is Departure ICAO
 						setprop("/flight-management/current-wp", 1); # Backup Waypoint holder for confirmed transition
+						setprop('/flight-management/dir-to', 0);
+						setprop('/instrumentation/mcdu/f-pln/dir-to-mode', 1);
 						setprop("/flight-management/control/lat-ctrl", 'fmgc');
 					} else {
 						var f_pln_disp = "/instrumentation/mcdu/f-pln/disp/";
@@ -107,6 +109,15 @@
 							mcdu.f_pln.tmpy_fplan = nil;
 							mcdu.lat_rev.tmpy_fplan = nil;
 							setprop(f_pln_disp~ 'current-flightplan', '');
+							if(getprop('/instrumentation/mcdu/f-pln/dir-to-mode')){
+								setprop('/instrumentation/mcdu/f-pln/dir-to-mode', 0);
+								var dir_to = getprop('/flight-management/dir-to');
+								if(dir_to) {
+									setprop("/autopilot/route-manager/input", "@JUMP"~ dir_to);
+									setprop("/flight-management/current-wp", 1);
+								}
+								setprop('/flight-management/dir-to',0);
+							}
 							#setprop("/autopilot/route-manager/input", "@ACTIVATE");
 						}
 					}

@@ -10,9 +10,10 @@ var lat_rev = {
 		#me.tmpy_fplan = nil;
 		me.route_manager = fmgc.RouteManager;
 		var fp = f_pln.get_current_flightplan();
+		var wp = fp.getWP(id);
 		setprop(mcdu_tree~ "page", "lat_rev");
 		
-		setprop(lr_tree~ "name", getprop(rm_route~ "route/wp[" ~ id ~ "]/id"));
+		setprop(lr_tree~ "name", wp.id);
 		
 		setprop(lr_tree~ "id", id);
 		
@@ -105,7 +106,8 @@ var lat_rev = {
 		if(apt != nil){
 			var fpId = nil;
 			var actv = getprop('autopilot/route-manager/active');
-			if(actv and me.tmpy_fplan == nil){
+			var cur_fp = f_pln.get_flightplan_id();
+			if(actv and (me.tmpy_fplan == nil or cur_fp != 'temporary')){
 				me.copy_to_tmpy();
 				fpId = 'temporary';
 			}
@@ -122,7 +124,8 @@ var lat_rev = {
 	next_wp : func (id, name) {
 		var actv = getprop('autopilot/route-manager/active');
 		var fpId = nil;
-		if(actv and me.tmpy_fplan == nil){
+		var cur_fp = f_pln.get_flightplan_id();
+		if(actv and (me.tmpy_fplan == nil or cur_fp != 'temporary')){
 			me.copy_to_tmpy();
 			fpId = 'temporary';
 		}
@@ -137,7 +140,7 @@ var lat_rev = {
 			me.route_manager.deleteWaypoints(new_id, wpt_count, fpId);
 			new_id = existing_idx;
 		} else {
-			var wp = me.create_wp(name);
+			var wp = f_pln.create_wp(name);
 			if(wp == nil){
 				return id;
 			}
@@ -154,33 +157,13 @@ var lat_rev = {
 	
 	rm_wp : func (id) {
 		var actv = getprop('autopilot/route-manager/active');
-		if(actv and me.tmpy_fplan == nil){
+		var cur_fp = f_pln.get_flightplan_id();
+		if(actv and (me.tmpy_fplan == nil or cur_fp != 'temporary')){
 			me.copy_to_tmpy();
 		}
-		me.route_manager.deleteWP(id, f_pln.get_flightplan_id());
+		me.route_manager.deleteWP(id, cur_fp);
 	
 	},
-	
-	create_wp: func(wp_id){
-		if(wp_id == nil or string.trim(wp_id) == '') return nil;
-		setprop('instrumentation/gps/scratch/query', wp_id);
-		setprop('instrumentation/gps/scratch/type', '');
-		setprop('instrumentation/gps/command', 'search');
-		var results = getprop('instrumentation/gps/scratch/result-count');
-		if(!results) return nil;
-		var lat = getprop('instrumentation/gps/scratch/latitude-deg');
-		var lon = getprop('instrumentation/gps/scratch/longitude-deg');
-		var type = getprop('instrumentation/gps/scratch/type');
-		var wp_pos = {
-			lat: lat,
-			lon: lon
-		};
-		var wp = createWP(wp_pos, wp_id);
-		if(type == 'fix' or type == 'vor' or type == 'ndb' or type == 'dme')
-			type = 'navaid';
-		wp.wp_type = type;
-		return wp;
-	}
 	
 	# Holding is managed separately
  

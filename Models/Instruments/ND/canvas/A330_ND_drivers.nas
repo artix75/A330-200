@@ -3,6 +3,7 @@ var A330RouteDriver = {
 	new: func(){
 		var m = {
 			parents: [A330RouteDriver],
+			plan_wp_info: nil
 		};
 		m.init();
 		return m;
@@ -78,7 +79,16 @@ var A330RouteDriver = {
 		}
 	},
 	getPlanModeWP: func(idx){
-		return mcdu.f_pln.get_wp(idx);
+		if(me.route_manager.sequencing) return me.plan_wp_info;
+		var wp = mcdu.f_pln.get_wp(idx);
+		if(wp != nil){
+			me.plan_wp_info = {
+				id: wp.id,
+				wp_lat: wp.wp_lat,
+				wp_lon: wp.wp_lon
+			};
+		}
+		return wp;
 	},
 	getListeners: func(){
 		var rm = fmgc.RouteManager;

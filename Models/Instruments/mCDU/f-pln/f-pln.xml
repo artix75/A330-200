@@ -395,7 +395,7 @@
 					var fp = mcdu.f_pln.get_current_flightplan();
 					var wp = mcdu.f_pln.get_wp_at_line(1);
 					if(wp != nil){
-					var idx = wp.index;
+						var idx = wp.index;
 						if(getprop('/instrumentation/mcdu/overfly-mode'))
 							mcdu.toggle_overfly(fp, idx);
 						else

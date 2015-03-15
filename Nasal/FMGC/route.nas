@@ -277,6 +277,7 @@ var RouteManager = {
         me.trigger('edited', 'fp-copy');
         print('RouteManager: setting current wp to '~ cur_idx);
         setprop("/autopilot/route-manager/input", "@JUMP" ~ cur_idx);
+        setprop("/flight-management/current-wp", cur_idx);
     },
     deleteFlightPlan: func(fpId){
         if(fpId == 'current'){

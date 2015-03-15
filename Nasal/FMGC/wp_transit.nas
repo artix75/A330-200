@@ -7,7 +7,7 @@ var wp_transit = {
 		me.reset();
 	},
 	update : func {
-		
+		if(RouteManager.sequencing) return;
 		var wp_count = getprop("/autopilot/route-manager/route/num");
 		var fbw_phase = getprop("/fbw/flight-phase");
 		var end_flight = getprop("/flight-management/end-flight");
@@ -94,7 +94,7 @@ var wp_transit = {
 			setprop("/flight-management/current-wp", me.current_wp);
 		
 		} else {
-			setprop("/flight-management/current-wp", 0);
+			setprop("/flight-management/current-wp", cur_wp);
 		}
 			
 	},
