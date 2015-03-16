@@ -148,6 +148,7 @@ var fmgc_loop = {
         setprop('instrumentation/pfd/fd_pitch', 0);
         setprop(radio~ 'ils-cat', '');
         setprop('instrumentation/pfd/athr-alert-box', 0);
+        setprop(fmgc~ 'capture-leg', 0);
     
         me.descent_started = 0;
         me.decel_point = 0;
@@ -184,6 +185,7 @@ var fmgc_loop = {
         me.missed_approach_idx = -1;
         me.missed_approach = 0;
         me.decel_point = 0;
+        me.capturing_leg = 0;
         # Radio
     
         setprop(radio~ 'autotuned', 0);
@@ -1131,6 +1133,11 @@ var fmgc_loop = {
         me.fpa_setting = getprop(fcu~ "fpa");
         me.crz_fl = getprop("/flight-management/crz_fl");
         me.fcu_alt = getprop(fcu~'alt');
+        if(me.airborne and me.fcu_alt > (me.crz_fl * 100)){
+            me.crz_fl = int(me.fcu_alt / 100);
+            setprop("/flight-management/crz_fl", me.crz_fl);
+            setprop("autopilot/route-manager/cruise/altitude-ft", me.fcu_alt);
+        }
         me.v2_spd = getprop('/instrumentation/fmc/vspeeds/V2');
         me.vsfpa_mode = getprop(fmgc~'vsfpa-mode');
         me.flaps = getprop("/controls/flight/flaps");
@@ -1291,6 +1298,14 @@ var fmgc_loop = {
             me.track = getprop("orientation/track-deg");
         }
         me.hdg_trk = (me.ver_sub == 'vs' ? me.heading : me.track);
+        me.xtrk_error = getprop('instrumentation/gps/wp/wp[1]/course-error-nm') or 0;
+        me.capturing_leg = getprop(fmgc~ 'capture-leg');
+        if(me.capturing_leg){
+            if(math.abs(me.xtrk_error) <= 1){
+                me.capturing_leg = 0;
+                setprop(fmgc~ 'capture-leg', 0);
+            }
+        }
     },
     check_flight_modes : func{
         var flplan_active = me.flplan_active;
@@ -1499,7 +1514,7 @@ var fmgc_loop = {
                     }
                 }
                 elsif(lmode == 'NAV'){
-                    if(flplan_active){ #TODO: support gps leg course error
+                    if(flplan_active and !me.capturing_leg){ #TODO: support gps leg course error
                         me.active_lat_mode = lmode;
                         me.armed_lat_mode = (loc_mode ? 'LOC' : '');
                     } else {
@@ -1581,7 +1596,7 @@ var fmgc_loop = {
                         }
                         me.armed_ver_secondary_mode = '';
                     } else {
-                        if(ver_fmgc) {
+                        if(ver_fmgc and !me.capturing_leg) {
                             me.active_ver_mode = vmode_main;
                             var armed_vmode_2 = me.get_armed_ver_mode(fcu_alt,
                                                                       trgt_alt,
@@ -1753,6 +1768,7 @@ var fmgc_loop = {
         #setprop(fmgc ~'fixed-thrust', fixed_thrust);
         me.ver_managed = (me.ver_ctrl == 'fmgc' and 
                           me.flplan_active and 
+                          !me.capturing_leg and 
                           (me.lat_ctrl == 'fmgc' or me.lat_mode == 'nav1') and 
                           !me.vsfpa_mode and 
                           me.active_ver_mode != 'SRS');
@@ -1940,10 +1956,10 @@ var fmgc_loop = {
     },
 
     knob_sum : func {
-        var disp_hdg = getprop('/flight-management/fcu/display-hdg');
+        #var disp_hdg = getprop('/flight-management/fcu/display-hdg');
         var disp_vs = getprop('/flight-management/fcu/display-vs');
-        if(me.spd_ctrl != 'fmgc' or disp_hdg){
-           var ias = getprop(fcu~ "ias");
+        if(me.spd_ctrl != 'fmgc'){ #or disp_hdg){
+            var ias = getprop(fcu~ "ias");
 
             var mach = getprop(fcu~ "mach");
 
@@ -1972,7 +1988,8 @@ var fmgc_loop = {
     },
     update_fcu: func(){
         if(me.lat_ctrl == 'fmgc' or me.lat_mode == 'nav1'){
-            if(!getprop('/flight-management/fcu/display-hdg'))
+            var disp_hdg = getprop('/flight-management/fcu/display-hdg');
+            if(!disp_hdg and !me.capturing_leg)
                 me.set_current_hdgtrk();
         }
         if(me.spd_ctrl == 'fmgc' and me.airborne){
@@ -2926,15 +2943,22 @@ setlistener("flight-management/control/fd", func(node){
 
 setlistener(fmgc~ "lat-ctrl", func(){
     var lat_ctrl = getprop(fmgc~ "lat-ctrl");
+    var capture_leg = 0;
     if(lat_ctrl == 'fmgc'){
         var fp_actv = getprop("/autopilot/route-manager/active");
         if(!fp_actv){
             lat_ctrl = 'man-set';#TODO: set?
+        } else {
+            var xtrk_err = getprop('instrumentation/gps/wp/wp[1]/course-error-nm') or 0;
+            if(math.abs(xtrk_err) > 1){
+                capture_leg = 1;
+            }
         }
     }
     var lat_mode = getprop(fmgc~ "lat-mode");
     if(lat_ctrl == 'man-set' and lat_mode != 'nav1')
         setprop(fmgc~ "ver-ctrl", "man-set");
+    setprop(fmgc~ 'capture-leg', capture_leg);
 }, 0, 0);
 
 setlistener(fmgc~ "ver-ctrl", func(){

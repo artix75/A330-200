@@ -39,6 +39,8 @@ setlistener("sim/signals/fdm-initialized", func() {
 		'toggle_plan_loop': {path: '/nd/plan-mode-loop', value: 0, type: 'INT'},
 		'toggle_weather_live': {path: '/mfd/wxr-live-enabled', value: 0, type: 'BOOL'},
 		'toggle_chrono': {path: '/inputs/CHRONO', value: 0, type: 'INT'},
+		'toggle_xtrk_error': {path: '/mfd/xtrk-error', value: 0, type: 'BOOL'},
+		'toggle_trk_line': {path: '/mfd/trk-line', value: 0, type: 'BOOL'},
 		# add new switches here
 	};
 
@@ -131,6 +133,14 @@ setlistener('/instrumentation/efis/nd/terrain-on-nd', func{
 	if(terr_on_hd) alpha = 0.5;
 	nd_display.main.setColorBackground(0,0,0,alpha);
 });
+
+setlistener('/flight-management/control/capture-leg', func(n){
+	var capture_leg = n.getValue();
+	setprop("instrumentation/efis/mfd/xtrk-error", capture_leg);
+	setprop("instrumentation/efis[1]/mfd/xtrk-error", capture_leg);
+	setprop("instrumentation/efis/mfd/trk-line", capture_leg);
+	setprop("instrumentation/efis[1]/mfd/trk-line", capture_leg);
+}, 0, 0);
 
 var showNd = func(nd = nil) {
 	if(nd == nil) nd = 'main';

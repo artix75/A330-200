@@ -721,6 +721,10 @@ setlistener(f_pln_disp~ 'current-flightplan', func(n){
 	}
 	setprop(f_pln_disp~ 'departure', dep);
 	setprop(f_pln_disp~ 'destination', arr);
+	var fpln_title = '';
+	if(!getprop(rm_route~ "active") or cur == 'temporary')
+		fpln_title = 'TMPY';
+	setprop(f_pln_disp~ 'pln-title', fpln_title);
 }, 0, 1);
 
 setlistener('autopilot/route-manager/current-wp', func(){

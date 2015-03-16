@@ -151,7 +151,7 @@ var fcu = {
         var is_alt_mode = (math.abs(alt - selected_alt) <= 250);
         if (!is_alt_mode){
             setprop(alt_prop, new_alt);
-            me.alt_changed(new_alt);
+            #me.alt_changed(new_alt);
         }
     },
     alt_changed: func(new_alt){

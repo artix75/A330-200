@@ -1098,9 +1098,14 @@ canvas.NDStyles["Airbus"] = {
 			id:'trkline',
 			impl: {
 				init: func(nd,symbol),
-				predicate: func(nd) (nd.get_switch('toggle_display_mode') == 'MAP' and 
-						 !nd.get_switch('toggle_centered') and 
-						 getprop(nd.options.defaults.lat_ctrl) != nd.options.defaults.managed_val),
+				predicate: func(nd){ 
+					nd.get_switch('toggle_display_mode') == 'MAP' and 
+					!nd.get_switch('toggle_centered') and 
+					(
+						getprop(nd.options.defaults.lat_ctrl) != nd.options.defaults.managed_val or 
+						nd.get_switch('toggle_trk_line')
+					)
+				},
 				is_true: func(nd) {
 					nd.symbols.trkline.show();
 				},
@@ -1544,7 +1549,8 @@ canvas.NDStyles["Airbus"] = {
 					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
 					var managed_v = nd.options.defaults.managed_val;
 					var is_managed = (lat_ctrl == managed_v);
-					if(!active or is_managed){
+					var toggle_xtrk_err = nd.get_switch('toggle_xtrk_error');
+					if((!active or is_managed) and !toggle_xtrk_err){
 						nd.symbols.legDistL.hide();
 					} else {
 						var dist = getprop('instrumentation/gps/wp/wp[1]/course-error-nm');
@@ -1572,7 +1578,8 @@ canvas.NDStyles["Airbus"] = {
 					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
 					var managed_v = nd.options.defaults.managed_val;
 					var is_managed = (lat_ctrl == managed_v);
-					if(!active or is_managed){
+					var toggle_xtrk_err = nd.get_switch('toggle_xtrk_error');
+					if((!active or is_managed) and !toggle_xtrk_err){
 						nd.symbols.legDistR.hide();
 					} else {
 						var dist = getprop('instrumentation/gps/wp/wp[1]/course-error-nm');
@@ -1600,7 +1607,8 @@ canvas.NDStyles["Airbus"] = {
 					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
 					var managed_v = nd.options.defaults.managed_val;
 					var is_managed = (lat_ctrl == managed_v);
-					if(!active or is_managed){
+					var toggle_xtrk_err = nd.get_switch('toggle_xtrk_error');
+					if((!active or is_managed) and !toggle_xtrk_err){
 						nd.symbols.legDistCtrL.hide();
 					} else {
 						var dist = getprop('instrumentation/gps/wp/wp[1]/course-error-nm');
@@ -1628,7 +1636,8 @@ canvas.NDStyles["Airbus"] = {
 					var lat_ctrl = getprop(nd.options.defaults.lat_ctrl);
 					var managed_v = nd.options.defaults.managed_val;
 					var is_managed = (lat_ctrl == managed_v);
-					if(!active or is_managed){
+					var toggle_xtrk_err = nd.get_switch('toggle_xtrk_error');
+					if((!active or is_managed) and !toggle_xtrk_err){
 						nd.symbols.legDistCtrR.hide();
 					} else {
 						var dist = getprop('instrumentation/gps/wp/wp[1]/course-error-nm');

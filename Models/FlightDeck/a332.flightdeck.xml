@@ -275,6 +275,9 @@
                 <not>
                     <property>/flight-management/fcu/display-hdg</property>
                 </not>
+                <not>
+                    <property>/flight-management/control/capture-leg</property>
+                </not>
             </and>
         </condition>
     </animation>
@@ -1207,6 +1210,7 @@
 						<value>man-set</value>
 					</equals>
 					<property>/flight-management/fcu/display-hdg</property>
+					<property>/flight-management/control/capture-leg</property>
 				</or>
 				<not>
 					<equals>

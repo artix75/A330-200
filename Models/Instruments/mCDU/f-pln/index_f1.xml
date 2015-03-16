@@ -99,6 +99,8 @@
 						setprop("/flight-management/current-wp", 1); # Backup Waypoint holder for confirmed transition
 						setprop('/flight-management/dir-to', 0);
 						setprop('/instrumentation/mcdu/f-pln/dir-to-mode', 1);
+						if(getprop("/flight-management/control/lat-ctrl") == 'fmgc')
+							setprop("/flight-management/control/lat-ctrl", 'man-set');
 						setprop("/flight-management/control/lat-ctrl", 'fmgc');
 					} else {
 						var f_pln_disp = "/instrumentation/mcdu/f-pln/disp/";
@@ -118,6 +120,8 @@
 								}
 								setprop('/flight-management/dir-to',0);
 							}
+
+					
 							#setprop("/autopilot/route-manager/input", "@ACTIVATE");
 						}
 					}
