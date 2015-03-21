@@ -205,3 +205,8 @@ var heading_diff_deg = func(a, b){
 	return normalize_range(rawDiff, -180.0, 180.0);
 }
 
+var reload_nasal = func(path, namespace){
+	var ac_dir = getprop('sim/aircraft-dir');
+	io.load_nasal(ac_dir~ '/' ~ path, namespace);
+}
+

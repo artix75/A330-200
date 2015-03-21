@@ -377,7 +377,11 @@
 			<binding>
 				<command>nasal</command>
 		 		<script>
-		 			setprop("/instrumentation/mcdu/page", "index_f1");
+					var cur = getprop("/instrumentation/mcdu/f-pln/disp/current-flightplan");
+					if(cur != 'secondary')
+		 				setprop("/instrumentation/mcdu/page", "index_f1");
+					else
+						setprop("/instrumentation/mcdu/page", "f-pln2");
 				</script>
 			</binding>
 		</action>
@@ -759,6 +763,12 @@
 					</equals>
 				</not>
 				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
+				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l1/to-wpt</property>
 				</not>
 				<not>
@@ -784,6 +794,12 @@
 					<equals>
 						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
 						<value>temporary</value>
+					</equals>
+				</not>
+				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
 					</equals>
 				</not>
 				<not>
@@ -815,6 +831,12 @@
 					</equals>
 				</not>
 				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
+				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l3/to-wpt</property>
 				</not>
 				<not>
@@ -840,6 +862,12 @@
 					<equals>
 						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
 						<value>temporary</value>
+					</equals>
+				</not>
+				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
 					</equals>
 				</not>
 				<not>
@@ -871,6 +899,12 @@
 					</equals>
 				</not>
 				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
+				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l5/to-wpt</property>
 				</not>
 				<not>
@@ -899,8 +933,18 @@
 							<value>temporary</value>
 						</equals>
 					</not>
+					<not>
+						<equals>
+							<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+							<value>secondary</value>
+						</equals>
+					</not>
 					<property>/instrumentation/mcdu/f-pln/disp/l1/to-wpt</property>
 				</and>
+				<equals>
+					<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+					<value>secondary</value>
+				</equals>
 				<property>/instrumentation/mcdu/f-pln/disp/l1/discontinuity-marker</property>
 				<property>/instrumentation/mcdu/f-pln/disp/l1/end-marker</property>
 			</or>
@@ -920,8 +964,18 @@
 							<value>temporary</value>
 						</equals>
 					</not>
+					<not>
+						<equals>
+							<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+							<value>secondary</value>
+						</equals>
+					</not>
 					<property>/instrumentation/mcdu/f-pln/disp/l2/to-wpt</property>
 				</and>
+				<equals>
+					<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+					<value>secondary</value>
+				</equals>
 				<property>/instrumentation/mcdu/f-pln/disp/l2/discontinuity-marker</property>
 				<property>/instrumentation/mcdu/f-pln/disp/l2/end-marker</property>
 			</or>
@@ -941,8 +995,18 @@
 							<value>temporary</value>
 						</equals>
 					</not>
+					<not>
+						<equals>
+							<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+							<value>secondary</value>
+						</equals>
+					</not>
 					<property>/instrumentation/mcdu/f-pln/disp/l3/to-wpt</property>
 				</and>
+				<equals>
+					<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+					<value>secondary</value>
+				</equals>
 				<property>/instrumentation/mcdu/f-pln/disp/l3/discontinuity-marker</property>
 				<property>/instrumentation/mcdu/f-pln/disp/l3/end-marker</property>
 			</or>
@@ -962,8 +1026,18 @@
 							<value>temporary</value>
 						</equals>
 					</not>
+					<not>
+						<equals>
+							<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+							<value>secondary</value>
+						</equals>
+					</not>
 					<property>/instrumentation/mcdu/f-pln/disp/l4/to-wpt</property>
 				</and>
+				<equals>
+					<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+					<value>secondary</value>
+				</equals>
 				<property>/instrumentation/mcdu/f-pln/disp/l4/discontinuity-marker</property>
 				<property>/instrumentation/mcdu/f-pln/disp/l4/end-marker</property>
 			</or>
@@ -983,8 +1057,18 @@
 							<value>temporary</value>
 						</equals>
 					</not>
+					<not>
+						<equals>
+							<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+							<value>secondary</value>
+						</equals>
+					</not>
 					<property>/instrumentation/mcdu/f-pln/disp/l5/to-wpt</property>
 				</and>
+				<equals>
+					<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+					<value>secondary</value>
+				</equals>
 				<property>/instrumentation/mcdu/f-pln/disp/l5/discontinuity-marker</property>
 				<property>/instrumentation/mcdu/f-pln/disp/l5/end-marker</property>
 			</or>
@@ -1005,6 +1089,12 @@
 						<value>temporary</value>
 					</equals>
 				</or>
+				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l1/discontinuity-marker</property>
 				</not>
@@ -1030,6 +1120,12 @@
 					</equals>
 				</or>
 				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
+				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l2/discontinuity-marker</property>
 				</not>
 				<not>
@@ -1053,6 +1149,12 @@
 						<value>temporary</value>
 					</equals>
 				</or>
+				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l3/discontinuity-marker</property>
 				</not>
@@ -1078,6 +1180,12 @@
 					</equals>
 				</or>
 				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
+				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l4/discontinuity-marker</property>
 				</not>
 				<not>
@@ -1101,6 +1209,12 @@
 						<value>temporary</value>
 					</equals>
 				</or>
+				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l5/discontinuity-marker</property>
 				</not>

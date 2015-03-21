@@ -1,6 +1,8 @@
 var co_tree = "/database/co_routes/";
 var active_rte = "/flight-management/active-rte/";
+var sec_rte = "/flight-management/secondary-rte/";
 var altn_rte = "/flight-management/alternate/route/";
+var sec_altn_rte = "/flight-management/alternate/secondary/route/";
 
 setprop("/instrumentation/mcdu/from-to-results/line-length", 40);
 setprop("/instrumentation/mcdu/input", "");
@@ -20,9 +22,17 @@ setprop(active_rte~ "depicao", "empty");
 setprop(active_rte~ "arricao", "empty");
 setprop(active_rte~ "flight-num", "empty");
 
+setprop(sec_rte~ "id", "empty");
+setprop(sec_rte~ "depicao", "empty");
+setprop(sec_rte~ "arricao", "empty");
+setprop(sec_rte~ "flight-num", "empty");
+
 setprop("/flight-management/alternate/icao", "empty");
+setprop("/flight-management/alternate/secondary/icao", "empty");
 setprop(altn_rte~ "depicao", "empty");
 setprop(altn_rte~ "arricao", "empty");
+setprop(sec_altn_rte~ "depicao", "empty");
+setprop(sec_altn_rte~ "arricao", "empty");
 
 setprop("/flight-management/cost-index", 0);
 setprop("/flight-management/crz_fl", 0);
@@ -44,174 +54,179 @@ var mCDU_init = {
 		}
 	
 	},
-
-	co_rte : func (mcdu, id) {
-                var is_user_route = 0;
-                var user_rte = '';
-                if(substr(id, 0, 5) == 'user:'){
-                    id = substr(id, 5, size(id) - 5);
-                    user_rte = "/database/user_rtes/" ~ id ~ "/";
-                    is_user_route = 1;
-                }
 	
-                if(!is_user_route){
-                    for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/rte_id") != nil; index += 1) {
-                    
-                            var rte_id = getprop(co_tree~ "route[" ~ index ~ "]/rte_id");
-                    
-                            if (rte_id == id) {
-                            
-                                    var dep = getprop(co_tree~ "route[" ~ index ~ "]/depicao");
-                                    var arr = getprop(co_tree~ "route[" ~ index ~ "]/arricao");
-                            
-                                    me.rte_sel(id, dep, arr);
-                            
-                            } else
-                                    setprop("/instrumentation/mcdu[" ~ mcdu ~ "]/input", "ERROR: NOT IN DATABASE");
-                    
-                    }
-                } else {
-                    
-                    var dep = getprop(user_rte~ "depicao");
-                    var arr = getprop(user_rte~ "arricao");
-            
-                    me.rte_sel('user:'~id, dep, arr);
-                }
+	clear_sec : func() {
+
+		for(var i = 0; i < 100; i += 1) {
+
+			if (getprop(sec_rte~ "route/wp[" ~ i ~ "]/wp-id") != nil) {
+
+				setprop(sec_rte~ "route/wp[" ~ i ~ "]/wp-id", "");
+				setprop(sec_rte~ "route/wp[" ~ i ~ "]/altitude-ft", 0);
+				setprop(sec_rte~ "route/wp[" ~ i ~ "]/ias-mach", 0);
+
+			}
+
+		}
+
+	},
+
+	co_rte : func (mcdu, id, secondary = 0) {
+		var is_user_route = 0;
+		var user_rte = '';
+		if(substr(id, 0, 5) == 'user:'){
+			id = substr(id, 5, size(id) - 5);
+			user_rte = "/database/user_rtes/" ~ id ~ "/";
+			is_user_route = 1;
+		}
+
+		if(!is_user_route){
+			for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/rte_id") != nil; index += 1) {
+
+				var rte_id = getprop(co_tree~ "route[" ~ index ~ "]/rte_id");
+
+				if (rte_id == id) {
+
+					var dep = getprop(co_tree~ "route[" ~ index ~ "]/depicao");
+					var arr = getprop(co_tree~ "route[" ~ index ~ "]/arricao");
+
+					me.rte_sel(id, dep, arr, secondary);
+
+				} else
+					setprop("/instrumentation/mcdu[" ~ mcdu ~ "]/input", "ERROR: NOT IN DATABASE");
+
+			}
+		} else {
+
+			var dep = getprop(user_rte~ "depicao");
+			var arr = getprop(user_rte~ "arricao");
+
+			me.rte_sel('user:'~id, dep, arr, secondary);
+		}
 		
 		setprop("/flight-management/end-flight", 0);
-		
-		f_pln.init_f_pln();
+		if(!secondary)
+			f_pln.init_f_pln();
+		else 
+			f_pln.init_sec_f_pln();
 	
 	},
 	
-	rte_sel : func (id, dep, arr) {
+	rte_sel : func (id, dep, arr, secondary = 0) {
 	
 		# The Route Select function is the get the selected route and put those stuff into the active route
-                var is_user_route = 0;
-                var user_rte = '';
-                if(substr(id, 0, 5) == 'user:'){
-                    id = substr(id, 5, size(id) - 5);
-                    user_rte = "/database/user_rtes/" ~ id ~ "/";
-                    is_user_route = 1;
-                }
+		var is_user_route = 0;
+		var user_rte = '';
+		if(substr(id, 0, 5) == 'user:'){
+			id = substr(id, 5, size(id) - 5);
+			user_rte = "/database/user_rtes/" ~ id ~ "/";
+			is_user_route = 1;
+		}
 		
-		setprop(active_rte~ "id", id);
-		setprop(active_rte~ "depicao", dep);
-		setprop(active_rte~ "arricao", arr);
+		var tree = (secondary ? sec_rte : active_rte);
 		
-                if(is_user_route) 
-                    id = 'user:' ~ id;
-		me.set_active_rte(id);
+		setprop(tree~ "id", id);
+		setprop(tree~ "depicao", dep);
+		setprop(tree~ "arricao", arr);
+		
+		if(is_user_route) 
+			id = 'user:' ~ id;
+		me.set_active_rte(id, secondary);
 	
 	},
 	
-	set_active_rte : func (id) {
-                var is_user_route = 0;
-                var user_rte = '';
-                if(substr(id, 0, 5) == 'user:'){
-                    id = substr(id, 5, size(id) - 5);
-                    user_rte = "/database/user_rtes/" ~ id ~ "/";
-                    is_user_route = 1;
-                }
-	
-		me.clear_active();
+	set_active_rte : func (id, secondary = 0) {
+		var is_user_route = 0;
+		var user_rte = '';
+		if(substr(id, 0, 5) == 'user:'){
+			id = substr(id, 5, size(id) - 5);
+			user_rte = "/database/user_rtes/" ~ id ~ "/";
+			is_user_route = 1;
+		}
+		var tree = (secondary ? sec_rte : active_rte);
+		if(!secondary)
+			me.clear_active();
+		else 
+			me.clear_sec();
 
-                if(!is_user_route){
-	
-                    for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/rte_id") != nil; index += 1) {
-            
-                            var rte_id = getprop(co_tree~ "route[" ~ index ~ "]/rte_id");
-            
-                            if (rte_id == id) {
-                            
-                                    var route = co_tree~ "route[" ~ index ~ "]/route/";
-                                    
-                                    for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
-                                    
-                                            setprop(active_rte~ "route/wp[" ~ wp ~ "]/wp-id", getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
-                                            
-                                            if (getprop(route~ "wp[" ~ wp ~ "]/altitude-ft") != nil)
-                                                    setprop(active_rte~ "route/wp[" ~ wp ~ "]/altitude-ft", getprop(route~ "wp[" ~ wp ~ "]/altitude-ft"));
-                                            else {
-                                            
-                                                    # Use CRZ FL
-                                                    
-                                                    setprop(active_rte~ "route/wp[" ~ wp ~ "]/altitude-ft", getprop("/flight-management/crz_fl") * 100);
-                                            
-                                            }
-                                            
-                                            if (getprop(route~ "wp[" ~ wp ~ "]/ias-mach") != nil)
-                                                    setprop(active_rte~ "route/wp[" ~ wp ~ "]/ias-mach", getprop(route~ "wp[" ~ wp ~ "]/ias-mach"));
-                                            else {
-                                            
-                                                    var spd = 0;
-                            
-                                                    # Use 250 kts if under FL100 and 0.78 mach if over FL100
-                                    
-                                                    # if (alt <= 10000)
-                                                    #	spd = 250;
-                                                    # else
-                                                    #	spd = 0.78;
-                                                            
-                                                    setprop(active_rte~ "route/wp[" ~ wp ~ "]/ias-mach", spd);
-                            
-                                            }
-                                                    
-                                            # While using the FMGS to fly, if altitude or ias-mach is 0, then the FMGS predicts appropriate values between the previous and next values. If none of the values are entered, the FMGS leaves out that specific control to ALT HOLD or IAS/MACH HOLD
-                                    
-                                    } # End of WP-Copy For Loop
-                            
-                            } # End of Route ID Check
-            
-                    } # End of Route-ID For Loop
-                } else {
-                
-                    var route = user_rte ~ 'route/';
-                    var fltnum = getprop(user_rte~"flight-num");
-                    if(fltnum != nil and size(fltnum) > 0)
-                        setprop(active_rte~"flight-num", fltnum);
-                    var crz_fl = getprop(user_rte~"crz_fl");
-                    if(crz_fl != nil){
-                        setprop('flight-management/crz_fl', crz_fl);
-                        var fl_lvl = int(crz_fl) * 100;
-                        setprop("autopilot/route-manager/cruise/altitude-ft", fl_lvl); 
-                    }
-                    
-                    for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
-                    
-                            setprop(active_rte~ "route/wp[" ~ wp ~ "]/wp-id", getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
-                            
-                            if (getprop(route~ "wp[" ~ wp ~ "]/altitude-ft") != nil)
-                                    setprop(active_rte~ "route/wp[" ~ wp ~ "]/altitude-ft", getprop(route~ "wp[" ~ wp ~ "]/altitude-ft"));
-                            else {
-                            
-                                    # Use CRZ FL
-                                    
-                                    setprop(active_rte~ "route/wp[" ~ wp ~ "]/altitude-ft", getprop("/flight-management/crz_fl") * 100);
-                            
-                            }
-                            
-                            if (getprop(route~ "wp[" ~ wp ~ "]/ias-mach") != nil)
-                                    setprop(active_rte~ "route/wp[" ~ wp ~ "]/ias-mach", getprop(route~ "wp[" ~ wp ~ "]/ias-mach"));
-                            else {
-                            
-                                    var spd = 0;
-            
-                                    # Use 250 kts if under FL100 and 0.78 mach if over FL100
-                    
-                                    # if (alt <= 10000)
-                                    #	spd = 250;
-                                    # else
-                                    #	spd = 0.78;
-                                            
-                                    setprop(active_rte~ "route/wp[" ~ wp ~ "]/ias-mach", spd);
-            
-                            }
-                                    
-                            # While using the FMGS to fly, if altitude or ias-mach is 0, then the FMGS predicts appropriate values between the previous and next values. If none of the values are entered, the FMGS leaves out that specific control to ALT HOLD or IAS/MACH HOLD
-                    
-                    } # End of WP-Copy For Loop
-                }
+		if(!is_user_route){
+			for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/rte_id") != nil; index += 1) {
+				var rte_id = getprop(co_tree~ "route[" ~ index ~ "]/rte_id");
+				if (rte_id == id) {
+					var route = co_tree~ "route[" ~ index ~ "]/route/";
+					for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
+						setprop(tree~ "route/wp[" ~ wp ~ "]/wp-id", getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
+						if (getprop(route~ "wp[" ~ wp ~ "]/altitude-ft") != nil)
+							setprop(tree~ "route/wp[" ~ wp ~ "]/altitude-ft", getprop(route~ "wp[" ~ wp ~ "]/altitude-ft"));
+						else {
+							# Use CRZ FL
+							#setprop(tree~ "route/wp[" ~ wp ~ "]/altitude-ft", getprop("/flight-management/crz_fl") * 100);
+							setprop(tree~ "route/wp[" ~ wp ~ "]/altitude-ft", 0);
+						}
+						if (getprop(route~ "wp[" ~ wp ~ "]/ias-mach") != nil)
+							setprop(tree~ "route/wp[" ~ wp ~ "]/ias-mach", getprop(route~ "wp[" ~ wp ~ "]/ias-mach"));
+						else {
+							var spd = 0;
+							# Use 250 kts if under FL100 and 0.78 mach if over FL100
+
+							# if (alt <= 10000)
+							#	spd = 250;
+							# else
+							#	spd = 0.78;
+							setprop(tree~ "route/wp[" ~ wp ~ "]/ias-mach", spd);
+						}
+						# While using the FMGS to fly, if altitude or ias-mach is 0, then the FMGS predicts appropriate values between the previous and next values. If none of the values are entered, the FMGS leaves out that specific control to ALT HOLD or IAS/MACH HOLD
+
+					} # End of WP-Copy For Loop
+				} # End of Route ID Check
+			} # End of Route-ID For Loop
+		} else {
+			var fm_route = 'flight-management/';
+			if(secondary)
+				fm_route ~= 'secondary-rte/';
+			var route = user_rte ~ 'route/';
+			var fltnum = getprop(user_rte~"flight-num");
+			if(fltnum != nil and size(fltnum) > 0)
+				setprop(tree~"flight-num", fltnum);
+			var crz_fl = getprop(user_rte~"crz_fl");
+			if(crz_fl != nil){
+				setprop(fm_route~ 'crz_fl', crz_fl);
+				if(!secondary){
+					var fl_lvl = int(crz_fl) * 100;
+					setprop("autopilot/route-manager/cruise/altitude-ft", fl_lvl); 
+				}
+			}
+
+			for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
+				setprop(tree~ "route/wp[" ~ wp ~ "]/wp-id", getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
+				if (getprop(route~ "wp[" ~ wp ~ "]/altitude-ft") != nil)
+					setprop(tree~ "route/wp[" ~ wp ~ "]/altitude-ft", getprop(route~ "wp[" ~ wp ~ "]/altitude-ft"));
+				else {
+					# Use CRZ FL
+					#setprop(tree~ "route/wp[" ~ wp ~ "]/altitude-ft", getprop("/flight-management/crz_fl") * 100);
+					setprop(tree~ "route/wp[" ~ wp ~ "]/altitude-ft", 0);
+				}
+				if (getprop(route~ "wp[" ~ wp ~ "]/ias-mach") != nil)
+					setprop(tree~ "route/wp[" ~ wp ~ "]/ias-mach", getprop(route~ "wp[" ~ wp ~ "]/ias-mach"));
+				else {
+
+					var spd = 0;
+
+					# Use 250 kts if under FL100 and 0.78 mach if over FL100
+
+					# if (alt <= 10000)
+					#	spd = 250;
+					# else
+					#	spd = 0.78;
+
+					setprop(tree~ "route/wp[" ~ wp ~ "]/ias-mach", spd);
+
+				}
+
+				# While using the FMGS to fly, if altitude or ias-mach is 0, then the FMGS predicts appropriate values between the previous and next values. If none of the values are entered, the FMGS leaves out that specific control to ALT HOLD or IAS/MACH HOLD
+
+			} # End of WP-Copy For Loop
+		}
 	
 	},
 	
@@ -233,13 +248,13 @@ var mCDU_init = {
 	
 	},
 	
-	from_to : func (mcdu, from, to) {
+	from_to : func (mcdu, from, to, secondary = 0) {
 	
 		var from_to_rte = 0;
 		
 		var results = "/instrumentation/mcdu[" ~mcdu~ "]/from-to-results/";
 		
-		setprop(results~ "selected", 0);		
+		setprop(results~ "selected", 0);
 	        
 		for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/depicao") != nil; index += 1) {
 		
@@ -251,11 +266,14 @@ var mCDU_init = {
 			
 				setprop(results~ "result[" ~ from_to_rte ~ "]/rte_id", getprop(co_tree~ "route[" ~ index ~ "]/rte_id"));
 				
-				var route = co_tree~ "route[" ~ index ~ "]/route/";
+				var route = co_tree~ "route[" ~ index ~ "]/route";
+				var rteNode = props.globals.getNode(route);
+				if(rteNode != nil) rteNode.remove();
 				
 				for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
 				
-					setprop(results~ "result[" ~ from_to_rte ~ "]/route/wp[" ~ wp ~ "]/wp-id", getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
+					setprop(results~ "result[" ~ from_to_rte ~ "]/route/wp[" ~ wp ~ "]/wp-id", 
+							getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
 				
 				} # End of Waypoints Copy Loop
 
@@ -268,30 +286,36 @@ var mCDU_init = {
 		
 		############ IF CO RTE DOES NOT EXIST  TRIES USER ROUTES ###############
 		if (from_to_rte == 0) {
-            var user_rtes = "/database/user_rtes_list/";
-		    for (var index = 0; getprop(user_rtes ~ "name[" ~ index ~ "]") != nil; index += 1) {
-                var user_rte_name = getprop(user_rtes ~ "name[" ~ index ~ "]");
-                var user_rte = "/database/user_rtes/" ~ user_rte_name ~ "/";
-                var dep = getprop(user_rte ~ "depicao");
-                if(dep == nil) continue;
-                var arr = getprop(user_rte ~ "arricao");
-                if ((from == dep) and (to == arr)) {
-                    setprop(results~ "result[" ~ from_to_rte ~ "]/rte_id", 'user:' ~ user_rte_name);
-                    var route = user_rte ~ "route/";
+			var user_rtes = "/database/user_rtes_list/";
+			for (var index = 0; getprop(user_rtes ~ "name[" ~ index ~ "]") != nil; index += 1) {
+				var user_rte_name = getprop(user_rtes ~ "name[" ~ index ~ "]");
+				var user_rte = "/database/user_rtes/" ~ user_rte_name ~ "/";
+				var dep = getprop(user_rte ~ "depicao");
+				if(dep == nil) continue;
+				var arr = getprop(user_rte ~ "arricao");
+				if ((from == dep) and (to == arr)) {
+					#setprop(results~ "result[" ~ from_to_rte ~ "]", '');
+					setprop(results~ "result[" ~ from_to_rte ~ "]/rte_id", 'user:' ~ user_rte_name);
+					var route = user_rte ~ "route/";
+					var rteNode = props.globals.getNode(results~ "result[" ~ from_to_rte ~ "]/route");
+					if(rteNode != nil) rteNode.remove();
+					for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
+						
+						setprop(results~ "result[" ~ from_to_rte ~ "]/route/wp[" ~ wp ~ "]/wp-id", 
+								getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
 
-                    for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
+					} # End of Waypoints Copy Loop
 
-                        setprop(results~ "result[" ~ from_to_rte ~ "]/route/wp[" ~ wp ~ "]/wp-id", getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
+					from_to_rte += 1; # From To value increments as index
+				}
 
-                    } # End of Waypoints Copy Loop
-
-                    from_to_rte += 1; # From To value increments as index
-                }
-
-            }
+			}
 		}
 		############ IF CO RTE DOES NOT EXIST ##################################
 		if (from_to_rte == 0) {
+			setprop(results~ "result", '');
+			var rteNode = props.globals.getNode(results~ "result/route");
+			if(rteNode != nil) rteNode.remove();
 		
 			setprop(results~ "result/rte_id", from ~ "/" ~ to);
 			
@@ -312,6 +336,7 @@ var mCDU_init = {
 		}
 		
 		setprop(results~ "num", from_to_rte);
+		setprop(results~ 'secondary-fpln', secondary);
 		
 		########################################################################
 		
@@ -334,8 +359,10 @@ var mCDU_init = {
 		var line_length = getprop(results~ "line-length");
 		
 		var num = getprop(results~ "num");
-		
-		setprop(results~ "page", (select + 1) ~ "/" ~ num);
+		if(num)
+			setprop(results~ "page", (select + 1) ~ "/" ~ num);
+		else
+			setprop(results~ "page", '');
 		
 		# Created 1 string out of all waypoints
 		
@@ -345,6 +372,10 @@ var mCDU_init = {
 				
 			rte_string = rte_string ~ " " ~ getprop(results~ "result[" ~ select ~ "]/route/wp[" ~ wp ~ "]/wp-id");
 				
+		}
+		
+		for(var i = 0; i < 5; i += 1){
+			setprop(results~ "lines/line["~i~"]/str", '');
 		}
 		
 		var line1 = substr(rte_string, 0, line_length);

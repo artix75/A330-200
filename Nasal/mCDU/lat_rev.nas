@@ -106,8 +106,13 @@ var lat_rev = {
 		if(apt != nil){
 			var fpId = nil;
 			var actv = getprop('autopilot/route-manager/active');
+			var disp_sec = getprop('instrumentation/mcdu/sec-f-pln/disp');
+			if(disp_sec == nil) disp_sec = 0;
 			var cur_fp = f_pln.get_flightplan_id();
-			if(actv and (me.tmpy_fplan == nil or cur_fp != 'temporary')){
+			if(disp_sec){
+				fpId = 'secondary';
+			}
+			elsif(actv and (me.tmpy_fplan == nil or cur_fp != 'temporary')){
 				me.copy_to_tmpy();
 				fpId = 'temporary';
 			}
@@ -123,9 +128,14 @@ var lat_rev = {
 	},
 	next_wp : func (id, name) {
 		var actv = getprop('autopilot/route-manager/active');
+		var disp_sec = getprop('instrumentation/mcdu/sec-f-pln/disp');
+		if(disp_sec == nil) disp_sec = 0;
 		var fpId = nil;
 		var cur_fp = f_pln.get_flightplan_id();
-		if(actv and (me.tmpy_fplan == nil or cur_fp != 'temporary')){
+		if(disp_sec){
+			fpId = 'secondary';
+		}
+		elsif(actv and (me.tmpy_fplan == nil or cur_fp != 'temporary')){
 			me.copy_to_tmpy();
 			fpId = 'temporary';
 		}
@@ -157,9 +167,15 @@ var lat_rev = {
 	
 	rm_wp : func (id) {
 		var actv = getprop('autopilot/route-manager/active');
+		var disp_sec = getprop('instrumentation/mcdu/sec-f-pln/disp');
+		if(disp_sec == nil) disp_sec = 0;
 		var cur_fp = f_pln.get_flightplan_id();
-		if(actv and (me.tmpy_fplan == nil or cur_fp != 'temporary')){
+		if(disp_sec){
+			cur_fp = 'secondary';
+		}
+		elsif(actv and (me.tmpy_fplan == nil or cur_fp != 'temporary')){
 			me.copy_to_tmpy();
+			cur_fp = 'temporary';
 		}
 		me.route_manager.deleteWP(id, cur_fp);
 	

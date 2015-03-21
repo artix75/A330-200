@@ -9,6 +9,7 @@ var NM2M = 1852;
 var f_pln = {
 	updating_wpts: 0,
 	init_f_pln : func {
+		print('Init F-PLN');
 	
 		# Completely Clear Route Manager, add the new waypoints from 'active_rte' and then add the departure and arrival icaos.
 		
@@ -171,6 +172,158 @@ var f_pln = {
 		#setprop(rm_route~ "active", 1); # TRICK: refresh canvas
 		#setprop(rm_route~ "active", 0);
 	
+	},
+		
+	init_sec_f_pln : func {
+
+		print('Init SEC F-PLN');
+
+		me.route_manager = fmgc.RouteManager;
+
+		## Copy Waypoints and altitudes from active-rte
+		var fp = me.route_manager.createSecondaryFlightPlan(1);
+		var dep = getprop(sec_rte~ "depicao");
+		var arr = getprop(sec_rte~ "arricao");
+		var old_actv = getprop(rm_route~ "active");
+		if(fp.departure != nil and fp.departure.id == dep)
+			fp.departure = airportinfo(arr); #trick used to force update
+		fp.departure = airportinfo(dep);
+		if(fp.destination != nil and fp.destination.id == arr)
+			fp.destination = airportinfo(dep); #trick used to force update
+		fp.destination = airportinfo(arr);
+		setprop(rm_route~ "active", old_actv);
+
+		var wp_count = 0;
+		for (var index = 0; getprop(sec_rte~ "route/wp[" ~ index ~ "]/wp-id") != nil; index += 1){
+			wp_count += 1;
+		}
+		#if(wp_count){
+		#	while(fp.getPlanSize()) fp.deleteWP(0); #CLEAR any waypoint
+		#}
+
+		var idx_offs = (fp.getPlanSize() > 1 ? 1 : 0);
+
+		for (var index = 0; index < wp_count; index += 1) {
+
+			var wp_id = getprop(sec_rte~ "route/wp[" ~ index ~ "]/wp-id");
+
+			var wp_alt = getprop(sec_rte~ "route/wp[" ~ index ~ "]/altitude-ft");
+
+			var wp = me.create_wp(wp_id);
+			if(wp != nil){
+				var wpidx = fp.getPlanSize() - idx_offs;
+				fp.insertWP(wp, wpidx);
+				if(wp_alt != nil){
+					wp = fp.getWP(wpidx);
+					wp.setAltitude(wp_alt, 'at');
+				}
+			}
+
+		}
+
+		# Copy Speeds to Route Manager Property Tree
+
+		var max_wp = fp.getPlanSize();
+
+		for (var wp = 0; wp < max_wp; wp += 1) {
+			var wpt = fp.getWP(wp);
+			var wp_spd = getprop(sec_rte~ "route/wp[" ~ wp ~ "]/ias-mach");
+
+			if (wp_spd != nil)
+				wpt.setSpeed(wp_spd, 'at');
+
+		}
+
+		if(getprop("/flight-management/alternate/icao") == "empty") {
+			# artix: disabled this
+			#setprop(rm_route~ "input", "@INSERT99:" ~ dep ~ "@0");
+
+		} else {
+			#TODO!!!
+			#setprop(rm_route~ "input", "@INSERT99:" ~ getprop("/flight-management/alternate/icao") ~ "@0");
+
+		}
+
+		## Calculate Times to each WP starting with FROM at 0000 and using determined speeds
+		var sec_route = 'flight-management/secondary-rte/';
+		setprop(sec_route~ "route/wp/leg-time", 0);
+
+		for (var wp = 1; wp < max_wp; wp += 1) {
+			var wpt = fp.getWP(wp);
+			
+			var dist = wpt.leg_distance;
+
+			var spd = wpt.speed_cstr;
+
+			var alt = wpt.alt_cstr;
+
+			var gs_min = 0; # Ground Speed in NM/min
+
+			if ((spd == nil) or (spd == 0)) {
+
+				# Use 250 kts if under FL100 and 0.78 mach if over FL100
+
+				if (alt <= 10000)
+					spd = 250;
+				else
+					spd = 0.78;
+
+			}
+
+			# MACH SPEED
+
+			if (spd < 1) {
+
+				gs_min = 10 * spd;
+
+			}
+
+			# AIRSPEED
+
+			else {
+
+				gs_min = spd + (alt / 200);
+
+			}
+
+			# Time in Minutes (rounded)
+
+			var time_min = int(dist / gs_min);
+
+			var last_time = getprop(sec_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
+
+			if (wp == 1)
+				last_time = last_time + 30;
+
+			# Atm, using 30 min for taxi time. You will be able to change this in INIT B when it's completed
+
+			var total_time = last_time + time_min;
+			#TODO: fix this also for TMPY
+			#setprop(sec_route~ "route/wp[" ~ wp ~ "]/leg-time", total_time);
+
+		}
+		var first_wp = fp.getWP(0);
+		if(max_wp > 1){
+			if(max_wp == 2){
+				me.route_manager.setDiscontinuity(first_wp.id, 'secondary');
+			} else {
+				var first_route_wp = fp.getWP(1);
+				if(first_route_wp.wp_role != 'sid')
+					me.route_manager.setDiscontinuity(first_wp.id, 'secondary');
+				var last_route_wp = me.route_manager.getLastEnRouteWaypoint('secondary');
+				if(last_route_wp != nil)
+					me.route_manager.setDiscontinuity(last_route_wp.id, 'secondary');
+			}
+		}
+		setprop('instrumentation/mcdu/sec-f-pln/created', 1);
+		#me.update_disp();
+
+		#setprop("/autopilot/route-manager/current-wp", 0);
+		#setprop("instrumentation/efis/inputs/plan-wpt-index", 0);
+		#setprop("instrumentation/efis[1]/inputs/plan-wpt-index", 0);
+		#setprop(sec_route~ "active", 1); # TRICK: refresh canvas
+		#setprop(sec_route~ "active", 0);
+
 	},
 	
 	cpy_to_active : func {
@@ -557,7 +710,14 @@ var f_pln = {
 				}
 			}
 		}
-		
+		var dep = '';
+		var arr = '';
+		var dp = fp.departure;
+		if(dp != nil) dep = dp.id;
+		var dst = fp.destination;
+		if(dst != nil) arr = dst.id;
+		setprop(f_pln_disp~ 'departure', dep);
+		setprop(f_pln_disp~ 'destination', arr);
 		setprop("/instrumentation/mcdu/f-pln/show-hold", show_hold);
 	
 	},
@@ -651,6 +811,7 @@ var f_pln = {
 	},
 	create_wp: func(wp_id){
 		if(wp_id == nil or string.trim(wp_id) == '') return nil;
+		setprop('instrumentation/gps/scratch/result-count', 0);
 		setprop('instrumentation/gps/scratch/query', wp_id);
 		setprop('instrumentation/gps/scratch/type', '');
 		setprop('instrumentation/gps/command', 'search');
@@ -722,8 +883,10 @@ setlistener(f_pln_disp~ 'current-flightplan', func(n){
 	setprop(f_pln_disp~ 'departure', dep);
 	setprop(f_pln_disp~ 'destination', arr);
 	var fpln_title = '';
-	if(!getprop(rm_route~ "active") or cur == 'temporary')
-		fpln_title = 'TMPY';
+	var disp_sec = getprop('instrumentation/mcdu/sec-f-pln/disp');
+	if(disp_sec == nil) disp_sec = 0;
+#	if(!disp_sec and (!getprop(rm_route~ "active") or cur == 'temporary'))
+#		fpln_title = 'TMPY';
 	setprop(f_pln_disp~ 'pln-title', fpln_title);
 }, 0, 1);
 
@@ -732,4 +895,16 @@ setlistener('autopilot/route-manager/current-wp', func(){
 	if(curpage == 'f-pln'){
 		mcdu.f_pln.update_disp();
 	}
+}, 0, 0);
+
+setlistener('instrumentation/mcdu/sec-f-pln/disp', func(n){
+	var disp_sec= n.getValue();
+	var rm = fmgc.RouteManager;
+	if(!disp_sec){
+		if(rm.getFlightPlan('temporary') != nil)
+			setprop(f_pln_disp~ 'current-flightplan', 'temporary');
+		else
+			setprop(f_pln_disp~ 'current-flightplan', '');
+	}
+	f_pln.update_disp();
 }, 0, 0);

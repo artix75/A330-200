@@ -174,7 +174,7 @@ var star = {
 		last_wp = fp.getWP(last_wp.index - 1);
 		if(me.STARList[n].wp_name == 'DEFAULT'){
 			var current_fp = getprop(f_pln_disp~ "current-flightplan");
-			if(current_fp == 'temporary'){
+			if(current_fp != 'current' and current_fp != '' and current_fp != nil){
 				var fp = mcdu.f_pln.get_current_flightplan();
 				var dep = fp.departure;
 				var dst = fp.destination;
@@ -188,7 +188,7 @@ var star = {
 						c2.set_latlon(dst.lat, dst.lon);
 						enroute_course = c1.course_to(c2);
 					}
-					var wpts = me.create_default_approach(dep, rwy, enroute_course);
+					var wpts = me.create_default_approach(dst, rwy, enroute_course);
 					var dst_wp = mcdu.f_pln.get_destination_wp();
 					var idx = dst_wp.index;
 					foreach(var wp_info; wpts){

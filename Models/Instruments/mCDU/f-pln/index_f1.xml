@@ -120,7 +120,10 @@
 								}
 								setprop('/flight-management/dir-to',0);
 							}
-
+							if(getprop("/flight-management/control/lat-ctrl") == 'fmgc'){
+								setprop("/flight-management/control/lat-ctrl", 'man-set');
+								setprop("/flight-management/control/lat-ctrl", 'fmgc');
+							}
 					
 							#setprop("/autopilot/route-manager/input", "@ACTIVATE");
 						}

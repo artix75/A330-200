@@ -1,3 +1,5 @@
+var DISP_SEC_FPLN = 'instrumentation/mcdu/sec-f-pln/disp';
+
 var A330RouteDriver = {
 	parents: [canvas.RouteDriver],
 	new: func(){
@@ -21,7 +23,8 @@ var A330RouteDriver = {
 		me.plans = me.route_manager.allFlightPlans();
 		append(me.fplan_types, 'current');
 		if(me.plans['temporary'] != nil) append(me.fplan_types, 'temporary');
-		if(me.plans['secondary'] != nil) append(me.fplan_types, 'secondary');
+		if(me.plans['secondary'] != nil and getprop(DISP_SEC_FPLN)) 
+			append(me.fplan_types, 'secondary');
 		if(me.route_manager.missed_approach_planned)
 			append(me.fplan_types, 'missed');
 	},
@@ -96,7 +99,8 @@ var A330RouteDriver = {
 			me.route_manager.getSignal(rm.SIGNAL_FP_COPY),
 			me.route_manager.getSignal(rm.SIGNAL_FP_CREATED),
 			me.route_manager.getSignal(rm.SIGNAL_FP_DEL),
-			me.route_manager.getSignal(rm.SIGNAL_FP_EDIT)
+			me.route_manager.getSignal(rm.SIGNAL_FP_EDIT),
+			DISP_SEC_FPLN
 		]
 	},
 	shouldUpdate: func(){

@@ -14,6 +14,7 @@ var RouteManager = {
         var fp = flightplan();
         if(fp == nil) return;
         me.flightplan = fp;
+        fp.id = 'current';
         me.plans['current'] = fp;
         if(me.flightplan_info['current'] == nil)
             me.flightplan_info['current'] = {};
@@ -148,20 +149,25 @@ var RouteManager = {
         }
         if(src == nil) src = me.flightplan;
         var fp = src.clone();
+        fp.id = planId;
         if(empty){
             me.clearFlightPlan(fp);
         } else {
             me.copyFlightPlan(src, fp);
         }
         me.plans[planId] = fp;
-        me.flightplan_info[planId] = {};
+        var plnInfo = me.flightplan_info[planId];
+        if(plnInfo == nil){
+            plnInfo = {};
+            me.flightplan_info[planId] = plnInfo;
+        }
         if(empty){
-            me.flightplan_info[planId].distance_nm = 0;
-            me.flightplan_info[planId].total_distance_nm = 0;
+            plnInfo.distance_nm = 0;
+            plnInfo.total_distance_nm = 0;
         }
         elsif(src == me.flightplan){
-            me.flightplan_info[planId].distance_nm = me.distance_nm;
-            me.flightplan_info[planId].total_distance_nm = me.total_distance_nm;
+            plnInfo.distance_nm = me.distance_nm;
+            plnInfo.total_distance_nm = me.total_distance_nm;
         }
         me.trigger('edited', 'fp-created');
         return fp;
@@ -214,6 +220,8 @@ var RouteManager = {
         dst = (dst != nil ? dst.id : '');
         fpdep = (fpdep != nil ? fpdep.id : '');
         fpdst = (fpdst != nil ? fpdst.id : '');
+        var srcID = fp.id;
+        var dstID = dest_fp.id;
         var copy_dep_rwy = 0;
         if(fpdep != dep){
             dest_fp.departure = fp.departure;
@@ -247,6 +255,20 @@ var RouteManager = {
         var sz = fp.getPlanSize();
         for(var i = 0; i < sz; i += 1){
             me._copyWP(fp, dest_fp, i);
+        }
+        if(srcID != nil and dstID != nil){
+            var srcInfo = me.flightplan_info[srcID];
+            if(srcInfo != nil){
+                var dstInfo = {discontinuities: {}};
+                var disc = srcInfo['discontinuities'];
+                if(typeof(disc) == 'hash'){
+                    var wpIds = keys(disc);
+                    foreach(var wpID; wpIds){
+                        dstInfo.discontinuities[wpID] = disc[wpID];
+                    }
+                }
+                me.flightplan_info[dstID] = dstInfo;
+            }
         }
     },
     copyFlightPlanToActive: func(fp, delete_src = 0){
@@ -558,8 +580,9 @@ var RouteManager = {
         }
         elsif(type == 'navaid') {
             var navaid = src_wp.navaid();
+            if(navaid == nil) navaid = airportinfo(src_wp.id);
             if(navaid == nil){
-                foreach(var navtype; ['fix', 'airport', 'vor', 'ndb', 'dme']){
+                foreach(var navtype; ['fix', 'ils', 'vor', 'ndb', 'dme']){
                     var navaids = navinfo(src_wp.wp_lat, src_wp.wp_lon, navtype, src_wp.id);
                     if(size(navaids) > 0){
                         navaid = navaids[0];

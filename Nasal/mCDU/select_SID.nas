@@ -2,6 +2,13 @@ var gps = "/instrumentation/gps/";
 
 var dep = "/flight-management/procedures/sid/";
 
+var f_pln_disp = "/instrumentation/mcdu/f-pln/disp/";
+
+var DEGREES_TO_RADIANS = math.pi / 180;
+
+var FEET_TO_METER = 0.3048;
+var NM_TO_METER = 1852;
+
 setprop(dep~ "active-sid/name", "------");
 
 var sid = {
@@ -90,7 +97,7 @@ var sid = {
 		
 		me.update_sids();
 
-		var fp = flightplan();
+		#var fp = flightplan();
 		var sz = fp.getPlanSize();
 		for(var i = 0; i < sz; i += 1){
 			var wp = fp.getWP(i);
@@ -137,12 +144,45 @@ var sid = {
 			if(wpt == nil) skipped += 1;
 		
 		}
-        if (me.SIDList[n].wp_name == 'DEFAULT'){
-            setprop('/autopilot/route-manager/departure/sid', 'DEFAULT'); 
-            setprop(dep~ "active-sid/name", 'DEFAULT');
-        } else {
-            setprop(dep~ "active-sid/name", me.SIDList[n].wp_name);
-        }
+		if (me.SIDList[n].wp_name == 'DEFAULT'){
+			var current_fp = getprop(f_pln_disp~ "current-flightplan");
+			if(current_fp != 'current' and current_fp != '' and current_fp != nil){
+				var fp = mcdu.f_pln.get_current_flightplan();
+				var dpt = fp.departure;
+				var dst = fp.destination;
+				var rwy = dpt.runways[getprop(dep~ "selected-rwy")];
+				if(dpt != nil and rwy != nil){
+					var enroute_course = -1.0;
+					if(dst != nil){
+						var c1 = geo.Coord.new();
+						var c2 = geo.Coord.new();
+						c1.set_latlon(dpt.lat, dpt.lon);
+						c2.set_latlon(dst.lat, dst.lon);
+						enroute_course = c1.course_to(c2);
+					}
+					var idx = 1;
+					var wpts = me.create_default_sid(dpt, rwy, enroute_course);
+					foreach(var wp_info; wpts){
+						var wp = wp_info[0];
+						var alt = 0;
+						if(size(wp_info) > 1)
+							alt = wp_info[1];
+						fp.insertWP(wp, idx);
+						if(alt > 0){
+							wp = fp.getWP(idx);
+							wp.setAltitude(alt, 'at');
+						}
+						idx += 1;
+					}
+				}
+				do_trigger = 1;
+			} else {
+				setprop('/autopilot/route-manager/departure/sid', 'DEFAULT'); 
+				setprop(dep~ "active-sid/name", 'DEFAULT');
+			}
+		} else {
+			setprop(dep~ "active-sid/name", me.SIDList[n].wp_name);
+		}
 		
 		
 		setprop("/flight-management/procedures/sid-current", 0);
@@ -218,6 +258,71 @@ var sid = {
 		
 		}
 	
+	},
+	
+	create_default_sid: func(arpt, rwy, aEnrouteCourse){
+		if(rwy == nil) return nil;
+		var rwy_len = rwy.length;
+		var thresholdElevFt = arpt.elevation;
+		
+		var wp_id = rwy.id ~ '-3';
+		var wpts = [];
+		var coord = geo.Coord.new();
+		coord.set_latlon(rwy.lat, rwy.lon);
+		coord.apply_course_distance(rwy.heading, rwy_len + (3 * NM_TO_METER));
+		var pos = {
+			lat: coord.lat(),
+			lon: coord.lon()
+		};
+		var wpt = createWP(pos, wp_id, 'sid');
+		append(wpts, [wpt, thresholdElevFt + 3000]);
+		
+		wp_id = rwy.id ~ '-6';
+		coord = geo.Coord.new();
+		coord.set_latlon(rwy.lat, rwy.lon);
+		coord.apply_course_distance(rwy.heading, rwy_len + (6 * NM_TO_METER));
+		var pos = {
+			lat: coord.lat(),
+			lon: coord.lon()
+		};
+		wpt = createWP(pos, wp_id, 'sid');
+		append(wpts, [wpt, thresholdElevFt + 6000]);
+		
+		if (aEnrouteCourse >= 0.0) {
+			# valid enroute course
+			var index = 3;
+			var course = rwy.heading;
+			var diff = 0.0;
+			while (math.abs((diff = utils.heading_diff_deg(course, aEnrouteCourse))) > 45.0) {
+				# turn in the sign of the heading change 45 degrees
+				course += copysign(45.0, diff);
+
+				wp_id = "DEP-" ~ index;
+				index += 1;
+				var last = wpts[size(wpts) - 1][0];
+				var coord = geo.Coord.new();
+				coord.set_latlon(last.wp_lat, last.wp_lon);
+				coord.apply_course_distance(course, 3.0 * NM_TO_METER);
+				var pos = {
+					lat: coord.lat(),
+					lon: coord.lon()
+				};
+				var wpt = createWP(pos, wp_id, 'sid');
+				append(wpts, [wpt, 0]);
+			}
+		} else {
+			wp_id = rwy.id ~ '-9';
+			coord = geo.Coord.new();
+			coord.set_latlon(rwy.lat, rwy.lon);
+			coord.apply_course_distance(rwy.heading, rwy_len + (9 * NM_TO_METER));
+			var pos = {
+				lat: coord.lat(),
+				lon: coord.lon()
+			};
+			wpt = createWP(pos, wp_id, 'sid');
+			append(wpts, [wpt, thresholdElevFt + 9000]);
+		}
+		return wpts;
 	}
 
 };

@@ -147,7 +147,7 @@ var fmsDB = {
                 if(last_c != 'L' and last_c != 'R')
                     run = substr(run, 0, 2);
             }
-            print(icao~"   set approach runway: "~run);
+            #print(icao~"   set approach runway: "~run);
             append(tp.runways,run);
           }
         }

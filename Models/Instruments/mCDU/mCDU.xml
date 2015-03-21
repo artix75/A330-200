@@ -15,7 +15,7 @@
 		<object-name>mCDU_tp</object-name>
 		<object-name>mCDU_perf</object-name>
 		<object-name>mCDU_prog</object-name>
-        <object-name>mCDU_runways</object-name>
+		<object-name>mCDU_runways</object-name>
 		<object-name>input</object-name>
 		<object-name>msg</object-name>
 		<object-name>start</object-name>
@@ -189,6 +189,28 @@
 			<equals>
 				<property>/instrumentation/mcdu/page</property>
 				<value>lat_rev</value>
+			</equals>
+		</condition>
+	</model>
+	
+	<model>
+		<name>mCDU_f-pln2</name>
+		<path>sec-f-pln/sec-f-pln.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>f-pln2</value>
+			</equals>
+		</condition>
+	</model>
+	
+	<model>
+		<name>mCDU_f-pln2</name>
+		<path>sec-f-pln/init-sec.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>init-sec</value>
 			</equals>
 		</condition>
 	</model>
@@ -429,6 +451,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
 					setprop("/instrumentation/mcdu/page", "prog");
 					
 					# Reset BRG/DIST
@@ -472,6 +495,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
 					setprop("/instrumentation/mcdu/page", "perf");
 				</script>
             </binding>
@@ -487,6 +511,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
 					setprop("/instrumentation/mcdu/page", "dir");
 				</script>
             </binding>
@@ -502,6 +527,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
 					setprop("/instrumentation/mcdu/page", "init");
 				</script>
             </binding>
@@ -517,6 +543,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
 					setprop("/instrumentation/mcdu/page", "data1");
 				</script>
             </binding>
@@ -532,6 +559,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
 					setprop("/instrumentation/mcdu/page", "f-pln");
 					
 					setprop("/instrumentation/mcdu/f-pln/show-hold", 0);
@@ -570,6 +598,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 1);
 					setprop("/instrumentation/mcdu/page", "f-pln2");
 				</script>
             </binding>
@@ -585,6 +614,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
 					setprop("/instrumentation/mcdu/page", "radio");
 				</script>
             </binding>
@@ -600,6 +630,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
 					setprop("/instrumentation/mcdu/page", "fuel-pred");
 				</script>
             </binding>
@@ -615,6 +646,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
 					setprop("/instrumentation/mcdu/page", "atc");
 				</script>
             </binding>
@@ -630,6 +662,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
 					setprop("/instrumentation/mcdu/page", "menu");
 				</script>
             </binding>
@@ -645,6 +678,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
+					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
                     setprop("/instrumentation/mcdu/page", "f-pln");
 					var num = getprop('autopilot/route-manager/route/num');
 					if(num == 0) return;
