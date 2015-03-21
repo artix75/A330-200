@@ -88,7 +88,7 @@ var f_pln = {
 		
 		} else {
 		
-			setprop(rm_route~ "input", "@INSERT99:" ~ getprop("/flight-management/alternate/icao") ~ "@0");
+			#setprop(rm_route~ "input", "@INSERT99:" ~ getprop("/flight-management/alternate/icao") ~ "@0");
 		
 		}
 		
@@ -106,7 +106,7 @@ var f_pln = {
 			
 			var gs_min = 0; # Ground Speed in NM/min
 			
-			if ((spd == nil) or (spd == 0)) {
+			if ((spd == nil) or (spd <= 0)) {
 			
 				# Use 250 kts if under FL100 and 0.78 mach if over FL100
 				
@@ -134,8 +134,8 @@ var f_pln = {
 			}
 			
 			# Time in Minutes (rounded)
-			
-			var time_min = int(dist / gs_min);
+			var time_h = dist / gs_min;
+			var time_min = int(60 * time_h);
 			
 			var last_time = getprop(rm_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
 			
@@ -287,8 +287,8 @@ var f_pln = {
 			}
 
 			# Time in Minutes (rounded)
-
-			var time_min = int(dist / gs_min);
+			var time_h = dist / gs_min;
+			var time_min = int(60 * time_h);
 
 			var last_time = getprop(sec_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
 
@@ -490,7 +490,7 @@ var f_pln = {
 			
 			var gs_min = 0; # Ground Speed in NM/min
 			
-			if ((spd == nil) or (spd == 0)) {
+			if ((spd == nil) or (spd <= 0)) {
 			
 				# Use 250 kts if under FL100 and 0.78 mach if over FL100
 				
@@ -518,8 +518,9 @@ var f_pln = {
 			}
 			
 			# Time in Minutes (rounded)
+			var time_h = dist / gs_min;
 			
-			var time_min = int(dist / gs_min);
+			var time_min = int(time_h * 60);
 			
 			var last_time = getprop(fp_tree~ "wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
 			
