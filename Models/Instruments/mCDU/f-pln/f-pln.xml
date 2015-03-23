@@ -396,17 +396,25 @@
 			<binding>
 				<command>nasal</command>
 		 		<script>
-
-					var fp = mcdu.f_pln.get_current_flightplan();
-					var wp = mcdu.f_pln.get_wp_at_line(1);
-					if(wp != nil){
-						var idx = wp.index;
-						if(getprop('/instrumentation/mcdu/overfly-mode'))
-							mcdu.toggle_overfly(fp, idx);
-						else
-							mcdu.lat_rev.revise(idx);
+					var line = 1;
+					var is_altn = getprop('/instrumentation/mcdu/f-pln/disp/l'~line~'/alternate');
+					var input = string.trim(getprop("/instrumentation/mcdu/input"));
+					
+					if(getprop('/instrumentation/mcdu/overfly-mode'))
+						mcdu.f_pln.toggle_overfly(line);
+					elsif(getprop('/instrumentation/mcdu/clear-mode'))
+						mcdu.f_pln.del_wp(line);
+					else {
+						if(size(input)){
+							mcdu.f_pln.insert_wp(input, line);
+							setprop("/instrumentation/mcdu/input", '');
+						} else {
+							var wp = mcdu.f_pln.get_wp_at_line(line);
+							if(wp != nil)
+								mcdu.lat_rev.revise(wp.index, is_altn);
+						}
 					}
-
+					setprop('/instrumentation/mcdu/clear-mode', 0);
 				</script>
 			</binding>
 		</action>
@@ -422,16 +430,25 @@
 				<command>nasal</command>
 		 		<script>
 
-					var fp = mcdu.f_pln.get_current_flightplan();
-					var wp = mcdu.f_pln.get_wp_at_line(2);
-					if(wp != nil){
-						var idx = wp.index;
-						if(getprop('/instrumentation/mcdu/overfly-mode'))
-							mcdu.toggle_overfly(fp, idx);
-						else
-							mcdu.lat_rev.revise(idx);
-					}
+					var line = 2;
+					var is_altn = getprop('/instrumentation/mcdu/f-pln/disp/l'~line~'/alternate');
+					var input = string.trim(getprop("/instrumentation/mcdu/input"));
 
+					if(getprop('/instrumentation/mcdu/overfly-mode'))
+						mcdu.f_pln.toggle_overfly(line);
+					elsif(getprop('/instrumentation/mcdu/clear-mode'))
+						mcdu.f_pln.del_wp(line);
+					else {
+						if(size(input)){
+							mcdu.f_pln.insert_wp(input, line);
+							setprop("/instrumentation/mcdu/input", '');
+						} else {
+							var wp = mcdu.f_pln.get_wp_at_line(line);
+							if(wp != nil)
+								mcdu.lat_rev.revise(wp.index, is_altn);
+						}
+					}
+					setprop('/instrumentation/mcdu/clear-mode', 0);
 				</script>
 			</binding>
 		</action>
@@ -446,17 +463,25 @@
 			<binding>
 				<command>nasal</command>
 		 		<script>
+					var line = 3;
+					var is_altn = getprop('/instrumentation/mcdu/f-pln/disp/l'~line~'/alternate');
+					var input = string.trim(getprop("/instrumentation/mcdu/input"));
 
-					var fp = mcdu.f_pln.get_current_flightplan();
-					var wp = mcdu.f_pln.get_wp_at_line(3);
-					if(wp != nil){
-						var idx = wp.index;
-						if(getprop('/instrumentation/mcdu/overfly-mode'))
-							mcdu.toggle_overfly(fp, idx);
-						else
-							mcdu.lat_rev.revise(idx);
+					if(getprop('/instrumentation/mcdu/overfly-mode'))
+						mcdu.f_pln.toggle_overfly(line);
+					elsif(getprop('/instrumentation/mcdu/clear-mode'))
+						mcdu.f_pln.del_wp(line);
+					else {
+						if(size(input)){
+							mcdu.f_pln.insert_wp(input, line);
+							setprop("/instrumentation/mcdu/input", '');
+						} else {
+							var wp = mcdu.f_pln.get_wp_at_line(line);
+							if(wp != nil)
+								mcdu.lat_rev.revise(wp.index, is_altn);
+						}
 					}
-
+					setprop('/instrumentation/mcdu/clear-mode', 0);
 				</script>
 			</binding>
 		</action>
@@ -472,16 +497,25 @@
 				<command>nasal</command>
 		 		<script>
 
-					var fp = mcdu.f_pln.get_current_flightplan();
-					var wp = mcdu.f_pln.get_wp_at_line(4);
-					if(wp != nil){
-						var idx = wp.index;
-						if(getprop('/instrumentation/mcdu/overfly-mode'))
-							mcdu.toggle_overfly(fp, idx);
-						else
-							mcdu.lat_rev.revise(idx);
-					}
+					var line = 4;
+					var is_altn = getprop('/instrumentation/mcdu/f-pln/disp/l'~line~'/alternate');
+					var input = string.trim(getprop("/instrumentation/mcdu/input"));
 
+					if(getprop('/instrumentation/mcdu/overfly-mode'))
+						mcdu.f_pln.toggle_overfly(line);
+					elsif(getprop('/instrumentation/mcdu/clear-mode'))
+						mcdu.f_pln.del_wp(line);
+					else {
+						if(size(input)){
+							mcdu.f_pln.insert_wp(input, line);
+							setprop("/instrumentation/mcdu/input", '');
+						} else {
+							var wp = mcdu.f_pln.get_wp_at_line(line);
+							if(wp != nil)
+								mcdu.lat_rev.revise(wp.index, is_altn);
+						}
+					}
+					setprop('/instrumentation/mcdu/clear-mode', 0);
 				</script>
 			</binding>
 		</action>
@@ -497,16 +531,25 @@
 				<command>nasal</command>
 		 		<script>
 
-					var fp = mcdu.f_pln.get_current_flightplan();
-					var wp = mcdu.f_pln.get_wp_at_line(5);
-					if(wp != nil){
-						var idx = wp.index;
-						if(getprop('/instrumentation/mcdu/overfly-mode'))
-							mcdu.toggle_overfly(fp, idx);
-						else
-							mcdu.lat_rev.revise(idx);
-					}
+					var line = 5;
+					var is_altn = getprop('/instrumentation/mcdu/f-pln/disp/l'~line~'/alternate');
+					var input = string.trim(getprop("/instrumentation/mcdu/input"));
 
+					if(getprop('/instrumentation/mcdu/overfly-mode'))
+						mcdu.f_pln.toggle_overfly(line);
+					elsif(getprop('/instrumentation/mcdu/clear-mode'))
+						mcdu.f_pln.del_wp(line);
+					else {
+						if(size(input)){
+							mcdu.f_pln.insert_wp(input, line);
+							setprop("/instrumentation/mcdu/input", '');
+						} else {
+							var wp = mcdu.f_pln.get_wp_at_line(line);
+							if(wp != nil)
+								mcdu.lat_rev.revise(wp.index, is_altn);
+						}
+					}
+					setprop('/instrumentation/mcdu/clear-mode', 0);
 				</script>
 			</binding>
 		</action>
@@ -780,6 +823,9 @@
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l1/missed</property>
 				</not>
+				<not>
+					<property>/instrumentation/mcdu/f-pln/disp/l1/alternate</property>
+				</not>
 			</and>
 		</condition>
 	</animation>
@@ -813,6 +859,9 @@
 				</not>
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l2/missed</property>
+				</not>
+				<not>
+					<property>/instrumentation/mcdu/f-pln/disp/l2/alternate</property>
 				</not>
 			</and>
 		</condition>
@@ -848,6 +897,9 @@
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l3/missed</property>
 				</not>
+				<not>
+					<property>/instrumentation/mcdu/f-pln/disp/l3/alternate</property>
+				</not>
 			</and>
 		</condition>
 	</animation>
@@ -882,6 +934,9 @@
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l4/missed</property>
 				</not>
+				<not>
+					<property>/instrumentation/mcdu/f-pln/disp/l4/alternate</property>
+				</not>
 			</and>
 		</condition>
 	</animation>
@@ -915,6 +970,9 @@
 				</not>
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l5/missed</property>
+				</not>
+				<not>
+					<property>/instrumentation/mcdu/f-pln/disp/l5/alternate</property>
 				</not>
 			</and>
 		</condition>
@@ -1238,6 +1296,12 @@
 					</equals>
 				</not>
 				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
+				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l1/to-wpt</property>
 				</not>
 				<not>
@@ -1246,7 +1310,10 @@
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l1/end-marker</property>
 				</not>
-				<property>/instrumentation/mcdu/f-pln/disp/l1/missed</property>
+				<or>
+					<property>/instrumentation/mcdu/f-pln/disp/l1/missed</property>
+					<property>/instrumentation/mcdu/f-pln/disp/l1/alternate</property>
+				</or>
 			</and>
 		</condition>
 	</animation>
@@ -1264,6 +1331,12 @@
 					</equals>
 				</not>
 				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
+				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l2/to-wpt</property>
 				</not>
 				<not>
@@ -1272,7 +1345,10 @@
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l2/end-marker</property>
 				</not>
-				<property>/instrumentation/mcdu/f-pln/disp/l2/missed</property>
+				<or>
+					<property>/instrumentation/mcdu/f-pln/disp/l2/missed</property>
+					<property>/instrumentation/mcdu/f-pln/disp/l2/alternate</property>
+				</or>
 			</and>
 		</condition>
 	</animation>
@@ -1290,6 +1366,12 @@
 					</equals>
 				</not>
 				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
+				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l3/to-wpt</property>
 				</not>
 				<not>
@@ -1298,7 +1380,10 @@
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l3/end-marker</property>
 				</not>
-				<property>/instrumentation/mcdu/f-pln/disp/l3/missed</property>
+				<or>
+					<property>/instrumentation/mcdu/f-pln/disp/l3/missed</property>
+					<property>/instrumentation/mcdu/f-pln/disp/l3/alternate</property>
+				</or>
 			</and>
 		</condition>
 	</animation>
@@ -1316,6 +1401,12 @@
 					</equals>
 				</not>
 				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
+				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l4/to-wpt</property>
 				</not>
 				<not>
@@ -1324,7 +1415,10 @@
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l4/end-marker</property>
 				</not>
-				<property>/instrumentation/mcdu/f-pln/disp/l4/missed</property>
+				<or>
+					<property>/instrumentation/mcdu/f-pln/disp/l4/missed</property>
+					<property>/instrumentation/mcdu/f-pln/disp/l4/alternate</property>
+				</or>
 			</and>
 		</condition>
 	</animation>
@@ -1342,6 +1436,12 @@
 					</equals>
 				</not>
 				<not>
+					<equals>
+						<property>/instrumentation/mcdu/f-pln/disp/current-flightplan</property>
+						<value>secondary</value>
+					</equals>
+				</not>
+				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l5/to-wpt</property>
 				</not>
 				<not>
@@ -1350,7 +1450,10 @@
 				<not>
 					<property>/instrumentation/mcdu/f-pln/disp/l5/end-marker</property>
 				</not>
-				<property>/instrumentation/mcdu/f-pln/disp/l5/missed</property>
+				<or>
+					<property>/instrumentation/mcdu/f-pln/disp/l5/missed</property>
+					<property>/instrumentation/mcdu/f-pln/disp/l5/alternate</property>
+				</or>
 			</and>
 		</condition>
 	</animation>

@@ -164,12 +164,17 @@ var test_nd_symbol = func(symbol, dist_nm){
     setprop('instrumentation/efis/nd/current-'~symbol, dist_nm);
 }
 
-var print_flightplan = func(){
-    var fp = flightplan();
+var print_flightplan = func(fpId = nil){
+    fp = fmgc.RouteManager.getFlightPlan(fpId);
+    if(fp == nil){
+        print('No flightplan named '~ fpId);
+        return;
+    }
     var n = getprop('autopilot/route-manager/route/num');
     for(i = 0; i < n; i = i + 1){
         var wp = fp.getWP(i);
         print('ID: ' ~ wp.id);
+        print('Index: '~ wp.index);
         print('Name: ' ~ wp.wp_name);
         print('Type: ' ~ wp.wp_type);
         print('Role: ' ~ (wp.wp_role != nil ? wp.wp_role : 'nil'));

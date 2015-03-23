@@ -34,9 +34,11 @@
 						setprop(f_pln_disp~ 'current-flightplan', '');
 						fmgc.RouteManager.deleteFlightPlan('temporary');
 						setprop("/instrumentation/mcdu/page", "f-pln");
+						setprop("/instrumentation/mcdu/f-pln/enabling-altn", 0);
 						mcdu.f_pln.update_disp();
 					} else {
 						setprop("/autopilot/route-manager/destination/airport", "");
+						setprop("/instrumentation/mcdu/f-pln/enabling-altn", 0);
 						setprop("/autopilot/route-manager/input", "@CLEAR");
 					}
 					mcdu.lat_rev.tmpy_fplan = nil;
@@ -107,6 +109,10 @@
 						var cur_fp = getprop(f_pln_disp~ 'current-flightplan');
 						if(cur_fp == 'temporary'){
 							#setprop("/autopilot/route-manager/input", "@CLEAR");
+							if(getprop("/instrumentation/mcdu/f-pln/enabling-altn")){
+								fmgc.RouteManager.deleteAlternateDestination();
+								setprop("/instrumentation/mcdu/f-pln/enabling-altn", 0);
+							}
 							fmgc.RouteManager.copyFlightPlanToActive('temporary', 1);
 							mcdu.f_pln.tmpy_fplan = nil;
 							mcdu.lat_rev.tmpy_fplan = nil;

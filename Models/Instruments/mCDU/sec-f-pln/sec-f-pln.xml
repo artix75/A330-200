@@ -85,6 +85,10 @@
 					var temp = getprop("/flight-management/temp") or 0;
 					if(temp)
 						setprop("/flight-management/secondary-rte/temp", temp);
+					var altn = rm.getAlternateRoute();
+					if(altn != nil)
+						rm.alternates['secondary'] = altn.clone();
+					rm.trigger('edited');
 					setprop('instrumentation/mcdu/sec-f-pln/created', 1);
 				</script>
 			</binding>
@@ -164,6 +168,11 @@
 						if(temp)
 							setprop("/flight-management/temp", temp);
 						rm.copyFlightPlanToActive('secondary', 1);
+						var altn = rm.getAlternateRoute('secondary');
+						if(altn != nil){
+							rm.alternates['current'] = altn;
+							rm.deleteAlternateDestination('secondary');
+						}
 						mcdu.f_pln.update_flightplan_waypoints();
 						if(getprop("/flight-management/control/lat-ctrl") == 'fmgc'){
 							setprop("/flight-management/control/lat-ctrl", 'man-set');

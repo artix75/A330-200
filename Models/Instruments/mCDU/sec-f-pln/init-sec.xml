@@ -84,7 +84,7 @@
 		 		
 		 			if (substr(input, 4, 1) == "/") {
 		 		
-						mcdu.mCDU_init.altn_co_rte(0, icao, rte_id);
+						mcdu.mCDU_init.altn_co_rte(0, icao, rte_id, 1);
 					
 						mcdu.clear_inp();
 					

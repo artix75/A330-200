@@ -493,15 +493,18 @@ canvas.NDStyles["Airbus"] = {
 					var is_active = getprop(me.options.fplan_active);
 					(is_active ? me.active_color : me.inactive_color);
 				},
+				color_alternate_current: [0,0.62,0.84],
 				color_missed: [0,0.62,0.84],
 				color_temporary: func me.getStyle('inactive_color', me.getOption('inactive_route_color')),
 				color_secondary: [1,1,1],
+				color_alternate_secondary: [1,1,1],
 				line_dash: func{
 					var lat_ctrl = getprop(me.options.lat_ctrl);
 					var is_managed = (lat_ctrl == me.options.managed_val);
 					var is_active = getprop(me.options.fplan_active);
 					(is_managed and is_active ? [] : [32, 16]);
 				},
+				line_dash_alternate_current: [32,16],
 				line_dash_temporary: [32,16]
 			}
 		}, # end of route layer

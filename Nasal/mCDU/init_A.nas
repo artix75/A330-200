@@ -394,44 +394,66 @@ var mCDU_init = {
 	
 	},
 	
-	altn_co_rte : func (mcdu, icao, id) {
-	
-		for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/rte_id") != nil; index += 1) {
-		
-			var rte_id = getprop(co_tree~ "route[" ~ index ~ "]/rte_id");
-		
-			if (rte_id == id) {
-			
-				var dep = getprop(co_tree~ "route[" ~ index ~ "]/depicao");
-				var arr = getprop(co_tree~ "route[" ~ index ~ "]/arricao");
-			
-				me.altn_rte_sel(id, dep, arr);
-			
-			} else
-				setprop("/instrumentation/mcdu[" ~ mcdu ~ "]/input", "ERROR: NOT IN DATABASE");
-		
+	altn_co_rte : func (mcdu, icao, id, secondary = 0) {
+		var rm = fmgc.RouteManager;
+		var fpID = (secondary ? 'secondary' : nil);
+		var fp = rm.getFlightPlan(fpID);
+		var fp_dest = fp.destination;
+		if(fp_dest == nil) return;
+		if(fp == nil) return;
+		var alt_fp = rm.setAlternateDestination(icao, fpID);
+		if(alt_fp == nil){
+			return;
 		}
+	
+		var set_rte = (id != nil and id != '');
 		
-		setprop("flight-management/alternate/icao", icao);
-		
-		f_pln.init_f_pln();
+		if(set_rte){
+			var rte_found = 0;
+			for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/rte_id") != nil; index += 1) {
+				var rte_id = getprop(co_tree~ "route[" ~ index ~ "]/rte_id");
+				if (rte_id == id) {
+					rte_found = 1;
+					var dep = getprop(co_tree~ "route[" ~ index ~ "]/depicao");
+					var arr = getprop(co_tree~ "route[" ~ index ~ "]/arricao");
+					if(arr == icao and dep == fp.departure.id and dep == fp_dest.id) {
+						me.altn_rte_sel(id, dep, arr, secondary);
+					} else {
+						setprop("/instrumentation/mcdu[" ~ mcdu ~ "]/input", "DEST/ALTN MISMATCH");
+					}
+					break;
+				}
+				if(!rte_found)
+					setprop("/instrumentation/mcdu[" ~ mcdu ~ "]/input", "ERROR: NOT IN DATABASE");
+			}
+		}
+		if(!secondary)
+			setprop("flight-management/alternate/icao", icao);
+		else 
+			setprop("/flight-management/alternate/secondary/icao", icao);
+		#f_pln.init_f_pln();
+		rm.trigger(rm.SIGNAL_FP_EDIT);
 	
 	},
 	
-	altn_rte_sel : func (id, dep, arr) {
+	altn_rte_sel : func (id, dep, arr, secondary = 0) {
 	
 		# The Route Select function is the get the selected route and put those stuff into the alternate route
+		var tree = (secondary ? sec_altn_rte : altn_rte);
+		setprop(tree~ "id", id);
+		setprop(tree~ "depicao", dep);
+		setprop(tree~ "arricao", arr);
 		
-		setprop(altn_rte~ "id", id);
-		setprop(altn_rte~ "depicao", dep);
-		setprop(altn_rte~ "arricao", arr);
-		
-		me.set_altn_rte(id);
+		me.set_altn_rte(id, secondary);
 	
 	},
 	
-	set_altn_rte : func (id) {
-	
+	set_altn_rte : func (id, secondary = 0) {
+		var rm = fmgc.RouteManager;
+		var tree = (secondary ? sec_altn_rte : altn_rte);
+		var fpID = (secondary ? 'secondary' : nil);
+		var fp = rm.getAlternateRoute(fpID);
+		if(fp == nil) return;
 		for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/rte_id") != nil; index += 1) {
 	
 			var rte_id = getprop(co_tree~ "route[" ~ index ~ "]/rte_id");
@@ -441,35 +463,19 @@ var mCDU_init = {
 				var route = co_tree~ "route[" ~ index ~ "]/route/";
 				
 				for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
-				
-					setprop(altn_rte~ "route/wp[" ~ wp ~ "]/wp-id", getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
-					
-					if (getprop(route~ "wp[" ~ wp ~ "]/altitude-ft") != nil)
-						setprop(active_rte~ "route/wp[" ~ wp ~ "]/altitude-ft", getprop(route~ "wp[" ~ wp ~ "]/altitude-ft"));
-					else {
-					
-						# Use CRZ FL
-						
-						setprop(active_rte~ "route/wp[" ~ wp ~ "]/altitude-ft", getprop("/flight-management/crz_fl") * 100);
-					
-					}
-					
-					if (getprop(route~ "wp[" ~ wp ~ "]/ias-mach") != nil)
-						setprop(active_rte~ "route/wp[" ~ wp ~ "]/ias-mach", getprop(route~ "wp[" ~ wp ~ "]/ias-mach"));
-					else {
-					
-						var spd = 0;
-			
-						# Use 250 kts if under FL100 and 0.78 mach if over FL100
-				
-						# if (alt <= 10000)
-						#	spd = 250;
-						# else
-						#	spd = 0.78;
-							
-						setprop(active_rte~ "route/wp[" ~ wp ~ "]/ias-mach", spd);
-			
-					}
+					var wp_id = getprop(route~ "wp[" ~ wp ~ "]/wp-id");
+					var wpt = f_pln.create_wp(wp_id);
+					if(wpt == nil) continue;
+					var real_idx = fp.getPlanSize() - 1;
+					fp.insertWP(wpt, real_idx);
+					var alt = getprop(route~ "wp[" ~ wp ~ "]/altitude-ft");
+					wpt = fp.getWP(real_idx);
+					if(alt != nil)
+						wpt.setAltitude(alt, 'at');
+					var spd = getprop(route~ "wp[" ~ wp ~ "]/ias-mach");
+					if(spd != nil)
+						wpt.setSpeed(spd, 'at');
+					setprop(tree~ "route/wp[" ~ real_idx ~ "]/wp-id", wp_id);
 				
 				} # End of WP-Copy For Loop
 			
@@ -477,7 +483,7 @@ var mCDU_init = {
 	
 		} # End of Route-ID For Loop
 		
-		f_pln.init_f_pln();
+		#f_pln.init_f_pln();
 	
 	}
 

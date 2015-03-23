@@ -1,3 +1,7 @@
+var FG_VERSION = getprop('sim/version/flightgear');
+var v = split('.', FG_VERSION);
+FG_VERSION = num(v[0]~'.'~v[1]);
+
 var RouteManager = {
     init: func(){
         me.listeners = [];
@@ -7,8 +11,8 @@ var RouteManager = {
     },
     update: func(fpId = nil){
         if(me.sequencing) return;
-        if(fpId != nil and fpId != 'current'){
-            me.updateFlighPlan(fpId);
+        if(fpId != nil and fpId != 'current' and fpId != ''){
+            me.updateFlightPlan(fpId);
             return;
         }
         var fp = flightplan();
@@ -24,20 +28,41 @@ var RouteManager = {
         if(me.wp_count >= 2){
             me.last_idx = me.wp_count - 1;
             me.destination_wp = nil;
-            for(var i = me.last_idx; i >= 0; i = i - 1){
-                var wp = fp.getWP(i);
-                if(wp != nil){
-                    var role = wp.wp_role;
-                    var type = wp.wp_type;
-                    if(role == 'approach' and type == 'runway'){
-                        me.destination_wp = wp;
-                        break;
+            if(FG_VERSION < 3.4){
+                for(var i = me.last_idx; i >= 0; i = i - 1){
+                    var wp = fp.getWP(i);
+                    if(wp != nil){
+                        var role = wp.wp_role;
+                        var type = wp.wp_type;
+                        if(role == 'approach' and type == 'runway'){
+                            me.destination_wp = wp;
+                            break;
+                        }
+                        elsif(airportinfo(wp.id) != nil){
+                            me.destination_wp = wp;
+                            break;
+                        }
+                    }
+                }
+                if(me.destination_wp == nil)
+                    me.destination_wp = fp.getWP(me.last_idx);
+                me.destination_idx = me.destination_wp.index;
+            } else {
+                var dest = fp.destination_runway;
+                if(dest == nil) dest = fp.destination;
+                if(dest == nil){
+                    me.destination_wp = fp.getWP(me.last_idx);
+                    me.destination_idx = me.destination_wp.index;
+                } else {
+                    me.destination_idx = fp.indexOfWP(dest);
+                    if(me.destination_idx > 0){
+                        me.destination_wp = fp.getWP(me.destination_idx);
+                    } else {
+                        me.destination_wp = fp.getWP(me.last_idx);
+                        me.destination_idx = me.destination_wp.index;
                     }
                 }
             }
-            if(me.destination_wp == nil)
-                me.destination_wp = fp.getWP(me.last_idx);
-            me.destination_idx = me.destination_wp.index;
             me.missed_approach_planned = (me.last_idx > me.destination_idx);
             me.current_wp = fp.currentWP();
             if(me.current_wp != nil)
@@ -61,7 +86,7 @@ var RouteManager = {
             me.flightplan_info['current'].total_distance_nm = me.total_distance_nm;
         }
     },
-    updateFlighPlan: func(fpId){
+    updateFlightPlan: func(fpId){
         if(fpId == nil or fpId == 'current'){
             me.update();
             return;
@@ -78,20 +103,41 @@ var RouteManager = {
         if(fpData.wp_count >= 2){
             fpData.last_idx = fpData.wp_count - 1;
             fpData.destination_wp = nil;
-            for(var i = fpData.last_idx; i >= 0; i = i - 1){
-                var wp = fp.getWP(i);
-                if(wp != nil){
-                    var role = wp.wp_role;
-                    var type = wp.wp_type;
-                    if(role == 'approach' and type == 'runway'){
-                        fpData.destination_wp = wp;
-                        break;
+            if(FG_VERSION < 3.4){
+                for(var i = fpData.last_idx; i >= 0; i = i - 1){
+                    var wp = fp.getWP(i);
+                    if(wp != nil){
+                        var role = wp.wp_role;
+                        var type = wp.wp_type;
+                        if(role == 'approach' and type == 'runway'){
+                            fpData.destination_wp = wp;
+                            break;
+                        } 
+                        elsif(airportinfo(wp.id) != nil){
+                            fpData.destination_wp = wp;
+                            break;
+                        }
+                    }
+                }
+                if(fpData.destination_wp == nil)
+                    fpData.destination_wp = fp.getWP(fpData.last_idx);
+                fpData.destination_idx = fpData.destination_wp.index;
+            } else {
+                var dest = fp.destination_runway;
+                if(dest == nil) dest = fp.destination;
+                if(dest == nil){
+                    fpData.destination_wp = fp.getWP(fpData.last_idx);
+                    fpData.destination_idx = fpData.destination_wp.index;
+                } else {
+                    fpData.destination_idx = fp.indexOfWP(dest);
+                    if(fpData.destination_idx > 0){
+                        fpData.destination_wp = fp.getWP(fpData.destination_idx);
+                    } else {
+                        fpData.destination_wp = fp.getWP(fpData.last_idx);
+                        fpData.destination_idx = fpData.destination_wp.index;
                     }
                 }
             }
-            if(fpData.destination_wp == nil)
-                fpData.destination_wp = fp.getWP(fpData.last_idx);
-            fpData.destination_idx = fpData.destination_wp.index;
             fpData.missed_approach_planned = (fpData.last_idx > fpData.destination_idx);
 
             me._recalcDistance(fpId);
@@ -103,7 +149,7 @@ var RouteManager = {
                     wp_count: (fpData.wp_count - 1 - fpData.destination_idx),
                     first_wp: fp.getWP(fpData.destination_idx + 1)
                 };
-                fpData.wp_count -= me.missed_approach.wp_count;
+				fpData.wp_count -= fpData.missed_approach.wp_count;
             }
         }
     },
@@ -111,6 +157,7 @@ var RouteManager = {
         me.flightplan = nil;
         me.plans = {};
         me.flightplan_info = {};
+        me.alternates = {};
         me.wp_count = 0;
         me.total_wp_count = 0;
         me.last_idx = 0;
@@ -182,6 +229,47 @@ var RouteManager = {
         me.trigger('sec-created');
         return fp;
     },
+    getAlternateRouteID: func(fpID){
+        if(fpID == nil or fpID == '' or fpID == 'temporary') fpID = 'current';
+        'alternate_' ~ fpID;
+    },
+    setAlternateDestination: func(alternateICAO, fpID = nil){
+        var dest_apt = airportinfo(alternateICAO);
+        if(dest_apt == nil){
+            print('RouteManager -> setAlternateDestination: no airport');
+            return nil;
+        }
+        if(fpID == nil or fpID == '') fpID = 'current';
+        var parent_fp = me.getFlightPlan(fpID);
+        if(parent_fp == nil){
+            print('RouteManager -> setAlternateDestination: no flightplan');
+            return nil;
+        }
+        var altn_fp = parent_fp.clone();
+        var altn_id = 'alternate_' ~ fpID;
+        altn_fp.id = altn_id;
+        while(altn_fp.getPlanSize()) altn_fp.deleteWP(0);
+        altn_fp.destination = dest_apt;
+        var dep_apt = parent_fp.destination;
+        if(dep_apt != nil)
+            altn_fp.departure = dep_apt;
+        me.alternates[fpID] = altn_fp;
+        me.flightplan_info[altn_id] = {};
+        me.trigger('edited', 'fp-edited');
+        return altn_fp;
+    },
+    getAlternateRoute: func(fpID = nil){
+        if(fpID == nil or fpID == '' or fpID == 'temporary') fpID = 'current';
+        return me.alternates[fpID];
+    },
+    deleteAlternateDestination:func(fpID = nil){
+        if(fpID == nil or fpID == '' or fpID == 'temporary') fpID = 'current';
+        var altn_id = 'alternate_' ~ fpID;
+        me.trigger('before-fp-del');
+        me.alternates[fpID] = nil;
+        me.flightplan_info[altn_id] = {};
+        me.trigger('edited', 'fp-del');
+    },
     clearFlightPlan: func(fp = nil){
         if(fp == nil)
             fp = me.flightplan;
@@ -234,7 +322,7 @@ var RouteManager = {
             fpdep = (fpdep != nil ? fpdep.id : '');
             copy_dep_rwy = (fpdep != nil and fpdep != dep);
         }
-        if(copy_dep_rwy)
+        if(fp.departure_runway != nil and copy_dep_rwy)
             dest_fp.departure_runway = fp.departure_runway;
         var copy_dst_rwy = 0;
         if(fpdst != dst){
@@ -246,9 +334,9 @@ var RouteManager = {
             fpdst = fp.destination_runway;
             dst = (dst != nil ? dst.id : '');
             fpdst = (fpdst != nil ? fpdst.id : '');
-            copy_dst_rwy = (fpdst != nil and fpdst != dst);
+            copy_dst_rwy = (fpdst != dst);
         }
-        if(copy_dst_rwy)
+        if(fp.destination_runway != nil and copy_dst_rwy)
             dest_fp.destination_runway = fp.destination_runway;
         while(dest_fp.getPlanSize())
             dest_fp.deleteWP(0);
@@ -317,6 +405,10 @@ var RouteManager = {
     },
     getFlightPlan: func(fpId = nil){
         if(fpId == nil or fpId == '') return me.flightplan;#fpId = 'current';
+        if(find('alternate_', fpId) == 0){
+            fpId = split('_', fpId)[1];
+            return me.alternates[fpId];
+        }
         var all_plans = me.allFlightPlans();
         if(!contains(all_plans, fpId)) return nil;
         return all_plans[fpId];
@@ -368,18 +460,18 @@ var RouteManager = {
         fp.insertWP(wp, idx);
         if(fpID != nil and fpID != 'current')
             me._recalcDistance(fpID);
-        me.trigger('edited', 'fg-edited');
+        me.trigger('edited', 'fp-edited');
     },
-    appendWP: func(wp, idx, fpID = nil){
+    appendWP: func(wp, fpID = nil){
         var fp = me.getFlightPlan(fpID);
         if(fp == nil){
             print('RouteManager -> appendWP: no flightplan.');
             return;
         }
-        fp.appendWP(wp, idx);
+        fp.appendWP(wp);
         if(fpID != nil and fpID != 'current')
             me._recalcDistance(fpID);
-        me.trigger('edited', 'fg-edited');
+        me.trigger('edited', 'fp-edited');
     },
     insertWaypoints: func(wpts, idx, fpID = nil){
         var fp = me.getFlightPlan(fpID);
@@ -398,7 +490,7 @@ var RouteManager = {
         fp.deleteWP(idx);
         if(fpID != nil and fpID != 'current')
             me._recalcDistance(fpID);
-        me.trigger('edited', 'fg-edited');
+        me.trigger('edited', 'fp-edited');
     },
     deleteWaypoints: func(from, count, fpID = nil){
         var fp = me.getFlightPlan(fpID);
@@ -427,7 +519,7 @@ var RouteManager = {
             count -= 1;
         }
         if(do_seq) me.sequencing = 0;
-        me.trigger('edited', 'fg-edited');
+        me.trigger('edited', 'fp-edited');
     },
     deleteWaypointsAfter: func(wptIdx, fpID = nil){
         me.deleteWaypoints(wptIdx + 1, nil, fpID);
@@ -693,7 +785,7 @@ var RouteManager = {
     SIGNAL_FP_COPY: 'fp-copy',
     SIGNAL_FP_CREATED: 'fp-created',
     SIGNAL_FP_DEL: 'fp-del',
-    SIGNAL_FP_EDIT: 'fg-edited'
+    SIGNAL_FP_EDIT: 'fp-edited'
     
 };
 

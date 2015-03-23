@@ -19,6 +19,8 @@
 		<object-name>input</object-name>
 		<object-name>msg</object-name>
 		<object-name>start</object-name>
+		<object-name>CLR_SYM</object-name>
+		<object-name>OVFLY_SYM</object-name>
 		<condition>
 			<and>
 				<greater-than-equals>
@@ -35,6 +37,22 @@
 		</condition>
 	</animation>
 	
+	<animation>
+		<type>select</type>
+		<object-name>OVFLY_SYM</object-name>
+		<condition>
+			<property>/instrumentation/mcdu/overfly-mode</property>
+		</condition>
+	</animation>
+	
+	<animation>
+		<type>select</type>
+		<object-name>CLR_SYM</object-name>
+		<condition>
+			<property>/instrumentation/mcdu/clear-mode</property>
+		</condition>
+	</animation>
+	
 	<!-- Input Text Brightness -->
 	
 	<animation>
@@ -42,6 +60,8 @@
 		<object-name>input</object-name>
 		<object-name>start</object-name>
 		<object-name>msg</object-name>
+		<object-name>CLR_SYM</object-name>
+		<object-name>OVFLY_SYM</object-name>
 		<emission>
 			<red>1</red>
 			<green>1</green>
@@ -1418,6 +1438,11 @@
 				<command>property-toggle</command>
 				<property>/instrumentation/mcdu/overfly-mode</property>
 			</binding>
+			<binding>
+				<command>property-set</command>
+				<property>/instrumentation/mcdu/clear-mode</property>
+				<value>0</value>
+			</binding>
 		</action>
 	</animation>
 	
@@ -1425,20 +1450,26 @@
 		<type>pick</type>
 		<object-name>clr</object-name>
 		<action>
-            <button>0</button>
-	   		<repeatable type="bool">true</repeatable>
-            <binding>
+			<button>0</button>
+			<repeatable type="bool">true</repeatable>
+			<binding>
 				<command>nasal</command>
-		 		<script>
+				<script>
 					var input = "/instrumentation/mcdu/input";
-					
+
 					var inp_size = size(getprop(input));
+					if(!inp_size){
+						var clr_mode = getprop('/instrumentation/mcdu/clear-mode') or 0;
+						setprop('/instrumentation/mcdu/clear-mode', !clr_mode);
+						setprop('/instrumentation/mcdu/overfly-mode', 0);
+					} else {
+						setprop(input, substr(getprop(input), 0, inp_size - 1))
+					}
 					
-					setprop(input, substr(getprop(input), 0, inp_size - 1))
-					
+
 				</script>
-            </binding>
-        </action>
+			</binding>
+		</action>
 	</animation>
 	
 	<!-- Input OSGText -->
@@ -1456,16 +1487,86 @@
 		<type type="string">text-value</type>
 		<format type="string">%s</format>
 		<property>/instrumentation/mcdu/input</property>
-  <truncate type="bool">false</truncate>
-  <font type="string">courier-bold.txf</font>
-  <draw-text type="bool">true</draw-text>
-  <draw-alignment type="bool">false</draw-alignment>
-  <draw-boundingbox type="bool">false</draw-boundingbox>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
 		<character-size>0.003</character-size>
 		<font-resolution>
 			<width type="int">32</width>
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+	
+	<text>
+		<name>CLR_SYM</name>
+		<offsets>
+			<x-m>-0.0196</x-m>
+			<y-m>-0.046</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text>CLR</text>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
+		<name>CLR_SYM</name>
+		<offsets>
+			<x-m>-0.0196</x-m>
+			<y-m>-0.046</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text>CLR</text>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
+		<name>OVFLY_SYM</name>
+		<offsets>
+			<x-m>-0.0196</x-m>
+			<y-m>-0.046</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text>D</text>
+		<font type="string">symbol.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
 
 </PropertyList>

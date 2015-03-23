@@ -58,6 +58,7 @@ var searchCmd = func {
 	for(var idx = 0; idx < planCount; idx += 1){
 		#var fp = driver.getFlightPlan(idx);
 		var fpSize = driver.getPlanSize(idx);
+		if(fpSize < 2) continue;
 		var type = driver.getFlightPlanType(idx);
 		if(type == nil) type = 'current';
 		if (!getprop(me.layer.options.active_node) and 

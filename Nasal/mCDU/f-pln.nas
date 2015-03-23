@@ -39,8 +39,12 @@ var f_pln = {
 		setprop(f_pln_disp~ 'current-flightplan', '');
 		setprop(f_pln_disp~ 'departure', '');
 		setprop(f_pln_disp~ 'destination', '');
+    
+		setprop("flight-management/alternate/icao", 'empty');
+		
 	
 		me.route_manager.deleteFlightPlan('temporary');
+		me.route_manager.deleteAlternateDestination();
 		
 		## Copy Waypoints and altitudes from active-rte
 		
@@ -179,6 +183,9 @@ var f_pln = {
 		print('Init SEC F-PLN');
 
 		me.route_manager = fmgc.RouteManager;
+		
+		setprop("flight-management/alternate/secondary/icao", 'empty');
+		me.route_manager.deleteAlternateDestination('secondary');
 
 		## Copy Waypoints and altitudes from active-rte
 		var fp = me.route_manager.createSecondaryFlightPlan(1);
@@ -360,6 +367,22 @@ var f_pln = {
 		me.route_manager.update();
 		return me.route_manager.getFlightPlan(current_fp);
 	},
+	revise_flightplan: func(){
+		var actv = getprop('autopilot/route-manager/active');
+		if(!actv) return me.get_current_flightplan();
+		var cur_id = me.get_flightplan_id();
+		if(cur_id == 'secondary') return me.get_current_flightplan();
+		if(cur_id != 'temporary'){
+			return me.copy_to_tmpy();
+		}
+		return me.get_current_flightplan();
+	},
+	copy_to_tmpy: func(){
+		var fp = me.route_manager.createTemporaryFlightPlan();
+		setprop(f_pln_disp~ 'current-flightplan', 'temporary');
+		f_pln.update_disp();
+		return fp;
+	},
 	first_displayed_wp: func(){
 		#me.update_flightplan_waypoints();
 		var first = getprop(f_pln_disp~ "first") or 0;
@@ -403,6 +426,90 @@ var f_pln = {
 		}
 		return wpt;
 	},
+	insert_wp: func(new_wp, line){
+		var fp = me.get_flightplan_at_line(line);
+		var wp = me.get_wp_at_line(line);
+		if(typeof(new_wp) == 'scalar'){
+			new_wp = me.create_wp(new_wp);
+		}
+		if(new_wp == nil) return nil;
+		var idx = -1;
+		if(fp == nil) return nil;
+		if(!me.is_alternate_line(line))
+			fp = me.revise_flightplan();
+		if(fp == nil) return nil;
+		if(wp != nil){
+			idx = wp.index;
+			me.route_manager.insertWP(new_wp, idx, fp.id);
+		} else {
+			if(getprop(f_pln_disp~ "l" ~ line ~ '/end-marker'))
+				me.route_manager.appendWP(new_wp, fp.id);
+			elsif(getprop(f_pln_disp~ "l" ~ line ~ '/discontinuity-marker')){
+				idx = getprop(f_pln_disp~ "l" ~ line ~ '/wp-index');
+				if(idx < 0) return nil;
+				var wp = fp.getWP(idx);
+				if(wp == nil) return nil;
+				idx += 1;
+				me.route_manager.insertWP(new_wp, idx, fp.id);
+				me.route_manager.clearDiscontinuity(wp.id, fp.id);
+				me.route_manager.setDiscontinuity(new_wp.id, fp.id);
+				me.route_manager.trigger(me.route_manager.SIGNAL_FP_EDIT);
+			}
+		}
+		if(idx >= 0){
+			me.route_manager.updateFlightPlan(fp.id);
+			var dest_wp = me.route_manager.getDestinationWP(fp.id);
+			if(dest_wp != nil  and idx > dest_wp.index){
+				var wp = fp.getWP(idx);
+				if(wp.id == new_wp.id)
+					wp.wp_role = 'missed';
+			}
+		}
+		me.update_disp();
+		return new_wp;
+	},
+	del_wp : func (line) {
+		var fp = me.get_flightplan_at_line(line);
+		var wp = me.get_wp_at_line(line);
+		var idx = -1;
+		if(fp != nil and wp != nil){
+			idx = wp.index;
+			if(!me.is_alternate_line(line))
+				fp = me.revise_flightplan();
+			me.route_manager.deleteWP(idx, fp.id);
+		}
+		elsif(fp != nil and wp == nil){
+			if(getprop(f_pln_disp~ "l" ~ line ~ '/end-marker'))
+				return;
+			elsif(getprop(f_pln_disp~ "l" ~ line ~ '/discontinuity-marker')){
+				idx = getprop(f_pln_disp~ "l" ~ line ~ '/wp-index');
+				if(idx < 0) return nil;
+				if(!me.is_alternate_line(line))
+					fp = me.revise_flightplan();
+				var wp = fp.getWP(idx);
+				if(wp == nil) return nil;
+				me.route_manager.clearDiscontinuity(wp.id, fp.id);
+				me.route_manager.trigger(me.route_manager.SIGNAL_FP_EDIT);
+			}
+		}
+		me.update_disp();
+	},
+	toggle_overfly: func(line){
+		if(!getprop('/instrumentation/mcdu/overfly-mode')) return;
+		if(!me.is_alternate_line(line))
+			me.revise_flightplan();
+		var wp = me.get_wp_at_line(line);
+		if(wp != nil){
+			var fly_type = wp.fly_type;
+			if(fly_type != 'flyOver')
+				wp.fly_type = 'flyOver';
+			else 
+				wp.fly_type = 'flyBy';
+			me.route_manager.trigger(me.route_manager.SIGNAL_FP_EDIT);
+			me.update_disp();
+		}
+		setprop('/instrumentation/mcdu/overfly-mode', 0);
+	},
 	get_destination_wp: func(){
 		var f= me.get_current_flightplan(); 
 		var current_fp = getprop(f_pln_disp~ "current-flightplan");
@@ -422,6 +529,30 @@ var f_pln = {
 	get_destination_airport: func(){
 		var f= me.get_current_flightplan();
 		return f.destination;
+	},
+	enable_alternate: func(wp_idx){
+		if(getprop("/instrumentation/mcdu/f-pln/enabling-altn")) return;
+		var cur_id = me.get_flightplan_id();
+		if(cur_id == 'secondary') return;
+		if(cur_id == 'temporary') cur_id = 'current';
+		var altn = me.route_manager.getAlternateRoute(cur_id);
+		if(altn == nil) return;
+		var fp = me.revise_flightplan();
+		cur_id = fp.id;
+		var wp = fp.getWP(wp_idx);
+		if(wp != nil) me.route_manager.setDiscontinuity(wp.id, cur_id);
+		me.route_manager.deleteWaypointsAfter(wp_idx, cur_id);
+		var wp_count = fp.getPlanSize();
+		fp.destination = altn.destination;
+		if(fp.getPlanSize() > wp_count)
+			fp.deleteWP(fp.getPlanSize() - 1);
+		var altn_size = altn.getPlanSize();
+		for(var i = 0; i < altn_size; i += 1){
+			var wp = me.route_manager._copyWP(altn, fp, i);
+		}
+		setprop("/instrumentation/mcdu/f-pln/enabling-altn", 1);
+		me.update_disp();
+		me.route_manager.trigger(me.route_manager.SIGNAL_FP_EDIT);
 	},
 	update_flightplan_waypoints: func(){
 		if(me.updating_wpts) return;
@@ -455,6 +586,29 @@ var f_pln = {
 			}
 			if(me.route_manager.hasDiscontinuity(wp_id, current_fp))
 				append(wpts, '---');
+		}
+		var altn_rte = me.route_manager.getAlternateRoute(current_fp);
+		var enabling_altn = getprop("/instrumentation/mcdu/f-pln/enabling-altn");
+		if(altn_rte != nil and !enabling_altn){
+			append(wpts, '---');
+			me.altn_offset = size(wpts);
+			var altn_size = altn_rte.getPlanSize();
+			for(var i = 0; i < altn_size; i += 1){
+				var wp = altn_rte.getWP(i);
+				var real_idx = size(wpts);
+				append(wpts, wp);
+				var wp_id = wp.id;
+				if(cur_wp != nil and cur_wp.id == wp_id){
+					me.to_wpt_idx = real_idx;
+					me.from_wpt_idx = real_idx - 1;
+					me.to_wpt_line = me.to_wpt_idx - first;
+					me.from_wpt_line = me.from_wpt_idx - first;
+				}
+				if(me.route_manager.hasDiscontinuity(wp_id, altn_rte.id))
+					append(wpts, '---');
+			}
+		} else {
+			me.altn_offset = -1;
 		}
 		me.waypoints = wpts;
 		me.updating_wpts = 0;
@@ -606,11 +760,17 @@ var f_pln = {
 		var show_hold = 0;
 		
 		var wpsize = size(me.waypoints);
+		var DISCONTINUITY_MARKER =  "-------    F-PLN DISCONTINUITY    -------";
+		var END_MARKER =			"-----------    END OF F-PLN    -----------";
+		var ALT_END_MARKER =		"----------  END OF ALTN F-PLN  ----------";
+		#var NO_ALTN_MARKER = 		"";
+		var no_altn = (me.altn_offset < 0);
 		for (var l = 1; l <= 5; l += 1) {
 			var wp = first - 1 + l;
 			var line_id = 'l'~l;
 			if(wp == wpsize){
-				setprop(f_pln_disp~ line_id~ "/id", "-----------    END OF F-PLN    -----------");
+				var marker = (no_altn ? END_MARKER : ALT_END_MARKER);
+				setprop(f_pln_disp~ line_id~ "/id", marker);
 				setprop(f_pln_disp~ line_id~ "/time", '');
 				setprop(f_pln_disp~ line_id~ "/spd_alt", '');
 				setprop(f_pln_disp~ line_id~ "/end-marker", 1);
@@ -620,6 +780,7 @@ var f_pln = {
 				setprop(f_pln_disp~ line_id~ "/to-wpt", 0);
 				setprop(f_pln_disp~ line_id~ "/missed", 0);
 				setprop(f_pln_disp~ line_id~ "/wp-index", -1);
+				setprop(f_pln_disp~ line_id~ "/alternate", !no_altn);
 			}
 			elsif(wp > wpsize){
 				setprop(f_pln_disp~ line_id~ "/id", "");
@@ -632,18 +793,28 @@ var f_pln = {
 				setprop(f_pln_disp~ line_id~ "/to-wpt", 0);
 				setprop(f_pln_disp~ line_id~ "/missed", 0);
 				setprop(f_pln_disp~ line_id~ "/wp-index", -1);
+				setprop(f_pln_disp~ line_id~ "/alternate", 0);
 			} else {
 				var fp_wp = me.waypoints[wp];
 				if(typeof(fp_wp) == 'scalar' and fp_wp == '---'){
-					setprop(f_pln_disp~ line_id~ "/id", "-------    F-PLN DISCONTINUITY    -------");
+					var eof_marker = (!no_altn and wp == (me.altn_offset - 1));
+					var marker = (eof_marker ? END_MARKER : DISCONTINUITY_MARKER);
+					var wp_index = -1;
+					if(!eof_marker and wp > 0){
+						var prev_wp = me.waypoints[wp - 1];
+						if(prev_wp != nil and typeof(prev_wp) != 'scalar')
+							wp_index = prev_wp.index;
+					}
+					setprop(f_pln_disp~ line_id~ "/id", marker);
 					setprop(f_pln_disp~ line_id~ "/time", '');
 					setprop(f_pln_disp~ line_id~ "/spd_alt", '');
-					setprop(f_pln_disp~ line_id~ "/end-marker", 0);
-					setprop(f_pln_disp~ line_id~ "/discontinuity-marker", 1);
+					setprop(f_pln_disp~ line_id~ "/end-marker", eof_marker);
+					setprop(f_pln_disp~ line_id~ "/discontinuity-marker", !eof_marker);
 					setprop(f_pln_disp~ line_id~ "/from-wpt", 0);
 					setprop(f_pln_disp~ line_id~ "/to-wpt", 0);
 					setprop(f_pln_disp~ line_id~ "/missed", 0);
-					setprop(f_pln_disp~ line_id~ "/wp-index", -1);
+					setprop(f_pln_disp~ line_id~ "/wp-index", wp_index);
+					setprop(f_pln_disp~ line_id~ "/alternate", 0);
 				} else {
 					var id = fp_wp.id;
 					var fly_type = fp_wp.fly_type;
@@ -696,7 +867,7 @@ var f_pln = {
 						alt_str = "FL" ~ int(alt / 100);
 					else
 						alt_str = alt;
-
+					var is_altn = (me.altn_offset > 0 and wp >= me.altn_offset);
 					setprop(f_pln_disp~ line_id~ "/spd_alt", spd_str ~ "/" ~ alt_str);
 					setprop(f_pln_disp~ line_id~ "/end-marker", 0);
 					setprop(f_pln_disp~ line_id~ "/discontinuity-marker", 0);
@@ -704,6 +875,7 @@ var f_pln = {
 					setprop(f_pln_disp~ line_id~ "/to-wpt", (me.to_wpt_line == (l - 1)));
 					setprop(f_pln_disp~ line_id~ "/missed", 
 							me.route_manager.isMissedApproach(fp_wp, current_fp));
+					setprop(f_pln_disp~ line_id~ "/alternate", is_altn);
 					if(hold and hold == fp_wp.index){
 						show_hold = 1;
 						setprop("/instrumentation/mcdu/f-pln/hold-id", l - 1);
@@ -722,15 +894,36 @@ var f_pln = {
 		setprop("/instrumentation/mcdu/f-pln/show-hold", show_hold);
 	
 	},
+	is_alternate_line: func(line){
+		getprop(f_pln_disp~ "l" ~ line ~ '/alternate');
+	},
+	get_flightplan_at_line: func(line){
+		var fp =  nil;
+		var is_altn = me.is_alternate_line(line);
+		if(!is_altn){
+			fp = me.get_current_flightplan();
+		} else {
+			var cur_id = me.get_flightplan_id();
+			fp = me.route_manager.getAlternateRoute(cur_id);
+		}
+		return fp;
+	},
 	get_wp_at_line: func(line){
 		var idx = getprop(f_pln_disp~ "l" ~ line ~ '/wp-index');
 		if(idx == nil or idx == '') return nil;
 		var wp = nil;
 		if(idx >= 0){
-			var fp = me.get_current_flightplan();
-			wp = fp.getWP(idx);
+			var is_disc = getprop(f_pln_disp~ "l" ~ line ~ '/discontinuity-marker');
+			if(is_disc) return nil;
+			var fp = me.get_flightplan_at_line(line);
+			if(fp != nil) wp = fp.getWP(idx);
 		}
 		return wp;
+	},
+	get_idx_at_line: func(line){
+		var idx = getprop(f_pln_disp~ "l" ~ line ~ '/wp-index');
+		if(idx == nil or idx == '') return -1;
+		return idx;
 	},
 	set_restriction: func(line, alt, spd){
 		#if(spd != nil)

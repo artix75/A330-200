@@ -21,10 +21,18 @@ var A330RouteDriver = {
 			return;
 		me.fplan_types = [];
 		me.plans = me.route_manager.allFlightPlans();
+		me.alternates = me.route_manager.alternates;
 		append(me.fplan_types, 'current');
+		if(me.route_manager.getAlternateRoute() != nil){
+			if(!getprop("/instrumentation/mcdu/f-pln/enabling-altn"))
+				append(me.fplan_types, 'alternate_current');
+		}
 		if(me.plans['temporary'] != nil) append(me.fplan_types, 'temporary');
-		if(me.plans['secondary'] != nil and getprop(DISP_SEC_FPLN)) 
+		if(me.plans['secondary'] != nil and getprop(DISP_SEC_FPLN)) {
 			append(me.fplan_types, 'secondary');
+			if(me.route_manager.getAlternateRoute('secondary') != nil)
+				append(me.fplan_types, 'alternate_secondary');
+		}
 		if(me.route_manager.missed_approach_planned)
 			append(me.fplan_types, 'missed');
 	},
@@ -39,7 +47,7 @@ var A330RouteDriver = {
 		var type = me.getFlightPlanType(fpNum);
 		if(type == nil) return nil;
 		if(type != 'missed'){
-			me.plans[type];
+			me.getFlightPlanByType(type);
 		} else {
 			var srcPlan = me.plans.current;
 			var fp = srcPlan.clone();
@@ -56,6 +64,12 @@ var A330RouteDriver = {
 			fp;
 		}
 	},
+	getFlightPlanByType: func(type){
+		if(find('alternate_', type) == 0)
+			me.alternates[split('_', type)[1]];
+		else 
+			me.plans[type];
+	},
 	getPlanSize: func(fpNum){
 		var type = me.getFlightPlanType(fpNum);
 		if(type == nil) return 0;
@@ -66,14 +80,16 @@ var A330RouteDriver = {
 		elsif(type == 'current'){
 			me.route_manager.wp_count;
 		} else {
-			me.plans[type].getPlanSize();
+			var fp = me.getFlightPlanByType(type);
+			(fp != nil ? fp.getPlanSize() : 0);
 		}
 	},
 	getWP: func(fpNum, idx){
 		var type = me.getFlightPlanType(fpNum);
 		if(type == nil) return 0;
 		if(type != 'missed'){
-			me.plans[type].getWP(idx);
+			var fp = me.getFlightPlanByType(type);
+			(fp != nil ? fp.getWP(idx) : nil);
 		} else {
 			var fp = me.plans['current'];
 			var missed_approach = me.route_manager.missed_approach;
