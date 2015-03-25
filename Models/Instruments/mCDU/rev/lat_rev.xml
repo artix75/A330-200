@@ -96,8 +96,12 @@
 		 			
 		 			# DEPARTURE
 		 			
-		 			elsif (dep == 1)
-		 				mcdu.sid.select_arpt(getprop("autopilot/route-manager/departure/airport"));
+		 			elsif (dep == 1){
+						var fp = mcdu.f_pln.get_current_flightplan();
+						var dep = fp.departure;
+						if(dep != nil)
+							mcdu.sid.select_arpt(dep.id);
+					}
 		 			
 		 			# ARRIVAL
 		 			

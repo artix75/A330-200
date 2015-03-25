@@ -84,6 +84,23 @@ var RouteManager = {
             }
             me.flightplan_info['current'].distance_nm = me.distance_nm;
             me.flightplan_info['current'].total_distance_nm = me.total_distance_nm;
+            if(me.top_of_descent){
+                var first_cstr = 0;
+                for(var i = 0; i < me.last_idx; i += 1){
+                    var wp = fp.getWP(i);
+                    var dist = wp.distance_along_route;
+                    if(dist <= (me.distance_nm - me.top_of_descent)) continue;
+                    var alt = wp.alt_cstr;
+                    if(alt != nil and alt){
+                        first_cstr = alt;
+                        break;
+                    };
+                    
+                }
+                me.first_descent_constraint = first_cstr;
+            } else {
+                me.first_descent_constraint = 0;
+            }
         }
     },
     updateFlightPlan: func(fpId){
@@ -149,7 +166,7 @@ var RouteManager = {
                     wp_count: (fpData.wp_count - 1 - fpData.destination_idx),
                     first_wp: fp.getWP(fpData.destination_idx + 1)
                 };
-				fpData.wp_count -= fpData.missed_approach.wp_count;
+                fpData.wp_count -= fpData.missed_approach.wp_count;
             }
         }
     },
@@ -172,6 +189,8 @@ var RouteManager = {
         me.distance_nm = me.total_distance_nm;
         me.sequencing = 0;
         me.under_transaction = 0;
+        me.top_of_descent = 0;
+        me.first_descent_constraint = 0;
         foreach(var listener; me.listeners){
             removelistener(listener);
         }
@@ -584,6 +603,7 @@ var RouteManager = {
         return dist;
     },
     getDestinationWP: func(fpID = nil){
+        if(me.sequencing) return nil;
         if(fpID == nil or fpID == '' or fpID == 'current')
             return me.destination_wp;
         var info = me.flightplan_info[fpID];

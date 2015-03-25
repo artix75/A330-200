@@ -205,17 +205,13 @@ var fmgc_loop = {
         var mach = getprop("/velocities/mach");
         var vmode_vs_fps = getprop('/velocities/vertical-speed-fps');
         setprop("/instrumentation/pfd/vs-100", vmode_vs_fps * 0.6);
-        #if(vmode_vs_fps > 8 or vmode_vs_fps < -8){
-        #    setprop('/flight-management/flch_active', 1);     
-        #} else {
-        #    setprop('/flight-management/flch_active', 0);     
-        #}
+        
         me.altitude = altitude;
         me.ias = ias;
         me.mach = mach;
         me.vs_fps = vmode_vs_fps;
-
-        me.phase = me.flight_phase();
+        
+        #me.phase = me.flight_phase();
 
         me.get_settings();
         me.get_current_state();
@@ -253,6 +249,7 @@ var fmgc_loop = {
         var ver_alert = 0;
 
         me.top_desc = me.calc_td();
+        RouteManager.top_of_descent = me.top_desc;
         me.calc_tc();
         me.decel_point = me.calc_decel_point();
         me.calc_speed_change();
@@ -892,7 +889,7 @@ var fmgc_loop = {
                         #var bug = getprop("/autopilot/internal/true-heading-error-deg");
                         var f = me.flightplan;
                         var geocoord = geo.aircraft_position();
-                        var dest_wp_info = me.get_destination_wp();
+                        var dest_wp_info = me.destination_wp;
                         if(dest_wp_info == nil){
                             dest_wp_info = {
                                 index: me.wp_count - 1
@@ -914,7 +911,7 @@ var fmgc_loop = {
 
                         var bank = 0; 
 
-                        if (accuracy == "HIGH")
+                        if (1 or accuracy == "HIGH")
                             bank = limit(CourseError, 25);
                         else
                             bank = limit(CourseError, 15);
@@ -1132,6 +1129,8 @@ var fmgc_loop = {
 
         me.fpa_setting = getprop(fcu~ "fpa");
         me.crz_fl = getprop("/flight-management/crz_fl");
+        if(!me.crz_fl)
+            me.crz_fl = int(getprop("autopilot/route-manager/cruise/altitude-ft") / 100);
         me.fcu_alt = getprop(fcu~'alt');
         if(me.airborne and me.fcu_alt > (me.crz_fl * 100)){
             me.crz_fl = int(me.fcu_alt / 100);
@@ -1235,25 +1234,15 @@ var fmgc_loop = {
         me.agl = getprop("/position/altitude-agl-ft");
         me.current_wp = getprop("autopilot/route-manager/current-wp");
         me.wp_count = getprop(actrte~"num");
-        me.remaining_nm = getprop("autopilot/route-manager/distance-remaining-nm");
-        me.remaining_total_nm = me.remaining_nm;
-        me.total_fp_distance = getprop("autopilot/route-manager/total-distance");
-        me.fp_distance = me.total_fp_distance;
+        me.remaining_nm = RouteManager.getRemainingNM();#getprop("autopilot/route-manager/distance-remaining-nm");
+        #me.remaining_total_nm = me.remaining_nm;
+        me.total_fp_distance = RouteManager.distance_nm;
+        me.fp_distance = RouteManager.distance_nm;
         me.last_wp_idx = me.wp_count - 1;
-        var dest_wp = me.get_destination_wp();
-        if(dest_wp != nil){
-            var dst_idx = dest_wp.index;
-            var missed_approach_planned = (dst_idx < me.last_wp_idx);
-            if(missed_approach_planned){
-                me.missed_approach = (me.current_wp > dst_idx);
-                me.fp_distance = dest_wp.distance_along_route;
-                var d = (me.total_fp_distance - me.fp_distance);
-                me.remaining_nm -= d;
-            } else {
-                me.missed_approach = 0;
-            }
-            me.missed_approach_planned = missed_approach_planned;
-        }
+        me.missed_approach_planned = RouteManager.missed_approach_planned;
+        me.missed_approach = RouteManager.missed_approach_active;
+        me.destination_wp = RouteManager.getDestinationWP();
+        
         me.airborne = !getprop("/gear/gear[0]/wow") and 
                       !getprop("/gear/gear[1]/wow") and 
                       !getprop("/gear/gear[2]/wow") and 
@@ -1267,6 +1256,7 @@ var fmgc_loop = {
         me.vmax = me.calc_vmax();
         me.gs_dev = getprop('instrumentation/nav/gs-needle-deflection-norm');
         me.loc_dev = getprop('instrumentation/nav/heading-needle-deflection-norm');
+        me.phase = me.flight_phase();
         
         me.throttle_pos = getprop('/controls/engines/engine[0]/throttle-pos');
         me.throttle_r_pos = getprop('/controls/engines/engine[1]/throttle-pos');
@@ -1290,6 +1280,21 @@ var fmgc_loop = {
         } else {
             me.wp = nil;
         }
+        if(me.current_wp != nil and me.current_wp)
+            me.from_wp = me.current_wp - 1;
+        else 
+            me.from_wp = -1;
+        if(me.from_wp >= 0 and me.from_wp < me.wp_count){
+            var from_id = getprop(actrte~'wp[' ~ me.from_wp ~ ']/id');
+            me.flying_discontinuity = RouteManager.hasDiscontinuity(from_id);
+            if(me.flying_discontinuity){
+                if(me.lat_ctrl == 'fmgc'){
+                    setprop(fmgc~ 'capture-leg', 1);
+                }
+            }
+        } else {
+            me.flying_discontinuity = 0;
+        }
         if(!me.use_true_north){
             me.heading = getprop("orientation/heading-magnetic-deg");
             me.track = getprop("orientation/track-magnetic-deg");
@@ -1301,7 +1306,7 @@ var fmgc_loop = {
         me.xtrk_error = getprop('instrumentation/gps/wp/wp[1]/course-error-nm') or 0;
         me.capturing_leg = getprop(fmgc~ 'capture-leg');
         if(me.capturing_leg){
-            if(math.abs(me.xtrk_error) <= 1){
+            if(math.abs(me.xtrk_error) <= 1 and !me.flying_discontinuity){
                 me.capturing_leg = 0;
                 setprop(fmgc~ 'capture-leg', 0);
             }
@@ -1613,7 +1618,7 @@ var fmgc_loop = {
                     }
                 }
                 elsif(vmode == 'FINAL') { #TODO: final disarms at DH - 50
-                    var dest_wp = me.get_destination_wp();
+                    var dest_wp = me.destination_wp;
                     if(dest_wp != nil){
                         var dest_idx = dest_wp.index;
                         if(dest_idx != current_wp){
@@ -2083,28 +2088,41 @@ var fmgc_loop = {
             setprop("/flight-management/phase", "CLB");
 
         } elsif (phase == "CLB") {
-
             
             if (crz_fl != 0) {
-
-                if (alt >= ((crz_fl * 100) - 500))
+                var crz_alt = (crz_fl * 100);
+                if (alt >= (crz_alt - 500)){
                     setprop("/flight-management/phase", "CRZ");
-
+                    me.ref_crz_alt = crz_alt;
+                }
             } else {
                 if (alt > 26000 and alt >= (fcu_alt - 500)){
                     setprop("/flight-management/phase", "CRZ");
                     me.ref_crz_alt = alt;
                 }
             }
-
         } elsif (phase == "CRZ") {
-
-
             if (crz_fl != 0) {
-
-                if (fcu_alt < ((crz_fl * 100) - 500))
-                    setprop("/flight-management/phase", "DES");
-
+                var crz_alt = (crz_fl * 100);
+                if(crz_alt > (me.ref_crz_alt + 500)){
+                    setprop("/flight-management/phase", "CLB");
+                    return 'CLB';
+                }
+                elsif (fcu_alt < (crz_alt - 500)){
+                    var dest_wp = me.destination_wp;
+                    #if(RouteManager.sequencing) dest_wp = nil;
+                    if(dest_wp != nil and (me.remaining_nm <= 200)){
+                        setprop("/flight-management/phase", "DES");
+                    }
+                    elsif(me.remaining_nm < me.top_desc){
+                        setprop("/flight-management/phase", "DES");
+                    } else {
+                        var first_cstr = RouteManager.first_descent_constraint;
+                        var max_alt = (20000 > first_cstr ? 20000 : first_cstr);
+                        if(fcu_alt < max_alt)
+                            setprop("/flight-management/phase", "DES");
+                    }
+                }
             } else {
                 var ref_alt = me.ref_crz_alt;
                 if(!ref_alt) ref_alt = 26000;
@@ -2184,7 +2202,7 @@ var fmgc_loop = {
             #print("TD: " ~ top_of_descent);
             var f= me.flightplan; 
             #                   var topClimb = f.pathGeod(0, 100);
-            var dest_wp = me.get_destination_wp();
+            var dest_wp = me.destination_wp;
             var idx = (dest_wp != nil ? dest_wp.index : -1);
             var topDescent = f.pathGeod(idx, -top_of_descent);
             setprop(tdNode ~ "/latitude-deg", topDescent.lat); 
@@ -2425,7 +2443,7 @@ var fmgc_loop = {
                 var totdist = me.fp_distance;
                 dist = totdist - dist;
                 var nm = dist + 11;
-                var dest_wp = me.get_destination_wp();
+                var dest_wp = me.destination_wp;
                 var idx = (dest_wp != nil ? dest_wp.index : -1);
                 var decelPoint = f.pathGeod(idx, -nm);
                 setprop(decelNode ~ "/latitude-deg", decelPoint.lat); 
@@ -2702,7 +2720,7 @@ var fmgc_loop = {
         var alt = me.altitude;
         var dest_alt = getprop('autopilot/route-manager/destination/field-elevation-ft');
         var diff = dest_alt - alt;
-        var wp = me.get_destination_wp();
+        var wp = me.destination_wp;
         if(wp == nil) return nil;
         var distance = getprop('autopilot/route-manager/route/wp['~wp.index~']/distance-nm');
         return me.calc_required_fpa(alt, dest_alt, distance);
