@@ -1461,8 +1461,10 @@ var fmgc_loop = {
                 }
             }  
         }
-        if (is_capturing_alt and crz_alt == trgt_alt and phase != 'CRZ')
+        if (is_capturing_alt and crz_alt == trgt_alt and phase != 'CRZ'){
             setprop('flight-management/phase', 'CRZ');
+            me.ref_crz_alt = crz_alt;
+        }
         if(vmode_main == 'ALT'){
             vmode_main = me.get_alt_mode(trgt_alt, alt_cstr, crz_alt, is_capturing_alt);
             setprop(fmgc~ 'exped-mode', 0);
