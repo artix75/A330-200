@@ -1492,7 +1492,7 @@ var fmgc_loop = {
                     vmode = 'FINAL';
                     lmode = 'APP NAV';
                     #final_app_actv
-                }                    
+                }
             }
         }
         elsif(ver_fmgc){
@@ -1510,6 +1510,18 @@ var fmgc_loop = {
             if(me.srs_spd > 0 and (toga or flex_mct))
                 me.active_ver_mode = 'SRS';
             #TODO: GO AROUND SHOULD ENGAGE ON THE GROUND TOO IF TIME ON GROUND IS < 30sec
+            var touchdown_t = 0;
+            if(phase == 'LANDED')
+                touchdown_t = getprop('autopilot/route-manager/destination/touchdown-time') or 0;
+            var touchdown_elapsed_s = systime() - touchdown_t;
+            if(toga and me.flaps > 0 and 
+               ((touchdown_elapsed_s < 30) or me.toga_trk != nil)){
+                me.engage_go_around(lat_sel_mode);
+            } else {
+                if(me.toga_trk != nil)
+                    me.set_current_vsfpa();
+                me.toga_trk = nil;
+            }
             me.armed_ver_mode = vmode;
         } else {
             
@@ -1555,22 +1567,7 @@ var fmgc_loop = {
             }
             if(toga and me.flaps > 0 and me.agl < me.acc_alt and 
                (!me.toga_on_ground or me.toga_trk != nil)){
-                me.active_lat_mode = 'GA TRK';
-                me.armed_lat_mode = lat_sel_mode; #TODO: arm HDG/TRK?
-                if(me.toga_trk == nil)
-                    me.toga_trk = me.track;
-                me.lat_mode = 'hdg';
-                setprop(fmgc~ "lat-mode", 'hdg');
-                me.lat_ctrl = 'man-set';
-                setprop(fmgc~ "lat-ctrl", 'man-set');
-
-                me.ver_mode = 'alt';
-                setprop(fmgc~ "ver-mode", 'alt');
-                me.ver_ctrl = 'man-set';
-                setprop(fmgc~ "ver-ctrl", 'man-set');
-                me.spd_ctrl = 'fmgc';
-                setprop(fmgc~ "spd-ctrl", 'fmgc');
-                setprop("/autoland/retard", 0);
+                me.engage_go_around(lat_sel_mode);
             } else {
                 if(me.toga_trk != nil)
                     me.set_current_vsfpa();
@@ -1952,6 +1949,27 @@ var fmgc_loop = {
             }
         }
         return armed_ver_mode;
+    },
+    engage_go_around: func(lat_mode){
+        me.active_lat_mode = 'GA TRK';
+        me.armed_lat_mode = lat_mode; #TODO: arm HDG/TRK?
+        if(me.toga_trk == nil)
+            me.toga_trk = me.track;
+        me.lat_mode = 'hdg';
+        setprop(fmgc~ "lat-mode", 'hdg');
+        me.lat_ctrl = 'man-set';
+        setprop(fmgc~ "lat-ctrl", 'man-set');
+
+        me.ver_mode = 'alt';
+        setprop(fmgc~ "ver-mode", 'alt');
+        me.ver_ctrl = 'man-set';
+        setprop(fmgc~ "ver-ctrl", 'man-set');
+        me.spd_ctrl = 'fmgc';
+        setprop(fmgc~ "spd-ctrl", 'fmgc');
+        setprop("/autoland/active", 0);
+        setprop("/autoland/retard", 0);
+        setprop("/autoland/phase", '');
+        setprop("/autoland/rudder", 0);
     },
     lvlch_check : func {
 
