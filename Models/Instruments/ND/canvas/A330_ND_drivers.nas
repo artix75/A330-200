@@ -19,6 +19,7 @@ var A330RouteDriver = {
 	update: func(){
 		if(!getprop('autopilot/route-manager/route/num'))
 			return;
+		var phase = getprop('/flight-management/phase');
 		me.fplan_types = [];
 		me.plans = me.route_manager.allFlightPlans();
 		me.alternates = me.route_manager.alternates;
@@ -33,8 +34,11 @@ var A330RouteDriver = {
 			if(me.route_manager.getAlternateRoute('secondary') != nil)
 				append(me.fplan_types, 'alternate_secondary');
 		}
-		if(me.route_manager.missed_approach_planned)
-			append(me.fplan_types, 'missed');
+		if(me.route_manager.missed_approach_planned){
+			if(phase != 'G/A')
+				append(me.fplan_types, 'missed');
+		}
+		me.phase = phase;
 	},
 	getNumberOfFlightPlans: func(){
 		size(me.fplan_types);
@@ -78,7 +82,10 @@ var A330RouteDriver = {
 			missed_approach.wp_count;
 		} 
 		elsif(type == 'current'){
-			me.route_manager.wp_count;
+			if(me.phase == 'G/A')
+				me.route_manager.total_wp_count;
+			else
+				me.route_manager.wp_count;
 		} else {
 			var fp = me.getFlightPlanByType(type);
 			(fp != nil ? fp.getPlanSize() : 0);

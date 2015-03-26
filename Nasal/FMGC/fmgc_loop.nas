@@ -1089,6 +1089,7 @@ var fmgc_loop = {
         var app_cat = me.app_cat;
         var agl = me.agl;
         var disengage_ap =  me.airborne and 
+                            !me.toga_trk and 
                             app_phase and 
                             apEngaged and 
                             app_cat < 3 and 
@@ -1328,7 +1329,7 @@ var fmgc_loop = {
         me.armed_common_mode = '';
         me.athr_msg = '';
         me.athr_alert = '';
-        me.accel_alt = 1500;
+        #me.accel_alt = 1500;
         me.srs_spd = 0;
         if(me.alpha_floor_mode){
             me.alpha_floor_mode = (me.ias < me.stall_spd + 20);
@@ -1382,7 +1383,7 @@ var fmgc_loop = {
             if(remaining <= me.top_desc){
                 after_td = 1;
             }
-            me.phase = phase;
+            #me.phase = phase;
         }
         
         if(try_vnav){
@@ -1397,6 +1398,7 @@ var fmgc_loop = {
                 follow_alt_cstr = 0;
             } else {
                 if((phase == 'CLB' and fcu_alt < alt_cstr) or 
+                   (phase == 'G/A' and fcu_alt < alt_cstr) or 
                    (phase == 'DES' and fcu_alt > alt_cstr) or 
                    (phase == 'APP' and fcu_alt > alt_cstr)){
                     setprop(fmgc_val ~ 'vnav-target-alt', fcu_alt);
@@ -1424,6 +1426,8 @@ var fmgc_loop = {
             vphase = phase;
         elsif(phase == 'T/O')
             vphase = 'CLB';
+        elsif(phase == 'G/A')
+            vphase = 'CLB';
         elsif(phase == 'APP')
             vphase = 'DES';
         
@@ -1435,6 +1439,8 @@ var fmgc_loop = {
             if(crz_alt and phase == 'CRZ'){
                 if((crz_alt - trgt_alt) > 10)
                     vmode_main = 'DES';
+                elsif((trgt_alt - crz_alt) > 10)
+                    vmode_main = 'CLB';
                 else{
                     vmode_main = 'ALT';
                     is_capturing_alt = 1;
@@ -1457,7 +1463,7 @@ var fmgc_loop = {
                     if(me.toga_trk or me.missed_approach)
                         vmode_main = me.true_vertical_phase;
                     else
-                        vmode_main = vphase;
+                        vmode_main = vphase; #TODO: why? shouldn't be always true vertical phase??
                 }
             }  
         }
@@ -1503,6 +1509,7 @@ var fmgc_loop = {
                
             if(me.srs_spd > 0 and (toga or flex_mct))
                 me.active_ver_mode = 'SRS';
+            #TODO: GO AROUND SHOULD ENGAGE ON THE GROUND TOO IF TIME ON GROUND IS < 30sec
             me.armed_ver_mode = vmode;
         } else {
             
@@ -2123,6 +2130,11 @@ var fmgc_loop = {
                         var max_alt = (20000 > first_cstr ? 20000 : first_cstr);
                         if(fcu_alt < max_alt)
                             setprop("/flight-management/phase", "DES");
+                        else{
+                            me.crz_fl = int(fcu_alt / 100);
+                            setprop("/flight-management/crz_fl", me.crz_fl);
+                            setprop("autopilot/route-manager/cruise/altitude-ft", fcu_alt);
+                        }
                     }
                 }
             } else {
@@ -2144,19 +2156,25 @@ var fmgc_loop = {
                 
             setprop('/instrumentation/nd/app-mode', app_type);
 
-        } elsif ((phase == "APP") and (getprop("/gear/gear/wow"))) {
+        } elsif ((phase == "APP")) {
+            if(getprop("/gear/gear/wow"))
+                setprop("/flight-management/phase", "LANDED");
+            elsif(me.toga_trk)
+                setprop("/flight-management/phase", "G/A");
 
-            setprop("/flight-management/phase", "LANDED");
 
+        } elsif (phase == "LANDED" ) {
+            if(ias <= 70){
+                setprop("/flight-management/phase", "T/O");
+                setprop('/instrumentation/nd/app-mode', '');
+                setprop("/autoland/retard", 0);
 
-        } elsif (phase == "LANDED" and ias <= 70) {
-            setprop("/flight-management/phase", "T/O");
-            setprop('/instrumentation/nd/app-mode', '');
-            setprop("/autoland/retard", 0);
+                new_flight();
 
-            new_flight();
-
-            me.current_wp = 0;
+                me.current_wp = 0;
+            }
+            elsif(me.toga_trk)
+                setprop("/flight-management/phase", "G/A");
         }
         return getprop("/flight-management/phase");
     },

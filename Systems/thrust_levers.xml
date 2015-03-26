@@ -45,6 +45,7 @@
                 </and>
             </condition>
             <property>controls/engines/detents/flex</property>
+            <scale>1.3055555555555556</scale>
         </input>
         <!-- Else directly apply thrust -->
         <input>controls/engines/engine[0]/throttle-pos</input>
@@ -93,6 +94,7 @@
                 </and>
             </condition>
             <property>controls/engines/detents/flex</property>
+            <scale>1.3055555555555556</scale>
         </input>
         <!-- Else directly apply thrust -->
         <input>controls/engines/engine[1]/throttle-pos</input>
