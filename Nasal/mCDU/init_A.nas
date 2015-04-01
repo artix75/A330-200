@@ -81,21 +81,22 @@ var mCDU_init = {
 		}
 
 		if(!is_user_route){
+			var rte_found = 0;
 			for (var index = 0; getprop(co_tree~ "route[" ~ index ~ "]/rte_id") != nil; index += 1) {
 
 				var rte_id = getprop(co_tree~ "route[" ~ index ~ "]/rte_id");
-
+				#print('"' ~ rte_id ~ '" == "' ~ id ~ '"' );
 				if (rte_id == id) {
-
+					rte_found = 1;
 					var dep = getprop(co_tree~ "route[" ~ index ~ "]/depicao");
 					var arr = getprop(co_tree~ "route[" ~ index ~ "]/arricao");
 
 					me.rte_sel(id, dep, arr, secondary);
-
-				} else
-					setprop("/instrumentation/mcdu[" ~ mcdu ~ "]/input", "ERROR: NOT IN DATABASE");
-
+					break;
+				} 
 			}
+			if(!rte_found)
+				setprop("/instrumentation/mcdu[" ~ mcdu ~ "]/input", "ERROR: NOT IN DATABASE");
 		} else {
 
 			var dep = getprop(user_rte~ "depicao");
@@ -266,12 +267,10 @@ var mCDU_init = {
 			
 				setprop(results~ "result[" ~ from_to_rte ~ "]/rte_id", getprop(co_tree~ "route[" ~ index ~ "]/rte_id"));
 				
-				var route = co_tree~ "route[" ~ index ~ "]/route";
-				var rteNode = props.globals.getNode(route);
+				var route = co_tree~ "route[" ~ index ~ "]/route/";
+				var rteNode = props.globals.getNode(results~ "result[" ~ from_to_rte ~ "]/route");
 				if(rteNode != nil) rteNode.remove();
-				
 				for (var wp = 0; getprop(route~ "wp[" ~ wp ~ "]/wp-id") != nil; wp += 1) {
-				
 					setprop(results~ "result[" ~ from_to_rte ~ "]/route/wp[" ~ wp ~ "]/wp-id", 
 							getprop(route~ "wp[" ~ wp ~ "]/wp-id"));
 				

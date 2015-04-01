@@ -432,8 +432,8 @@
 			<default>
 			<!--	<menu n="3">
 					<item n="0">
-		                <label>Autopilot Dialog</label>
-		                <enabled type="bool">false</enabled>
+						<label>Autopilot Dialog</label>
+						<enabled type="bool">false</enabled>
 						<binding>
 							<command>nasal</command>
 							<script>
@@ -441,8 +441,8 @@
 						</binding>
 					</item>
 					<item n="1">
-		                <label>Route Manager</label>
-		                <enabled type="bool">true</enabled>
+						<label>Route Manager</label>
+						<enabled type="bool">true</enabled>
 						<binding>
 							<command>nasal</command>
 							<script>
@@ -680,24 +680,31 @@
 		<phase type="string">T/O</phase>
 		<spd-manager>
 			<climb>
-				<mode type="string">MANAGED (F-PLN)</mode>
-				<spd1 type="int">240</spd1>
+				<mode type="string">MANAGED</mode>
+				<!--spd1 type="int">240</spd1>
 				<spd2 type="int">280</spd2>
-				<mach type="float">0.75</mach>
+				<mach type="float">0.75</mach-->
+				<spd1 type="int">0</spd1>
+				<spd2 type="int">0</spd2>
+				<mach type="float">0</mach>
 			</climb>
 			<cruise>
-				<mode type="string">MANAGED (F-PLN)</mode>
-				<mach type="float">0.82</mach>
+				<mode type="string">MANAGED</mode>
+				<spd1 type="int">0</spd1>
+				<!--mach type="float">0.82</mach-->
 			</cruise>
 			<descent>
-				<mode type="string">MANAGED (F-PLN)</mode>
-				<spd1 type="int">240</spd1>
+				<mode type="string">MANAGED</mode>
+				<!--spd1 type="int">240</spd1>
 				<spd2 type="int">250</spd2>
-				<mach type="float">0.68</mach>
+				<mach type="float">0.68</mach-->
+				<spd1 type="int">0</spd1>
+				<spd2 type="int">0</spd2>
+				<mach type="float">0</mach>
 			</descent>
 			<approach>
-				<mode type="string">MANAGED (AUTO)</mode>
-				<app-spd type="int">145</app-spd>
+				<mode type="string">MANAGED</mode>
+				<app-spd type="int">0</app-spd>
 				<flare-spd type="int">125</flare-spd>
 			</approach>
 		</spd-manager>
@@ -1011,8 +1018,10 @@
 				<V2 type="double">0</V2>
 			</vspeeds>
 			<trans-alt type="int">18000</trans-alt>
+			<appr-trans-alt type="int">18000</appr-trans-alt>
 			<acc-alt type="int">1500</acc-alt>
 			<flex-to-temp type="int">-999</flex-to-temp>
+			<mach-trans-alt type="int">25000</mach-trans-alt>
 		</fmc>
 		<dme n="1">
 			<serviceable type="bool">true</serviceable>
@@ -1483,6 +1492,7 @@
 			<file>Aircraft/A330-200/Nasal/mCDU/f-pln.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/lat_rev.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/common.nas</file>
+			<file>Aircraft/A330-200/Nasal/mCDU/perf.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/loop.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/parse_DB.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/user.nas</file>

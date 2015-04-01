@@ -68,6 +68,7 @@ var searchCmd = func {
 		var discontinuity = 0;
 		for (var i=0; i<fpSize; i += 1) {
 			var leg = driver.getWP(idx, i);
+			if(leg == nil) continue;
 			if(discontinuity)
 				coords ~= [{},{lon:leg.wp_lon, lat:leg.wp_lat}];
 			else

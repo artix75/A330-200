@@ -11,12 +11,17 @@ var RouteManager = {
     },
     update: func(fpId = nil){
         if(me.sequencing) return;
+        me.updating = 1;
         if(fpId != nil and fpId != 'current' and fpId != ''){
             me.updateFlightPlan(fpId);
+            me.updating = 0;
             return;
         }
         var fp = flightplan();
-        if(fp == nil) return;
+        if(fp == nil) {
+            me.updating = 0;
+            return;
+        };
         me.flightplan = fp;
         fp.id = 'current';
         me.plans['current'] = fp;
@@ -102,6 +107,7 @@ var RouteManager = {
                 me.first_descent_constraint = 0;
             }
         }
+        me.updating = 0;
     },
     updateFlightPlan: func(fpId){
         if(fpId == nil or fpId == 'current'){
@@ -171,6 +177,7 @@ var RouteManager = {
         }
     },
     reset: func(){
+        me.updating = 0;
         me.flightplan = nil;
         me.plans = {};
         me.flightplan_info = {};
@@ -357,9 +364,15 @@ var RouteManager = {
         }
         if(fp.destination_runway != nil and copy_dst_rwy)
             dest_fp.destination_runway = fp.destination_runway;
-        while(dest_fp.getPlanSize())
+        var actv = 0;
+        if(dest_fp.id == 'current'){
+            actv = getprop('autopilot/route-manager/active');
+            dest_fp.cleanPlan();
+        }
+        var sz = dest_fp.getPlanSize();
+        for(var i = 0; i < sz; i += 1)
             dest_fp.deleteWP(0);
-        var sz = fp.getPlanSize();
+        sz = fp.getPlanSize();
         for(var i = 0; i < sz; i += 1){
             me._copyWP(fp, dest_fp, i);
         }
@@ -377,6 +390,8 @@ var RouteManager = {
                 me.flightplan_info[dstID] = dstInfo;
             }
         }
+        if(actv and !getprop('autopilot/route-manager/active'))
+            setprop("/autopilot/route-manager/input", "@ACTIVATE");
     },
     copyFlightPlanToActive: func(fp, delete_src = 0){
         if(fp == nil) {
@@ -395,6 +410,7 @@ var RouteManager = {
         me.trigger('before-fp-copy');
         me.under_transaction = 1;
         me.sequencing = 1;
+        fmgc_loop.wp = nil;
         me.copyFlightPlan(fp, me.flightplan);
         if(delete_src and fpId != nil){
             me.deleteFlightPlan(fpId);
@@ -407,6 +423,7 @@ var RouteManager = {
         print('RouteManager: setting current wp to '~ cur_idx);
         setprop("/autopilot/route-manager/input", "@JUMP" ~ cur_idx);
         setprop("/flight-management/current-wp", cur_idx);
+        fmgc_loop.wp = flightplan().getWP();
     },
     deleteFlightPlan: func(fpId){
         if(fpId == 'current'){
@@ -439,11 +456,13 @@ var RouteManager = {
         me.getFlightPlan('secondary');
     },
     getWP: func(idx, fpID = nil){
+        if(me.sequencing) return nil;
         var fp = me.getFlightPlan(fpID);
         if(fp == nil) return nil;
         return fp.getWP(idx);
     },
     getWaypoints: func(fpID = nil){
+        if(me.sequencing) return [];
         var fp = me.getFlightPlan(fpID);
         if(fp == nil){
             print('RouteManager -> getWaypoints: no flightplan.');
@@ -603,7 +622,7 @@ var RouteManager = {
         return dist;
     },
     getDestinationWP: func(fpID = nil){
-        if(me.sequencing) return nil;
+        if(me.sequencing or me.updating) return nil;
         if(fpID == nil or fpID == '' or fpID == 'current')
             return me.destination_wp;
         var info = me.flightplan_info[fpID];
@@ -643,9 +662,11 @@ var RouteManager = {
         'autopilot/route-manager/signals/rm-' ~ signal;
     },
     _findCurrentWPIndex: func(){
-        me.update();
+        #me.update();
+        var totaldist= getprop("autopilot/route-manager/total-distance");
         var remaining_nm = getprop("autopilot/route-manager/distance-remaining-nm");
-        var my_offset = me.total_distance_nm - remaining_nm;
+        var my_offset = totaldist - remaining_nm;
+        if(my_offset < 0) my_offset = 0;
         var fp = me.flightplan;
         var sz = fp.getPlanSize();
         var idx = 0;

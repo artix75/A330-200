@@ -2428,5 +2428,16 @@
 			<wp><wp-id>VJR</wp-id></wp>
 		</route>
 	</route>
+	
+	<route>
+		<rte_id>PHEDDFEDDS1</rte_id>
+		<depicao>EDDF</depicao>
+		<arricao>EDDS</arricao>
+		<route>
+			<wp><wp-id>RID</wp-id></wp>
+			<wp><wp-id>ANEKI</wp-id></wp>
+			<wp><wp-id>KRH</wp-id></wp>
+		</route>
+	</route>
 
 </PropertyList>

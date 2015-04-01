@@ -50,7 +50,7 @@
             <binding>
 				<command>nasal</command>
 		 		<script>
-		 			if (size(getprop("/instrumentation/mcdu/input")) == 10) {
+		 			if (size(getprop("/instrumentation/mcdu/input")) >= 10) {
 		 		
 						mcdu.mCDU_init.co_rte(0, getprop("/instrumentation/mcdu/input"));
 					

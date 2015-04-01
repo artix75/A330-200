@@ -629,6 +629,21 @@ canvas.NDStyles["Airbus"] = {
 				}
 			}
 		},
+		{
+			name: 'DEBUG',
+			isMapStructure: 1,
+			always_update: 1,
+			update_on: ['toggle_display_mode'],
+			predicate: func(nd, layer){
+				var map_mode = nd.in_mode('toggle_display_mode', ['MAP', 'PLAN']);
+				var debug_actv = getprop('autopilot/route-manager/debug/active') or 0;
+				var visible = (map_mode and debug_actv);
+				layer.group.setVisible( visible );
+				if (visible) {
+					layer.update();
+				}
+			}
+		}
 
 		## add other layers here, layer names must match the registered names as used in *.layer files for now
 		## this will all change once we're using Philosopher's MapStructure framework

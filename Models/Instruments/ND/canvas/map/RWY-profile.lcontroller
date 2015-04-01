@@ -78,8 +78,10 @@ var searchCmd = func {
 
 	var driver = me.route_driver;
 	if(!driver.shouldUpdate()) return res;
+	driver.update();
 	var fpcount = driver.getNumberOfFlightPlans();
 	for(var i = 0; i < fpcount; i += 1){
+		if(!driver.shouldUpdate()) continue;
 		var fp = driver.getFlightPlan(i);
 		var depApt = fp.departure;
 		if(depApt != nil){

@@ -472,7 +472,7 @@
     	<object-name>trgt-spd-mng</object-name>
         <transform>
             <subtype>textranslate</subtype>
-            <property>/flight-management/fmgc-values/target-spd</property>
+            <property>/instrumentation/pfd/target-spd</property>
             <factor>0.002001953</factor>
             <axis>
                 <y>-1</y>
@@ -1976,7 +1976,7 @@
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">number-value</type>
         <format type="string">%3.0f</format>
-        <property>/flight-management/fmgc-values/target-spd</property>
+        <property>/instrumentation/pfd/target-spd</property>
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_bold.txf</font>
         <draw-text type="bool">true</draw-text>
@@ -2000,7 +2000,7 @@
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">number-value</type>
         <format type="string">%5.0f</format>
-        <property>/flight-management/fmgc-values/target-spd</property>
+        <property>/instrumentation/pfd/target-spd</property>
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_bold.txf</font>
         <draw-text type="bool">true</draw-text>
@@ -2024,7 +2024,7 @@
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">number-value</type>
         <format type="string">%1.2f</format>
-        <property>/flight-management/fmgc-values/target-spd</property>
+        <property>/instrumentation/pfd/target-spd</property>
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_bold.txf</font>
         <draw-text type="bool">true</draw-text>
@@ -2048,7 +2048,7 @@
         <axis-alignment>yz-plane</axis-alignment>
         <type type="string">number-value</type>
         <format type="string">%1.2f</format>
-        <property>/flight-management/fmgc-values/target-spd</property>
+        <property>/instrumentation/pfd/target-spd</property>
         <truncate type="bool">false</truncate>
         <font type="string">helvetica_bold.txf</font>
         <draw-text type="bool">true</draw-text>
@@ -2931,6 +2931,30 @@
         </font-resolution>
     </text>
     
+    <text>
+        <name>presel-spd</name>
+        <offsets>
+            <x-m>0.00091828</x-m>
+            <y-m>-0.0706226</y-m>
+            <z-m>0.0531781</z-m>
+        </offsets>
+        <alignment>left-center</alignment>
+        <axis-alignment>yz-plane</axis-alignment>
+        <type type="string">text-value</type>
+        <format type="string">%s</format>
+        <truncate type="bool">false</truncate>
+        <font type="string">helvetica_medium.txf</font>
+        <property>/instrumentation/pfd/presel-spd</property>
+        <draw-text type="bool">true</draw-text>
+        <draw-alignment type="bool">false</draw-alignment>
+        <draw-boundingbox type="bool">false</draw-boundingbox>
+        <character-size>0.0055</character-size>
+        <font-resolution>
+            <width type="int">32</width>
+            <height type="int">32</height>
+        </font-resolution>
+    </text>
+    
     <!-- PFD Boxes -->
     
     <text>
@@ -3468,6 +3492,7 @@
         <object-name>v1-spd</object-name>
         <object-name>hdg-label-right</object-name>
         <object-name>hdg-label-left</object-name>
+        <!--object-name>presel-spd</object-name-->
 		<diffuse>
 			<red>0</red>
 			<green>0.886</green>
@@ -3582,6 +3607,7 @@
         <object-name>athr-flx-to-temp</object-name>
         <object-name>fma-vs</object-name>
         <object-name>fma-fpa</object-name>
+        <object-name>presel-spd</object-name>
         <diffuse>
             <red>0.06</red>
             <green>0.55</green>
@@ -4123,7 +4149,7 @@
                     <value>fmgc</value>
                 </equals>
                 <greater-than-equals>
-                    <property>/flight-management/fmgc-values/target-spd</property>
+                    <property>/instrumentation/pfd/target-spd</property>
                     <property>velocities/mach</property>
                 </greater-than-equals>
             </and>
@@ -4144,7 +4170,7 @@
                     <value>fmgc</value>
                 </equals>
                 <less-than>
-                    <property>/flight-management/fmgc-values/target-spd</property>
+                    <property>/instrumentation/pfd/target-spd</property>
                     <property>velocities/mach</property>
                 </less-than>
             </and>
@@ -4372,6 +4398,17 @@
         <object-name>athr-flx-to-temp</object-name>
         <condition>
             <property>instrumentation/pfd/flx-indication</property>
+        </condition>
+    </animation>
+    
+    <animation>
+        <type>select</type>
+        <object-name>presel-spd</object-name>
+        <condition>
+            <equals>
+                <property>/flight-management/flight-modes/athr/msg</property>
+                <value></value>
+            </equals>
         </condition>
     </animation>
     

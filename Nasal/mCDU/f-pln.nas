@@ -511,6 +511,7 @@ var f_pln = {
 		setprop('/instrumentation/mcdu/overfly-mode', 0);
 	},
 	get_destination_wp: func(){
+		if(me.route_manager.sequencing) return nil;
 		var f= me.get_current_flightplan(); 
 		var current_fp = getprop(f_pln_disp~ "current-flightplan");
 		if(current_fp == nil or current_fp == ''){
@@ -527,6 +528,7 @@ var f_pln = {
 		return wp_info;
 	},
 	get_destination_airport: func(){
+		if(me.route_manager.sequencing) return nil;
 		var f= me.get_current_flightplan();
 		return f.destination;
 	},
@@ -556,6 +558,7 @@ var f_pln = {
 	},
 	update_flightplan_waypoints: func(){
 		if(me.updating_wpts) return;
+		if(me.route_manager.sequencing) return;
 		me.updating_wpts = 1; 
 		var first = getprop(f_pln_disp~ "first");
 		if(first == nil or first == '') first = 0;
@@ -616,7 +619,7 @@ var f_pln = {
 	update_disp : func {
 	
 		# This function is simply to update the display in the Active Flight Plan Page. This gets first wp ID and then places the others accordingly.
-		
+		if(me.route_manager.sequencing) return nil;
 		me.update_flightplan_waypoints();
 		
 		var first = getprop(f_pln_disp~ "first");
@@ -898,6 +901,7 @@ var f_pln = {
 		getprop(f_pln_disp~ "l" ~ line ~ '/alternate');
 	},
 	get_flightplan_at_line: func(line){
+		if(me.route_manager.sequencing) return nil;
 		var fp =  nil;
 		var is_altn = me.is_alternate_line(line);
 		if(!is_altn){
@@ -909,6 +913,7 @@ var f_pln = {
 		return fp;
 	},
 	get_wp_at_line: func(line){
+		if(me.route_manager.sequencing) return nil;
 		var idx = getprop(f_pln_disp~ "l" ~ line ~ '/wp-index');
 		if(idx == nil or idx == '') return nil;
 		var wp = nil;
@@ -930,6 +935,7 @@ var f_pln = {
 		#	setprop("autopilot/route-manager/route/wp[" ~ (first) ~ "]/ias-mach", spd);
 		#if(alt != nil)
 		#	setprop("autopilot/route-manager/route/wp[" ~ (first) ~ "]/altitude-ft", alt);
+		if(me.route_manager.sequencing) return nil;
 		var wp = me.get_wp_at_line(line);
 		if(spd != nil)
 			wp.setSpeed(spd, 'at');
@@ -1039,6 +1045,7 @@ var f_pln = {
 		return createWP(pos, '(T-P)', 'pseudo');
 	},
 	pos_along_route: func(offset_nm = 0){
+		if(me.route_manager.sequencing) return nil;
 		var fp = flightplan();
 		var remaining = getprop("autopilot/route-manager/distance-remaining-nm") or 0;
 		remaining -= offset_nm;
@@ -1065,6 +1072,7 @@ var toggle_overfly = func(fp, wp_idx){
 setlistener(f_pln_disp~ 'current-flightplan', func(n){
 	var cur = n.getValue();
 	var rm = fmgc.RouteManager;
+	if(rm.sequencing) return;
 	var fp = rm.getFlightPlan(cur);
 	var dep = '';
 	var arr = '';
@@ -1085,6 +1093,7 @@ setlistener(f_pln_disp~ 'current-flightplan', func(n){
 }, 0, 1);
 
 setlistener('autopilot/route-manager/current-wp', func(){
+	if(fmgc.RouteManager.sequencing) return;
 	var curpage = getprop('instrumentation/mcdu/page');
 	if(curpage == 'f-pln'){
 		mcdu.f_pln.update_disp();
@@ -1094,6 +1103,7 @@ setlistener('autopilot/route-manager/current-wp', func(){
 setlistener('instrumentation/mcdu/sec-f-pln/disp', func(n){
 	var disp_sec= n.getValue();
 	var rm = fmgc.RouteManager;
+	if(rm.sequencing) return;
 	if(!disp_sec){
 		if(rm.getFlightPlan('temporary') != nil)
 			setprop(f_pln_disp~ 'current-flightplan', 'temporary');

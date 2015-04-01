@@ -20,39 +20,39 @@ var sid = {
 		
 		# Get a list of all available runways on the departure airport
 		
-        var info = airportinfo(icao);
-        if (info == nil){
-            setprop(dep~ "runway", '');
-            me.update_rwys();
-            return;
-        }
+		var info = airportinfo(icao);
+		if (info == nil){
+			setprop(dep~ "runway", '');
+			me.update_rwys();
+			return;
+		}
 
-        var runways = keys(info.runways);
-        var rwy_count = size(runways);
+		var runways = keys(info.runways);
+		var rwy_count = size(runways);
 
-        for(var rwy_index = 0; rwy_index < rwy_count; rwy_index += 1) {
-            var rwy_name = runways[rwy_index];
-            var rwy = info.runways[rwy_name];
+		for(var rwy_index = 0; rwy_index < rwy_count; rwy_index += 1) {
+			var rwy_name = runways[rwy_index];
+			var rwy = info.runways[rwy_name];
 
-            setprop(dep~ "runway[" ~ rwy_index ~ "]/id", rwy.id);
+			setprop(dep~ "runway[" ~ rwy_index ~ "]/id", rwy.id);
 
-            setprop(dep~ "runway[" ~ rwy_index ~ "]/crs", int(rwy.heading));
+			setprop(dep~ "runway[" ~ rwy_index ~ "]/crs", int(rwy.heading));
 
-            setprop(dep~ "runway[" ~ rwy_index ~ "]/length-m", int(rwy.length));
+			setprop(dep~ "runway[" ~ rwy_index ~ "]/length-m", int(rwy.length));
 
-            setprop(dep~ "runway[" ~ rwy_index ~ "]/width-ft", rwy.width * globals.M2FT);
+			setprop(dep~ "runway[" ~ rwy_index ~ "]/width-ft", rwy.width * globals.M2FT);
 
-            var ils = rwy.ils;
-            if (ils != nil){
-                var ils_frq = ils.frequency;
-                if(ils_frq == nil) ils_frq = 0; 
-                ils_frq = ils_frq / 100;
-                setprop(dep~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", ils_frq);
-            } else {
-                setprop(dep~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", 0);
-            }
+			var ils = rwy.ils;
+			if (ils != nil){
+				var ils_frq = ils.frequency;
+				if(ils_frq == nil) ils_frq = 0; 
+				ils_frq = ils_frq / 100;
+				setprop(dep~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", ils_frq);
+			} else {
+				setprop(dep~ "runway[" ~ rwy_index ~ "]/ils-frequency-mhz", 0);
+			}
 
-        }
+		}
 		
 		setprop(dep~ "runways", rwy_index);
 		
@@ -118,12 +118,22 @@ var sid = {
 	},
 	
 	confirm_sid : func(n) {
-                
-		var fp = flightplan();
+		var fp = mcdu.f_pln.get_current_flightplan();
 		me.WPmax = size(me.SIDList[n].wpts);
 		var skipped = 0;
 		var do_trigger = 0;
-		for(var wp = 0; wp < me.WPmax; wp += 1) {
+		var wp_max = me.WPmax;
+		var enroute_wp = nil;
+		if(wp_max > 0){
+			var last_wp = me.SIDList[n].wpts[wp_max - 1];
+			enroute_wp = fmgc.RouteManager.findWaypointByID(last_wp.wp_name, fp.id);
+			if(enroute_wp != nil){
+				wp_max -= 1;
+				fmgc.RouteManager.deleteWaypoints(1, enroute_wp.index - 1, fp.id);
+			}
+		}
+		var last_wp_idx = 0;
+		for(var wp = 0; wp < wp_max; wp += 1) {
 		
 			# Copy waypoints to property tree
 			var sid_wp = me.SIDList[n].wpts[wp];
@@ -142,12 +152,12 @@ var sid = {
 			var wp_idx = (wp + 1) - skipped;
 			var wpt = mcdu.f_pln.insert_procedure_wp('sid', sid_wp, wp_idx);
 			if(wpt == nil) skipped += 1;
-		
+			last_wp_idx = wp_idx;
 		}
+		var is_default = 0;
 		if (me.SIDList[n].wp_name == 'DEFAULT'){
 			var current_fp = getprop(f_pln_disp~ "current-flightplan");
 			if(current_fp != 'current' and current_fp != '' and current_fp != nil){
-				var fp = mcdu.f_pln.get_current_flightplan();
 				var dpt = fp.departure;
 				var dst = fp.destination;
 				var rwy = dpt.runways[getprop(dep~ "selected-rwy")];
@@ -180,6 +190,7 @@ var sid = {
 				setprop('/autopilot/route-manager/departure/sid', 'DEFAULT'); 
 				setprop(dep~ "active-sid/name", 'DEFAULT');
 			}
+			is_default = 1;
 		} else {
 			setprop(dep~ "active-sid/name", me.SIDList[n].wp_name);
 		}
@@ -194,6 +205,13 @@ var sid = {
 		if(fmgc.RouteManager.hasDiscontinuity(wp.id, fpID)){
 			fmgc.RouteManager.clearDiscontinuity(wp.id, fpID);
 			do_trigger = 1;
+		}
+		if(enroute_wp == nil and !is_default and last_wp_idx){
+			var last_sid_wp = fp.getWP(last_wp_idx);
+			if(last_sid_wp != nil){
+				fmgc.RouteManager.setDiscontinuity(wp.id, fpID);
+				do_trigger = 1;
+			}
 		}
 		if(do_trigger) 
 			fmgc.RouteManager.trigger(fmgc.RouteManager.SIGNAL_FP_EDIT);

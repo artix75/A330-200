@@ -100,7 +100,7 @@ var star = {
 		var arpt = airportinfo(me.icao);
 		var rwy = arpt.runways[id];
 		if(rwy == nil) return;
-		var fp = f_pln.get_current_flightplan();
+		var fp = f_pln.revise_flightplan();#f_pln.get_current_flightplan();
 		#setprop("/autopilot/route-manager/destination/runway", id);
 		fp.destination_runway = rwy;
 		f_pln.update_flightplan_waypoints();
@@ -134,12 +134,30 @@ var star = {
 	},
 	
 	confirm_star : func(n) {
-	
+		var fp = mcdu.f_pln.get_current_flightplan();
 		me.WPmax = size(me.STARList[n].wpts);
 		var skipped = 0;
+		var wp_offs = 0;
 		var dest_wpt = mcdu.f_pln.get_destination_wp();
 		var last_idx = dest_wpt.index;
-		for(var wp = 0; wp < me.WPmax; wp += 1) {
+		var enroute_wp = nil;
+		var last_enroute_wp = (last_idx > 1 ? fp.getWP(last_idx - 1) : nil);
+		if(me.WPmax > 0){
+			var first_wp = me.STARList[n].wpts[0];
+			enroute_wp = fmgc.RouteManager.findWaypointByID(first_wp.wp_name, fp.id);
+			if(enroute_wp != nil){
+				wp_offs = 1;
+				var enroute_idx = enroute_wp.index;
+				if(last_enroute_wp != nil and enroute_idx <= last_enroute_wp.index)
+					last_enroute_wp = nil;
+				var len = last_idx - enroute_idx;
+				fmgc.RouteManager.deleteWaypoints(enroute_idx, len, fp.id);
+				dest_wpt = mcdu.f_pln.get_destination_wp();
+				last_idx = dest_wpt.index;
+			}
+		}
+
+		for(var wp = wp_offs; wp < me.WPmax; wp += 1) {
 			var star_wp = me.STARList[n].wpts[wp];
 			# Copy waypoints to property tree
 		
@@ -164,15 +182,11 @@ var star = {
 		
 		setprop("/instrumentation/mcdu/page", "f-pln");
 		var do_trigger = 0;
-		var fp = f_pln.get_current_flightplan();
+		var is_default = 0;
+		#var fp = f_pln.get_current_flightplan();
 		var fpID = f_pln.get_flightplan_id();
-		var last_wp = f_pln.get_destination_wp();
-		if(last_wp == nil){
-			var last_id = fp.getPlanSize() - 1;
-			last_wp = fp.getWP(last_id);
-		}
-		last_wp = fp.getWP(last_wp.index - 1);
 		if(me.STARList[n].wp_name == 'DEFAULT'){
+			is_default = 1;
 			var current_fp = getprop(f_pln_disp~ "current-flightplan");
 			if(current_fp != 'current' and current_fp != '' and current_fp != nil){
 				var fp = mcdu.f_pln.get_current_flightplan();
@@ -214,8 +228,14 @@ var star = {
 			var rwy = getprop(arr~ "selected-rwy");
 			me.confirm_iap(rwy);
 		}
-		if(fmgc.RouteManager.hasDiscontinuity(last_wp.id, fpID)){
-			fmgc.RouteManager.clearDiscontinuity(last_wp.id, fpID);
+		if(last_enroute_wp != nil and is_default){
+			if(fmgc.RouteManager.hasDiscontinuity(last_enroute_wp.id, fpID)){
+				fmgc.RouteManager.clearDiscontinuity(last_enroute_wp.id, fpID);
+				do_trigger = 1;
+			}
+		}
+		elsif(enroute_wp == nil and !is_default and last_enroute_wp != nil){
+			fmgc.RouteManager.setDiscontinuity(last_enroute_wp != nil.id, fpID);
 			do_trigger = 1;
 		}
 		if(do_trigger) 

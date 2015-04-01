@@ -5,7 +5,8 @@ var A330RouteDriver = {
 	new: func(){
 		var m = {
 			parents: [A330RouteDriver],
-			plan_wp_info: nil
+			plan_wp_info: nil,
+			updating: 0
 		};
 		m.init();
 		return m;
@@ -19,6 +20,8 @@ var A330RouteDriver = {
 	update: func(){
 		if(!getprop('autopilot/route-manager/route/num'))
 			return;
+		me.updating = 1;
+		if(me.route_manager.sequencing) return;
 		var phase = getprop('/flight-management/phase');
 		me.fplan_types = [];
 		me.plans = me.route_manager.allFlightPlans();
@@ -39,15 +42,19 @@ var A330RouteDriver = {
 				append(me.fplan_types, 'missed');
 		}
 		me.phase = phase;
+		me.updating = 0;
 	},
 	getNumberOfFlightPlans: func(){
+		if(me.route_manager.sequencing or me.updating) return 0;
 		size(me.fplan_types);
 	},
 	getFlightPlanType: func(fpNum){
+		if(me.route_manager.sequencing or me.updating) return nil;
 		if(fpNum >= me.getNumberOfFlightPlans()) return nil;
 		me.fplan_types[fpNum];
 	},
 	getFlightPlan: func(fpNum){
+		if(me.route_manager.sequencing or me.updating) return nil;
 		var type = me.getFlightPlanType(fpNum);
 		if(type == nil) return nil;
 		if(type != 'missed'){
@@ -69,12 +76,14 @@ var A330RouteDriver = {
 		}
 	},
 	getFlightPlanByType: func(type){
+		if(me.route_manager.sequencing or me.updating) return nil;
 		if(find('alternate_', type) == 0)
 			me.alternates[split('_', type)[1]];
 		else 
 			me.plans[type];
 	},
 	getPlanSize: func(fpNum){
+		if(me.route_manager.sequencing or me.updating) return 0;
 		var type = me.getFlightPlanType(fpNum);
 		if(type == nil) return 0;
 		if(type == 'missed'){
@@ -92,6 +101,7 @@ var A330RouteDriver = {
 		}
 	},
 	getWP: func(fpNum, idx){
+		if(me.route_manager.sequencing or me.updating) return nil;
 		var type = me.getFlightPlanType(fpNum);
 		if(type == nil) return 0;
 		if(type != 'missed'){
@@ -105,7 +115,7 @@ var A330RouteDriver = {
 		}
 	},
 	getPlanModeWP: func(idx){
-		if(me.route_manager.sequencing) return me.plan_wp_info;
+		if(me.route_manager.sequencing or me.updating) return me.plan_wp_info;
 		var wp = mcdu.f_pln.get_wp(idx);
 		if(wp != nil){
 			me.plan_wp_info = {
@@ -127,9 +137,10 @@ var A330RouteDriver = {
 		]
 	},
 	shouldUpdate: func(){
-		!me.route_manager.sequencing;
+		!me.route_manager.sequencing and !me.updating;
 	},
 	hasDiscontinuity: func(fpNum, wptID){
+		if(me.route_manager.sequencing) return 0;
 		var type = me.getFlightPlanType(fpNum);
 		me.route_manager.hasDiscontinuity(wptID, type);
 	}

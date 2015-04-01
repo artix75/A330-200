@@ -12,7 +12,6 @@ var wp_transit = {
 		var fbw_phase = getprop("/fbw/flight-phase");
 		var end_flight = getprop("/flight-management/end-flight");
 		var cur_wp = getprop("/autopilot/route-manager/current-wp");
-		var dest_wp = fmgc_loop.get_destination_wp();
 		if (wp_count > 1 and fbw_phase == "Flight Mode" and end_flight != 1 and 
 			cur_wp != getprop("/flight-management/hold/hold-id")) {
 		
@@ -53,6 +52,7 @@ var wp_transit = {
 
 				me.current_wp += 1;
 				setprop("/flight-management/current-wp", me.current_wp);
+				var dest_wp = RouteManager.getDestinationWP();
 				var last_wp = (dest_wp != nil ? dest_wp.index : wp_count - 1);
 
 				if (getprop("/autopilot/route-manager/route/wp[" ~ me.current_wp ~ "]/id") != nil) {

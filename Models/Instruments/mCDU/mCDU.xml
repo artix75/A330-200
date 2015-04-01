@@ -516,7 +516,19 @@
 				<command>nasal</command>
 		 		<script>
 					setprop('instrumentation/mcdu/sec-f-pln/disp', 0);
-					setprop("/instrumentation/mcdu/page", "perf");
+					var phase = getprop('flight-management/phase');
+					var page = 'perf';
+					if(phase == 'CLB')
+						page = 'perf-clb'
+					elsif(phase == 'CRZ')
+						page = 'perf-crz';
+					elsif(phase == 'DES')
+						page = 'perf-des';
+					elsif(phase == 'APP')
+						page = 'perf-app';
+					elsif(phase == 'G/A')
+						page = 'perf-ga';
+					setprop("/instrumentation/mcdu/page", page);
 				</script>
             </binding>
         </action>

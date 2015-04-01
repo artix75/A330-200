@@ -104,9 +104,12 @@ var searchCmd = func {
     var planCount = driver.getNumberOfFlightPlans();
     for(var idx = 0; idx < planCount; idx += 1){
         var fp = driver.getFlightPlan(idx);
+        if(fp == nil) continue;
         var fpSize = fp.getPlanSize(idx);
-        for (var i = 0; i < fpSize; i+=1)
+        for (var i = 0; i < fpSize; i+=1){
+            if(!driver.shouldUpdate()) return[];
             append(result, WPTModel.new(fp, i));
+        }
     }
     return result;
 }

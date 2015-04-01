@@ -22,12 +22,12 @@ var autoland = {
 		# LAND > FLARE1 > FLARE2 > MAIN_TOUCH (SLOWLY REDUCE PITCH) > NOSE TOUCH (RETARD)
 		
 		if ((athr == "eng") and 
-            (getprop("/flight-management/control/spd-ctrl") == "fmgc") and 
-            (getprop("/flight-management/spd-manager/approach/mode") == "MANAGED (AUTO)")) {
+			(getprop("/flight-management/control/spd-ctrl") == "fmgc")) {
 		    #print("Autoland speed management");
-            if (nose_wow or main_wow or agl <= 50) { 
-                me.retard();
-			} elsif (agl <= 100) {
+			if (nose_wow or main_wow or agl <= 50) { 
+				me.retard();
+			} 
+			elsif (agl <= 100) {
                 #print("Autoland: AGL <= 100, regulating speed and activating autoland");
 
 				setprop("/flight-management/fmgc-values/target-spd", me.spd_manage(lbs) - 15);
@@ -112,8 +112,9 @@ var autoland = {
 	},
 	
 	spd_manage: func(lbs) {
-	
-		var spd = 125 + ((lbs - 287000) * 0.000235);
+		var spd = getprop('/flight-management/spd-manager/approach/app-spd');
+		if(spd) return spd;
+		spd = 125 + ((lbs - 287000) * 0.000235);
 		
 		return spd;
 	
