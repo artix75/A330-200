@@ -5,7 +5,7 @@ var parents = [canvas.SymbolLayer.Controller];
 var __self__ = caller(0)[0];
 
 var _options = { # default configuration options
-    alts: [100,140,250,260]
+    alts: [100,140,250,260,'wp']
 };
 canvas.SymbolLayer.Controller.add(name, __self__);
 canvas.SymbolLayer.add(name, {

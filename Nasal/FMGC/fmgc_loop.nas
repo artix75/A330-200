@@ -746,6 +746,10 @@ var fmgc_loop = {
                         var is_descending = vmode_vs_fps <= -8 or ((me.fcu_alt - altitude) < -200); #((phase == 'DES' and (me.fcu_alt - altitude) < -200);
                         if(remaining < decel_point or phase == 'APP'){
                             spd = autoland.spd_manage(getprop("/fdm/jsbsim/inertia/weight-lbs"));
+                            if(phase != 'G/A' and phase != 'APP'){
+                                setprop('flight-management/phase', 'APP');
+                                me.phase = 'APP';
+                            }
                         } else {
                             if (altitude <= (is_descending ? 10500 : 10000)){
                                 spd = 250;
@@ -1191,7 +1195,8 @@ var fmgc_loop = {
         me.v2_spd = getprop('/instrumentation/fmc/vspeeds/V2');
         me.vsfpa_mode = getprop(fmgc~'vsfpa-mode');
         me.flaps = getprop("/controls/flight/flaps");
-        me.acc_alt = getprop('/instrumentation/fmc/acc-alt');
+        me.acc_alt = getprop(settings~ 'acc-alt');
+        me.thr_red = getprop(settings~ 'thr-red');
         #me.trans_alt = getprop('/instrumentation/fmc/trans-alt');
         me.mach_trans_alt = getprop('/instrumentation/fmc/mach-trans-alt');
         me.flex_to_temp = getprop('/instrumentation/fmc/flex-to-temp');
@@ -1317,6 +1322,10 @@ var fmgc_loop = {
         me.gs_dev = getprop('instrumentation/nav/gs-needle-deflection-norm');
         me.loc_dev = getprop('instrumentation/nav/heading-needle-deflection-norm');
         me.phase = me.flight_phase();
+        if(me.phase == 'G/A'){
+            me.acc_alt = getprop(settings~ 'ga-acc-alt');
+            me.thr_red = getprop(settings~ 'ga-thr-red');
+        }
         
         me.throttle_pos = getprop('/controls/engines/engine[0]/throttle-pos');
         me.throttle_r_pos = getprop('/controls/engines/engine[1]/throttle-pos');
@@ -1776,7 +1785,7 @@ var fmgc_loop = {
                 }
             }
             fixed_thrust = toga or flex_mct or above_clb;
-            if(above_clb and me.agl > me.acc_alt)
+            if(above_clb and me.agl > me.thr_red)
                 me.thrust_levers_alert();
         }
         if(me.is_stalling or me.alpha_floor_mode){
@@ -2697,7 +2706,7 @@ var fmgc_loop = {
             return 0;
         if ((me.spd_ctrl != "fmgc") or (me.a_thr != "eng")) 
             return 0;
-        var phase = getprop("/flight-management/phase");
+        var phase = getprop("/flight-management/phase"); # TODO: USE TRUE VERTICAL PHASE?
         var trgt_alt = 0;
         if(me.ver_ctrl == "fmgc"){
             if(phase == 'CLB')
@@ -2711,6 +2720,7 @@ var fmgc_loop = {
         var vs_fpm = me.vs_fpm;
         if(vs_fpm == 0) return;
         var spd_cange_count = 0;
+        var f= me.flightplan; 
         foreach(var alt; [10000, me.mach_trans_alt]){
             var alt_100 = alt / 100;
             var node_path = spdChangeNode ~ '-' ~ alt_100;
@@ -2746,7 +2756,6 @@ var fmgc_loop = {
                     if(math.abs(nm - cur_raw) >= 1){
                         setprop(node_raw_path, nm);
                     } 
-                    var f= me.flightplan; 
                     #print("TC: " ~ nm);
                     var point = f.pathGeod(0, nm);
                     setprop(node_path ~ "/latitude-deg", point.lat); 
@@ -2757,6 +2766,32 @@ var fmgc_loop = {
                     setprop(node_raw_path, 0);
                 }
             }
+        }
+        var wp = (!RouteManager.sequencing ? f.getWP() : nil);
+        var node_path = spdChangeNode ~ '-wp';
+        var node_raw_path = spd_change_raw ~ '-wp';
+        if(wp != nil){
+            var cstr = wp.speed_cstr;
+            var wp_dist = wp.distance_along_route;
+            if(cstr != nil and cstr > 0){
+                var nm = wp_dist - 1;
+                var cur_raw = getprop(node_raw_path);
+                if(cur_raw == nil) cur_raw = 0;
+                if(math.abs(nm - cur_raw) >= 1){
+                    setprop(node_raw_path, nm);
+                } 
+                var point = f.pathGeod(0, nm);
+                setprop(node_path ~ "/latitude-deg", point.lat); 
+                setprop(node_path ~ "/longitude-deg", point.lon); 
+            } else {
+                var node = props.globals.getNode(node_path);
+                if(node != nil) node.remove();
+                setprop(node_raw_path, 0);
+            }
+        } else {
+            var node = props.globals.getNode(node_path);
+            if(node != nil) node.remove();
+            setprop(node_raw_path, 0);
         }
     },
     nm2level: func(from_alt, to_alt, vs_fpm){

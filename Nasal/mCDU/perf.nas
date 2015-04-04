@@ -89,3 +89,31 @@ setlistener('flight-management/crz_fl', func(n){
     setprop('/flight-management/spd-manager/descent/managed-speed', des_spd);
 }, 0, 0);
 
+setlistener("/flight-management/settings/acc-alt", func(n){
+    var acc_alt = n.getValue();
+    var thr_red = getprop("/flight-management/settings/thr-red");
+    if(thr_red == nil or !thr_red) thr_red = acc_alt;
+    setprop('instrumentation/fmc/thr-red-acc', thr_red ~ '/' ~ acc_alt);
+}, 0, 0);
+
+setlistener("/flight-management/settings/thr-red", func(n){
+    var thr_red = n.getValue();
+    var acc_alt = getprop("/flight-management/settings/acc-alt");
+    if(acc_alt == nil or !acc_alt) acc_alt = thr_red;
+    setprop('instrumentation/fmc/thr-red-acc', thr_red ~ '/' ~ acc_alt);
+}, 0, 0);
+
+setlistener("/flight-management/settings/ga-acc-alt", func(n){
+    var acc_alt = n.getValue();
+    var thr_red = getprop("/flight-management/settings/ga-thr-red");
+    if(thr_red == nil or !thr_red) thr_red = acc_alt;
+    setprop('instrumentation/fmc/ga-thr-red-acc', thr_red ~ '/' ~ acc_alt);
+}, 0, 0);
+
+setlistener("/flight-management/settings/ga-thr-red", func(n){
+    var thr_red = n.getValue();
+    var acc_alt = getprop("/flight-management/settings/ga-acc-alt");
+    if(acc_alt == nil or !acc_alt) acc_alt = thr_red;
+    setprop('instrumentation/fmc/ga-thr-red-acc', thr_red ~ '/' ~ acc_alt);
+}, 0, 0);
+

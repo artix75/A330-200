@@ -235,7 +235,7 @@ var star = {
 			}
 		}
 		elsif(enroute_wp == nil and !is_default and last_enroute_wp != nil){
-			fmgc.RouteManager.setDiscontinuity(last_enroute_wp != nil.id, fpID);
+			fmgc.RouteManager.setDiscontinuity(last_enroute_wp.id, fpID);
 			do_trigger = 1;
 		}
 		if(do_trigger) 

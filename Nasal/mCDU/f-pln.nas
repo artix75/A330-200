@@ -8,6 +8,7 @@ var NM2M = 1852;
 
 var f_pln = {
 	updating_wpts: 0,
+	missed_strung: 0,
 	init_f_pln : func {
 		print('Init F-PLN');
 	
@@ -173,6 +174,7 @@ var f_pln = {
 		setprop("/autopilot/route-manager/current-wp", 0);
 		setprop("instrumentation/efis/inputs/plan-wpt-index", 0);
 		setprop("instrumentation/efis[1]/inputs/plan-wpt-index", 0);
+		me.missed_strung = 0;
 		#setprop(rm_route~ "active", 1); # TRICK: refresh canvas
 		#setprop(rm_route~ "active", 0);
 	
@@ -550,7 +552,7 @@ var f_pln = {
 			fp.deleteWP(fp.getPlanSize() - 1);
 		var altn_size = altn.getPlanSize();
 		for(var i = 0; i < altn_size; i += 1){
-			var wp = me.route_manager._copyWP(altn, fp, i);
+			var wp = me.route_manager.copyWP(altn, fp, i);
 		}
 		setprop("/instrumentation/mcdu/f-pln/enabling-altn", 1);
 		me.update_disp();
@@ -1009,6 +1011,20 @@ var f_pln = {
 		setprop('/flight-management/dir-to', tpIdx);
 		me.update_disp();
 	},
+	string_missed_appr: func(){
+		if(me.missed_strung) return;
+		if(!me.route_manager.missed_approach_planned) return;
+		var fp = flightplan();
+		var sz = fp.getPlanSize();
+		for(var i = 1; i < sz; i += 1){
+			var wp = fp.getWP(i);
+			var role = wp.wp_role;
+			var type = wp.wp_type;
+			if(role != 'approach' or type == 'runway') continue;
+			me.route_manager.copyWP(fp, fp, wp.index, fp.getPlanSize());
+		}
+		me.missed_strung = 1;
+	},
 	create_wp: func(wp_id){
 		if(wp_id == nil or string.trim(wp_id) == '') return nil;
 		setprop('instrumentation/gps/scratch/result-count', 0);
@@ -1111,4 +1127,11 @@ setlistener('instrumentation/mcdu/sec-f-pln/disp', func(n){
 			setprop(f_pln_disp~ 'current-flightplan', '');
 	}
 	f_pln.update_disp();
+}, 0, 0);
+
+setlistener('flight-management/phase', func(n){
+	var phase = n.getValue();
+	if(phase == 'G/A'){
+		f_pln.string_missed_appr();
+	}
 }, 0, 0);

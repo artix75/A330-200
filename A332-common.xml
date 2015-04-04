@@ -718,6 +718,10 @@
 			<ldg-conf-flaps>4</ldg-conf-flaps>
 			<ldg-conf>FULL</ldg-conf>
 			<ldg-conf-inactive>CONF3</ldg-conf-inactive>
+			<acc-alt>1500</acc-alt>
+			<ga-acc-alt>1500</ga-acc-alt>
+			<thr-red>1500</thr-red>
+			<ga-thr-red>1500</ga-thr-red>
 		</settings>
 	</flight-management>
 
@@ -1022,7 +1026,8 @@
 			</vspeeds>
 			<trans-alt type="int">18000</trans-alt>
 			<appr-trans-alt type="int">18000</appr-trans-alt>
-			<acc-alt type="int">1500</acc-alt>
+			<thr-red-acc type="string">1500/1500</thr-red-acc>
+			<ga-thr-red-acc type="string">1500/1500</ga-thr-red-acc>
 			<flex-to-temp type="int">-999</flex-to-temp>
 			<mach-trans-alt type="int">25000</mach-trans-alt>
 		</fmc>

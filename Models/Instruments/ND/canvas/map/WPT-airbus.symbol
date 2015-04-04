@@ -10,6 +10,7 @@ var element_type = "group";
 var init = func {
     var name = me.model.name;
     var alt = me.model.alt;
+    var spd = me.model.spd;
     var wp_type = me.model.type;
     var wp_group = me.element;
     me.alt_path = nil;
@@ -67,10 +68,24 @@ var init = func {
     .setTranslation(25,15)
     .setColor(1,1,1);
     me.text_alt = nil;
-    if(alt > 0){
+    if(alt > 0 or spd > 0){
+        var cstr_txt = "\n";
+        if(alt > 0){
+            if(alt > 10000) 
+                cstr_txt ~= sprintf('FL%3.0f', int(alt / 100));
+            else 
+                cstr_txt ~= sprintf('%4.0f', int(alt));
+        }
+        if(spd > 0){
+            if(alt > 0) cstr_txt ~= "\n";
+            if(spd <= 1) 
+                cstr_txt ~= sprintf('%1.2fM', spd);
+            else 
+                cstr_txt ~= sprintf('%3.0fKT', int(spd));
+        }
         me.text_alt = wp_group.createChild("text", "wp-alt-text-" ~ me.model.idx)
         .setDrawMode( canvas.Text.TEXT )
-        .setText("\n" ~ alt)
+        .setText(cstr_txt)
         .setFont("LiberationFonts/LiberationSans-Regular.ttf")
         .setFontSize(28)
         .setTranslation(25,15);

@@ -38,9 +38,9 @@
 		<object-name>v1</object-name>
 		<object-name>vr</object-name>
 		<object-name>v2</object-name>
-        <object-name>trans-alt</object-name>
-        <object-name>acc-alt</object-name>
-        <object-name>flex-to-temp</object-name>
+		<object-name>trans-alt</object-name>
+		<object-name>thr-red-acc</object-name>
+		<object-name>flex-to-temp</object-name>
 		<emission>
 			<red>0</red>
 			<green>0.4823</green>
@@ -60,9 +60,9 @@
 		<type>pick</type>
 		<object-name>l1</object-name>
 		<action>
-            <button>0</button>
-	   		<repeatable type="bool">false</repeatable>
-            <binding>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
 				<command>nasal</command>
 		 		<script>
 		 		
@@ -120,53 +120,66 @@
         </action>
 	</animation>
     
-    <animation>
-        <type>pick</type>
-        <object-name>l4</object-name>
-        <action>
-            <button>0</button>
-            <repeatable type="bool">false</repeatable>
-            <binding>
-                <command>nasal</command>
-                <script>
+	<animation>
+		<type>pick</type>
+		<object-name>l4</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>nasal</command>
+				<script>
 
-                    var input = getprop("/instrumentation/mcdu/input");
-                    if(size(input) == 0)
-                        input = 18000;
+					var input = getprop("/instrumentation/mcdu/input");
+					if(size(input) == 0)
+						input = 18000;
 
-                    setprop("/instrumentation/fmc/trans-alt", input);
+					setprop("/instrumentation/fmc/trans-alt", input);
 
-                    setprop("/instrumentation/mcdu/input", "");
-
-
-                </script>
-            </binding>
-        </action>
-    </animation>
-    
-    <animation>
-        <type>pick</type>
-        <object-name>l5</object-name>
-        <action>
-            <button>0</button>
-            <repeatable type="bool">false</repeatable>
-            <binding>
-                <command>nasal</command>
-                <script>
-
-                    var input = getprop("/instrumentation/mcdu/input");
-                    if(size(input) == 0)
-                        input = 1500;
-
-                    setprop("/instrumentation/fmc/acc-alt", input);
-
-                    setprop("/instrumentation/mcdu/input", "");
+					setprop("/instrumentation/mcdu/input", "");
 
 
-                </script>
-            </binding>
-        </action>
-    </animation>
+				</script>
+			</binding>
+		</action>
+	</animation>
+
+	<animation>
+		<type>pick</type>
+		<object-name>l5</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>nasal</command>
+				<script>
+
+					var input = getprop("/instrumentation/mcdu/input");
+					if(size(input) == 0){
+						setprop("/flight-management/settings/acc-alt", 1500);
+						setprop("/flight-management/settings/thr-red", 1500);
+					} else {
+						var alts = split('/', input);
+						var thr_red = num(string.trim(alts[0]));
+						if(thr_red != nil){
+							if(thr_red > 0){
+								var acc_alt = thr_red;
+								if(size(alts) > 1)
+									acc_alt = num(string.trim(alts[1]));
+								if(acc_alt == nil or !acc_alt) acc_alt = thr_red;
+								setprop("/flight-management/settings/acc-alt", acc_alt);
+								setprop("/flight-management/settings/thr-red", thr_red);
+							}
+						}
+					}
+
+					setprop("/instrumentation/mcdu/input", "");
+
+
+				</script>
+			</binding>
+		</action>
+	</animation>
 	
 	<animation>
 		<type>pick</type>
@@ -367,55 +380,55 @@
 		</font-resolution>
 	</text>
     
-    <text>
-        <name>trans-alt</name>
-        <offsets>
-            <x-m>-0.0427</x-m>
-            <y-m>-0.0350</y-m>
-            <z-m>-0.0006</z-m>
-            <heading-deg>90</heading-deg>
-        </offsets>
-        <alignment>center-center</alignment>
-        <axis-alignment>xy-plane</axis-alignment>
-        <type type="string">number-value</type>
-        <format type="string">%5.0f</format>
-        <property>/instrumentation/fmc/trans-alt</property>
-        <truncate type="bool">false</truncate>
-        <font type="string">courier-bold.txf</font>
-        <draw-text type="bool">true</draw-text>
-        <draw-alignment type="bool">false</draw-alignment>
-        <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.0025</character-size>
-        <font-resolution>
-            <width type="int">32</width>
-            <height type="int">32</height>
-        </font-resolution>
-    </text>
-    
-    <text>
-        <name>acc-alt</name>
-        <offsets>
-            <x-m>-0.0339</x-m>
-            <y-m>-0.0273</y-m>
-            <z-m>-0.0006</z-m>
-            <heading-deg>90</heading-deg>
-        </offsets>
-        <alignment>center-center</alignment>
-        <axis-alignment>xy-plane</axis-alignment>
-        <type type="string">number-value</type>
-        <format type="string">%4.0f</format>
-        <property>/instrumentation/fmc/acc-alt</property>
-        <truncate type="bool">false</truncate>
-        <font type="string">courier-bold.txf</font>
-        <draw-text type="bool">true</draw-text>
-        <draw-alignment type="bool">false</draw-alignment>
-        <draw-boundingbox type="bool">false</draw-boundingbox>
-        <character-size>0.002</character-size>
-        <font-resolution>
-            <width type="int">32</width>
-            <height type="int">32</height>
-        </font-resolution>
-    </text>
+	<text>
+		<name>trans-alt</name>
+		<offsets>
+			<x-m>-0.0427</x-m>
+			<y-m>-0.0416</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">number-value</type>
+		<format type="string">%5.0f</format>
+		<property>/instrumentation/fmc/trans-alt</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+
+	<text>
+		<name>thr-red-acc</name>
+		<offsets>
+			<x-m>-0.0339</x-m>
+			<y-m>-0.0416</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/instrumentation/fmc/thr-red-acc</property>
+		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
 	
 	<text>
 		<name>rwy</name>

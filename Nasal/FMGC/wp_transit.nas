@@ -19,16 +19,34 @@ var wp_transit = {
 			var gps_accur = getprop(settings~ "gps-accur");
 			var accuracy = 0; # In Degrees, smaller is better for cruise, lower accuracy ensures a smoother WP transition
 			var fp_wp = fmgc_loop.wp;
+			if(RouteManager.sequencing) fp_wp = nil;
 			if(fp_wp != nil and fp_wp.fly_type == 'flyOver'){
-				if (gps_accur == "HIGH")
-					accuracy = 0.0005;
-				else
-					accuracy = 0.005;
+				#if (gps_accur == "HIGH")
+				#	accuracy = 0.0005;
+				#else
+				accuracy = 0.005;
 			} else {
-				if (gps_accur == "HIGH")
-					accuracy = 0.005;
-				else
-					accuracy = 0.02;
+				#if (gps_accur == "HIGH")
+				#	accuracy = 0.005;
+				#else
+				accuracy = 0.02;
+				var leg_dist = getprop('/autopilot/route-manager/route/wp[' ~cur_wp~ ']/leg-distance-nm');
+				if(cur_wp > 0 and cur_wp < (wp_count - 1) and leg_dist > 1){
+					var nxt_wp = (cur_wp + 1);
+					var bearing = getprop('/autopilot/route-manager/route/wp[' ~cur_wp~ ']/leg-bearing-true-deg');
+					var bearing_next = getprop('/autopilot/route-manager/route/wp[' ~ nxt_wp ~ ']/leg-bearing-true-deg');
+					var leg_dist_nxt = getprop('/autopilot/route-manager/route/wp[' ~nxt_wp~ ']/leg-distance-nm');
+					var turn_deg = math.abs(utils.heading_diff_deg(bearing_next, bearing));
+					var offset_nm = turn_deg * 0.03333333333333333;
+					leg_dist -= 0.5;
+					leg_dist_nxt -= 0.5;
+					var shortest_dist = ((leg_dist_nxt < leg_dist) ? leg_dist_nxt : leg_dist);
+					if(offset_nm > 1 and offset_nm > shortest_dist)
+						offset_nm = shortest_dist;
+					if(offset_nm < 1) offset_nm = 1;
+					if(offset_nm > 6) offset_nm = 6;
+					accuracy *= offset_nm;
+				}
 			}
 
 			var pos_lat = getprop("/position/latitude-deg");

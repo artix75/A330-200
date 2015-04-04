@@ -78,6 +78,7 @@ var WPTModel = {
         m.id = wp.id;
         m.name = wp.wp_name;
         m.alt = wp.alt_cstr;
+        m.spd = wp.speed_cstr;
         m.wp_id = wp.id;
         m.type = wp.wp_type;
 

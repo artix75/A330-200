@@ -368,6 +368,17 @@
 	</model>
 	
 	<model>
+		<name>mCDU_perf</name>
+		<path>perf/ga.xml</path>
+		<condition>
+			<equals>
+				<property>/instrumentation/mcdu/page</property>
+				<value>perf-ga</value>
+			</equals>
+		</condition>
+	</model>
+	
+	<model>
 		<name>mCDU_prog</name>
 		<path>prog/prog.xml</path>
 		<condition>

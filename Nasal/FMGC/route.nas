@@ -374,7 +374,7 @@ var RouteManager = {
             dest_fp.deleteWP(0);
         sz = fp.getPlanSize();
         for(var i = 0; i < sz; i += 1){
-            me._copyWP(fp, dest_fp, i);
+            me.copyWP(fp, dest_fp, i);
         }
         if(srcID != nil and dstID != nil){
             var srcInfo = me.flightplan_info[srcID];
@@ -679,22 +679,22 @@ var RouteManager = {
         }
         return idx;
     },
-    _copyWP: func(from, to, wpIdx, destIdx = -9999){
+    copyWP: func(from, to, wpIdx, destIdx = -9999){
         if(typeof(from) == 'scalar')
             from = me.getFlightPlan(from);
         if(typeof(to) == 'scalar')
             to = me.getFlightPlan(to);
         if(from == nil){
-            print('RouteManager -> _copyWP: missing "from" fp.');
+            print('RouteManager -> copyWP: missing "from" fp.');
             return nil;
         }
         if(to == nil){
-            print('RouteManager -> _copyWP: missing "to" fp.');
+            print('RouteManager -> copyWP: missing "to" fp.');
             return nil;
         }
         var src_wp = from.getWP(wpIdx);
         if(src_wp == nil){
-            print('RouteManager -> _copyWP: wp not found.');
+            print('RouteManager -> copyWP: wp not found.');
             return nil;
         }
         var dest_wp = nil;
@@ -703,7 +703,7 @@ var RouteManager = {
         if(type == 'runway'){
             var rwy = src_wp.runway();
             if(rwy == nil){
-                print('RouteManager -> _copyWP: wp runway not found.');
+                print('RouteManager -> copyWP: wp runway not found.');
                 return nil;
             }
             if(role != nil)
@@ -724,7 +724,7 @@ var RouteManager = {
                 }
             }
             if(navaid == nil){
-                print('RouteManager -> _copyWP: wp navaid not found.');
+                print('RouteManager -> copyWP: wp navaid not found.');
                 return nil;
             }
             if(role != nil)
@@ -742,7 +742,7 @@ var RouteManager = {
                 dest_wp = createWP(pos, src_wp.id);
         }
         if(dest_wp == nil){
-            print('RouteManager -> _copyWP: failed to clone wp.');
+            print('RouteManager -> copyWP: failed to clone wp.');
             return nil;
         }
         if(destIdx >= 0){

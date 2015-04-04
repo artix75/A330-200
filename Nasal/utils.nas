@@ -171,8 +171,10 @@ var print_flightplan = func(fpId = nil){
         return;
     }
     var n = getprop('autopilot/route-manager/route/num');
+    var last_bearing = 0;
     for(i = 0; i < n; i = i + 1){
         var wp = fp.getWP(i);
+        var bearing = wp.leg_bearing;
         print('ID: ' ~ wp.id);
         print('Index: '~ wp.index);
         print('Name: ' ~ wp.wp_name);
@@ -187,10 +189,15 @@ var print_flightplan = func(fpId = nil){
         print('Spd CSTR: ' ~ wp.speed_cstr);
         print('Spd CSTR Type: ' ~ (wp.speed_cstr_type != nil ? wp.speed_cstr_type : 'nil'));
         print('Leg distance: ' ~ wp.leg_distance);
-        print('Leg bearing: ' ~ wp.leg_bearing);
+        print('Leg bearing: ' ~ bearing);
+        if(i > 0){
+            var bearing_diff = heading_diff_deg(bearing, last_bearing);
+            print('Turn deg: ' ~ bearing_diff);
+        }
         print('Dist along rte: ' ~ wp.distance_along_route);
         print('-------------------------');
         print('');
+        last_bearing = bearing;
     }
 }
 
