@@ -715,6 +715,9 @@
 		</control>
 		<settings>
 			<min-elevator-ctrl type="double">-0.15</min-elevator-ctrl>
+			<ldg-conf-flaps>4</ldg-conf-flaps>
+			<ldg-conf>FULL</ldg-conf>
+			<ldg-conf-inactive>CONF3</ldg-conf-inactive>
 		</settings>
 	</flight-management>
 

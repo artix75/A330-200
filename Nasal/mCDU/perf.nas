@@ -88,3 +88,4 @@ setlistener('flight-management/crz_fl', func(n){
     setprop('/flight-management/spd-manager/cruise/managed-speed', crz_spd);
     setprop('/flight-management/spd-manager/descent/managed-speed', des_spd);
 }, 0, 0);
+

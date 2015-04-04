@@ -34,6 +34,7 @@ var fmgc_loop = {
         CRZ: [320, 0.78],
         DES: [280, 0.68]
     },
+    minimum_speeds: [150, 150, 135, 130, 120],
     init : func {
         me.UPDATE_INTERVAL = 0.1;
         me.loopid = 0;
@@ -149,6 +150,7 @@ var fmgc_loop = {
         setprop(radio~ 'ils-cat', '');
         setprop('instrumentation/pfd/athr-alert-box', 0);
         setprop(fmgc~ 'capture-leg', 0);
+        setprop(fmgc_val~ 'trans-alt', getprop('/instrumentation/fmc/trans-alt'));
     
         me.descent_started = 0;
         me.decel_point = 0;
@@ -434,6 +436,9 @@ var fmgc_loop = {
             setprop(fmgc~ "spd-with-pitch", 0);
             setprop(settings~ 'spd-pitch-min', 0);
             setprop(settings~ 'spd-pitch-max', 0);
+            if(!me.airborne and thr_lock){
+                me.update_throttle(thr_lock_val, thr_lock_val);
+            }
         }
         me.speed_with_pitch = getprop(fmgc~ "spd-with-pitch");
         if(!me.speed_with_pitch)
@@ -1187,7 +1192,7 @@ var fmgc_loop = {
         me.vsfpa_mode = getprop(fmgc~'vsfpa-mode');
         me.flaps = getprop("/controls/flight/flaps");
         me.acc_alt = getprop('/instrumentation/fmc/acc-alt');
-        me.trans_alt = getprop('/instrumentation/fmc/trans-alt');
+        #me.trans_alt = getprop('/instrumentation/fmc/trans-alt');
         me.mach_trans_alt = getprop('/instrumentation/fmc/mach-trans-alt');
         me.flex_to_temp = getprop('/instrumentation/fmc/flex-to-temp');
         me.exped_mode = getprop(fmgc~ 'exped-mode');
@@ -1249,21 +1254,28 @@ var fmgc_loop = {
         }
         elsif(me.max_throttle < 1)
             me.toga_on_ground = 0;
+        me.landing_flaps = getprop(settings~ 'ldg-conf-flaps') or 4;
+        me.appr_vls = me.minimum_speeds[me.landing_flaps] + 15;
+        setprop(fmgc_val ~ 'appr-vls', me.appr_vls);
     },
     calc_stall_speed: func(){
         var flaps = me.flaps;
         var stall_spd = 0;
         var retract_flaps_spd = 0;
         if(flaps <= 0.29){
-            stall_spd = 150;
+            stall_spd = me.minimum_speeds[0];
         }
         elsif(flaps == 0.596){
             retract_flaps_spd = 155;
-            stall_spd = 135;
+            stall_spd = me.minimum_speeds[2];
         }
-        elsif(flaps >= 0.74){
+        elsif(flaps >= 0.74 and flaps <= 0.75){
             retract_flaps_spd = 140;
-            stall_spd = 120;   
+            stall_spd = me.minimum_speeds[3];   
+        }
+        elsif(flaps > 0.75){
+            retract_flaps_spd = 135;
+            stall_spd = me.minimum_speeds[4];   
         }
         setprop(fmgc_val ~ 'stall-speed', stall_spd);
         setprop(fmgc_val ~ 'ind-stall-speed', stall_spd - 125);
@@ -1904,9 +1916,9 @@ var fmgc_loop = {
         var exp_mode = me.exped_mode;
         var flaps = me.flaps;
         var extend_flaps_spd = 0;
-        if(flaps > 0.74)
+        if(flaps > 0.745)
             vmax = 184;
-        elsif(flaps == 0.74){
+        elsif(flaps == 0.745){
             extend_flaps_spd = 184;
             vmax = 190;
         }
@@ -2178,6 +2190,7 @@ var fmgc_loop = {
                 if(me.agl > acc_alt)
                     setprop("/flight-management/phase", "CLB");
             }
+            setprop(fmgc_val~ 'trans-alt', getprop('/instrumentation/fmc/trans-alt'));
         } elsif (phase == "CLB") {
             me.manage_phase_speed('CLB');
             me.check_next_phase_speed('CRZ');
@@ -2193,6 +2206,7 @@ var fmgc_loop = {
                     me.ref_crz_alt = alt;
                 }
             }
+            setprop(fmgc_val~ 'trans-alt', getprop('/instrumentation/fmc/trans-alt'));
         } elsif (phase == "CRZ") {
             me.manage_phase_speed('CRZ');
             me.check_next_phase_speed('');
@@ -2229,7 +2243,7 @@ var fmgc_loop = {
                     setprop("/flight-management/phase", "DES");
 
             }
-
+            setprop(fmgc_val~ 'trans-alt', getprop('/instrumentation/fmc/trans-alt'));
         } elsif ((phase == "DES") and (getprop("/flight-management/control/ver-mode") == "ils")) {
 
             setprop("/flight-management/phase", "APP");
@@ -2240,14 +2254,14 @@ var fmgc_loop = {
                 app_type = 'RNAV APP';
                 
             setprop('/instrumentation/nd/app-mode', app_type);
+            setprop(fmgc_val~ 'trans-alt', getprop('/instrumentation/fmc/appr-trans-alt'));
 
         } elsif ((phase == "APP")) {
             if(getprop("/gear/gear/wow"))
                 setprop("/flight-management/phase", "LANDED");
             elsif(me.toga_trk)
                 setprop("/flight-management/phase", "G/A");
-
-
+            setprop(fmgc_val~ 'trans-alt', getprop('/instrumentation/fmc/appr-trans-alt'));
         } elsif (phase == "LANDED" ) {
             if(ias <= 70){
                 setprop("/flight-management/phase", "T/O");
@@ -2637,6 +2651,39 @@ var fmgc_loop = {
             } else {
                 setprop(decelNode, '');
             }
+#            var dest_wp = RouteManager.getDestinationWP();#me.destination_wp;
+#            if(dest_wp != nil){
+#                var nm = 9.5;
+#                var appr_wp = nil;
+#                var dst_idx = dest_wp.index;
+#                var totdist = me.fp_distance;
+#                var elev = getprop('autopilot/route-manager/destination/field-elevation-ft');
+#                for(var i = dst_idx; i > 1; i -= 1){
+#                    var wp = f.getWP(i);
+#                    if(wp != nil){
+#                        var dist = wp.distance_along_route;
+#                        dist = totdist - dist;
+#                        if(dist < nm) continue;
+#                        var alt_cstr = wp.alt_cstr;
+#                        if(alt_cstr == nil or alt_cstr <= 0) continue;
+#                        alt_cstr = alt_cstr - elev;
+#                        if(alt_cstr >= 1900 and alt_cstr <= 2300)
+#                            nm = dist + 2;
+#                        elsif(alt_cstr > 2300) break;
+#                    }
+#                }
+#                var decelPoint = f.pathGeod(dst_idx, -nm);
+#                setprop(decelNode ~ "/latitude-deg", decelPoint.lat); 
+#                setprop(decelNode ~ "/longitude-deg", decelPoint.lon); 
+#                var ac_dist = me.remaining_nm - nm;
+#                if(ac_dist > 0){
+#                    setprop('flight-management/vnav/decel-dist-nm', ac_dist);
+#                    setprop('flight-management/vnav/decel-eta', me.calc_eta(ac_dist));
+#                }
+#                return nm;
+#            } else {
+#                setprop(decelNode, '');
+#            }
         } else {
             setprop(decelNode, '');
         }

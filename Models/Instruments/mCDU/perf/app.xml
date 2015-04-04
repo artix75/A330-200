@@ -49,6 +49,11 @@
 		<object-name>magwind-placeholder</object-name>
 		<object-name>vapp-placeholder</object-name>
 		<object-name>vapp-selected</object-name>
+		<object-name>magwind</object-name>
+		<object-name>ldg-conf3</object-name>
+		<object-name>ldg-conf3-inactive</object-name>
+		<object-name>ldg-conf-full</object-name>
+		<object-name>ldg-conf-full-inactive</object-name>
 		<emission>
 			<red>0</red>
 			<green>0.4823</green>
@@ -176,14 +181,79 @@
 				<not>
 					<property>/flight-management/spd-manager/approach/app-spd</property>
 				</not>
-				<equals>
-					<property>flight-management/phase</property>
-					<value>APPR</value>
-				</equals>
+				<or>
+					<equals>
+						<property>flight-management/phase</property>
+						<value>APPR</value>
+					</equals>
+					<property>/flight-management/fmgc-values/vapp</property>
+				</or>
 			</and>
 		</condition>
 	</animation>
+	
+	<animation>
+		<type>select</type>
+		<object-name>magwind</object-name>
+		<condition>
+			<property>/flight-management/settings/mag-wind</property>
+		</condition>
+	</animation>
+	
+	<animation>
+		<type>select</type>
+		<object-name>magwind-placeholder</object-name>
+		<condition>
+			<not>
+				<property>/flight-management/settings/mag-wind</property>
+			</not>
+		</condition>
+	</animation>
 
+	<animation>
+		<type>select</type>
+		<object-name>ldg-conf-full</object-name>
+		<condition>
+			<greater-than-equals>
+				<property>/flight-management/settings/ldg-conf-flaps</property>
+				<value>4</value>
+			</greater-than-equals>
+		</condition>
+	</animation>
+	
+	<animation>
+		<type>select</type>
+		<object-name>ldg-conf-full-inactive</object-name>
+		<condition>
+			<less-than>
+				<property>/flight-management/settings/ldg-conf-flaps</property>
+				<value>4</value>
+			</less-than>
+		</condition>
+	</animation>
+	
+	<animation>
+		<type>select</type>
+		<object-name>ldg-conf3</object-name>
+		<condition>
+			<less-than>
+				<property>/flight-management/settings/ldg-conf-flaps</property>
+				<value>4</value>
+			</less-than>
+		</condition>
+	</animation>
+
+	<animation>
+		<type>select</type>
+		<object-name>ldg-conf3-inactive</object-name>
+		<condition>
+			<greater-than-equals>
+				<property>/flight-management/settings/ldg-conf-flaps</property>
+				<value>4</value>
+			</greater-than-equals>
+		</condition>
+	</animation>
+	
 	<!-- Button Pick Animations -->
 
 	<animation>
@@ -208,6 +278,31 @@
 			</binding>
 		</action>
 	</animation>
+    
+	<animation>
+		<type>pick</type>
+		<object-name>l3</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>nasal</command>
+				<script>
+
+					var input = getprop("/instrumentation/mcdu/input");
+					var wind_comp = split('/', input);
+					if(size(wind_comp) == 2){
+						var wnd_dir = num(string.trim(wind_comp[0]));
+						var wnd_kt = num(string.trim(wind_comp[1]));
+						if(wnd_dir != nil and wnd_kt != nil)
+							setprop('/flight-management/settings/mag-wind', input);
+					}
+					setprop("/instrumentation/mcdu/input", "");
+
+				</script>
+			</binding>
+		</action>
+	</animation>
 
 	<animation>
 		<type>pick</type>
@@ -219,14 +314,17 @@
 				<command>nasal</command>
 				 <script>
 				 
-					 var input = getprop("/instrumentation/mcdu/input");
-					 var trans_alt = num(input);
-					 if(trans_alt != nil){
-						 setprop("/instrumentation/fmc/trans-alt", trans_alt);
-					 }
+					var input = getprop("/instrumentation/mcdu/input");
+					var trans_alt = num(input);
+					if(trans_alt != nil){
+						setprop("/instrumentation/fmc/appr-trans-alt", trans_alt);
+						var phase = getprop('flight-management/phase');
+						if(phase != 'T/O' and phase != 'CLB' and phase != 'CRZ')
+							setprop('flight-management/fmgc-values/trans-alt', trans_alt);
+					}
 					 #setprop("/flight-management/spd-manager/approach/app-spd", input);
 					 
-					 setprop("/instrumentation/mcdu/input", "");
+					setprop("/instrumentation/mcdu/input", "");
 					 
 				</script>
 			</binding>
@@ -307,6 +405,36 @@
 					}
 					setprop("/instrumentation/mcdu/input", "");
 
+				</script>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
+		<type>pick</type>
+		<object-name>r4</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>nasal</command>
+				<script>
+					setprop('flight-management/settings/ldg-conf-flaps', 3);
+				</script>
+			</binding>
+		</action>
+	</animation>
+	
+	<animation>
+		<type>pick</type>
+		<object-name>r5</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>nasal</command>
+				<script>
+					setprop('flight-management/settings/ldg-conf-flaps', 4);
 				</script>
 			</binding>
 		</action>
@@ -543,6 +671,29 @@
 	</text>
 	
 	<text>
+		<name>magwind</name>
+		<offsets>
+			<x-m>-0.0521</x-m>
+			<y-m>-0.0432</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">text-value</type>
+		<format type="string">%s</format>
+		<property>/flight-management/settings/mag-wind</property>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
 		<name>white</name>
 		<offsets>
 			<x-m>-0.0469</x-m>
@@ -577,7 +728,7 @@
 		<axis-alignment>xy-plane</axis-alignment>
 		<type type="string">number-value</type>
 		<format type="string">%3.0f</format>
-		<property>/instrumentation/fmc/trans-alt</property>
+		<property>/instrumentation/fmc/appr-trans-alt</property>
 		<truncate type="bool">false</truncate>
 		<font type="string">courier-bold.txf</font>
 		<draw-text type="bool">true</draw-text>
@@ -673,7 +824,7 @@
 		<axis-alignment>xy-plane</axis-alignment>
 		<type type="string">number-value</type>
 		<format type="string">%3.0f</format>
-		<property>/flight-management/fmgc-values/target-spd</property>
+		<property>/flight-management/fmgc-values/vapp</property>
 		<truncate type="bool">false</truncate>
 		<font type="string">courier-bold.txf</font>
 		<draw-text type="bool">true</draw-text>
@@ -721,8 +872,123 @@
 		<axis-alignment>xy-plane</axis-alignment>
 		<type type="string">number-value</type>
 		<format type="string">%3.0f</format>
-		<property>/instrumentation/fmc/vls</property>
+		<property>/flight-management/fmgc-values/appr-vls</property>
 		<truncate type="bool">false</truncate>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+    
+	<text>
+		<name>white</name>
+		<offsets>
+			<x-m>-0.0469</x-m>
+			<y-m>0.0432</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text>LDG CONF</text>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
+		<name>ldg-conf3-inactive</name>
+		<offsets>
+			<x-m>-0.0431</x-m>
+			<y-m>0.0432</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text>CONF3*</text>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.0026</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
+		<name>ldg-conf3</name>
+		<offsets>
+			<x-m>-0.0431</x-m>
+			<y-m>0.0432</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text>CONF3</text>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.003</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
+		<name>ldg-conf-full-inactive</name>
+		<offsets>
+			<x-m>-0.0341</x-m>
+			<y-m>0.0432</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text>FULL*</text>
+		<font type="string">courier-bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.0026</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
+		<name>ldg-conf-full</name>
+		<offsets>
+			<x-m>-0.0341</x-m>
+			<y-m>0.0432</y-m>
+			<z-m>-0.0006</z-m>
+			<heading-deg>90</heading-deg>
+		</offsets>
+		<alignment>right-center</alignment>
+		<axis-alignment>xy-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text>FULL</text>
 		<font type="string">courier-bold.txf</font>
 		<draw-text type="bool">true</draw-text>
 		<draw-alignment type="bool">false</draw-alignment>

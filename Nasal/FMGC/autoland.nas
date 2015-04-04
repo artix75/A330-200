@@ -114,12 +114,55 @@ var autoland = {
 	spd_manage: func(lbs) {
 		var spd = getprop('/flight-management/spd-manager/approach/app-spd');
 		if(spd) return spd;
+		var rwy = flightplan().destination_runway;
+		if(rwy != nil){
+			var magwind = getprop('/flight-management/settings/mag-wind');
+			if(magwind != nil and find('/', magwind) >= 0){
+				var wind_spd = me.calc_runway_wind(rwy, magwind);
+				var vapp = me.calc_vapp(rwy, wind_spd);
+				var gust = 0;
+				var head_wind = aircraft.wind_speed_from(fmgc_loop.heading);
+				var wnd_diff = head_wind - wind_spd;
+				if(wnd_diff < 0) wnd_diff = 0;
+				if(fmgc_loop.agl > 400){
+					gust = wnd_diff;
+				} else {
+					gust = int(wnd_diff / 3);
+				}
+				spd = vapp + gust;
+				if(spd < vapp) spd = vapp;
+				return spd;
+			}
+		}
 		spd = 125 + ((lbs - 287000) * 0.000235);
-		
+		setprop('flight-management/fmgc-values/vapp', spd);
 		return spd;
 	
 	},
-	
+	calc_vapp: func(runway, wind_spd){
+		if(wind_spd < 0) wind_spd = 0;
+		if(wind_spd > 15) wind_spd = 15;
+		var vls = fmgc_loop.appr_vls or 135;
+		var base_vapp = vls + 5;
+		var vapp = vls + int(wind_spd / 3);
+		vapp = (vapp > base_vapp ? vapp : base_vapp);
+		setprop('flight-management/fmgc-values/vapp', vapp);
+		return vapp;
+	},
+	calc_runway_wind: func(runway, tower_wind){
+		if(runway == nil) return 0;
+		var hdg = runway.heading;
+		var wind_info = split('/', tower_wind);
+		if(!size(wind_info)) return 0;
+		var wind_dir = num(wind_info[0]);
+		if(wind_dir == nil) wind_dir = 0;
+		var wind_spd = 0;
+		if(size(wind_info) > 1)
+		wind_spd = num(wind_info[1]);
+		if(wind_spd == nil) wind_spd = 0;
+		var dir = (wind_dir - hdg) * D2R;
+		return wind_spd * math.cos(dir);
+	},
 	early_descent : func(spd) {
 	
 		var trgt_vs = 0.01667 * ((-5 * spd) - 150); # Approx (0,01667 = conv factor for fpm to fps)

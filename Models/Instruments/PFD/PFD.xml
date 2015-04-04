@@ -4531,7 +4531,7 @@
                 <and>
                     <greater-than-equals>
                         <property>/instrumentation/altimeter/indicated-altitude-ft</property>
-                        <property>/instrumentation/fmc/trans-alt</property>
+                        <property>/flight-management/fmgc-values/trans-alt</property>
                     </greater-than-equals>
                     <equals>
                         <property>flight-management/text/qnh</property>
@@ -4541,7 +4541,7 @@
                 <and>
                     <less-than>
                         <property>/instrumentation/altimeter/indicated-altitude-ft</property>
-                        <property>/instrumentation/fmc/trans-alt</property>
+                        <property>/flight-management/fmgc-values/trans-alt</property>
                     </less-than>
                     <equals>
                         <property>flight-management/text/qnh</property>
