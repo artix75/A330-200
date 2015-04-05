@@ -409,6 +409,10 @@
 				<name>Thrust Levers</name>
 				<path>Aircraft/A330-200/Systems/thrust_levers.xml</path>
 			</autopilot>
+			<autopilot>
+				<name>Thrust Levers</name>
+				<path>Aircraft/A330-200/Systems/flight-deck.xml</path>
+			</autopilot>
 
 		</systems>
 
@@ -1612,6 +1616,8 @@
 			<z-rot>24</z-rot>
 			<hood-rot>3</hood-rot>
 		</jetway-pos>
+		<sidestick-x>0</sidestick-x>
+		<sidestick-y>0</sidestick-y>
 	</aircraft>
 
 </PropertyList>
