@@ -149,7 +149,12 @@
 				<command>nasal</command>
 		 		<script>
 					var first = getprop("/instrumentation/mcdu/load_rtes/first");
-					if (first != 0) setprop("/instrumentation/mcdu/load_rtes/first", first - 5);
+					var invert = getprop('aircraft-config/saved/mcdu/invert-arrow-keys') or 0;
+					if(!invert){
+						if (first != 0) setprop("/instrumentation/mcdu/load_rtes/first", first - 5);
+					} else {
+						setprop("/instrumentation/mcdu/load_rtes/first", first + 5);
+					}
 					mcdu.user.update_disp();
 				</script>
             </binding>
@@ -166,7 +171,12 @@
 				<command>nasal</command>
 		 		<script>
 					var first = getprop("/instrumentation/mcdu/load_rtes/first");
-					setprop("/instrumentation/mcdu/load_rtes/first", first + 5);
+					var invert = getprop('aircraft-config/saved/mcdu/invert-arrow-keys') or 0;
+					if(!invert)
+						setprop("/instrumentation/mcdu/load_rtes/first", first + 5);
+					else {
+						if (first != 0) setprop("/instrumentation/mcdu/load_rtes/first", first - 5);
+					}
 					mcdu.user.update_disp();
 				</script>
             </binding>

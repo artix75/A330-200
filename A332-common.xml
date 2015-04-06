@@ -657,6 +657,9 @@
 				<shift-to-rotate type="bool">0</shift-to-rotate>
 				<disable-tooltips type="bool">0</disable-tooltips>
 			</fcu>
+			<mcdu>
+				<invert-arrow-keys type="bool">0</invert-arrow-keys>
+			</mcdu>
 		</saved>
 	</aircraft-config>
 

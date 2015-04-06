@@ -173,9 +173,16 @@
 		 		<script>
 		 		
 		 			var first = getprop("/flight-management/procedures/star/first");
-		 			
-		 			if (first != 0)
-		 				setprop("/flight-management/procedures/star/first", first - 4);
+					var invert = getprop('aircraft-config/saved/mcdu/invert-arrow-keys') or 0;
+					if(!invert){
+						if (first != 0)
+							setprop("/flight-management/procedures/star/first", first - 4);
+					} else {
+						var max = getprop("/flight-management/procedures/star/stars");
+
+						if (max > first + 4)
+							setprop("/flight-management/procedures/star/first", first + 4);
+					}
 		 				
 		 			mcdu.star.update_stars();
 		 			
@@ -195,11 +202,16 @@
 		 		<script>
 		 		
 		 			var first = getprop("/flight-management/procedures/star/first");
-		 			
-		 			var max = getprop("/flight-management/procedures/star/stars");
-		 			
-		 			if (max > first + 4)
-		 				setprop("/flight-management/procedures/star/first", first + 4);
+					var invert = getprop('aircraft-config/saved/mcdu/invert-arrow-keys') or 0;
+					if(!invert){
+						var max = getprop("/flight-management/procedures/star/stars");
+
+						if (max > first + 4)
+							setprop("/flight-management/procedures/star/first", first + 4);
+					} else {
+						if (first != 0)
+							setprop("/flight-management/procedures/star/first", first - 4);
+					}
 		 				
 		 			mcdu.star.update_stars();
 		 			

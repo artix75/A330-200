@@ -37,6 +37,25 @@
 			</binding>
 		</checkbox>
     </group>
+	
+	<group>
+		<layout>vbox</layout>
+		<halign>left</halign>
+		<text>
+			<halign>left</halign>
+			<label>mCDU Controls</label>
+		</text>
+		<checkbox>
+			<label>Inverted Vertical Arrow Keys (like real Airbus)</label>
+			<halign>left</halign>
+			<property>aircraft-config/saved/mcdu/invert-arrow-keys</property>
+			<live>true</live>
+			<binding>
+				<command>property-toggle</command>
+				<property>aircraft-config/saved/mcdu/invert-arrow-keys</property>
+			</binding>
+		</checkbox>
+	</group>
 
     <group>
         <layout>hbox</layout>

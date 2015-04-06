@@ -91,7 +91,7 @@ var sid = {
 		var arpt = airportinfo(me.icao);
 		var rwy = arpt.runways[id];
 		if(rwy == nil) return;
-		var fp = f_pln.get_current_flightplan();
+		var fp = f_pln.revise_flightplan();#f_pln.get_current_flightplan();
 		fp.departure_runway = rwy;
 		f_pln.update_flightplan_waypoints();
 		
@@ -101,8 +101,11 @@ var sid = {
 		var sz = fp.getPlanSize();
 		for(var i = 0; i < sz; i += 1){
 			var wp = fp.getWP(i);
-			if(wp.wp_role == 'sid' and wp.wp_type != 'runway')
+			if(wp.wp_role == 'sid' and wp.wp_type != 'runway'){
 				fp.deleteWP(i);
+				sz = fp.getPlanSize();
+				i -= 1;
+			}
 		}
 	
 	},
@@ -209,7 +212,7 @@ var sid = {
 		if(enroute_wp == nil and !is_default and last_wp_idx){
 			var last_sid_wp = fp.getWP(last_wp_idx);
 			if(last_sid_wp != nil){
-				fmgc.RouteManager.setDiscontinuity(wp.id, fpID);
+				fmgc.RouteManager.setDiscontinuity(last_sid_wp.id, fpID);
 				do_trigger = 1;
 			}
 		}

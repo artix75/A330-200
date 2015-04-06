@@ -113,8 +113,11 @@ var star = {
 			var type = wp.wp_type;
 			var role = wp.wp_role;
 			if((role == 'star' or role == 'approach' or role == 'missed') and 
-			    type != 'runway')
+			    type != 'runway'){
 				fp.deleteWP(i);
+				i -= 1;
+				sz = fp.getPlanSize();
+			}
 		}
 		
 		fmgc.RouteManager.trigger(fmgc.RouteManager.SIGNAL_FP_EDIT);

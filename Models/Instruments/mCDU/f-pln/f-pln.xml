@@ -320,9 +320,17 @@
 				<command>nasal</command>
 		 		<script>
 		 			var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
+					var invert = getprop('aircraft-config/saved/mcdu/invert-arrow-keys') or 0;
+					if(!invert){
+						if (first != 0)
+							setprop("/instrumentation/mcdu/f-pln/disp/first", first - 1);
+					} else {
+						var wpts = mcdu.f_pln['waypoints'];
+						var max = size(wpts);
 
-					if (first != 0)
-						setprop("/instrumentation/mcdu/f-pln/disp/first", first - 1);
+						if (max - 1 > first)
+							setprop("/instrumentation/mcdu/f-pln/disp/first", first + 1);
+					}
 
 					var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
 
@@ -348,11 +356,17 @@
 				<command>nasal</command>
 				<script>
 					var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
-					var wpts = mcdu.f_pln['waypoints'];
-					var max = size(wpts);
+					var invert = getprop('aircraft-config/saved/mcdu/invert-arrow-keys') or 0;
+					if(!invert){
+						var wpts = mcdu.f_pln['waypoints'];
+						var max = size(wpts);
 
-					if (max - 1 > first)
-						setprop("/instrumentation/mcdu/f-pln/disp/first", first + 1);
+						if (max - 1 > first)
+							setprop("/instrumentation/mcdu/f-pln/disp/first", first + 1);
+					} else {
+						if (first != 0)
+							setprop("/instrumentation/mcdu/f-pln/disp/first", first - 1);
+					}
 
 					var first = getprop("/instrumentation/mcdu/f-pln/disp/first");
 
