@@ -194,12 +194,13 @@ var fmgc_loop = {
         setprop(radio~ 'autotuned', 0);
         me.autotune = {
             airport: '',
-            vor: '',
+            #vor: '',
             rwy: '',
             frq: ''
         };
 
         me.vne = getprop('limits/vne');
+        me.time = systime();
         me.reset();
     },
     update : func {
@@ -207,6 +208,7 @@ var fmgc_loop = {
             me.wp = nil;
             return;
         };
+        me.time = systime();
         var altitude = getprop("/instrumentation/altimeter/indicated-altitude-ft");
         var ias = getprop("/velocities/airspeed-kt");
         var mach = getprop("/velocities/mach");
@@ -267,6 +269,7 @@ var fmgc_loop = {
         # NAV1 Auto-tuning
         
         me.autotune_ils();
+        me.autotune_navaids();
         
         var athrEngaged = (me.a_thr == 'eng');
         var athrArmed = (me.a_thr == 'armed');
@@ -903,7 +906,7 @@ var fmgc_loop = {
 
                         #var bug = getprop("/autopilot/internal/true-heading-error-deg");
                         var f = me.flightplan;
-                        var geocoord = geo.aircraft_position();
+                        var geocoord = me.aircraft_pos;
                         var dest_wp_info = RouteManager.getDestinationWP();#me.destination_wp;
                         if(dest_wp_info == nil){
                             dest_wp_info = {
@@ -1162,6 +1165,7 @@ var fmgc_loop = {
         var last_dest_arpt = me.dest_airport;
         var last_dest_rwy = me.dest_rwy;
         var last_throttle = me.max_throttle;
+        me.aircraft_pos = geo.aircraft_position();
         me.spd_mode = getprop(fmgc~ "spd-mode");
         me.spd_ctrl = getprop(fmgc~ "spd-ctrl");
 
@@ -1582,7 +1586,7 @@ var fmgc_loop = {
             var touchdown_t = 0;
             if(phase == 'LANDED')
                 touchdown_t = getprop('autopilot/route-manager/destination/touchdown-time') or 0;
-            var touchdown_elapsed_s = systime() - touchdown_t;
+            var touchdown_elapsed_s = me.time - touchdown_t;
             if(toga and me.flaps > 0 and 
                ((touchdown_elapsed_s < 30) or me.toga_trk != nil)){
                 me.engage_go_around(lat_sel_mode);
@@ -2862,7 +2866,7 @@ var fmgc_loop = {
     },
     autotune_ils: func(){
         if(RouteManager.sequencing) return;
-        me.autotuned_nav = getprop(radio~'autotuned');
+        me.autotuned_ils = getprop(radio~'autotuned');
         var dest_airport = me.dest_airport;
         var dest_rwy = me.dest_rwy;
         var dep_airport = me.dep_airport;
@@ -2870,7 +2874,7 @@ var fmgc_loop = {
         var ils_frq = me.ils_frq;
         var flplan_active = me.flplan_active;
         var airborne = me.airborne;
-        if (flplan_active and (!ils_frq or me.autotuned_nav)){
+        if (flplan_active and (!ils_frq or me.autotuned_ils)){
             if(!airborne){
                 if (dep_airport != '' and dep_rwy != ''){
                     var dist = getprop("/autopilot/route-manager/route/wp/distance-nm");
@@ -2921,11 +2925,11 @@ var fmgc_loop = {
                 }
             }
         }
-        if(!me.autotuned_nav){
+        if(!me.autotuned_ils){
             me.autotune.airport = '';
             me.autotune.rwy = '';
             me.autotune.frq = '';
-            me.autotune.vor = '';
+            #me.autotune.vor = '';
         }
 
         if (flplan_active and (!airborne or (me.agl > 0 and me.agl < 30)) and dep_airport != ''){
@@ -2948,6 +2952,96 @@ var fmgc_loop = {
             }
         }
     },
+    autotune_navaids: func(){
+        var vor1_frq = getprop(radio~ 'vor1');
+        me.autotuned_vor1 = getprop(radio~'autotuned-vor') or 0;
+        var adf1_id = getprop(radio~ 'adf1-id');
+        me.autotuned_adf1 = getprop(radio~'autotuned-adf') or 0;
+        var cur_wp = (me.flplan_active ? me.current_wp : 0);
+        var wp_id = (cur_wp ? getprop(actrte~ 'wp['~cur_wp~']/id') : nil);
+        var wp_lat = 0;
+        var wp_lon = 0;
+        if(wp_id != nil){
+            wp_lat = getprop(actrte~ 'wp['~cur_wp~']/latitude-deg');
+            wp_lon = getprop(actrte~ 'wp['~cur_wp~']/longitude-deg');
+        }
+        if(vor1_frq == nil or !vor1_frq or me.autotuned_vor1){
+            var vor_data = me.autotune['vor'];
+            if(vor_data == nil){
+                vor_data = {};
+                me.autotune['vor'] = vor_data;
+            }
+            var last_upd_t = vor_data['last_time'];
+            var cur_wp_chk = vor_data['current_wp'];
+            if(last_upd_t == nil) last_upd_t = 0;
+            var wp_changed = (wp_id != nil and wp_id != cur_wp_chk);
+            var vor = nil;
+            if(wp_changed){
+                var found = navinfo(wp_lat, wp_lon, 'vor', wp_id);
+                if(size(found)) vor = found[0];
+            }
+            if(vor == nil and (me.time - last_upd_t) > 120){
+                var vors = findNavaidsWithinRange(40, 'vor');
+                if(size(vors)) vor = vors[0];
+            }
+            if(vor != nil){
+                var radial = 0;
+                if(wp_id != nil and wp_id == vor.id){
+                    radial = getprop(actrte~ 'wp['~cur_wp~']/leg-bearing-true-deg') or 0;
+                    vor_data['current_wp'] = wp_id;
+                } else {
+                    var vor_pos = geo.Coord.new();
+                    vor_pos.lat = vor.lat;
+                    vor_pos.lon = vor.lon;
+                    radial = me.aircraft_pos.course_to(vor_pos);
+                }
+                radial = int(radial);
+                vor_data.last_time = me.time;
+                vor_data.station = vor;
+                var frq = vor.frequency / 100;
+                setprop(radio~ 'vor1', frq);
+                setprop(radio~ 'vor1-id', vor.id);
+                setprop(radio~ 'vor1-crs', radial);
+                setprop(radio~'autotuned-vor', 1);
+                if(!getprop(radio~ "ils-mode")){
+                    mcdu.rad_nav.switch_nav1(0);
+                }
+                me.autotuned_vor1 = 1;
+            }
+        }
+        if(adf1_id == nil or adf1_id == '' or me.autotuned_adf1){
+            var ndb_data = me.autotune['ndb'];
+            if(ndb_data == nil){
+                ndb_data = {};
+                me.autotune['ndb'] = ndb_data;
+            }
+            var last_upd_t = ndb_data['last_time'];
+            var cur_wp_chk = ndb_data['current_wp'];
+            if(last_upd_t == nil) last_upd_t = 0;
+            var wp_changed = (wp_id != nil and wp_id != cur_wp_chk);
+            var ndb = nil;
+            if(wp_changed){
+                var found = navinfo(wp_lat, wp_lon, 'ndb', wp_id);
+                if(size(found)) ndb = found[0];
+            }
+            if(ndb == nil and (me.time - last_upd_t) > 120){
+                var ndbs = findNavaidsWithinRange(40, 'ndb');
+                if(size(ndbs)) ndb = ndbs[0];
+            }
+            if(ndb != nil){
+                if(wp_id != nil and wp_id == ndb.id){
+                    ndb_data['current_wp'] = wp_id;
+                }
+                ndb_data.last_time = me.time;
+                ndb_data.station = ndb;
+                var frq = int(ndb.frequency / 100);
+                setprop("/instrumentation/adf[0]/frequencies/selected-khz", frq);
+                setprop(radio~ 'adf1-id', ndb.id);
+                setprop(radio~'autotuned-adf', 1);
+                me.autotuned_adf1 = 1;
+            }
+        }
+    }, 
     get_destination_wp: func(){
         if(RouteManager.sequencing) {
             me.destination_wp_info = nil;

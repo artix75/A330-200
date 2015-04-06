@@ -79,14 +79,16 @@
 		 				 if (substr(input, 0, 1) == "1") { # FREQ
 		 				 
 		 				 	setprop(radio~ "vor1", input);
-                                                        #setprop("/instrumentation/nav/frequencies/selected-mhz",input);
+							#setprop("/instrumentation/nav/frequencies/selected-mhz",input);
+							var vor = findNavaidByFrequency(num(input));
+							if(vor != nil) setprop(radio~ "vor1-id", vor.id);
 		 				 
 		 				 } else { # NAV ID
 		 				 
 		 				 	setprop(radio~ "vor1", mcdu.rad_nav.search_vor(input));
 		 				 	
 		 				 	setprop(radio~ "vor1-id", input);
-                                                        #setprop("/instrumentation/nav/frequencies/selected-mhz",mcdu.rad_nav.search_vor(input));
+							#setprop("/instrumentation/nav/frequencies/selected-mhz",mcdu.rad_nav.search_vor(input));
 		 				 
 		 				 }
 		 				
@@ -97,7 +99,8 @@
 		 				setprop("/instrumentation/mcdu/input", "ERROR: WRONG FORMAT");
 		 			
 		 			}
-		 			
+					if(input != '')
+						setprop(radio~ 'autotuned-vor', 0);
 		 			#mcdu.rad_nav.nav_ids_update();
 		 			
 		 			if (getprop(radio~ "ils-mode") != 1) {
@@ -138,6 +141,8 @@
 		 				 if (substr(input, 0, 1) == "1") { # FREQ
 		 				 
 		 				 	setprop(radio~ "vor2", input);
+							var vor = findNavaidByFrequency(num(input));
+							if(vor != nil) setprop(radio~ "vor2-id", vor.id);
 		 				 
 		 				 } else { # NAV ID
 		 				 
@@ -187,7 +192,7 @@
 		 			if (typeof(input) == "scalar") {
 		 			
 						setprop(radio~ "vor1-crs", input);
-                                                #setprop("/instrumentation/nav/radials/selected-deg",input);
+						#setprop("/instrumentation/nav/radials/selected-deg",input);
 						
 						mcdu.clear_inp();
 		 			
@@ -436,6 +441,8 @@
 		 			if (typeof(input) == "scalar") {
 						if (num(input) != nil or input == '') { # FREQ
 							setprop("/instrumentation/adf[0]/frequencies/selected-khz", input);
+							var ndb = findNavaidByFrequency(num(input));
+							if(ndb != nil) setprop('flight-management/freq/adf1-id', ndb.id);
 						} else {
 							var frq = mcdu.rad_nav.search_ndb(input);
 							if(frq != nil){
@@ -444,6 +451,8 @@
 							} else {
 							}
 						}
+						if(input != '')
+							setprop(radio~ 'autotuned-adf', 0);
 						mcdu.clear_inp();
 		 			
 		 			} else {
@@ -473,6 +482,8 @@
 					if (typeof(input) == "scalar") {
 						if (num(input) != nil or input == '') { # FREQ
 							setprop("/instrumentation/adf[1]/frequencies/selected-khz", input);
+							var ndb = findNavaidByFrequency(num(input));
+							if(ndb != nil) setprop('flight-management/freq/adf2-id', ndb.id);
 						} else {
 							var frq = mcdu.rad_nav.search_ndb(input);
 							if(frq != nil){
