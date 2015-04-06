@@ -1398,7 +1398,6 @@ var fmgc_loop = {
         me.armed_common_mode = '';
         me.athr_msg = '';
         me.athr_alert = '';
-        me.rwy_trk = nil;
         #me.accel_alt = 1500;
         me.srs_spd = 0;
         if(me.alpha_floor_mode){
@@ -1613,11 +1612,12 @@ var fmgc_loop = {
                     var on_rwy = (me.current_wp <= 1 and 
                                   me.remaining_nm > me.fp_distance and 
                                   me.flplan_active);
-                    if(on_rwy or me.agl <= 30){
+                    if(on_rwy){
                         var dp_rwy = me.flightplan.departure_runway;
                         if(dp_rwy != nil){
                             on_rwy = 1;
-                            me.rwy_trk = dp_rwy.heading;
+                            if(me.rwy_trk == nil)
+                                me.rwy_trk = me.track;
                         } else {
                             on_rwy = 0;
                         }
@@ -1632,6 +1632,7 @@ var fmgc_loop = {
                 } else {
                     me.active_lat_mode = lmode;
                     me.armed_lat_mode = '';
+                    me.rwy_trk = nil;
                 }
                 if(loc_mode){ #TODO: check for NPA?
                     if(me.active_lat_mode != 'LOC' and 
@@ -1844,6 +1845,9 @@ var fmgc_loop = {
             me.armed_common_mode = '';
             me.armed_ver_secondary_mode = '';
         }
+        
+        if(me.rwy_trk != nil and me.active_lat_mode != 'RWY TRK')
+            me.rwy_trk = nil;
         
         setprop(athr_modes~'active', me.active_athr_mode);
         setprop(athr_modes~'armed', me.armed_athr_mode);

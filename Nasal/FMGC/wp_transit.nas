@@ -38,13 +38,15 @@ var wp_transit = {
 					var leg_dist_nxt = getprop('/autopilot/route-manager/route/wp[' ~nxt_wp~ ']/leg-distance-nm');
 					var turn_deg = math.abs(utils.heading_diff_deg(bearing_next, bearing));
 					var offset_nm = turn_deg * 0.03333333333333333;
+					var spd_component = fmgc_loop.groundspeed / 200.0;
+					if(spd_component > 1) offset_nm += spd_component;
 					leg_dist -= 0.5;
 					leg_dist_nxt -= 0.5;
 					var shortest_dist = ((leg_dist_nxt < leg_dist) ? leg_dist_nxt : leg_dist);
 					if(offset_nm > 1 and offset_nm > shortest_dist)
 						offset_nm = shortest_dist;
 					if(offset_nm < 1) offset_nm = 1;
-					if(offset_nm > 6) offset_nm = 6;
+					if(offset_nm > 5) offset_nm = 5;
 					accuracy *= offset_nm;
 				}
 			}
