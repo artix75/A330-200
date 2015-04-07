@@ -2207,6 +2207,8 @@ var fmgc_loop = {
                 if(me.agl > acc_alt)
                     setprop("/flight-management/phase", "CLB");
             }
+            elsif(ias > 75)
+                setprop('instrumentation/mcdu/prog/phase', 'TAKEOFF');
             setprop(fmgc_val~ 'trans-alt', getprop('/instrumentation/fmc/trans-alt'));
         } elsif (phase == "CLB") {
             me.manage_phase_speed('CLB');

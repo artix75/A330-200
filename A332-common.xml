@@ -1508,6 +1508,7 @@
 			<file>Aircraft/A330-200/Nasal/mCDU/lat_rev.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/common.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/perf.nas</file>
+            <file>Aircraft/A330-200/Nasal/mCDU/prog.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/loop.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/parse_DB.nas</file>
 			<file>Aircraft/A330-200/Nasal/mCDU/user.nas</file>
