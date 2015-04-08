@@ -143,6 +143,47 @@
 			<factor-prop>controls/lighting/overhead-panel-norm</factor-prop>
 		</emission>
 	</animation>
+	
+	<!-- Call -->
+	
+	<animation>
+		<name>Ground Call pick</name>
+		<type>pick</type>
+		<object-name>GroundCall</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>nasal</command>
+				<script>
+					utils.clickSound(4);
+					var dlg = gui.Dialog.new("sim/gui/dialogs/ground-call/dialog", 
+											 "Aircraft/A330-200/Systems/call-ground.xml");
+					dlg.open();
+				</script>
+			</binding>
+		</action>
+	</animation>
+    
+	<animation>
+		<name>Cabin Call pick</name>
+		<type>pick</type>
+		<object-name>FwdCabinACKnb</object-name>
+		<object-name>FwdCabinCall</object-name>
+		<action>
+			<button>0</button>
+			<repeatable type="bool">false</repeatable>
+			<binding>
+				<command>nasal</command>
+				<script>
+					utils.clickSound(4);
+					var dlg = gui.Dialog.new("sim/gui/dialogs/cabin-call/dialog", 
+					"Aircraft/A330-200/Systems/call-cabin.xml");
+					dlg.open();
+				</script>
+			</binding>
+		</action>
+	</animation>
 
 	<!-- GPWS -->
 	<animation>
