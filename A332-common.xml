@@ -1568,7 +1568,7 @@
 			<file>Aircraft/A330-200/Nasal/GUI/WXRLiveDialog.nas</file>
 		</a332_gui>
 		<canvas_nd>
-				<file>Aircraft/A330-200/Models/Instruments/ND/canvas/ND.nas</file>
+			<file>Aircraft/A330-200/Models/Instruments/ND/canvas/ND.nas</file>
 		</canvas_nd>
 		<systems>
 			<file>Aircraft/A330-200/Nasal/systems.nas</file>
