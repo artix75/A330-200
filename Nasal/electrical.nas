@@ -368,6 +368,8 @@ update_electrical = func {
         var land_light_l = getprop("systems/electrical/outputs/landing-light[0]");
         var land_light_r = getprop("systems/electrical/outputs/landing-light[2]");
         var taxi_light = getprop("systems/electrical/outputs/landing-light[1]");
+        var tiller= getprop("/controls/gear/tiller-cmd-norm");
+        var taxi_l_deg = tiller * 5;
         if(land_light_l and land_light_r)
         {
             setprop("sim/rendering/als-secondary-lights/use-landing-light", 1);
@@ -382,13 +384,13 @@ update_electrical = func {
                 setprop("sim/rendering/als-secondary-lights/use-landing-light", 1);
                 setprop("sim/rendering/als-secondary-lights/use-alt-landing-light", 1);
                 setprop("sim/rendering/als-secondary-lights/landing-light1-offset-deg", -5);
-                setprop("sim/rendering/als-secondary-lights/landing-light2-offset-deg", 0);
+                setprop("sim/rendering/als-secondary-lights/landing-light2-offset-deg", taxi_l_deg);
             }
             elsif(land_light_r and taxi_light)
             {
                 setprop("sim/rendering/als-secondary-lights/use-landing-light", 1);
                 setprop("sim/rendering/als-secondary-lights/use-alt-landing-light", 1);
-                setprop("sim/rendering/als-secondary-lights/landing-light1-offset-deg", 0);
+                setprop("sim/rendering/als-secondary-lights/landing-light1-offset-deg", taxi_l_deg);
                 setprop("sim/rendering/als-secondary-lights/landing-light2-offset-deg",5);
             }
             elsif(land_light_l)
@@ -409,7 +411,7 @@ update_electrical = func {
             {
                 setprop("sim/rendering/als-secondary-lights/use-landing-light", 1);
                 setprop("sim/rendering/als-secondary-lights/use-alt-landing-light", 0);
-                setprop("sim/rendering/als-secondary-lights/landing-light1-offset-deg", 0);
+                setprop("sim/rendering/als-secondary-lights/landing-light1-offset-deg", taxi_l_deg);
             }
             else
             {

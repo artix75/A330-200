@@ -1319,7 +1319,9 @@
 				<binding>
 					<command>nasal</command>
 					<script>
-						setprop("/controls/gear/tiller-cmd-norm", getprop("/controls/gear/tiller-cmd-norm") - (1/70));
+						var tiller = getprop("/controls/gear/tiller-cmd-norm") - (1/70);
+						if(-1 > tiller) tiller = -1;
+						setprop("/controls/gear/tiller-cmd-norm", tiller);
 					</script>
 				</binding>
 			</key>
@@ -1343,40 +1345,56 @@
 				<binding>
 					<command>nasal</command>
 					<script>
-						setprop("/controls/gear/tiller-cmd-norm", getprop("/controls/gear/tiller-cmd-norm") + (1/70));
+						var tiller = getprop("/controls/gear/tiller-cmd-norm") + (1/70);
+						if(tiller > 1) tiller = 1;
+						setprop("/controls/gear/tiller-cmd-norm", tiller);
 					</script>
 				</binding>
 			</key>
 			<key n="10">
 				<name>CTRL+j</name>
 				<repeatable type="bool">true</repeatable>
-				<desc>Rudder Trim Left</desc>
+				<desc>Rudder Left</desc>
 				<binding>
 					<command>nasal</command>
 					<script>
-						var TrimVal = getprop("/controls/flight/rudder-trim");
-						setprop("/controls/flight/rudder-trim", TrimVal - 0.01);
-						setprop("/controls/switches/rudder-trim", -1);
+						#var TrimVal = getprop("/controls/flight/rudder-trim");
+						#setprop("/controls/flight/rudder-trim", TrimVal - 0.01);
+						var rudder = getprop("/controls/flight/rudder") - 0.01;
+						if(-1 > rudder) rudder = -1;
+						setprop("/controls/flight/rudder", rudder);
 					</script>
 				</binding>
-				<mod-up>
+				<mod-ctrl>
 					<binding>
 						<command>nasal</command>
 						<script>
-							setprop("/controls/switches/rudder-trim", 0);
+							#var TrimVal = getprop("/controls/flight/rudder-trim");
+							#setprop("/controls/flight/rudder-trim", TrimVal - 0.01);
+							var rudder = getprop("/controls/flight/rudder") - 0.01;
+							if(-1 > rudder) rudder = -1;
+							setprop("/controls/flight/rudder", rudder);
 						</script>
 					</binding>
-				</mod-up>
+				</mod-ctrl>
+				<!--mod-up>
+					<binding>
+						<command>nasal</command>
+						<script>
+							setprop("/controls/switches/rudder", 0);
+						</script>
+					</binding>
+				</mod-up-->
 			</key>
 
 			<key n="11">
 				<name>CTRL+k</name>
 				<repeatable type="bool">true</repeatable>
-				<desc>Reset Rudder Trim</desc>
+				<desc>Reset Rudder</desc>
 				<binding>
 					<command>nasal</command>
 					<script>
-						setprop("/controls/flight/rudder-trim", 0);
+						setprop("/controls/flight/rudder", 0);
 					</script>
 				</binding>
 			</key>
@@ -1388,19 +1406,21 @@
 				<binding>
 					<command>nasal</command>
 					<script>
-						var TrimVal = getprop("/controls/flight/rudder-trim");
-						setprop("/controls/flight/rudder-trim", TrimVal + 0.01);
-						setprop("/controls/switches/rudder-trim", 1);
+						#var TrimVal = getprop("/controls/flight/rudder-trim");
+						#setprop("/controls/flight/rudder-trim", TrimVal + 0.01);
+						var rudder = getprop("/controls/flight/rudder") + 0.01;
+						if(rudder > 1) rudder = 1;
+						setprop("/controls/flight/rudder", rudder);
 					</script>
 				</binding>
-				<mod-up>
+				<!--mod-up>
 					<binding>
 						<command>nasal</command>
 						<script>
 							setprop("/controls/switches/rudder-trim", 0);
 						</script>
 					</binding>
-				</mod-up>
+				</mod-up-->
 			</key>
 			<!--<key n="87">
 				<name>W</name>
