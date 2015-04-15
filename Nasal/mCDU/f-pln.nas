@@ -354,7 +354,7 @@ var f_pln = {
 		
 		}
 		
-		setprop("/instrumentation/mcdu/input", "MSG: F-PLN SAVED TO ACTIVE RTE");
+		mcdu.display_message("F-PLN SAVED TO ACTIVE RTE");
 	
 	},
 	get_flightplan_id: func(){
