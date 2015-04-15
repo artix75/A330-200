@@ -3,7 +3,7 @@
 <PropertyList include="Aircraft/Generic/Human/Include/walker-include.xml">
 
 	<sim>
-		<author>Narendran Muraleedharan (muraleen@my.erau.edu)</author>
+		<author>Narendran Muraleedharan (muraleen@my.erau.edu), Fabio 'Artix' Nicotra</author>
 		<status>beta</status>
 
 		<model>
