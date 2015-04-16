@@ -69,6 +69,10 @@ var general_loop_1 = {
     		setprop("/controls/lighting/logo", 1);
     	else
     		setprop("/controls/lighting/logo", 0);
+			
+		setprop("/instrumentation/oh-panel/pos-string", 
+				getprop("/position/latitude-string") ~ "  " ~ 
+				getprop("/position/longitude-string"));
     		
 	},
 
