@@ -26,16 +26,16 @@
 					<property>/gear/gear[3]/wow</property>
 					<property>/gear/gear[4]/wow</property>
 				</or>
-                                <or>
-                                    <equals>
-                                            <property>controls/engines/engine[0]/throttle</property>
-                                            <value>0</value>
-                                    </equals>
-                                    <and>
-                                        <property>/controls/engines/engine[0]/reverser</property>
-                                        <property>/controls/engines/engine[1]/reverser</property>
-                                    </and>
-                                </or>
+				<or>
+					<equals>
+							<property>controls/engines/engine[0]/throttle</property>
+							<value>0</value>
+					</equals>
+					<and>
+						<property>/controls/engines/engine[0]/reverser</property>
+						<property>/controls/engines/engine[1]/reverser</property>
+					</and>
+				</or>
 				<greater-than>
 					<property>/instrumentation/airspeed-indicator/indicated-speed-kt</property>
 					<value>60</value>
