@@ -1605,6 +1605,9 @@
 		<thrust_levers>
 			<file>Aircraft/A330-200/Nasal/thrust_levers.nas</file>
 		</thrust_levers>
+		<engines>
+			<file>Aircraft/A330-200/Nasal/engines.nas</file>
+		</engines>
 		<electrical>
 			<file>Aircraft/A330-200/Nasal/electrical.nas</file>
 		</electrical>
