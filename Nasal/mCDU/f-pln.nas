@@ -108,7 +108,9 @@ var f_pln = {
 			var spd = getprop(rm_route~ "route/wp[" ~ wp ~ "]/ias-mach");
 			
 			var alt = getprop(rm_route~ "route/wp[" ~ wp ~ "]/altitude-ft");
-			
+			if (alt == nil or alt <= 0) {
+				alt = 35000;
+			}
 			var gs_min = 0; # Ground Speed in NM/min
 			
 			if ((spd == nil) or (spd <= 0)) {
@@ -120,7 +122,7 @@ var f_pln = {
 				else
 					spd = 0.78;
 			
-			}		
+			}
 			
 			# MACH SPEED
 			
@@ -134,13 +136,12 @@ var f_pln = {
 			
 			else {
 			
-				gs_min = spd + (alt / 200);
+				gs_min = (spd + (alt / 200))/60;
 			
 			}
 			
 			# Time in Minutes (rounded)
-			var time_h = dist / gs_min;
-			var time_min = int(60 * time_h);
+			var time_min = dist / gs_min;
 			
 			var last_time = getprop(rm_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
 			
@@ -265,6 +266,10 @@ var f_pln = {
 			var spd = wpt.speed_cstr;
 
 			var alt = wpt.alt_cstr;
+			
+			if (alt == nil or alt <= 0) {
+				alt = 35000;
+			}
 
 			var gs_min = 0; # Ground Speed in NM/min
 
@@ -291,13 +296,13 @@ var f_pln = {
 
 			else {
 
-				gs_min = spd + (alt / 200);
+				gs_min = (spd + (alt / 200))/60;
 
 			}
 
 			# Time in Minutes (rounded)
-			var time_h = dist / gs_min;
-			var time_min = int(60 * time_h);
+			var time_min = dist / gs_min;
+			
 
 			var last_time = getprop(sec_route~ "route/wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
 
@@ -647,6 +652,10 @@ var f_pln = {
 			
 			var alt = waypoint.alt_cstr;
 			
+			if (alt == nil or alt <= 0) {
+				alt = 35000;
+			}
+			
 			var gs_min = 0; # Ground Speed in NM/min
 			
 			if ((spd == nil) or (spd <= 0)) {
@@ -672,15 +681,13 @@ var f_pln = {
 			
 			else {
 			
-				gs_min = spd + (alt / 200);
+				gs_min = (spd + (alt / 200))/60;
 			
 			}
 			
 			# Time in Minutes (rounded)
-			var time_h = dist / gs_min;
-			
-			var time_min = int(time_h * 60);
-			
+			var time_min = dist / gs_min;
+						
 			var last_time = getprop(fp_tree~ "wp[" ~ (wp - 1) ~ "]/leg-time") or 0;
 			
 			if (wp == 1)
