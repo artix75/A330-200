@@ -89,7 +89,7 @@ var state_loop = {
   
             me.reset();
         },
-    	update : func {
+        update : func {
     	
             if ((getprop(me.ws) == 0) and (getprop(me.wl) == 1)) {
                     setprop(me.ws, 1);
@@ -103,7 +103,7 @@ var state_loop = {
                     setprop(me.cs, 0);
             }
     	
-	},
+        },
 
         reset : func {
             me.loopid += 1;
@@ -113,7 +113,7 @@ var state_loop = {
             id == me.loopid or return;
             me.update();
             settimer(func { me._loop_(id); }, me.UPDATE_INTERVAL);
-    }
+        }
 
 };
 
@@ -336,7 +336,7 @@ var warning_system = {
             var fuel_bal = warning.new("X-FEED FAULT", "chime", "caution", "fuelbal");
             fuel_bal.condition = func() {
                     return ((getprop("controls/fuel/x-feed") != 1) and (math.abs(getprop("/consumables/fuel/tank[2]/level-kg") - getprop("/consumables/fuel/tank[4]/level-kg")) > 1000));
-            }			
+            }
             
             
             ## Electric
@@ -755,7 +755,7 @@ var warning_system = {
                 
                 }
 
-                # Check for T.O. Config
+                # Check for LDG Config
                 
                 foreach(var cfg; me.ldg_config) {
                 
