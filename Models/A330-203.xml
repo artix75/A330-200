@@ -7,50 +7,35 @@
 	<nasal>
 		<load>
 		var rplayer = cmdarg();
-
 		rplayer.getNode("/aircraft/tyresmoke/nose", 1).alias(rplayer.getNode("sim/multiplay/generic/int[0]"));
-		
 		rplayer.getNode("/aircraft/tyresmoke/left", 1).alias(rplayer.getNode("sim/multiplay/generic/int[1]"));
-		
 		rplayer.getNode("/aircraft/tyresmoke/right", 1).alias(rplayer.getNode("sim/multiplay/generic/int[2]"));
-		
 		rplayer.getNode("controls/lighting/landing-lights[0]", 1).alias(rplayer.getNode("sim/multiplay/generic/int[3]"));
-		
 		rplayer.getNode("controls/lighting/landing-lights[1]", 1).alias(rplayer.getNode("sim/multiplay/generic/int[4]"));
-		
 		rplayer.getNode("controls/lighting/landing-lights[2]", 1).alias(rplayer.getNode("sim/multiplay/generic/int[5]"));
-		
 		rplayer.getNode("controls/lighting/nav-lights-switch", 1).alias(rplayer.getNode("sim/multiplay/generic/int[6]"));
-		
 		rplayer.getNode("controls/lighting/strobe", 1).alias(rplayer.getNode("sim/multiplay/generic/int[7]"));
-		
 		rplayer.getNode("controls/lighting/beacon", 1).alias(rplayer.getNode("sim/multiplay/generic/int[8]"));
-		
 		rplayer.getNode("controls/lighting/cones", 1).alias(rplayer.getNode("sim/multiplay/generic/int[9]"));
-		
+		rplayer.getNode("controls/lighting/logo", 1).alias(rplayer.getNode("sim/multiplay/generic/int[10]"));
 		rplayer.getNode("/gear/compression/left/avg-ft", 1).alias(rplayer.getNode("sim/multiplay/generic/float[2]"));
-		
 		rplayer.getNode("/gear/compression/right/avg-ft", 1).alias(rplayer.getNode("sim/multiplay/generic/float[3]"));
-		
 		rplayer.getNode("/gear/tilt/left-tilt-deg", 1).alias(rplayer.getNode("sim/multiplay/generic/float[4]"));
-		
 		rplayer.getNode("/gear/tilt/right-tilt-deg", 1).alias(rplayer.getNode("sim/multiplay/generic/float[5]"));
-		
 		rplayer.getNode("/engines/engine[0]/reverser-pos-norm", 1).alias(rplayer.getNode("sim/multiplay/generic/float[6]"));
-		
 		rplayer.getNode("/engines/engine[1]/reverser-pos-norm", 1).alias(rplayer.getNode("sim/multiplay/generic/float[7]"));
-		
 		rplayer.getNode("/aircraft/wingflex", 1).alias(rplayer.getNode("sim/multiplay/generic/float[8]"));
-		
 		rplayer.getNode("/aircraft/nose-compression", 1).alias(rplayer.getNode("sim/multiplay/generic/float[9]"));
-		
-		rplayer.getNode("/fdm/jsbsim/fcs/elevator-fbw-output", 1).alias(rplayer.getNode("sim/multiplay/generic/float[10]"));
-		
-		rplayer.getNode("/fdm/jsbsim/fcs/aileron-fbw-output", 1).alias(rplayer.getNode("sim/multiplay/generic/float[11]"));
+		rplayer.getNode("controls/flight/elevator", 1).alias(rplayer.getNode("sim/multiplay/generic/float[10]"));
+		rplayer.getNode("controls/flight/aileron", 1).alias(rplayer.getNode("sim/multiplay/generic/float[11]"));
+		rplayer.getNode("controls/flight/rudder", 1).alias(rplayer.getNode("sim/multiplay/generic/float[12]"));
 
-		</load>
+		var livery_update = aircraft.livery_update.new("Aircraft/A330-200/Models/Liveries/A330-203");
+  		</load>
+		<unload>
+		 livery_update.stop();
+		</unload>
 	</nasal>
-
 	<model>
 		<name>A330-200 Main</name>
 		<path>Aircraft/A330-200/Models/A330-203-main.xml</path>
@@ -77,7 +62,8 @@
 		<property-base>sim/model/livery</property-base>
 		<texture-prop>a332-texture</texture-prop>
 	</animation>
-    
+
+<!--OE-PH!    
     <animation>
 		<type>material</type>
         <object-name>wing.in0</object-name>
@@ -88,17 +74,9 @@
 		<object-name>wing.out1</object-name>
 		<property-base>sim/model/livery</property-base>
 		<texture-prop>wing-texture</texture-prop>
-	</animation>
+	</animation>-->
 
 	<!-- Nasal code -->
-	<nasal>
-		<load>
-		 var livery_update = aircraft.livery_update.new("Aircraft/A330-200/Models/Liveries/A330-203");
-         
-		</load>
-		<unload>
-		 livery_update.stop();
-		</unload>
-	</nasal>
+
 		
 </PropertyList>

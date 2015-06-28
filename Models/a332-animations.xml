@@ -14,7 +14,8 @@
 	<!-- Lightmaps -->
 	
 	<effect>
-		<inherits-from>Effects/model-combined-deferred</inherits-from>
+		<inherits-from>Aircraft/A330-200/Models/Effects/logo-lights</inherits-from>
+<!--OE-PH1		<inherits-from>Effects/model-combined-deferred</inherits-from>
 		<parameters>
 			<lightmap-enabled type="int">1</lightmap-enabled>
 			<texture n="3">
@@ -23,7 +24,7 @@
 			<lightmap-factor type="float" n="0">
 				<use>controls/lighting/logo</use>
 			</lightmap-factor>
-		</parameters>
+		</parameters>-->
 		<object-name>rudder</object-name>
 		<object-name>vstab</object-name>
 	</effect>
@@ -157,7 +158,8 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>aileron.outer0</object-name>
-		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>
+<!--OE-PH1		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>-->
+		<property>sim/multiplay/generic/float[11]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>-30</dep></entry>
 			<entry><ind>-0.4</ind><dep>-18</dep></entry>
@@ -178,7 +180,8 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>aileron.inner0</object-name>
-		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>
+<!--OE-PH1		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>-->
+		<property>sim/multiplay/generic/float[11]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>-25</dep></entry>
 			<entry><ind>-0.4</ind><dep>-22</dep></entry>
@@ -199,7 +202,8 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>aileron.inner1</object-name>
-		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>
+<!--OE-PH1		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>-->
+		<property>sim/multiplay/generic/float[11]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>-25</dep></entry>
 			<entry><ind>-0.4</ind><dep>-22</dep></entry>
@@ -220,7 +224,8 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>aileron.outer1</object-name>
-		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>
+<!--OE-PH1		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>-->
+		<property>sim/multiplay/generic/float[11]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>-30</dep></entry>
 			<entry><ind>-0.4</ind><dep>-18</dep></entry>
@@ -677,7 +682,8 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>elevator0</object-name>
-		<property>/fdm/jsbsim/fcs/elevator-fbw-output</property>
+<!--OE-PH1		<property>/fdm/jsbsim/fcs/elevator-fbw-output</property>-->
+		<property>sim/multiplay/generic/float[10]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>-20</dep></entry>
 			<entry><ind>0</ind><dep>0</dep></entry>
@@ -696,7 +702,8 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>elevator1</object-name>
-		<property>/fdm/jsbsim/fcs/elevator-fbw-output</property>
+<!--OE-PH1		<property>/fdm/jsbsim/fcs/elevator-fbw-output</property>-->
+		<property>sim/multiplay/generic/float[10]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>20</dep></entry>
 			<entry><ind>0</ind><dep>0</dep></entry>
@@ -736,7 +743,8 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>rudder</object-name>
-		<property>/controls/flight/rudder</property>
+<!-- ph		<property>/controls/flight/rudder</property>-->
+		<property>sim/multiplay/generic/float[12]</property>
 		<interpolation>
 			<entry><ind>-0.8</ind><dep>-25</dep></entry>
 			<entry><ind>0</ind><dep>0</dep></entry>
@@ -1439,7 +1447,8 @@
 		<object-name>NoseWheel</object-name>
 		<object-name>NGearStrut</object-name>
 		<object-name>choke_nose</object-name>
-		<property>/aircraft/nose-compression</property>
+<!--OE-PH1		<property>/aircraft/nose-compression</property>-->
+		<property>sim/multiplay/generic/float[9]</property>
 		<factor>0.3125</factor> <!-- 3.2 ft = 1 m -->
 		<axis>
 			<z>1</z>
@@ -1453,7 +1462,8 @@
 		<object-name>LeftGearCompressor</object-name>
 		<object-name>LeftGearBaseRod</object-name>
 		<object-name>choke_left</object-name>
-		<property>gear/compression/left/avg-ft</property>
+<!--OE-PH1		<property>/aircraft/nose-compression</property>-->
+		<property>sim/multiplay/generic/float[2]</property>
 		<factor>0.3125</factor> <!-- 3.2 ft = 1 m -->
 		<axis>
 			<z>1</z>
@@ -1467,7 +1477,8 @@
 		<object-name>RightGearCompressor</object-name>
 		<object-name>RightGearBaseRod</object-name>
 		<object-name>choke_right</object-name>
-		<property>gear/compression/right/avg-ft</property>
+<!--OE-PH1		<property>/aircraft/nose-compression</property>-->
+		<property>sim/multiplay/generic/float[3]</property>
 		<factor>0.3125</factor> <!-- 3.2 ft = 1 m -->
 		<axis>
 			<z>1</z>
