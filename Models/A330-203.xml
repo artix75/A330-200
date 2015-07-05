@@ -17,7 +17,7 @@
 		rplayer.getNode("controls/lighting/strobe", 1).alias(rplayer.getNode("sim/multiplay/generic/int[7]"));
 		rplayer.getNode("controls/lighting/beacon", 1).alias(rplayer.getNode("sim/multiplay/generic/int[8]"));
 		rplayer.getNode("controls/lighting/cones", 1).alias(rplayer.getNode("sim/multiplay/generic/int[9]"));
-		rplayer.getNode("controls/lighting/logo", 1).alias(rplayer.getNode("sim/multiplay/generic/int[10]"));
+		rplayer.getNode("controls/lighting/cabin-lights", 1).alias(rplayer.getNode("sim/multiplay/generic/int[10]"));
 		rplayer.getNode("/gear/compression/left/avg-ft", 1).alias(rplayer.getNode("sim/multiplay/generic/float[2]"));
 		rplayer.getNode("/gear/compression/right/avg-ft", 1).alias(rplayer.getNode("sim/multiplay/generic/float[3]"));
 		rplayer.getNode("/gear/tilt/left-tilt-deg", 1).alias(rplayer.getNode("sim/multiplay/generic/float[4]"));
@@ -29,7 +29,6 @@
 		rplayer.getNode("controls/flight/elevator", 1).alias(rplayer.getNode("sim/multiplay/generic/float[10]"));
 		rplayer.getNode("controls/flight/aileron", 1).alias(rplayer.getNode("sim/multiplay/generic/float[11]"));
 		rplayer.getNode("controls/flight/rudder", 1).alias(rplayer.getNode("sim/multiplay/generic/float[12]"));
-
 		var livery_update = aircraft.livery_update.new("Aircraft/A330-200/Models/Liveries/A330-203");
   		</load>
 		<unload>
@@ -61,22 +60,5 @@
 		<object-name>ge.reverser1</object-name>
 		<property-base>sim/model/livery</property-base>
 		<texture-prop>a332-texture</texture-prop>
-	</animation>
-
-<!--OE-PH!    
-    <animation>
-		<type>material</type>
-        <object-name>wing.in0</object-name>
-		<object-name>wing.in1</object-name>
-        <object-name>wing.mid0</object-name>
-		<object-name>wing.mid1</object-name>
-        <object-name>wing.out0</object-name>
-		<object-name>wing.out1</object-name>
-		<property-base>sim/model/livery</property-base>
-		<texture-prop>wing-texture</texture-prop>
-	</animation>-->
-
-	<!-- Nasal code -->
-
-		
+	</animation>		
 </PropertyList>
