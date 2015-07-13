@@ -1201,8 +1201,9 @@
     
     <!-- Next WPT Info -->
     
+	<!-- PFD MACH VALUE NUMBER -->
     <text>
-		<name>osgtext-green</name>
+		<name>mach-value</name>
 		<offsets>
 			<x-m>0.0010</x-m>
 			<y-m>-0.069</y-m>
@@ -1238,11 +1239,11 @@
 		<format type="string">%s</format>
 		<property>instrumentation/nav/nav-id</property>
 		<truncate type="bool">false</truncate>
-		<font type="string">helvetica_bold.txf</font>
+		<font type="string">helvetica.txf</font>
 		<draw-text type="bool">true</draw-text>
 		<draw-alignment type="bool">false</draw-alignment>
 		<draw-boundingbox type="bool">false</draw-boundingbox>
-		<character-size>0.006</character-size>
+		<character-size>0.007</character-size>
 		<font-resolution>
 			<width type="int">32</width>
 			<height type="int">32</height>
@@ -1253,7 +1254,7 @@
 		<name>nav-frq</name>
 		<offsets>
 			<x-m>0.0010</x-m>
-			<y-m>-0.069</y-m>
+			<y-m>-0.070</y-m>
 			<z-m>-0.064</z-m>
 		</offsets>
 		<alignment>left-center</alignment>
@@ -1262,11 +1263,11 @@
 		<format type="string">%3.2f</format>
 		<property>instrumentation/nav/frequencies/selected-mhz</property>
 		<truncate type="bool">false</truncate>
-		<font type="string">helvetica_bold.txf</font>
+		<font type="string">helvetica.txf</font>
 		<draw-text type="bool">true</draw-text>
 		<draw-alignment type="bool">false</draw-alignment>
 		<draw-boundingbox type="bool">false</draw-boundingbox>
-		<character-size>0.006</character-size>
+		<character-size>0.007</character-size>
 		<font-resolution>
 			<width type="int">32</width>
 			<height type="int">32</height>
@@ -1274,7 +1275,7 @@
 	</text>
 	
 	<text>
-		<name>nav-hdg</name>
+		<name>nav-dme</name>
 		<offsets>
 			<x-m>0.0010</x-m>
 			<y-m>-0.069</y-m>
@@ -1283,14 +1284,36 @@
 		<alignment>left-center</alignment>
 		<axis-alignment>yz-plane</axis-alignment>
 		<type type="string">number-value</type>
-		<format type="string">%3.0f°</format>
-		<property>instrumentation/nav/heading-deg</property>
+		<format type="string">%3.1f°</format>
+		<property>instrumentation/dme/indicated-distance-nm</property>
 		<truncate type="bool">false</truncate>
-		<font type="string">helvetica_bold.txf</font>
+		<font type="string">helvetica.txf</font>
 		<draw-text type="bool">true</draw-text>
 		<draw-alignment type="bool">false</draw-alignment>
 		<draw-boundingbox type="bool">false</draw-boundingbox>
-		<character-size>0.006</character-size>
+		<character-size>0.007</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	
+	<text>
+		<name>ILS-NM-statictext</name>
+		<offsets>
+			<x-m>0.0010</x-m>
+			<y-m>-0.057</y-m>
+			<z-m>-0.07</z-m>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>yz-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text type="string">NM</text>
+		<font type="string">helvetica.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.007</character-size>
 		<font-resolution>
 			<width type="int">32</width>
 			<height type="int">32</height>
@@ -1928,7 +1951,7 @@
         <format type="string">%1.2f</format>
         <property>/flight-management/fcu-values/mach</property>
         <truncate type="bool">false</truncate>
-        <font type="string">helvetica_bold.txf</font>
+        <font type="string">helvetica_boldp.txf</font>
         <draw-text type="bool">true</draw-text>
         <draw-alignment type="bool">false</draw-alignment>
         <draw-boundingbox type="bool">false</draw-boundingbox>
@@ -2200,7 +2223,18 @@
         </condition>
     </animation>
     
-    
+    <!-- mach value indication shows above M.500 -->
+	
+    <animation>
+        <type>select</type>
+        <object-name>mach-value</object-name>
+        <condition>
+            <greater-than-equals>
+                <property>velocities/mach</property>
+                <value>0.500</value>
+            </greater-than-equals>
+        </condition>
+    </animation>
     
     <animation>
         <type>select</type>
@@ -3347,7 +3381,7 @@
 		<object-name>osgtext-magenta</object-name>
         <object-name>nav-id</object-name>
         <object-name>nav-frq</object-name>
-        <object-name>nav-hdg</object-name>
+        <object-name>nav-dme</object-name>
         <object-name>loc-label-left</object-name>
         <object-name>loc-label-right</object-name>
 		<diffuse>
@@ -3379,6 +3413,7 @@
         <object-name>qnh-indicator-hpa</object-name>
         <object-name>qnh-indicator-std</object-name>
         <object-name>qnh-text</object-name>
+		<object-name>ILS-NM-statictext</object-name>
 		<diffuse>
 			<red>0</red>
 			<green>0.886</green>
@@ -3404,6 +3439,7 @@
 	<animation>
 		<type>material</type>
 		<object-name>osgtext-green</object-name>
+		<object-name>mach-value</object-name>
 		<diffuse>
 			<red>0</red>
 			<green>0.843</green>
@@ -4228,16 +4264,18 @@
         </condition>
     </animation>
     
+	<!-- show PFD ILS information ( navaid, freq, distance and static text ) only for ILS NOT VOR -->
     <animation>
         <type>select</type>
         <object-name>nav-id</object-name>
         <object-name>nav-frq</object-name>
-        <object-name>nav-hdg</object-name>
+        <object-name>nav-dme</object-name>
+		<object-name>ILS-NM-statictext</object-name>
         <condition>
-            <greater-than>
-                <property>instrumentation/nav/frequencies/selected-mhz</property>
-                <value>0</value>
-            </greater-than>
+            <equals>
+				<property>instrumentation/nav/frequencies/is-localizer-frequency</property>
+                <value>true</value>
+            </equals>
         </condition>
     </animation>
 	
