@@ -34,7 +34,7 @@
 		
 		rplayer.getNode("/gear/tilt/left-tilt-deg", 1).alias(rplayer.getNode("sim/multiplay/generic/float[4]"));
 		
-		rplayer.getNode("/gear/tilt/right-tilt-deg, 1).alias(rplayer.getNode("sim/multiplay/generic/float[5]"));
+		rplayer.getNode("/gear/tilt/right-tilt-deg", 1).alias(rplayer.getNode("sim/multiplay/generic/float[5]"));
 		
 		rplayer.getNode("/engines/engine[0]/reverser-pos-norm", 1).alias(rplayer.getNode("sim/multiplay/generic/float[6]"));
 		
@@ -88,7 +88,7 @@
 	<!-- Nasal code -->
 	<nasal>
 		<load>
-		 var livery_update = aircraft.livery_update.new("Aircraft/A330-200/Models/Liveries/" ~ getprop("sim/aero"));
+		 var livery_update = aircraft.livery_update.new("Aircraft/A330-200/Models/Liveries/A330-243");
 		</load>
 		<unload>
 		 livery_update.stop();

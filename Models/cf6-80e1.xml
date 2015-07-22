@@ -49,7 +49,7 @@
 	<animation>
 		<type>translate</type>
 		<object-name>ge.reverser0</object-name>
-		<property>engines/engine[0]/reverser-pos-norm</property>
+		<property>sim/multiplay/generic/float[6]</property>
 		<factor>0.6</factor>
 		<axis>
 			<x>1</x>
@@ -61,7 +61,7 @@
 	<animation>
 		<type>translate</type>
 		<object-name>ge.reverser1</object-name>
-		<property>engines/engine[1]/reverser-pos-norm</property>
+		<property>sim/multiplay/generic/float[7]</property>
 		<factor>0.6</factor>
 		<axis>
 			<x>1</x>

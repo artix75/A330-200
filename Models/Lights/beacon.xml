@@ -11,7 +11,8 @@
 		<type>select</type>
 		<object-name>Light</object-name>
 		<condition>
-			<property>sim/model/lights/beacon/state</property>
+<!--OE-PH1		<property>sim/model/lights/beacon/state</property>-->
+		<property>sim/multiplay/generic/int[8]</property>
 		</condition>
 	</animation>
 

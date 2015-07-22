@@ -5,52 +5,23 @@
 ################
 
 print("Initializing livery select for " ~ getprop("sim/aero"));
-aircraft.livery.init("Aircraft/A330-200/Models/Liveries/" ~ getprop("sim/aero"));
+#aircraft.livery.init("Aircraft/A330-200/Models/Liveries/" ~ getprop("sim/aero"));
+#OE-PH1 let do it first for the 203, then I will try to generalize it for all 3 models.
+aircraft.livery.init("Aircraft/A330-200/Models/Liveries/A330-203");
 
 setprop('sim/failure-manager/engines/engine/serviceable', 1);
 setprop('sim/failure-manager/engines/engine[1]/serviceable', 1);
 
-#setlistener("sim/model/livery/texture", func
-# {
-# var base = getprop("sim/model/livery/texture");
-## No more diferences on New Folder Structure. there should be consolidated on model xmls to just use one var
-## setprop("sim/model/livery/texture-path[0]", "../Models/" ~ base);
-## setprop("sim/model/livery/texture-path[1]", "../../Models/" ~ base);
-# setprop("sim/model/livery/texture-path[0]", "../" ~ base);
-# setprop("sim/model/livery/texture-path[1]", "../" ~ base);
-# }, 1, 1);
-
-#setlistener("/ai/models/multiplayer/sim/model/livery/texture", func
-# {
-# var base = getprop("/ai/models/multiplayer/sim/model/livery/texture");
-## No more diferences on New Folder Structure. there should be consolidated on model xmls to just use one var
-## setprop("sim/model/livery/texture-path[0]", "../Models/" ~ base);
-## setprop("sim/model/livery/texture-path[1]", "../../Models/" ~ base);
-# setprop("/ai/models/multiplayer/sim/model/livery/texture-path[0]", "../" ~ base);
-# setprop("/ai/models/multiplayer/sim/model/livery/texture-path[1]", "../" ~ base);
-# }, 1, 1);
-
-setlistener("sim/model/livery/file", func(newLivery){
-    var aero = getprop('/sim/aero');
-    print('LIVERY LISTEN');
-    print(newLivery.getValue());
-    if(newLivery.getValue() == 'AZA'){
-    print('AZA');
-        setprop('sim/model/livery/wing-texture', 'Liveries/' ~ aero ~ '/wings_main_AZA.png');
-    } else {
-        setprop('sim/model/livery/wing-texture', '');
-    }
-},1,0);
 
 ## LIGHTS
 #########
 
 # create all lights
-var beacon_switch = props.globals.getNode("controls/switches/beacon", 2);
-var beacon = aircraft.light.new("sim/model/lights/beacon", [0.015, 3], "controls/lighting/beacon");
+var beacon_switch = props.globals.getNode("controls/lighting/beacon", 2);
+aircraft.light.new("/sim/model/lights/beacon", [0.015, 3], beacon_switch);
 
-var strobe_switch = props.globals.getNode("controls/switches/strobe", 2);
-var strobe = aircraft.light.new("sim/model/lights/strobe", [0.025, 1.5], "controls/lighting/strobe");
+var strobe_switch = props.globals.getNode("controls/lighting/strobe", 2);
+aircraft.light.new("/sim/model/lights/strobe", [0.025, 1.5], strobe_switch);
 
 ## SOUNDS
 #########

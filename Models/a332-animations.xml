@@ -14,81 +14,28 @@
 	<!-- Lightmaps -->
 	
 	<effect>
-		<inherits-from>Effects/model-combined-deferred</inherits-from>
-		<parameters>
-			<lightmap-enabled type="int">1</lightmap-enabled>
-			<texture n="3">
-				<image>Aircraft/A330-200/Models/Effects/res/logo-lightmap.png</image>
-			</texture>
-			<lightmap-factor type="float" n="0">
-				<use>controls/lighting/logo</use>
-			</lightmap-factor>
-		</parameters>
+		<inherits-from>Aircraft/A330-200/Models/Effects/logo-lights</inherits-from>
 		<object-name>rudder</object-name>
 		<object-name>vstab</object-name>
 	</effect>
 	
 	<effect>
 		<inherits-from>Aircraft/A330-200/Models/Effects/fuselage-lights</inherits-from>
-		<!--parameters>
-			<lightmap-enabled type="int">1</lightmap-enabled>
-			<lightmap-multi type="int">1</lightmap-multi>
-			<texture n="3">
-				<image>Aircraft/A330-200/Models/Effects/res/land-lightmap-multi.png</image>
-			</texture>
-			<lightmap-factor type="float" n="0">
-				<use>controls/lighting/landing-lights[2]</use>
-			</lightmap-factor>
-			<lightmap-color type="vec3d" n="0">0.03 0.03 0.03</lightmap-color>
-			<lightmap-factor type="float" n="1">
-				<use>controls/lighting/landing-lights[0]</use>
-			</lightmap-factor>
-			<lightmap-factor type="float" n="2">0.0</lightmap-factor>
-			<lightmap-factor type="float" n="3">0.0</lightmap-factor>
-			<lightmap-color type="vec3d" n="1">0.03 0.03 0.03</lightmap-color>
-		</parameters-->
 		<object-name>fuselage</object-name>
 	</effect>
 
 	<effect>
-		<inherits-from>Effects/model-combined-deferred</inherits-from>
-		<parameters>
-			<lightmap-enabled type="int">1</lightmap-enabled>
-			<texture n="3">
-				<image>Aircraft/A330-200/Models/Effects/res/windshield-lightmap.png</image>
-			</texture>
-			<lightmap-factor type="float" n="0">
-				<use>controls/lighting/cockpit</use>
-			</lightmap-factor>
-		</parameters>
+		<inherits-from>Aircraft/A330-200/Models/Effects/windshield</inherits-from>
 		<object-name>windshield</object-name>
 	</effect>
-	
-	<!--effect>
-		<inherits-from>Effects/model-combined-deferred</inherits-from>
-		<parameters>
-			<lightmap-enabled type="int">1</lightmap-enabled>
-			<texture n="3">
-				<image>Aircraft/A330-200/Models/Effects/res/windows-lightmap.png</image>
-			</texture>
-			<lightmap-factor type="float" n="0">
-				<use>controls/lighting/cabin-lights</use>
-			</lightmap-factor>
-		</parameters>
+
+	<effect>
+		<inherits-from>Aircraft/A330-200/Models/Effects/windows</inherits-from>
 		<object-name>fuselage</object-name>
-	</effect-->
+	</effect>
 
 	<effect>
 		<inherits-from>Effects/model-combined-deferred</inherits-from>
-		<parameters>
-			<lightmap-enabled type="int">1</lightmap-enabled>
-			<texture n="3">
-				<image>Aircraft/A330-200/Models/Effects/res/wings-lightmap.png</image>
-			</texture>
-			<lightmap-factor type="float" n="0">
-				<use>controls/lighting/wing-lights</use>
-			</lightmap-factor>
-		</parameters>
 		<object-name>wing.in0</object-name>
 		<object-name>wing.mid0</object-name>
 		<object-name>wing.out0</object-name>
@@ -157,7 +104,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>aileron.outer0</object-name>
-		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>
+		<property>sim/multiplay/generic/float[11]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>-30</dep></entry>
 			<entry><ind>-0.4</ind><dep>-18</dep></entry>
@@ -178,7 +125,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>aileron.inner0</object-name>
-		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>
+		<property>sim/multiplay/generic/float[11]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>-25</dep></entry>
 			<entry><ind>-0.4</ind><dep>-22</dep></entry>
@@ -199,7 +146,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>aileron.inner1</object-name>
-		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>
+		<property>sim/multiplay/generic/float[11]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>-25</dep></entry>
 			<entry><ind>-0.4</ind><dep>-22</dep></entry>
@@ -220,7 +167,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>aileron.outer1</object-name>
-		<property>/fdm/jsbsim/fcs/aileron-fbw-output</property>
+		<property>sim/multiplay/generic/float[11]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>-30</dep></entry>
 			<entry><ind>-0.4</ind><dep>-18</dep></entry>
@@ -441,11 +388,11 @@
 	</animation>
 	
 	<!-- Spoilers -->
-	
+	<!-- original: <property>/surface-positions/speedbrake-pos-norm</property>-->
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler0.1</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.5</ind><dep>-12</dep></entry>
@@ -464,7 +411,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler0.2</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.5</ind><dep>-32</dep></entry>
@@ -483,7 +430,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler0.3</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.5</ind><dep>-38</dep></entry>
@@ -502,7 +449,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler0.4</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.4</ind><dep>-36</dep></entry>
@@ -522,7 +469,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler0.5</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.5</ind><dep>-14</dep></entry>
@@ -541,7 +488,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler0.6</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.5</ind><dep>-12</dep></entry>
@@ -560,7 +507,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler1.1</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.5</ind><dep>12</dep></entry>
@@ -579,7 +526,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler1.2</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.5</ind><dep>32</dep></entry>
@@ -598,7 +545,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler1.3</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.5</ind><dep>38</dep></entry>
@@ -617,7 +564,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler1.4</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.4</ind><dep>36</dep></entry>
@@ -637,7 +584,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler1.5</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.5</ind><dep>10</dep></entry>
@@ -656,7 +603,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>spoiler1.6</object-name>
-		<property>/surface-positions/speedbrake-pos-norm</property>
+		<property>sim/multiplay/generic/float[13]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.5</ind><dep>12</dep></entry>
@@ -677,7 +624,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>elevator0</object-name>
-		<property>/fdm/jsbsim/fcs/elevator-fbw-output</property>
+		<property>sim/multiplay/generic/float[10]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>-20</dep></entry>
 			<entry><ind>0</ind><dep>0</dep></entry>
@@ -696,7 +643,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>elevator1</object-name>
-		<property>/fdm/jsbsim/fcs/elevator-fbw-output</property>
+		<property>sim/multiplay/generic/float[10]</property>
 		<interpolation>
 			<entry><ind>-1</ind><dep>20</dep></entry>
 			<entry><ind>0</ind><dep>0</dep></entry>
@@ -736,7 +683,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>rudder</object-name>
-		<property>/controls/flight/rudder</property>
+		<property>sim/multiplay/generic/float[12]</property>
 		<interpolation>
 			<entry><ind>-0.8</ind><dep>-25</dep></entry>
 			<entry><ind>0</ind><dep>0</dep></entry>
@@ -778,7 +725,8 @@
 	<animation>
 		<type>translate</type>
 		<object-name>flap.outer0</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+<!--OE-PH1		<property>/surface-positions/flap-pos-norm</property>-->
+			<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>0.10</dep></entry>
@@ -795,7 +743,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>flap.outer0</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>5</dep></entry>
@@ -816,7 +764,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>flap.outer.support0</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>4</dep></entry>
@@ -837,7 +785,7 @@
 	<animation>
 		<type>translate</type>
 		<object-name>flap.outer1</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>0.10</dep></entry>
@@ -854,7 +802,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>flap.outer1</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>-5</dep></entry>
@@ -875,7 +823,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>flap.outer.support1</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>-4</dep></entry>
@@ -898,7 +846,7 @@
 	<animation>
 		<type>translate</type>
 		<object-name>flap.inner0</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>0.10</dep></entry>
@@ -915,7 +863,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>flap.inner0</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>5</dep></entry>
@@ -936,7 +884,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>flap.inner.support0</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>4</dep></entry>
@@ -957,7 +905,7 @@
 	<animation>
 		<type>translate</type>
 		<object-name>flap.inner1</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>0.10</dep></entry>
@@ -974,7 +922,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>flap.inner1</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>-5</dep></entry>
@@ -995,7 +943,7 @@
 	<animation>
 		<type>rotate</type>
 		<object-name>flap.inner.support1</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0</dep></entry>
 			<entry><ind>0.29</ind><dep>-4</dep></entry>
@@ -1019,7 +967,7 @@
 		<type>translate</type>
 		<object-name>slat.out0</object-name>
 		<object-name>slat.out1</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<factor>0.338</factor>
 		<axis>
 			<x>-1</x>
@@ -1033,7 +981,7 @@
 		<object-name>slat.in.open0</object-name>
 		<object-name>slat.in.slide1</object-name>
 		<object-name>slat.in.open1</object-name>
-		<property>/surface-positions/flap-pos-norm</property>
+		<property>sim/multiplay/generic/float[14]</property>
 		<factor>0.45</factor>
 		<axis>
 			<x>-1</x>
@@ -1439,7 +1387,7 @@
 		<object-name>NoseWheel</object-name>
 		<object-name>NGearStrut</object-name>
 		<object-name>choke_nose</object-name>
-		<property>/aircraft/nose-compression</property>
+		<property>sim/multiplay/generic/float[9]</property>
 		<factor>0.3125</factor> <!-- 3.2 ft = 1 m -->
 		<axis>
 			<z>1</z>
@@ -1453,7 +1401,7 @@
 		<object-name>LeftGearCompressor</object-name>
 		<object-name>LeftGearBaseRod</object-name>
 		<object-name>choke_left</object-name>
-		<property>gear/compression/left/avg-ft</property>
+		<property>sim/multiplay/generic/float[2]</property>
 		<factor>0.3125</factor> <!-- 3.2 ft = 1 m -->
 		<axis>
 			<z>1</z>
@@ -1467,7 +1415,7 @@
 		<object-name>RightGearCompressor</object-name>
 		<object-name>RightGearBaseRod</object-name>
 		<object-name>choke_right</object-name>
-		<property>gear/compression/right/avg-ft</property>
+		<property>sim/multiplay/generic/float[3]</property>
 		<factor>0.3125</factor> <!-- 3.2 ft = 1 m -->
 		<axis>
 			<z>1</z>
@@ -1501,7 +1449,7 @@
 		<object-name>LeftWheelFront</object-name>
 		<object-name>LeftWheelBack</object-name>
 		<object-name>LeftGearBaseRod</object-name>
-		<property>/gear/tilt/left-tilt-deg</property>
+		<property>sim/multiplay/generic/float[4]</property>
 		<center>
 			<x-m>5.8549</x-m>
 			<y-m>0.0</y-m>
@@ -1519,7 +1467,7 @@
 		<object-name>RightWheelFront</object-name>
 		<object-name>RightWheelBack</object-name>
 		<object-name>RightGearBaseRod</object-name>
-		<property>/gear/tilt/right-tilt-deg</property>
+		<property>sim/multiplay/generic/float[5]</property>
 		<center>
 			<x-m>5.8549</x-m>
 			<y-m>0.0</y-m>
@@ -1802,7 +1750,7 @@
   <object-name>Left nav light</object-name>
   <object-name>fueldump.l</object-name>
   <object-name>Left strobe light</object-name>
-  <property>aircraft/wingflex</property>
+  <property>sim/multiplay/generic/float[8]</property>
   <factor>0.00001</factor>
   <offset-deg>0</offset-deg>
   <center>
