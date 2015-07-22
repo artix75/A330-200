@@ -1,0 +1,13 @@
+<PropertyList>
+	<name>logo_lights</name>
+	<inherits-from>Effects/model-combined-deferred</inherits-from>
+	<parameters>
+		<lightmap-enabled type="int">1</lightmap-enabled>
+		<texture n="3">
+			<image>Aircraft/A330-200/Models/Effects/res/windshield-lightmap.png</image>
+		</texture>
+		<lightmap-factor type="float" n="0">
+			<use>controls/lighting/cockpit</use>
+		</lightmap-factor>
+	</parameters>
+</PropertyList>
