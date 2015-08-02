@@ -1202,6 +1202,7 @@
     <!-- Next WPT Info -->
     
 	<!-- PFD MACH VALUE NUMBER -->
+
     <text>
 		<name>mach-value</name>
 		<offsets>
@@ -1225,6 +1226,38 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+	
+<!--
+	 <text>
+		<name>mach-value</name>
+		<offsets>
+			<x-m>0.0010</x-m>
+			<y-m>-0.069</y-m>
+			<z-m>-0.052</z-m>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>yz-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text type="string">
+		<binding>
+		<command>nasal</command>
+		<script>
+		var foo = "hello";
+		print(foo);
+		</script>
+		</binding>
+		</text>
+        <font type="string">helvetica_bold.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.006</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+-->
     
     <text>
 		<name>nav-id</name>
@@ -1297,6 +1330,30 @@
 			<height type="int">32</height>
 		</font-resolution>
 	</text>
+
+	<!-- WIP -->
+	<text>
+	<name>nav-dme-noavail</name>
+		<offsets>
+			<x-m>0.0010</x-m>
+			<y-m>-0.069</y-m>
+			<z-m>-0.07</z-m>
+		</offsets>
+		<alignment>left-center</alignment>
+		<axis-alignment>yz-plane</axis-alignment>
+		<type type="string">literal</type>
+		<text type="string">----</text>
+		<font type="string">helvetica.txf</font>
+		<draw-text type="bool">true</draw-text>
+		<draw-alignment type="bool">false</draw-alignment>
+		<draw-boundingbox type="bool">false</draw-boundingbox>
+		<character-size>0.007</character-size>
+		<font-resolution>
+			<width type="int">32</width>
+			<height type="int">32</height>
+		</font-resolution>
+	</text>
+	<!-- WIP END -->
 	
 	<text>
 		<name>ILS-NM-statictext</name>
@@ -3382,6 +3439,7 @@
         <object-name>nav-id</object-name>
         <object-name>nav-frq</object-name>
         <object-name>nav-dme</object-name>
+		<object-name>nav-dme-noavail</object-name>
         <object-name>loc-label-left</object-name>
         <object-name>loc-label-right</object-name>
 		<diffuse>
@@ -4269,7 +4327,7 @@
         <type>select</type>
         <object-name>nav-id</object-name>
         <object-name>nav-frq</object-name>
-        <object-name>nav-dme</object-name>
+        <!-- WIP <object-name>nav-dme</object-name> --> 
 		<object-name>ILS-NM-statictext</object-name>
         <condition>
             <equals>
@@ -4277,7 +4335,41 @@
                 <value>true</value>
             </equals>
         </condition>
-    </animation>
+    </animation>	
+	<!-- WIP -->
+	
+	<animation>
+        <type>select</type>
+        <object-name>nav-dme</object-name>
+        <condition>
+		<and>
+            <equals>
+				<property>instrumentation/dme/in-range</property>
+                <value>true</value>
+            </equals>
+			 	<property>instrumentation/nav/frequencies/is-localizer-frequency</property>
+            </and>
+        </condition>
+    </animation>	
+	
+		<animation>
+        <type>select</type>
+        <object-name>nav-dme-noavail</object-name>
+        <condition>
+		<and>
+            <equals>
+				<property>instrumentation/dme/in-range</property>
+                <value>false</value>
+			</equals>
+				<property>instrumentation/nav/frequencies/is-localizer-frequency</property>
+			</and>
+        </condition>
+    </animation>	
+	
+	
+
+<!-- WIP END -->
+	
 	
 	<animation>
 		<type>select</type>
