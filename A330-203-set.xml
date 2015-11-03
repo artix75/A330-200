@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 
 <PropertyList include="A332-common.xml">
 
@@ -162,19 +162,19 @@
 			<name>Fwd Cargo</name>
 			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[2]" />
 			<min-lb type="double">0</min-lb>
-			<max-lb type="double">14500</max-lb>
+			<max-lb type="double">41600</max-lb>
 		</weight>
 		<weight n="3">
 			<name>Aft Cargo</name>
 			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[3]" />
 			<min-lb type="double">0</min-lb>
-			<max-lb type="double">4000</max-lb>
+			<max-lb type="double">33600</max-lb>
 		</weight>
 		<weight n="4">
 			<name>Rear Bulk Cargo</name>
 			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[4]" />
 			<min-lb type="double">0</min-lb>
-			<max-lb type="double">14500</max-lb>
+			<max-lb type="double">7646</max-lb>
 		</weight>
 	</payload>
 	
