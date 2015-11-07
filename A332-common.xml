@@ -280,7 +280,11 @@
 					<type>bool</type>
 					<property type="string">controls/pneumatic/engine[1]/bleed</property>
 				</signal>
-				<!-- <signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/consumables/fuel/tank[0]/level-kg</property>
+				</signal>
+				<signal>
 					<type>float</type>
 					<property type="string">/consumables/fuel/tank[1]/level-kg</property>
 				</signal>
@@ -299,7 +303,7 @@
 				<signal>
 					<type>float</type>
 					<property type="string">/consumables/fuel/tank[5]/level-kg</property>
-				</signal> -->
+				</signal>
 				<signal>
 					<type>bool</type>
 					<property type="string">sim/sound/welcome</property>
