@@ -6,7 +6,9 @@
 
 print("Initializing livery select for " ~ getprop("sim/aero"));
 aircraft.livery.init("Aircraft/A330-200/Models/Liveries/" ~ getprop("sim/aero"));
-
+#OE-PH1 let do it first for the 203, then I will try to generalize it for all 3 models.
+#All good now -- Lego
+#aircraft.livery.init("Aircraft/A330-200/Models/Liveries/A330-203");
 setprop('sim/failure-manager/engines/engine/serviceable', 1);
 setprop('sim/failure-manager/engines/engine[1]/serviceable', 1);
 
