@@ -3,7 +3,7 @@
 <PropertyList include="Aircraft/Generic/Human/Include/walker-include.xml">
 
 	<sim>
-		<author>Narendran Muraleedharan (muraleen@my.erau.edu), Fabio Nicotra (Artix)</author>
+		<author>Narendran Muraleedharan (muraleen@my.erau.edu), Fabio Nicotra (Artix) et al (A330 dev team)</author>
 		<status>beta</status>
 
 		<model>
@@ -497,7 +497,7 @@
 					</item>
 					<item>
 						<name>lights</name>
-						<label>Lights</label>
+						<label>Light Settings</label>
 						<binding>
 							<command>nasal</command>
 							<script>
@@ -529,7 +529,7 @@
 					</item>
 					<item>
 						<name>stairs</name>
-						<label>Stairways Controls</label>
+						<label>Stairway Controls</label>
 						<binding>
 							<command>nasal</command>
 							<script>
@@ -582,7 +582,7 @@
 						</binding>
 					</item>
 					<item>
-						<label>WXR Live</label>
+						<label>Live WXR</label>
 						<binding>
 							<command>nasal</command>
 							<script>
@@ -600,7 +600,7 @@
 						</binding>
 					</item>
 					<item>
-						<label>Configuration</label>
+						<label>Configuration Options</label>
 						<binding>
 							<command>nasal</command>
 							<script>
@@ -613,7 +613,7 @@
 
 				</menu>
 				<menu n="101">
-					<label>Reset Systems</label>
+					<label>Reset Airbus Systems</label>
 					<item>
 						<name>fmgcreset</name>
 						<label>Reset FMGC Loop</label>
@@ -1205,7 +1205,7 @@
 
 	<input>
 		<keyboard>
-
+<!-- tested these Tilt keys; don't seem to work. Needs FGCAMERA? -->
 			<key n="357">
 				<name>Up</name>
 				<repeatable type="bool">true</repeatable>
@@ -1312,6 +1312,7 @@
 										</script>
 				</binding>
 			</key>
+			<!-- tiller keys do not work -->
 			<key n="106">
 				<name>j</name>
 				<repeatable type="bool">true</repeatable>
@@ -1351,6 +1352,7 @@
 					</script>
 				</binding>
 			</key>
+			<!-- breaks CTRL + J for map; consider changing. This is done by insert and enter anyway -->
 			<key n="10">
 				<name>CTRL+j</name>
 				<repeatable type="bool">true</repeatable>
@@ -1402,7 +1404,7 @@
 			<key n="12">
 				<name>CTRL+l</name>
 				<repeatable type="bool">true</repeatable>
-				<desc>Rudder Trim Right</desc>
+				<desc>Rudder Right</desc>
 				<binding>
 					<command>nasal</command>
 					<script>
@@ -1483,7 +1485,7 @@
 			</key>
 			<key n="67">
 				<name>C</name>
-				<desc>Throttle Detent: CL</desc>
+				<desc>Throttle Detent: CLB</desc>
 				<repeatable type="bool">false</repeatable>
 				<binding>
 					<command>nasal</command>
