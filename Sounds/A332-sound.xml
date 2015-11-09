@@ -420,7 +420,7 @@
 		
 
  <!-- =============================================================== -->
- <!-- Hidraulic:                                                      -->
+ <!-- Hydraulic:                                                      -->
  <!-- =============================================================== -->
 
 		<flap>
@@ -1089,7 +1089,7 @@
  <max-dist>100.0</max-dist>
 </announcement>
 
-<announcement>
+<!--<announcement>
 <name>boarding1</name>
  <path>Aircraft/A330-200/Sounds/announce/music.wav</path>
  <mode>looped</mode>
@@ -1106,7 +1106,7 @@
  </position>
  <reference-dist>10.0</reference-dist>
  <max-dist>100.0</max-dist>
-</announcement>
+</announcement> -->
 
 <announcement>
 <name>boarding2</name>
@@ -1127,7 +1127,7 @@
  <max-dist>100.0</max-dist>
 </announcement>
 
-<announcement>
+<!--<announcement>
 <name>boarding3</name>
  <path>Aircraft/A330-200/Sounds/announce/etihad-board.wav</path>
  <mode>looped</mode>
@@ -1163,7 +1163,7 @@
  </position>
  <reference-dist>10.0</reference-dist>
  <max-dist>100.0</max-dist>
-</announcement>
+</announcement> -->
 
 <announcement>
 <name>brace</name>
