@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <PropertyList include="Aircraft/Generic/Human/Include/walker-include.xml">
 
@@ -279,6 +279,10 @@
 				<signal>
 					<type>bool</type>
 					<property type="string">controls/pneumatic/engine[1]/bleed</property>
+				</signal>
+				<signal>
+					<type>float</type>
+					<property type="string">/consumables/fuel/tank[0]/level-kg</property>
 				</signal>
 				<signal>
 					<type>float</type>
@@ -741,33 +745,14 @@
 
 	<consumables>
 		<fuel>
-			<tank n="0">
-				<name>Left Wing Vent</name>
-			</tank>
-			<tank n="1">
-				<name>Left Wing Outer</name>
-			</tank>
-			<tank n="2">
-				<name>Left Wing Inner</name>
-			</tank>
-			<tank n="3">
-				<name>Center</name>
-			</tank>
-			<tank n="4">
-				<name>Right Wing Inner</name>
-			</tank>
-			<tank n="5">
-				<name>Right Wing Outer</name>
-			</tank>
-			<tank n="6">
-				<name>Right Wing Vent</name>
-			</tank>
-			<tank n="7">
-				<name>Left Pipes</name>
-			</tank>
-			<tank n="8">
-				<name>Right Pipes</name>
-			</tank>
+			<tank n="0"><name>Left Wing Outer</name></tank>
+			<tank n="1"><name>Left Wing Inner</name></tank>
+			<tank n="2"><name>Center</name></tank>
+			<tank n="3"><name>Right Wing Inner</name></tank>
+			<tank n="4"><name>Right Wing Outer</name></tank>
+			<tank n="5"><name>Trim</name></tank>
+			<tank n="6"><name>Left Pipes</name></tank>
+			<tank n="7"><name>Right Pipes</name></tank>
 		</fuel>
 	</consumables>
 
