@@ -9,7 +9,7 @@ var fuel_jett = func() {
 	}
 	
 	if (getprop("/consumables/fuel/total-fuel-kg") < 10000) {
-		setprop("/controls/fuel-dump/active", 1);
+		setprop("/controls/fuel-dump/active", 0);
 	}
 };
 
