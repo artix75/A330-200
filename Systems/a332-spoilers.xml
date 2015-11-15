@@ -9,13 +9,8 @@
 		<input>
 			<and>
 				<or>
-					<!-- Spoilers armed -->
 					<property>/controls/flight/ground-spoilers-armed</property>
-					<!-- Spoilers not armed -->
 					<and>
-						<not>
-							<property>/controls/flight/ground-spoilers-armed</property>
-						</not>
 						<property>/controls/engines/engine[0]/reverser</property>
 						<property>/controls/engines/engine[1]/reverser</property>
 					</and>
@@ -27,14 +22,33 @@
 					<property>/gear/gear[4]/wow</property>
 				</or>
 				<or>
-					<equals>
+					<and>
+						<equals>
+							<property>/flight-management/control/a-thrust</property>
+							<value>eng</value>
+						</equals>
+						<equals>
 							<property>controls/engines/engine[0]/throttle</property>
 							<value>0</value>
-					</equals>
+						</equals>
+					</and>
+					<and>
+						<not>
+							<equals>
+								<property>/flight-management/control/a-thrust</property>
+								<value>eng</value>
+							</equals>
+						</not>
+						<equals>
+							<property>controls/engines/engine[0]/throttle-pos</property>
+							<value>0</value>
+						</equals>
+					</and>
 					<and>
 						<property>/controls/engines/engine[0]/reverser</property>
 						<property>/controls/engines/engine[1]/reverser</property>
 					</and>
+					<!-- a-thrust & throttle 0 | man-thrust &  -->
 				</or>
 				<greater-than>
 					<property>/instrumentation/airspeed-indicator/indicated-speed-kt</property>
