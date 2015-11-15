@@ -130,7 +130,7 @@
 				<chunk>
 					<alignment>right-center</alignment>
 					<type>number-value</type>
-					<property>consumables/fuel/tank[1]/level-kg</property>
+					<property>consumables/fuel/tank[0]/level-kg</property>
 					<format type="string">%5.0f</format>
 				</chunk>
 			</chunks>
@@ -158,7 +158,7 @@
 				<chunk>
 					<alignment>right-center</alignment>
 					<type>number-value</type>
-					<property>consumables/fuel/tank[2]/level-kg</property>
+					<property>consumables/fuel/tank[1]/level-kg</property>
 					<format type="string">%5.0f</format>
 				</chunk>
 			</chunks>
@@ -187,7 +187,7 @@
 				<chunk>
 					<alignment>right-center</alignment>
 					<type>number-value</type>
-					<property>consumables/fuel/tank[3]/level-kg</property>
+					<property>consumables/fuel/tank[2]/level-kg</property>
 					<format type="string">%5.0f</format>
 				</chunk>
 			</chunks>
@@ -216,7 +216,7 @@
 				<chunk>
 					<alignment>right-center</alignment>
 					<type>number-value</type>
-					<property>consumables/fuel/tank[4]/level-kg</property>
+					<property>consumables/fuel/tank[3]/level-kg</property>
 					<format type="string">%5.0f</format>
 				</chunk>
 			</chunks>
@@ -244,7 +244,7 @@
 				<chunk>
 					<alignment>right-center</alignment>
 					<type>number-value</type>
-					<property>consumables/fuel/tank[5]/level-kg</property>
+					<property>consumables/fuel/tank[4]/level-kg</property>
 					<format type="string">%5.0f</format>
 				</chunk>
 			</chunks>
@@ -632,7 +632,7 @@
 			<chunks>
 				<chunk>
 					<type>number-value</type>
-					<property>environment/temperature-degc</property><!-- There is no TAT temperature property-->
+					<property>fdm/jsbsim/propulsion/tat-c</property>
 					<format type="string">%3.0f</format>
 				</chunk>
 			</chunks>
@@ -757,7 +757,7 @@
 				</transformation>
 				<transformation>
 					<type>x-shift</type>
-					<offset>74</offset>
+					<offset>65</offset>
 				</transformation>
 			</transformations>
 		</layer>
