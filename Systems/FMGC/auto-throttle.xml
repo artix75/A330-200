@@ -11,19 +11,19 @@
 		<debug type="bool">false</debug>
 		<enable>
 			<condition>
-                <and>
-                    <property>/flight-management/control/a-thr/ias</property>
-                    <not>
-                        <property>/flight-management/control/spd-with-pitch</property>
-                    </not>
-                    <not>
-                        <property>/autoland/retard</property>
-                    </not>
-                    <not>
-                        <property>flight-management/thrust-lock</property>
-                    </not>
-                </and>
-            </condition>
+				<and>
+					<property>/flight-management/control/a-thr/ias</property>
+					<not>
+						<property>/flight-management/control/spd-with-pitch</property>
+					</not>
+					<not>
+						<property>/autoland/retard</property>
+					</not>
+					<not>
+						<property>flight-management/thrust-lock</property>
+					</not>
+				</and>
+			</condition>
 		</enable>
 		<input>
 			<prop>/autopilot/internal/lookahead-5-sec-airspeed-kt</prop>

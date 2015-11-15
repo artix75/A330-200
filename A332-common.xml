@@ -390,6 +390,13 @@
 				<path>Aircraft/A330-200/Systems/FBW/Airbus-fbw.xml</path>
 			</autopilot>
 
+			<!-- Spoilers Control ========================================== -->
+
+			<autopilot>
+				<name>Spoilers</name>
+				<path>Aircraft/A330-200/Systems/a332-spoilers.xml</path>
+			</autopilot>
+
 			<!-- Speed Trend on PFD ======================================== -->
 
 			<autopilot>
@@ -407,13 +414,6 @@
 			<autopilot>
 				<name>Thrust Levers</name>
 				<path>Aircraft/A330-200/Systems/flight-deck.xml</path>
-			</autopilot>
-
-			<!-- Spoilers Control ========================================== -->
-
-			<autopilot>
-				<name>Spoilers</name>
-				<path>Aircraft/A330-200/Systems/a332-spoilers.xml</path>
 			</autopilot>
 
 		</systems>
