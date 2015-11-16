@@ -2,24 +2,47 @@
 
 <PropertyList>
 	
-	<!-- ########################## LIGHTING ############################### -->
-	
-	<!-- Deferred Model Combined -->
-	
-	<effect>
-		<inherits-from>Effects/model-combined-deferred</inherits-from>
-		<object-name>effect-group</object-name>
-	</effect>
-	
-	<!-- Lightmaps -->
-	
-	<effect>
-		<inherits-from>Aircraft/A330-200/Models/Effects/logo-lights</inherits-from>
+      <effect>
+		<inherits-from>Effects/lightmap</inherits-from>
+		<parameters>
+			<texture n="1">
+				<image>Aircraft/A330-200/Models/Effects/res/logo-lightmap.png</image>
+			</texture>
+			<condition>
+				<use>controls/lighting/logomp</use>
+			</condition>
+		</parameters>
 		<object-name>rudder</object-name>
 		<object-name>vstab</object-name>
 	</effect>
 	
 	<effect>
+		<inherits-from>Effects/lightmap</inherits-from>
+		<parameters>
+			<texture n="1">
+				<image>Aircraft/A330-200/Models/Effects/res/land-lightmap-multi.png</image>
+			</texture>
+			<condition>
+				<use>controls/lighting/landing-lights[2]</use>
+			</condition>
+		</parameters>
+		<object-name>fuselage</object-name>
+	</effect>
+      
+      <effect>
+		<inherits-from>Effects/lightmap</inherits-from>
+		<parameters>
+			<texture n="1">
+				<image>Aircraft/A330-200/Models/Effects/res/windows-lightmap.png</image>
+			</texture>
+			<condition>
+				<use>controls/lighting/cabin-lights</use>
+			</condition>
+		</parameters>
+		<object-name>cabin-lights</object-name>
+	</effect>
+
+      <effect>
 		<inherits-from>Aircraft/A330-200/Models/Effects/fuselage-lights</inherits-from>
 		<object-name>fuselage</object-name>
 	</effect>
@@ -35,16 +58,31 @@
 	</effect>
 
 	<effect>
-		<inherits-from>Effects/model-combined-deferred</inherits-from>
-		<object-name>wing.in0</object-name>
-		<object-name>wing.mid0</object-name>
-		<object-name>wing.out0</object-name>
+ 		<inherits-from>Effects/model-combined-deferred</inherits-from>
+		<parameters>
+			  <lightmap-enabled type="int">1</lightmap-enabled>
+			  <texture n="3">
+				     <image>Aircraft/A330-200/Models/Effects/res/wings-lightmap.png</image>
+			  </texture>
+			  <lightmap-factor type="float" n="0">
+			  <use>controls/lighting/wing-lights</use>
+			  </lightmap-factor>		
+            </parameters>
+ 		<object-name>wing.in0</object-name>
+ 		<object-name>wing.mid0</object-name>
+ 		<object-name>wing.out0</object-name>
 		<object-name>wing.in1</object-name>
 		<object-name>wing.mid1</object-name>
 		<object-name>wing.out1</object-name>
 	</effect>
-	
-	<!-- Landing Lights
+
+      <animation>
+		<type>select</type>
+		<object-name>wingLights</object-name>
+		<condition>
+			<property>/controls/lighting/wing-lights</property>
+		</condition>
+  	</animation>
 	
 	<animation>
     	<type>material</type>
@@ -70,7 +108,7 @@
       		<green> 1 </green>
       		<blue>  1 </blue>
     	</emission>
-  	</animation> -->
+  	</animation>
   	
   	<animation>
     	<type>material</type>
@@ -84,21 +122,9 @@
       		<blue>  1 </blue>
     	</emission>
   	</animation>
-
-  	<!-- Wing Lights -->
-
-  	<animation>
-		<type>select</type>
-		<object-name>wingLights</object-name>
-		<condition>
-			<property>/controls/lighting/wing-lights</property>
-		</condition>
-  	</animation>
-	
-	<!-- ################################################################### -->
 	
 	<!-- Surface Animations -->
-	
+
 	<!-- Ailerons -->
 	
 	<animation>
