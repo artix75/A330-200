@@ -12,8 +12,8 @@
 		<model>
 			<path>Aircraft/A330-200/Models/A330-223.xml</path>
 			<livery>
-				<file>blank</file>
-				<a332-texture>Liveries/A330-223/livery-blank.png</a332-texture>
+				<file>DAL</file>
+				<a332-texture>Liveries/A330-223/DAL.png</a332-texture>
 			</livery>
 	            	<!-- door n="0">
 		                <position-x-m>-11.3399</position-x-m>
@@ -150,7 +150,7 @@
 		<menubar>
 				<default>
 					<menu n="100">
-						<label>Airbus A330-223</label>
+						<label>Airbus A330-223 Settings</label>
 					</menu>
 				</default>
 		</menubar>

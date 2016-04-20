@@ -83,25 +83,15 @@ var ground_services = {
 		# Fuel Truck Controls
 		
 		if (getprop("/services/fuel-truck/enable") and getprop("/services/fuel-truck/connect")) {
-			if (getprop("/services/fuel-truck/transfer")) {			
-				if (getprop("/consumables/fuel/total-fuel-kg") < getprop("/services/fuel-truck/request-kg")) {
-					if ((getprop("/consumables/fuel/tank[1]/level-kg") < 3500) or (getprop("/consumables/fuel/tank[3]/level-kg") < 3500)) {
-						setprop("/consumables/fuel/tank[1]/level-kg", getprop("/consumables/fuel/tank[1]/level-kg") + 30);
-						setprop("/consumables/fuel/tank[3]/level-kg", getprop("/consumables/fuel/tank[3]/level-kg") + 30);
-					} else if ((getprop("/consumables/fuel/tank[0]/level-kg") < 2947) or (getprop("/consumables/fuel/tank[4]/level-kg") < 2947)) {
-						setprop("/consumables/fuel/tank[0]/level-kg", getprop("/consumables/fuel/tank[0]/level-kg") + 30);
-						setprop("/consumables/fuel/tank[4]/level-kg", getprop("/consumables/fuel/tank[4]/level-kg") + 30);
-					} else if ((getprop("/consumables/fuel/tank[1]/level-kg") < 4500) or (getprop("/consumables/fuel/tank[3]/level-kg") < 4500)) {
-						setprop("/consumables/fuel/tank[1]/level-kg", getprop("/consumables/fuel/tank[1]/level-kg") + 30);
-						setprop("/consumables/fuel/tank[3]/level-kg", getprop("/consumables/fuel/tank[3]/level-kg") + 30);
-					} else if (getprop("/consumables/fuel/tank[5]/level-kg") < 5031) {
-						setprop("/consumables/fuel/tank[5]/level-kg", getprop("/consumables/fuel/tank[5]/level-kg") + 60);
-					} else if ((getprop("/consumables/fuel/tank[1]/level-kg") < 33920) or (getprop("/consumables/fuel/tank[3]/level-kg") < 33920)) {
-						setprop("/consumables/fuel/tank[1]/level-kg", getprop("/consumables/fuel/tank[1]/level-kg") + 30);
-						setprop("/consumables/fuel/tank[3]/level-kg", getprop("/consumables/fuel/tank[3]/level-kg") + 30);
-					} else {
-						setprop("/consumables/fuel/tank[2]/level-kg", getprop("/consumables/fuel/tank[2]/level-kg") + 60);
-					}
+		
+			if (getprop("/services/fuel-truck/transfer")) {
+			
+				if (getprop("consumables/fuel/total-fuel-kg") < getprop("/services/fuel-truck/request-kg")) {
+					setprop("/consumables/fuel/tank[1]/level-kg", getprop("/consumables/fuel/tank[1]/level-kg") + 5);
+					setprop("/consumables/fuel/tank[2]/level-kg", getprop("/consumables/fuel/tank[2]/level-kg") + 20);
+					setprop("/consumables/fuel/tank[3]/level-kg", getprop("/consumables/fuel/tank[3]/level-kg") + 35);
+					setprop("/consumables/fuel/tank[4]/level-kg", getprop("/consumables/fuel/tank[4]/level-kg") + 20);
+					setprop("/consumables/fuel/tank[5]/level-kg", getprop("/consumables/fuel/tank[5]/level-kg") + 5);
 				} else {
 					setprop("/services/fuel-truck/transfer", 0);
 					screen.log.write("Re-fueling complete! Have a nice flight... :)", 1, 1, 1);
@@ -110,20 +100,20 @@ var ground_services = {
 			}
 			
 			if (getprop("/services/fuel-truck/clean")) {
-				if (!getprop("/consumables/fuel/tank[5]/empty")) {
-					setprop("/consumables/fuel/tank[5]/level-kg", getprop("/consumables/fuel/tank[5]/level-kg") - 80);
-				} else if (!getprop("/consumables/fuel/tank[2]/empty")) {
+			
+				if (getprop("consumables/fuel/total-fuel-kg") > 90) {
+				
+					setprop("/consumables/fuel/tank[1]/level-kg", getprop("/consumables/fuel/tank[1]/level-kg") - 80);
 					setprop("/consumables/fuel/tank[2]/level-kg", getprop("/consumables/fuel/tank[2]/level-kg") - 80);
-				} else if (!(getprop("/consumables/fuel/tank[0]/empty")) or !(getprop("/consumables/fuel/tank[4]/empty"))) {
-					setprop("/consumables/fuel/tank[0]/level-kg", getprop("/consumables/fuel/tank[0]/level-kg") - 40);
-					setprop("/consumables/fuel/tank[4]/level-kg", getprop("/consumables/fuel/tank[4]/level-kg") - 40);
-				} else if (!(getprop("/consumables/fuel/tank[1]/empty")) or !(getprop("/consumables/fuel/tank[3]/empty"))) {
-					setprop("/consumables/fuel/tank[1]/level-kg", getprop("/consumables/fuel/tank[1]/level-kg") - 40);
-					setprop("/consumables/fuel/tank[3]/level-kg", getprop("/consumables/fuel/tank[3]/level-kg") - 40);
+					setprop("/consumables/fuel/tank[3]/level-kg", getprop("/consumables/fuel/tank[3]/level-kg") - 80);
+					setprop("/consumables/fuel/tank[4]/level-kg", getprop("/consumables/fuel/tank[4]/level-kg") - 80);
+					setprop("/consumables/fuel/tank[5]/level-kg", getprop("/consumables/fuel/tank[5]/level-kg") - 80);
+				
 				} else {
 					setprop("/services/fuel-truck/clean", 0);
 					screen.log.write("Finished draining the fuel tanks...", 1, 1, 1);
-				}
+				}	
+			
 			}
 		
 		}

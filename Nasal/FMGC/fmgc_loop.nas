@@ -637,9 +637,9 @@ var fmgc_loop = {
                                 ver_alert = 1;
                                 trgt_vs = 200;
                             }
-                            elsif(trgt_vs < -2500 and me.vmax and me.ias >= me.vmax){
+                            elsif(trgt_vs < -200 and me.vmax and me.ias >= me.vmax){
                                 ver_alert = 1;
-                                trgt_vs = -2500;
+                                trgt_vs = -200;
                             } 
                         }
                         var vs = trgt_vs / 60;

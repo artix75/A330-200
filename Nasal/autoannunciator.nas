@@ -62,7 +62,7 @@ setlistener("flight-management/phase", func(){
         var ldg_chk = func(){
             if(getprop(autoannunciator_active)){
                 var ias = getprop("/velocities/airspeed-kt");
-                if(ias <= 40){
+                if(ias <= 30){
                     setprop("sim/sound/land", 1);
                 } else {
                     settimer(ldg_chk, 10);
