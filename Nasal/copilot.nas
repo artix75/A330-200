@@ -31,7 +31,7 @@ setlistener("/sim/signals/fdm-initialized", func {
                 setprop("/sim/sound/copilot/v1", 1);
 
             } elsif ((airspeed != nil) and (VR != nil) and (airspeed > VR) and (me.VRannounced == 0)) {
-                me.announce("Rotate!");
+                me.announce("Vr Rotate!");
                 me.VRannounced = 1;
                 setprop("/sim/sound/copilot/vr", 1);
 
@@ -55,10 +55,10 @@ setlistener("/sim/signals/fdm-initialized", func {
                 var eng_starter = getprop("controls/engines/engine-start-switch");
                 if(eng_starter == 2)
                     me.turn_light('beacon', 1);  
-                if(engine_started and ias > 10 and ias < 35){
+                if(engine_started and ias > 13 and ias < 50){
                     me.turn_light('landing-lights[1]', 1);
                 }
-                elsif(ias >= 35){
+                elsif(ias >= 50){
                     me.turn_light('landing-lights[1]', 0);
                     settimer(func(){
                         me.turn_light('wing-lights', 1);
@@ -70,12 +70,12 @@ setlistener("/sim/signals/fdm-initialized", func {
                 var agl = getprop("/position/altitude-agl-ft");
                 var phase = getprop("flight-management/phase");
                 if(phase == 'APP'){    
-                    if(agl < 10000){
+                    if(agl < 600){
                         me.turn_light('landing-lights[0]', 1);
                         me.turn_light('landing-lights[2]', 1);
                     }
                 } else {
-                    if(agl > 10000){
+                    if(agl > 500){
                         me.turn_light('landing-lights[0]', 0);
                         me.turn_light('landing-lights[2]', 0);
                     }
@@ -94,7 +94,7 @@ setlistener("/sim/signals/fdm-initialized", func {
        
        # RESET
        
-       	if (getprop("/velocities/airspeed-kt") < 30) {
+       	if (getprop("/velocities/airspeed-kt") < 20) {
        
 			me.V1announced = 0;
 			me.VRannounced = 0;

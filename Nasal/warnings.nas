@@ -89,7 +89,7 @@ var state_loop = {
   
             me.reset();
         },
-        update : func {
+    	update : func {
     	
             if ((getprop(me.ws) == 0) and (getprop(me.wl) == 1)) {
                     setprop(me.ws, 1);
@@ -103,7 +103,7 @@ var state_loop = {
                     setprop(me.cs, 0);
             }
     	
-        },
+	},
 
         reset : func {
             me.loopid += 1;
@@ -113,7 +113,7 @@ var state_loop = {
             id == me.loopid or return;
             me.update();
             settimer(func { me._loop_(id); }, me.UPDATE_INTERVAL);
-        }
+    }
 
 };
 
@@ -315,28 +315,28 @@ var warning_system = {
             
             var fuel_1lo = warning.new("L WING TK LO LVL", "chime", "caution", "fuel1lo");
             fuel_1lo.condition = func() {
-                    return ((getprop("/consumables/fuel/tank[2]/level-kg") < 3000) and (getprop("/consumables/fuel/tank[4]/level-kg") >= 3000));
+                    return ((getprop("/consumables/fuel/tank[1]/level-kg") < 2500) and (getprop("/consumables/fuel/tank[3]/level-kg") >= 2500));
             };
             
             var fuel_2lo = warning.new("R WING TK LO LVL", "chime", "caution", "fuel2lo");
             fuel_2lo.condition = func() {
-                    return ((getprop("/consumables/fuel/tank[2]/level-kg") >= 3000) and (getprop("/consumables/fuel/tank[4]/level-kg") < 3000));
+                    return ((getprop("/consumables/fuel/tank[1]/level-kg") >= 2500) and (getprop("/consumables/fuel/tank[3]/level-kg") < 2500));
             };
             
-            var fuel_clo = warning.new("CTR TK LO LVL", "chime", "caution", "fuelclo");
-            fuel_clo.condition = func() {
-                    return (getprop("/consumables/fuel/tank[3]/level-kg") < 3000);
-            };
+            # var fuel_clo = warning.new("CTR TK LO LVL", "chime", "caution", "fuelclo");
+            # fuel_clo.condition = func() {
+            #         return (getprop("/consumables/fuel/tank[2]/level-kg") < 3000);
+            # };
             
             var fuel_wlo = warning.new("L+R WING TK LO LVL", "crc", "caution", "fuello");
             fuel_wlo.condition = func() {
-                    return ((getprop("/consumables/fuel/tank[2]/level-kg") < 3000) and (getprop("/consumables/fuel/tank[4]/level-kg") < 3000));
+                    return ((getprop("/consumables/fuel/tank[1]/level-kg") < 2500) and (getprop("/consumables/fuel/tank[3]/level-kg") < 2500));
             };
             
             var fuel_bal = warning.new("X-FEED FAULT", "chime", "caution", "fuelbal");
             fuel_bal.condition = func() {
-                    return ((getprop("controls/fuel/x-feed") != 1) and (math.abs(getprop("/consumables/fuel/tank[2]/level-kg") - getprop("/consumables/fuel/tank[4]/level-kg")) > 1000));
-            }
+                    return ((getprop("controls/fuel/x-feed") != 1) and (math.abs(getprop("/consumables/fuel/tank[1]/level-kg") - getprop("/consumables/fuel/tank[3]/level-kg")) > 1000));
+            }			
             
             
             ## Electric
@@ -390,7 +390,8 @@ var warning_system = {
 
             # All warnings into a hash for easier use
             
-                me.warnings = [stall, spdbrk_stillout, apu_emer, to_cfg_pbrk, to_cfg_flaps, to_cfg_spdbrk, to_cfg_ptrim, to_cfg_rtrim, elv_fault, ail_fault, rud_fault, spdbrk_fault, flaps_fault, direct_law, altn_law, abn_law , engd_fail, eng1_fail, eng2_fail, engd_oilp, eng1_oilp, eng2_oilp, engd_shut, eng1_shut, eng2_shut, hydall, hydby, hydbg, hydgy, hydb_lopr, hydy_lopr, hydg_lopr, ptu_fault, fuel_1lo, fuel_2lo, fuel_clo, fuel_wlo, fuel_bal, apugen_fault, gen1_fault, gen2_fault, emer_conf, ap_off, athr_off, athr_limited];
+                # me.warnings = [stall, spdbrk_stillout, apu_emer, to_cfg_pbrk, to_cfg_flaps, to_cfg_spdbrk, to_cfg_ptrim, to_cfg_rtrim, elv_fault, ail_fault, rud_fault, spdbrk_fault, flaps_fault, direct_law, altn_law, abn_law , engd_fail, eng1_fail, eng2_fail, engd_oilp, eng1_oilp, eng2_oilp, engd_shut, eng1_shut, eng2_shut, hydall, hydby, hydbg, hydgy, hydb_lopr, hydy_lopr, hydg_lopr, ptu_fault, fuel_1lo, fuel_2lo, fuel_clo, fuel_wlo, fuel_bal, apugen_fault, gen1_fault, gen2_fault, emer_conf, ap_off, athr_off, athr_limited];
+		me.warnings = [stall, spdbrk_stillout, apu_emer, to_cfg_pbrk, to_cfg_flaps, to_cfg_spdbrk, to_cfg_ptrim, to_cfg_rtrim, elv_fault, ail_fault, rud_fault, spdbrk_fault, flaps_fault, direct_law, altn_law, abn_law , engd_fail, eng1_fail, eng2_fail, engd_oilp, eng1_oilp, eng2_oilp, engd_shut, eng1_shut, eng2_shut, hydall, hydby, hydbg, hydgy, hydb_lopr, hydy_lopr, hydg_lopr, ptu_fault, fuel_1lo, fuel_2lo, fuel_wlo, fuel_bal, apugen_fault, gen1_fault, gen2_fault, emer_conf, ap_off, athr_off, athr_limited];
 
             #TO CONFIG
 
@@ -514,9 +515,9 @@ var warning_system = {
                 return (getprop("/hydraulics/controls/ptu") == 1);
             };
             
-            var fob_low = memo.new("FOB BELOW 3T", "amber");
+            var fob_low = memo.new("FOB BELOW 17 T", "amber");
             fob_low.condition = func() {
-                return (getprop("/consumables/fuel/total-fuel-kg") < 3000);
+                return (getprop("/consumables/fuel/total-fuel-kg") < 17000);
             };
             
             var xfeed = memo.new("FUEL X FEED", "green");
@@ -755,7 +756,7 @@ var warning_system = {
                 
                 }
 
-                # Check for LDG Config
+                # Check for T.O. Config
                 
                 foreach(var cfg; me.ldg_config) {
                 
