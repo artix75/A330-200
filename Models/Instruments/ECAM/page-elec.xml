@@ -37,7 +37,7 @@
 			<chunks>
 				<chunk>
 					<type>number-value</type>
-					<property>/systems/electrical/suppliers/battery</property><!-- There is no TAT temperature property-->
+					<property>/systems/electrical/suppliers/battery</property>
 					<format type="string">%3.1f</format>
 				</chunk>
 			</chunks>
@@ -67,7 +67,7 @@
 			<chunks>
 				<chunk>
 					<type>number-value</type>
-					<property>/systems/electrical/suppliers/battery</property><!-- There is no TAT temperature property-->
+					<property>/systems/electrical/suppliers/battery</property>
 					<format type="string">%3.1f</format>
 				</chunk>
 			</chunks>
@@ -97,7 +97,7 @@
 			<chunks>
 				<chunk>
 					<type>number-value</type>
-					<property>/systems/electrical/suppliers/gen1-v</property><!-- There is no TAT temperature property-->
+					<property>/systems/electrical/suppliers/gen1-v</property>
 					<format type="string">%3.0f</format>
 				</chunk>
 			</chunks>
@@ -127,7 +127,7 @@
 			<chunks>
 				<chunk>
 					<type>number-value</type>
-					<property>/systems/electrical/suppliers/gen2-v</property><!-- There is no TAT temperature property-->
+					<property>/systems/electrical/suppliers/gen2-v</property>
 					<format type="string">%3.0f</format>
 				</chunk>
 			</chunks>
@@ -157,7 +157,7 @@
 			<chunks>
 				<chunk>
 					<type>number-value</type>
-					<property>/systems/electrical/suppliers/apu-v</property><!-- There is no TAT temperature property-->
+					<property>/systems/electrical/suppliers/apu-v</property>
 					<format type="string">%3.0f</format>
 				</chunk>
 			</chunks>
@@ -187,7 +187,7 @@
 			<chunks>
 				<chunk>
 					<type>number-value</type>
-					<property>/systems/electrical/suppliers/ext-power-v</property><!-- There is no TAT temperature property-->
+					<property>/systems/electrical/suppliers/ext-power-v</property>
 					<format type="string">%3.0f</format>
 				</chunk>
 			</chunks>
@@ -218,7 +218,7 @@
 			<chunks>
 				<chunk>
 					<type>number-value</type>
-					<property>environment/temperature-degc</property><!-- There is no TAT temperature property-->
+					<property>fdm/jsbsim/propulsion/tat-c</property>
 					<format type="string">%3.0f</format>
 				</chunk>
 			</chunks>
@@ -343,7 +343,7 @@
 				</transformation>
 				<transformation>
 					<type>x-shift</type>
-					<offset>74</offset>
+					<offset>65</offset>
 				</transformation>
 			</transformations>
 		</layer>

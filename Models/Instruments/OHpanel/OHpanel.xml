@@ -458,7 +458,7 @@
 			<binding>
 				<command>property-toggle</command>
 				<!-- property>consumables/fuel/tank[0]/selected</property -->
-				<property>controls/fuel/tank[2]/boost-pump[0]</property>
+				<property>controls/fuel/tank[1]/boost-pump[0]</property>
 			</binding>
                         <binding>
                             <command>nasal</command>
@@ -471,7 +471,7 @@
 		<type>textranslate</type>
 		<object-name>LFuelTank1Btn2</object-name>
 		<!--property>consumables/fuel/tank[0]/selected</property-->
-		<property>controls/fuel/tank[2]/boost-pump[0]</property>
+		<property>controls/fuel/tank[1]/boost-pump[0]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0.5</dep></entry>
 			<entry><ind>1</ind><dep>0</dep></entry>
@@ -492,7 +492,7 @@
 			<binding>
 				<command>property-toggle</command>
 				<!--property>consumables/fuel/tank[1]/selected</property-->
-				<property>controls/fuel/tank[2]/boost-pump[1]</property>
+				<property>controls/fuel/tank[1]/boost-pump[1]</property>
 			</binding>
                         <binding>
                             <command>nasal</command>
@@ -505,7 +505,7 @@
 		<type>textranslate</type>
 		<object-name>LFuelTank2Btn2</object-name>
 		<!--property>consumables/fuel/tank[1]/selected</property-->
-		<property>controls/fuel/tank[2]/boost-pump[1]</property>
+		<property>controls/fuel/tank[1]/boost-pump[1]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0.5</dep></entry>
 			<entry><ind>1</ind><dep>0</dep></entry>
@@ -527,7 +527,7 @@
 			<binding>
 				<command>property-toggle</command>
 				<!--property>consumables/fuel/tank[3]/selected</property-->
-				<property>controls/fuel/tank[3]/boost-pump[0]</property>
+				<property>controls/fuel/tank[2]/boost-pump[0]</property>
 			</binding>
                         <binding>
                             <command>nasal</command>
@@ -540,7 +540,7 @@
 		<type>textranslate</type>
 		<object-name>CFuelTank1Btn2</object-name>
 		<!--property>consumables/fuel/tank[3]/selected</property-->
-		<property>controls/fuel/tank[3]/boost-pump[0]</property>
+		<property>controls/fuel/tank[2]/boost-pump[0]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0.5</dep></entry>
 			<entry><ind>1</ind><dep>0</dep></entry>
@@ -561,7 +561,7 @@
 			<binding>
 				<command>property-toggle</command>
 				<!--property>consumables/fuel/tank[3]/selected</property-->
-				<property>controls/fuel/tank[3]/boost-pump[1]</property>
+				<property>controls/fuel/tank[2]/boost-pump[1]</property>
 			</binding>
                         <binding>
                             <command>nasal</command>
@@ -574,7 +574,7 @@
 		<type>textranslate</type>
 		<object-name>CFuelTank2Btn2</object-name>
 		<!--property>consumables/fuel/tank[3]/selected</property-->
-		<property>controls/fuel/tank[3]/boost-pump[1]</property>
+		<property>controls/fuel/tank[2]/boost-pump[1]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0.5</dep></entry>
 			<entry><ind>1</ind><dep>0</dep></entry>
@@ -631,7 +631,7 @@
 			<binding>
 				<command>property-toggle</command>
 				<!--property>consumables/fuel/tank[4]/selected</property-->
-				<property>controls/fuel/tank[4]/boost-pump[0]</property>
+				<property>controls/fuel/tank[3]/boost-pump[0]</property>
 			</binding>
                         <binding>
                             <command>nasal</command>
@@ -644,7 +644,7 @@
 		<type>textranslate</type>
 		<object-name>RFuelTank1Btn2</object-name>
 		<!--property>consumables/fuel/tank[4]/selected</property-->
-		<property>controls/fuel/tank[4]/boost-pump[0]</property>
+		<property>controls/fuel/tank[3]/boost-pump[0]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0.5</dep></entry>
 			<entry><ind>1</ind><dep>0</dep></entry>
@@ -665,7 +665,7 @@
 			<binding>
 				<command>property-toggle</command>
 				<!--property>consumables/fuel/tank[5]/selected</property-->
-				<property>controls/fuel/tank[4]/boost-pump[1]</property>
+				<property>controls/fuel/tank[3]/boost-pump[1]</property>
 			</binding>
                         <binding>
                             <command>nasal</command>
@@ -678,7 +678,7 @@
 		<type>textranslate</type>
 		<object-name>RFuelTank2Btn2</object-name>
 		<!--property>consumables/fuel/tank[5]/selected</property-->
-		<property>controls/fuel/tank[4]/boost-pump[1]</property>
+		<property>controls/fuel/tank[3]/boost-pump[1]</property>
 		<interpolation>
 			<entry><ind>0</ind><dep>0.5</dep></entry>
 			<entry><ind>1</ind><dep>0</dep></entry>
@@ -703,10 +703,10 @@
 				<command>property-toggle</command>
 				<property>controls/fuel-dump/arm</property>
 			</binding>
-                        <binding>
-                            <command>nasal</command>
-                            <script>utils.clickSound(6)</script>
-                        </binding>
+			<binding>
+				<command>nasal</command>
+				<script>utils.clickSound(6);</script>
+			</binding>
 		</action>
 	</animation>
 	<animation>

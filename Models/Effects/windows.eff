@@ -1,0 +1,14 @@
+<PropertyList>
+	<name>cabin_lights</name>
+	<inherits-from>Effects/model-combined-deferred</inherits-from>
+	<parameters>
+		<lightmap-enabled type="int">1</lightmap-enabled>
+		<texture n="3">
+			<image>Aircraft/A330-200/Models/Effects/res/windows-lightmap.png</image>
+		</texture>
+		<lightmap-factor type="float" n="0">
+<!--			<use>/controls/lighting/cabin-lights</use>-->
+			<use>sim/generic/multiplay/int[10]</use>
+		</lightmap-factor>
+	</parameters>
+</PropertyList>

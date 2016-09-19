@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<PropertyList>
+	<sim>
+		<model>
+			<livery>
+				<name>Merlion Cargo</name>
+				<a332-texture>Liveries/A330-243/MCA.png</a332-texture>
+			</livery>
+		</model>
+	</sim>
+</PropertyList>
